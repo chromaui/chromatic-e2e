@@ -1,3 +1,15 @@
+# v0.0.3 (Fri Apr 07 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update package.json in line with library-kit ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 1
+
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.2 (Fri Apr 07 2023)
 
 #### ⚠️ Pushed to `main`

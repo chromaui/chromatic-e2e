@@ -9,6 +9,13 @@ module.exports = {
         'react/default-props-match-prop-types': 'off',
       },
     },
+    {
+      files: ['**/*.test.ts'],
+      rules: {
+        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+        'no-restricted-syntax': 'off',
+      },
+    },
   ],
   parserOptions: {
     project: ['tsconfig.json'],

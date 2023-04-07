@@ -11,7 +11,7 @@ export default defineConfig((options) => ({
   treeshake: true,
   sourcemap: true,
   clean: true,
-  platform: 'browser',
+  platform: 'node',
   esbuildOptions(options) {
     options.conditions = ['module'];
   },

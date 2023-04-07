@@ -1,6 +1,6 @@
 ## @storybook/test-archiver
 
-FIXME: Add description of the project
+Archive end-to-end tests to be replayed in Storybook and Chromatic
 
 ## Getting Started
 

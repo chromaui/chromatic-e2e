@@ -1,12 +1,12 @@
 {
-  "name": "package-name",
+  "name": "@chromaui/test-archiver",
   "version": "0.0.0",
-  "description": "package-description",
+  "description": "Archive end-to-end tests to be replayed in Storybook and Chromatic",
   "repository": {
     "type": "git",
-    "url": "https://github.com/storybookjs/package-base-name"
+    "url": "https://github.com/storybookjs/@chromaui/test-archiver"
   },
-  "author": "package-author",
+  "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -27,8 +27,6 @@
     "release": "yarn build && auto shipit",
     "lint": "eslint --cache --cache-location=.cache/eslint --ext .js,.jsx,.html,.ts,.tsx,.mjs",
     "prettier": "prettier",
-    "prerelease": "node scripts/prepublish-checks.js",
-    "postinstall": "node scripts/welcome-message.js",
     "prepare": "husky install"
   },
   "devDependencies": {

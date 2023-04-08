@@ -14,4 +14,4 @@ We welcome contributions!
 
 ## License
 
-[MIT](https://github.com/storybookjs/@chromaui/test-archiver/blob/main/LICENSE)
+[MIT](https://github.com/chromaui/test-archiver/blob/main/LICENSE)

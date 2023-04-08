@@ -1,3 +1,16 @@
+# v0.0.4 (Sat Apr 08 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Added Documentation ([@tmeasday](https://github.com/tmeasday))
+- Rename `takeSnapshot` to `takeArchive` ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 1
+
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.3 (Fri Apr 07 2023)
 
 #### ⚠️ Pushed to `main`

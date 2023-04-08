@@ -4,15 +4,13 @@ Archive end-to-end tests to be replayed in Storybook and Chromatic
 
 ## Getting Started
 
-FIXME: Add getting started steps
+See the [Documentation](/Documentation.md).
 
 ## Contributing
 
-We welcome contributions to Storybook!
+We welcome contributions!
 
 - 📥 Pull requests and 🌟 Stars are always welcome.
-- Read our [contributing guide](CONTRIBUTING.md) to get started,
-  or find us on [Discord](https://discord.gg/storybook), we will take the time to guide you
 
 ## License
 

@@ -76,6 +76,10 @@ class Watcher {
     }
 
     // Pausing a response stage with a response
+    if ([301, 302].includes(responseStatusCode)) {
+      await this.client.send('Fetch.continueRequest', { requestId, interceptResponse: true });
+      return;
+    }
     if (responseStatusCode) {
       const { body, base64Encoded } = await this.client.send('Fetch.getResponseBody', {
         requestId,

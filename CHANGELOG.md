@@ -1,3 +1,15 @@
+# v0.0.5 (Tue Apr 11 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Don't capture outside of Chromium ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 1
+
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.4 (Sat Apr 08 2023)
 
 #### ⚠️ Pushed to `main`

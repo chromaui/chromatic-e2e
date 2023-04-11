@@ -1,3 +1,16 @@
+# v0.0.7 (Tue Apr 11 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Fix issue with simultaneous writes ([@tmeasday](https://github.com/tmeasday))
+- Continue redirection requests ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 1
+
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.6 (Tue Apr 11 2023)
 
 #### ⚠️ Pushed to `main`

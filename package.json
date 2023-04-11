@@ -32,7 +32,7 @@
     "test": "jest",
     "start": "yarn build:watch",
     "release": "yarn build && auto shipit",
-    "lint": "eslint --cache --cache-location=.cache/eslint --ext .js,.jsx,.html,.ts,.tsx,.mjs",
+    "lint": "eslint src/*",
     "prettier": "prettier",
     "prepare": "husky install"
   },

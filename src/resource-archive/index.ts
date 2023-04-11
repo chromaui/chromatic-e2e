@@ -43,12 +43,12 @@ class Watcher {
     this.archive[url] = response;
   }
 
-  requestWillBeSent(event) {
+  requestWillBeSent(event: Protocol.Network.requestWillBeSentPayload) {
     logger.log('requestWillBeSent');
     logger.log(event);
   }
 
-  responseReceived(event) {
+  responseReceived(event: Protocol.Network.responseReceivedPayload) {
     logger.log('responseReceived');
     logger.log(event);
   }
@@ -72,7 +72,7 @@ class Watcher {
 
     // Pausing at response stage with an error
     if (responseErrorReason) {
-      throw 'TODO';
+      throw new Error('TODO');
     }
 
     // Pausing a response stage with a response
@@ -87,7 +87,8 @@ class Watcher {
         body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
       };
 
-      return await this.client.send('Fetch.continueRequest', { requestId });
+      await this.client.send('Fetch.continueRequest', { requestId });
+      return;
     }
 
     const response = this.archive[request.url];
@@ -98,13 +99,14 @@ class Watcher {
         responseCode: response.statusCode,
         responsePhrase: response.statusText,
       });
-      return await this.client.send('Fetch.fulfillRequest', {
+      await this.client.send('Fetch.fulfillRequest', {
         requestId,
         responseCode: response.statusCode,
         ...(response.statusText && { responsePhrase: response.statusText }),
         // responseHeaders: response.headers, TODO - mapping
         body: response.body.toString('base64'),
       });
+      return;
     }
 
     await this.client.send('Fetch.continueRequest', {

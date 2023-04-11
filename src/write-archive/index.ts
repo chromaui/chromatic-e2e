@@ -40,8 +40,14 @@ export async function writeTestResult(
 ) {
   await ensureDir(outputDir);
   await ensureDir(resultsDir);
-  await remove(latestDir);
-  await ensureSymlink(resultsDir, latestDir);
+
+  // Not sure if there's a cleaner way to do this -- ensure latestDir points to resultsDir
+  try {
+    await ensureSymlink(resultsDir, latestDir);
+  } catch (err) {
+    await remove(latestDir);
+    await ensureSymlink(resultsDir, latestDir);
+  }
 
   logger.log(`Writing test results for "${title}"`);
 
@@ -49,7 +55,7 @@ export async function writeTestResult(
     Object.entries(archive).map(async ([url, response]) => {
       const { pathname } = new URL(url);
       await outputFile(
-        join(archiveDir, pathname === '/' ? `${sanitize(title)}.html` : pathname),
+        join(archiveDir, pathname.endsWith('/') ? `${pathname}index.html` : pathname),
         response.body
       );
     })

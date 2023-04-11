@@ -12,6 +12,15 @@ export const makeTest = (base: TestType<any, any>) =>
   base.extend<{ save: void }>({
     save: [
       async ({ page }, use, testInfo) => {
+        // CDP only works in Chromium, so we only capture archives in Chromium.
+        // We can later snapshot them in different browsers in the cloud.
+        // TODO: I'm not sure if this is the best way to detect the browser version, but
+        // it seems to work
+        if (page.context().browser().browserType().name() !== 'chromium') {
+          await use();
+          return;
+        }
+
         const completeArchive = await createResourceArchive(page);
         await use();
 

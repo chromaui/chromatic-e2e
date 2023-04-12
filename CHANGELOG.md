@@ -1,3 +1,15 @@
+# v0.0.8 (Wed Apr 12 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update Documentation.md ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 1
+
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.7 (Tue Apr 11 2023)
 
 #### ⚠️ Pushed to `main`

@@ -21,7 +21,7 @@ yarn add --dev @chromaui/test-archiver @chromaui/archive-storybook
 To create archives during playwright tests, import `test` and `expect` from `@chromaui/test-archiver`:
 
 ```tsx
-export { test, expect } from '@chromaui/test-archiver';
+import { test, expect } from '@chromaui/test-archiver';
 
 // and use as normal
 test('...', async ({ page }) => {
@@ -36,7 +36,7 @@ Once the above is configured, Chromatic will archive the final state of every te
 To take manual snapshots at specific points of your tests, you can use the `takeArchive` function inside your test runs:
 
 ```tsx
-export { test, expect, takeArchive } from '@chromaui/test-archiver';
+import { test, expect, takeArchive } from '@chromaui/test-archiver';
 
 test('my test', async ({ page }, testInfo) => {
   await page.goto('https://playwright.dev/');
@@ -64,13 +64,30 @@ To test the Archive Storybook alongside your regular Storybook on every commit, 
 
 First, head to [chromatic.com](http://chromatic.com), browse to your account and choose “Add Project”, from there, choose your repository a second time:
 
-![Chromatic Project Chooser](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e6f7c7db-10c8-40c1-8c44-04ac2ad80860/Untitled.png)
+<img width="417" alt="Chromatic Project Chooser" src="https://user-images.githubusercontent.com/132554/231355192-78a041d2-a552-4e88-b53f-20cafbb76f5f.png">
 
 Choose a name for your second project, like “End to End Test Archives”:
 
-![Creating a second Project](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96830242-02c9-4135-8414-0e3c6cccf1da/Untitled.png)
+<img width="625" alt="Creating a second Project" src="https://user-images.githubusercontent.com/132554/231355208-1ee68dfc-f585-421c-833d-c33a6f84ca52.png">
 
-### Run a second Chromatic Command in CI
+### Run Chromatic on the archives manually
+
+Add the scripts for running the archive storybook to your `package.json`:
+
+```json
+"scripts": {
+  "archive-storybook": "archive-storybook",
+  "build-archive-storybook": "build-archive-storybook"
+}
+```
+
+Now you can try running Chromatic against the archives with the project you just created manually:
+
+```bash
+npx chromatic --build-script-name=build-archive-storybook -t=<TOKEN>
+```
+
+### Run Chromatic on the archives in CI
 
 Next, set up your CI service to run Chromatic a second time on each commit. The second `chromatic` run should use the project token from the new project you created above, and should use the `--build-script-name=build-archive-storybook` flag:
 

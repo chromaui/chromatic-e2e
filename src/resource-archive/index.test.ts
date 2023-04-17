@@ -1,11 +1,13 @@
 import dedent from 'ts-dedent';
-import express from 'express';
+import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
-import { createResourceArchive } from './index';
+import { createResourceArchive, type ResourceArchive } from './index';
 
 const { TEST_PORT = 13337 } = process.env;
+
+const baseUrl = `http://localhost:${TEST_PORT}`;
 
 const indexHtml = dedent`
   <html>
@@ -29,7 +31,8 @@ const imgPng =
 
 const pathToResponseInfo = {
   '/': {
-    content: indexHtml,
+    content: ({ query: { inject = '' } }: Request) =>
+      indexHtml.replace('</body>', `${[].concat(inject).map(decodeURIComponent).join('')}</body>`),
     mimeType: 'text/html',
   },
   '/style.css': {
@@ -51,7 +54,7 @@ beforeEach(async () => {
     app.get(path, (req, res) => {
       const { content, mimeType } = responseInfo;
       res.header('content-type', mimeType);
-      res.send(content);
+      res.send(typeof content === 'function' ? content(req) : content);
     });
   });
 
@@ -63,6 +66,32 @@ beforeEach(async () => {
 afterEach(async () => {
   await server.close();
 });
+
+function expectArchiveContains(archive: ResourceArchive, paths: string[]) {
+  expect(Object.keys(archive)).toHaveLength(paths.length);
+
+  for (const path of paths) {
+    expectArchiveContainsPath(archive, path);
+  }
+}
+
+function expectArchiveContainsPath(archive: ResourceArchive, path: string) {
+  const pathUrl = new URL(path, baseUrl);
+  const { pathname } = pathUrl;
+  if (!(pathname in pathToResponseInfo)) throw new Error(`Cannot check path ${path}`);
+
+  // Expect path as given to be in the archive
+  expect(Object.keys(archive)).toContain(pathUrl.toString());
+
+  const expectedContent = pathToResponseInfo[pathname as keyof typeof pathToResponseInfo].content;
+  // Expect the content to match the archive's content, unless it's dynamic
+  if (typeof expectedContent !== 'function') {
+    const expectedBase64 = Buffer.from(expectedContent).toString('base64');
+    const actualBase64 = archive[pathUrl.toString()].body.toString('base64');
+
+    expect(actualBase64).toEqual(expectedBase64);
+  }
+}
 
 describe('new', () => {
   let browser: Browser;
@@ -76,24 +105,29 @@ describe('new', () => {
     await browser.close();
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('gathers basic resources used by the page', async () => {
-    const url = `http://localhost:${TEST_PORT}`;
-
     const complete = await createResourceArchive(page);
 
-    await page.goto(url);
+    await page.goto(baseUrl);
 
     const archive = await complete();
 
-    const expectedPaths = ['/', '/img.png', '/style.css'] as const;
-    const foundPaths = Object.keys(archive);
+    expectArchiveContains(archive, ['/', '/img.png', '/style.css']);
+  });
 
-    for (const path of expectedPaths) {
-      expect(foundPaths).toContain(`${url}${path}`);
+  // eslint-disable-next-line jest/expect-expect
+  it('ignores remote resources', async () => {
+    const externalUrl =
+      'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+    const indexPath = `/?inject=${encodeURIComponent(`<img src="${externalUrl}">`)}`;
 
-      expect(archive[`${url}${path}`].body?.toString('base64')).toEqual(
-        Buffer.from(pathToResponseInfo[path].content).toString('base64')
-      );
-    }
+    const complete = await createResourceArchive(page);
+
+    await page.goto(new URL(indexPath, baseUrl).toString());
+
+    const archive = await complete();
+
+    expectArchiveContains(archive, [indexPath, '/img.png', '/style.css']);
   });
 });

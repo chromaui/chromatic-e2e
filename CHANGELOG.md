@@ -1,3 +1,15 @@
+# v0.0.10 (Tue Apr 18 2023)
+
+#### 🐛 Bug Fix
+
+- Continue failed requests too [#2](https://github.com/chromaui/test-archiver/pull/2) ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 1
+
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.9 (Tue Apr 18 2023)
 
 #### 🐛 Bug Fix

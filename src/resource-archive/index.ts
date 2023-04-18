@@ -90,6 +90,7 @@ class Watcher {
     // Pausing at response stage with an error, simply ignore
     if (responseErrorReason) {
       logger.log(`Got response error: ${responseErrorReason}`);
+      await this.client.send('Fetch.continueRequest', { requestId });
       return;
     }
 

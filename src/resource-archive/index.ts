@@ -2,7 +2,7 @@ import type { CDPSession, Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../logger';
 
-type Url = string;
+type UrlString = string;
 
 interface ArchiveResponse {
   statusCode: number;
@@ -10,12 +10,18 @@ interface ArchiveResponse {
   body: Buffer;
 }
 
-export type ResourceArchive = Record<Url, ArchiveResponse>;
+export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
 class Watcher {
   public archive: ResourceArchive = {};
 
   private client: CDPSession;
+
+  /**
+   * We assume the first URL loaded after @watch is called is the base URL of the
+   * page and we only save resources that are loaded from the same protocol/host/port combination.
+   */
+  private firstUrl: URL;
 
   private closed = false;
 
@@ -39,7 +45,7 @@ class Watcher {
     this.closed = true;
   }
 
-  setResponse(url: Url, response: ArchiveResponse) {
+  setResponse(url: UrlString, response: ArchiveResponse) {
     this.archive[url] = response;
   }
 
@@ -60,36 +66,51 @@ class Watcher {
     responseStatusText,
     responseErrorReason,
   }: Protocol.Fetch.requestPausedPayload) {
+    const requestUrl = new URL(request.url);
+
+    this.firstUrl ??= requestUrl;
+
+    const isLocalRequest =
+      requestUrl.protocol === this.firstUrl.protocol &&
+      requestUrl.host === this.firstUrl.host &&
+      requestUrl.port === this.firstUrl.port;
+
     logger.log(
       'requestPaused',
-      request.url,
-      responseStatusCode || responseErrorReason ? 'response' : 'request'
+      requestUrl.toString(),
+      responseStatusCode || responseErrorReason ? 'response' : 'request',
+      this.firstUrl.toString(),
+      isLocalRequest
     );
 
     if (this.closed) {
       logger.log('Watcher closed, ignoring');
     }
 
-    // Pausing at response stage with an error
+    // Pausing at response stage with an error, simply ignore
     if (responseErrorReason) {
-      throw new Error('TODO');
+      logger.log(`Got response error: ${responseErrorReason}`);
+      return;
     }
 
     // Pausing a response stage with a response
-    if ([301, 302].includes(responseStatusCode)) {
-      await this.client.send('Fetch.continueRequest', { requestId, interceptResponse: true });
-      return;
-    }
     if (responseStatusCode) {
+      if ([301, 302].includes(responseStatusCode)) {
+        await this.client.send('Fetch.continueRequest', { requestId, interceptResponse: true });
+        return;
+      }
+
       const { body, base64Encoded } = await this.client.send('Fetch.getResponseBody', {
         requestId,
       });
 
-      this.archive[request.url] = {
-        statusCode: responseStatusCode,
-        statusText: responseStatusText,
-        body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
-      };
+      if (isLocalRequest) {
+        this.archive[request.url] = {
+          statusCode: responseStatusCode,
+          statusText: responseStatusText,
+          body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
+        };
+      }
 
       await this.client.send('Fetch.continueRequest', { requestId });
       return;

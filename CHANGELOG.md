@@ -1,3 +1,15 @@
+# v0.0.9 (Tue Apr 18 2023)
+
+#### 🐛 Bug Fix
+
+- Don't cache resources from external URLs [#1](https://github.com/chromaui/test-archiver/pull/1) ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 1
+
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.8 (Wed Apr 12 2023)
 
 #### ⚠️ Pushed to `main`

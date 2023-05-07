@@ -52,7 +52,7 @@ test('my test', async ({ page }, testInfo) => {
 });
 ```
 
-Note that we’ll always take an archive at the end of every test, in addition to the ones you manually specify.
+💡 Note that we’ll always take an archive at the end of every test, in addition to the ones you manually specify.
 
 ## Setting up a Chromatic project
 
@@ -129,6 +129,7 @@ First run the E2E tests to generate the latest results
 ```bash
 yarn playwright test # or similar
 ```
+> The `--headed` flag displays your tests in the browser as they run, which can be another helpful tool for debugging.
 
 Then you can run the archive storybook with the `archive-storybook` command, and visit it like any other Storybook:
 

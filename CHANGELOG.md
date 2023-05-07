@@ -1,3 +1,15 @@
+# v0.0.11 (Sun May 07 2023)
+
+#### 🐛 Bug Fix
+
+- Update Documentation.md [#3](https://github.com/chromaui/test-archiver/pull/3) ([@JonathanKolnik](https://github.com/JonathanKolnik))
+
+#### Authors: 1
+
+- Jono Kolnik ([@JonathanKolnik](https://github.com/JonathanKolnik))
+
+---
+
 # v0.0.10 (Tue Apr 18 2023)
 
 #### 🐛 Bug Fix

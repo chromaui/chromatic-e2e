@@ -17,7 +17,7 @@ Get started by installing the archiver package, and the archive storybook.
 If you aren't yet using Storybook in your project, install with:
 
 ```bash
-yarn add --dev @chromaui/test-archiver @chromaui/archive-storybook @storybook/cli @storybook/addon-essentials @storybook/server-webpack5
+yarn add --dev @chromaui/test-archiver @chromaui/archive-storybook @storybook/cli @storybook/addon-essentials @storybook/server-webpack5 react react-dom
 ```
 
 If you are already using Storybook, install as a second Storybook with:

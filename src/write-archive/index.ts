@@ -53,6 +53,8 @@ export async function writeTestResult(
 
   await Promise.all(
     Object.entries(archive).map(async ([url, response]) => {
+      if ('error' in response) return;
+
       const { pathname } = new URL(url);
       await outputFile(
         join(archiveDir, pathname.endsWith('/') ? `${pathname}index.html` : pathname),
@@ -69,6 +71,14 @@ export async function writeTestResult(
   });
 
   await writeStoriesFile(join(resultsDir, `${sanitize(title)}.stories.json`), title, domSnapshots);
+
+  const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
+  if (errors.length > 0) {
+    logger.log(`Encountered ${errors.length} errors archiving resources, writing to 'errors.json'`);
+    await outputJson(join(archiveDir, `errors.json`), {
+      errors: Object.fromEntries(errors),
+    });
+  }
 }
 
 async function writeStoriesFile(

@@ -87,9 +87,11 @@ function expectArchiveContainsPath(archive: ResourceArchive, path: string) {
   // Expect the content to match the archive's content, unless it's dynamic
   if (typeof expectedContent !== 'function') {
     const expectedBase64 = Buffer.from(expectedContent).toString('base64');
-    const actualBase64 = archive[pathUrl.toString()].body.toString('base64');
-
-    expect(actualBase64).toEqual(expectedBase64);
+    const response = archive[pathUrl.toString()];
+    if ('error' in response) {
+      throw new Error(`Response to ${path} should not be an error`);
+    }
+    expect(response.body.toString('base64')).toEqual(expectedBase64);
   }
 }
 

@@ -1,3 +1,24 @@
+# v0.0.11 (Fri Aug 04 2023)
+
+#### 🐛 Bug Fix
+
+- Skip over CDP errors, but record to an error log [#7](https://github.com/chromaui/test-archiver/pull/7) ([@tmeasday](https://github.com/tmeasday))
+- Update docs [#4](https://github.com/chromaui/test-archiver/pull/4) ([@kylegach](https://github.com/kylegach))
+- Update Documentation.md [#3](https://github.com/chromaui/test-archiver/pull/3) ([@JonathanKolnik](https://github.com/JonathanKolnik))
+
+#### ⚠️ Pushed to `main`
+
+- Revert "Add very minimal analytics" ([@tmeasday](https://github.com/tmeasday))
+- Add very minimal analytics ([@tmeasday](https://github.com/tmeasday))
+
+#### Authors: 3
+
+- Jono Kolnik ([@JonathanKolnik](https://github.com/JonathanKolnik))
+- Kyle Gach ([@kylegach](https://github.com/kylegach))
+- Tom Coleman ([@tmeasday](https://github.com/tmeasday))
+
+---
+
 # v0.0.10 (Tue Apr 18 2023)
 
 #### 🐛 Bug Fix

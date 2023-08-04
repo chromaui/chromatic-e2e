@@ -4,11 +4,15 @@ import { logger } from '../logger';
 
 type UrlString = string;
 
-interface ArchiveResponse {
-  statusCode: number;
-  statusText?: string;
-  body: Buffer;
-}
+type ArchiveResponse =
+  | {
+      statusCode: number;
+      statusText?: string;
+      body: Buffer;
+    }
+  | {
+      error: Error;
+    };
 
 export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
@@ -59,6 +63,20 @@ class Watcher {
     logger.log(event);
   }
 
+  async clientSend<T extends keyof Protocol.CommandParameters>(
+    request: Protocol.Network.Request,
+    method: T,
+    params?: Protocol.CommandParameters[T]
+  ): Promise<Protocol.CommandReturnValues[T] | null> {
+    try {
+      return await this.client.send(method, params);
+    } catch (error) {
+      logger.log('Client error', request.url, error);
+      this.archive[request.url] = { error };
+      return null;
+    }
+  }
+
   async requestPaused({
     requestId,
     request,
@@ -90,20 +108,28 @@ class Watcher {
     // Pausing at response stage with an error, simply ignore
     if (responseErrorReason) {
       logger.log(`Got response error: ${responseErrorReason}`);
-      await this.client.send('Fetch.continueRequest', { requestId });
+      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
       return;
     }
 
     // Pausing a response stage with a response
     if (responseStatusCode) {
       if ([301, 302].includes(responseStatusCode)) {
-        await this.client.send('Fetch.continueRequest', { requestId, interceptResponse: true });
+        await this.clientSend(request, 'Fetch.continueRequest', {
+          requestId,
+          interceptResponse: true,
+        });
         return;
       }
 
-      const { body, base64Encoded } = await this.client.send('Fetch.getResponseBody', {
+      const result = await this.clientSend(request, 'Fetch.getResponseBody', {
         requestId,
       });
+      // Something has gone wrong and will be logged above
+      if (result === null) {
+        return;
+      }
+      const { body, base64Encoded } = result;
 
       if (isLocalRequest) {
         this.archive[request.url] = {
@@ -113,19 +139,19 @@ class Watcher {
         };
       }
 
-      await this.client.send('Fetch.continueRequest', { requestId });
+      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
       return;
     }
 
     const response = this.archive[request.url];
-    if (response) {
+    if (response && 'statusCode' in response) {
       logger.log(`pausing request we've seen before, sending previous response`);
       logger.log({
         requestId,
         responseCode: response.statusCode,
         responsePhrase: response.statusText,
       });
-      await this.client.send('Fetch.fulfillRequest', {
+      await this.clientSend(request, 'Fetch.fulfillRequest', {
         requestId,
         responseCode: response.statusCode,
         ...(response.statusText && { responsePhrase: response.statusText }),
@@ -135,7 +161,7 @@ class Watcher {
       return;
     }
 
-    await this.client.send('Fetch.continueRequest', {
+    await this.clientSend(request, 'Fetch.continueRequest', {
       requestId,
       interceptResponse: true,
     });

@@ -2,6 +2,7 @@ import type { TestType } from '@playwright/test';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeSnapshot } from './takeSnapshot';
+import { trackComplete, trackRun } from '../utils/analytics';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:
@@ -12,6 +13,8 @@ export const makeTest = (base: TestType<any, any>) =>
   base.extend<{ save: void }>({
     save: [
       async ({ page }, use, testInfo) => {
+        trackRun();
+
         // CDP only works in Chromium, so we only capture archives in Chromium.
         // We can later snapshot them in different browsers in the cloud.
         // TODO: I'm not sure if this is the best way to detect the browser version, but
@@ -35,6 +38,8 @@ export const makeTest = (base: TestType<any, any>) =>
         ) as Record<string, Buffer>;
 
         await writeTestResult(testInfo.title, snapshots, resourceArchive);
+
+        trackComplete();
       },
       { auto: true },
     ],

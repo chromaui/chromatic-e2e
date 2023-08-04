@@ -1,6 +1,6 @@
 import type { CDPSession, Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
-import { logger } from '../logger';
+import { logger } from '../utils/logger';
 
 type UrlString = string;
 

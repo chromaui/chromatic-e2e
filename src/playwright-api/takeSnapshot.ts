@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import type { serializedNode } from '@chromaui/rrweb-snapshot';
 import dedent from 'ts-dedent';
 
-import { logger } from '../utils/logger';
+import { logger } from '../logger';
 
 const rrweb = readFileSync(
   require.resolve('@chromaui/rrweb-snapshot/dist/rrweb-snapshot.js'),

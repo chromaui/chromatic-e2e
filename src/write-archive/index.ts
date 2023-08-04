@@ -2,7 +2,7 @@ import { outputFile, ensureDir, ensureSymlink, outputJson, remove } from 'fs-ext
 import { join, resolve } from 'path';
 
 import type { ResourceArchive } from '../resource-archive';
-import { logger } from '../utils/logger';
+import { logger } from '../logger';
 
 // @storybook/csf's sanitize function, we could import this
 export const sanitize = (string: string) => {

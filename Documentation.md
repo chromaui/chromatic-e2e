@@ -12,8 +12,19 @@ Additionally, the archives you create during each test run can be viewed in a St
 
 Get started by installing the archiver package and the archive Storybook (a specially-configured Storybook instance that can display your archives):
 
+### As a new installation of Storybook
+
+If you aren't yet using Storybook in your project, install with:
+
 ```bash
-yarn add --dev @chromaui/test-archiver @chromaui/archive-storybook
+yarn add --dev @chromaui/test-archiver @chromaui/archive-storybook @storybook/cli @storybook/addon-essentials @storybook/server-webpack5 react react-dom
+```
+
+If you are already using Storybook, install as a second Storybook with:
+
+```bash
+# <version> here should be the version you are using for your other Storybook packages
+yarn add --dev @chromaui/test-archiver @chromaui/archive-storybook @storybook/server-webpack5@<version>
 ```
 
 ## Configuration

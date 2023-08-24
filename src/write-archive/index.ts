@@ -37,7 +37,7 @@ export async function writeTestResult(
   title: string,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
-  chromaticOptions: {viewport: {width: number, height: number}}
+  chromaticOptions: { viewport: { width: number; height: number } }
 ) {
   await ensureDir(outputDir);
   await ensureDir(resultsDir);
@@ -71,7 +71,12 @@ export async function writeTestResult(
     );
   });
 
-  await writeStoriesFile(join(resultsDir, `${sanitize(title)}.stories.json`), title, domSnapshots, chromaticOptions);
+  await writeStoriesFile(
+    join(resultsDir, `${sanitize(title)}.stories.json`),
+    title,
+    domSnapshots,
+    chromaticOptions
+  );
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
   if (errors.length > 0) {
@@ -86,7 +91,7 @@ async function writeStoriesFile(
   storiesFilename: string,
   title: string,
   domSnapshots: Record<string, Buffer>,
-  chromaticOptions: {viewport: {width: number, height: number}} 
+  chromaticOptions: { viewport: { width: number; height: number } }
 ) {
   logger.log(`Writing ${storiesFilename}`);
   await outputJson(storiesFilename, {
@@ -97,9 +102,9 @@ async function writeStoriesFile(
         server: { id: `${sanitize(title)}-${sanitize(name)}.snapshot.json` },
         chromatic: {
           modes: {
-            viewport: chromaticOptions.viewport
-          }
-        }
+            viewport: chromaticOptions.viewport,
+          },
+        },
       },
     })),
   });

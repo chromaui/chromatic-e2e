@@ -37,9 +37,9 @@ export const makeTest = (base: TestType<any, any>) =>
             .map(({ name, body }) => [name, body])
         ) as Record<string, Buffer>;
 
-        const viewport = page.viewportSize()
+        const viewport = page.viewportSize();
 
-        await writeTestResult(testInfo.title, snapshots, resourceArchive, {viewport});
+        await writeTestResult(testInfo.title, snapshots, resourceArchive, { viewport });
 
         trackComplete();
       },

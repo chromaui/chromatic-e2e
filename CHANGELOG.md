@@ -1,3 +1,15 @@
+# v0.0.19 (Fri Aug 25 2023)
+
+#### 🐛 Bug Fix
+
+- Respect viewport set via Playwright [#10](https://github.com/chromaui/test-archiver/pull/10) ([@thafryer](https://github.com/thafryer))
+
+#### Authors: 1
+
+- Jarel Fryer ([@thafryer](https://github.com/thafryer))
+
+---
+
 # v0.0.11 (Wed Aug 09 2023)
 
 #### 🐛 Bug Fix

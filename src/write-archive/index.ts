@@ -102,10 +102,7 @@ async function writeStoriesFile(
         server: { id: `${sanitize(title)}-${sanitize(name)}.snapshot.json` },
         chromatic: {
           modes: {
-            viewport: {
-              width: chromaticOptions.viewport.width,
-              height: chromaticOptions.viewport.height,
-            },
+            viewports: [chromaticOptions.viewport.width],
           },
         },
       },

@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import { resolve } from 'path';
 import { writeTestResult } from '.';
 
 jest.mock('fs-extra');
@@ -28,7 +29,7 @@ describe('writeTestResult', () => {
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
     expect(fs.outputJson).toHaveBeenCalledTimes(1);
     expect(fs.outputJson).toHaveBeenCalledWith(
-      '/Users/thafryer/Desktop/test-archiver/test-archives/11-1-1999-12-00-00-am/test-story.stories.json',
+      resolve('./test-archives/11-1-1999-12-00-00-am/test-story.stories.json'),
       {
         stories: [
           {

@@ -21,12 +21,6 @@ const { OUTPUT_DIR = './test-archives' } = process.env;
 const outputDir = resolve(OUTPUT_DIR);
 const latestDir = join(outputDir, 'latest');
 
-// We take the timestamp once when the file is first process and use this timestamp for every
-// result we write
-const timestamp = sanitize(new Date().toLocaleString());
-const resultsDir = join(outputDir, timestamp);
-const archiveDir = join(resultsDir, 'archive');
-
 // We write a collection of DOM snapshots and a resource archive in the following locations:
 // ./test-results/latest => ./test-results/<timestamp> (a symlink)
 // ./test-results/<timestamp>/<title>.stories.json
@@ -36,8 +30,15 @@ const archiveDir = join(resultsDir, 'archive');
 export async function writeTestResult(
   title: string,
   domSnapshots: Record<string, Buffer>,
-  archive: ResourceArchive
+  archive: ResourceArchive,
+  chromaticOptions: { viewport: { width: number; height: number } }
 ) {
+  // We take the timestamp once when the file is first process and use this timestamp for every
+  // result we write
+  const timestamp = sanitize(new Date().toLocaleString());
+  const resultsDir = join(outputDir, timestamp);
+  const archiveDir = join(resultsDir, 'archive');
+
   await ensureDir(outputDir);
   await ensureDir(resultsDir);
 
@@ -70,7 +71,12 @@ export async function writeTestResult(
     );
   });
 
-  await writeStoriesFile(join(resultsDir, `${sanitize(title)}.stories.json`), title, domSnapshots);
+  await writeStoriesFile(
+    join(resultsDir, `${sanitize(title)}.stories.json`),
+    title,
+    domSnapshots,
+    chromaticOptions
+  );
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
   if (errors.length > 0) {
@@ -84,7 +90,8 @@ export async function writeTestResult(
 async function writeStoriesFile(
   storiesFilename: string,
   title: string,
-  domSnapshots: Record<string, Buffer>
+  domSnapshots: Record<string, Buffer>,
+  chromaticOptions: { viewport: { width: number; height: number } }
 ) {
   logger.log(`Writing ${storiesFilename}`);
   await outputJson(storiesFilename, {
@@ -93,6 +100,9 @@ async function writeStoriesFile(
       name,
       parameters: {
         server: { id: `${sanitize(title)}-${sanitize(name)}.snapshot.json` },
+        chromatic: {
+          viewports: [chromaticOptions.viewport.width],
+        },
       },
     })),
   });

@@ -1,3 +1,15 @@
+# v0.0.20 (Tue Sep 05 2023)
+
+#### 🐛 Bug Fix
+
+- Fix infinite loading for 307 and 308 response statuses [#15](https://github.com/chromaui/test-archiver/pull/15) ([@joshuajaco](https://github.com/joshuajaco))
+
+#### Authors: 1
+
+- Joshua Jacobowitz ([@joshuajaco](https://github.com/joshuajaco))
+
+---
+
 # v0.0.19 (Fri Aug 25 2023)
 
 #### 🐛 Bug Fix

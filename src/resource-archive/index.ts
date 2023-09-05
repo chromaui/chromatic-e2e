@@ -114,7 +114,7 @@ class Watcher {
 
     // Pausing a response stage with a response
     if (responseStatusCode) {
-      if ([301, 302].includes(responseStatusCode)) {
+      if ([301, 302, 307, 308].includes(responseStatusCode)) {
         await this.clientSend(request, 'Fetch.continueRequest', {
           requestId,
           interceptResponse: true,

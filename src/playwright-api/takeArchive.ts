@@ -12,9 +12,9 @@ const rrweb = readFileSync(
 
 export const contentType = 'application/rrweb.snapshot+json';
 
-async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
-async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
-async function takeSnapshot(
+async function takeArchive(page: Page, testInfo: TestInfo): Promise<void>;
+async function takeArchive(page: Page, name: string, testInfo: TestInfo): Promise<void>;
+async function takeArchive(
   page: Page,
   nameOrTestInfo: string | TestInfo,
   maybeTestInfo?: TestInfo
@@ -44,4 +44,4 @@ async function takeSnapshot(
   testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });
 }
 
-export { takeSnapshot };
+export { takeArchive };

@@ -199,4 +199,16 @@ chromatic:
 
 You can further configure things in the following way:
 
-- To specify a custom archive location, set the `CHROMATIC_ARCHIVE_LOCATION` environment variable, when starting the Storybook (or publishing it in on CI).
+- If a custom [output directory](https://playwright.dev/docs/api/class-testconfig#test-config-output-dir) is used in Playwright, set the `CHROMATIC_ARCHIVE_LOCATION` environment variable to the same location when running `build-archive-storybook` and `archive-storybook`.
+
+Example:
+
+```
+  // playwright config
+  export default defineConfig({
+    outputDir: 'my-playwright-results'
+  });
+
+  # command line
+  CHROMATIC_ARCHIVE_LOCATION=my-playwright-results yarn build-archive-storybook
+```

@@ -39,7 +39,7 @@ export const makeTest = (base: TestType<any, any>) =>
 
         const viewport = page.viewportSize();
 
-        await writeTestResult(testInfo.title, snapshots, resourceArchive, { viewport });
+        await writeTestResult(testInfo, snapshots, resourceArchive, { viewport });
 
         trackComplete();
       },

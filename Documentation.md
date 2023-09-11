@@ -199,4 +199,4 @@ chromatic:
 
 You can further configure things in the following way:
 
-- To override the archive location, set the `CHROMATIC_ARCHIVE_LOCATION` environment variable, both when running your Playwright tests and when starting the Storybook (or publishing it in on CI).
+- To specify a custom archive location, set the `CHROMATIC_ARCHIVE_LOCATION` environment variable, when starting the Storybook (or publishing it in on CI).

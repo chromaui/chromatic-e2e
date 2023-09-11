@@ -1,5 +1,5 @@
-import { outputFile, ensureDir, ensureSymlink, outputJson, remove } from 'fs-extra';
-import { join, resolve } from 'path';
+import { outputFile, ensureDir, outputJson } from 'fs-extra';
+import { join } from 'path';
 
 import type { ResourceArchive } from '../resource-archive';
 import { logger } from '../utils/logger';
@@ -17,38 +17,25 @@ export const sanitize = (string: string) => {
   );
 };
 
-const { OUTPUT_DIR = './test-archives' } = process.env;
-const outputDir = resolve(OUTPUT_DIR);
-const latestDir = join(outputDir, 'latest');
-
 // We write a collection of DOM snapshots and a resource archive in the following locations:
-// ./test-results/latest => ./test-results/<timestamp> (a symlink)
-// ./test-results/<timestamp>/<title>.stories.json
-// ./test-results/<timestamp>/archive/<title-name>.snapshot.json
-// ./test-results/<timestamp>/archive/<file>.<ext>
+// <test-title>.stories.json
+// archive/<test-title>.json
+// archive/<file>.<ext>
 
 export async function writeTestResult(
-  title: string,
+  testInfo: any,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
   chromaticOptions: { viewport: { width: number; height: number } }
 ) {
-  // We take the timestamp once when the file is first process and use this timestamp for every
-  // result we write
-  const timestamp = sanitize(new Date().toLocaleString());
-  const resultsDir = join(outputDir, timestamp);
-  const archiveDir = join(resultsDir, 'archive');
+  const { title, outputDir } = testInfo;
+  // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
+  // we want to write one level above that
+  const finalOutputDir = join(outputDir, '..', 'chromatic-archives');
 
-  await ensureDir(outputDir);
-  await ensureDir(resultsDir);
+  const archiveDir = join(finalOutputDir, 'archive');
 
-  // Not sure if there's a cleaner way to do this -- ensure latestDir points to resultsDir
-  try {
-    await ensureSymlink(resultsDir, latestDir);
-  } catch (err) {
-    await remove(latestDir);
-    await ensureSymlink(resultsDir, latestDir);
-  }
+  await ensureDir(finalOutputDir);
 
   logger.log(`Writing test results for "${title}"`);
 
@@ -72,7 +59,7 @@ export async function writeTestResult(
   });
 
   await writeStoriesFile(
-    join(resultsDir, `${sanitize(title)}.stories.json`),
+    join(finalOutputDir, `${sanitize(title)}.stories.json`),
     title,
     domSnapshots,
     chromaticOptions

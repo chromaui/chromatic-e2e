@@ -4,7 +4,7 @@
   "description": "Archive end-to-end tests to be replayed in Storybook and Chromatic",
   "repository": {
     "type": "git",
-    "url": "https://github.com/storybookjs/@chromaui/test-archiver"
+    "url": "https://github.com/chromaui/test-archiver.git"
   },
   "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",

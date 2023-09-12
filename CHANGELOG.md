@@ -1,3 +1,15 @@
+# v0.0.21 (Tue Sep 12 2023)
+
+#### 🐛 Bug Fix
+
+- Write archives to Playwright-created folder [#17](https://github.com/chromaui/test-archiver/pull/17) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.20 (Tue Sep 05 2023)
 
 #### 🐛 Bug Fix

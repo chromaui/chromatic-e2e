@@ -1,3 +1,15 @@
+# v0.0.22 (Tue Sep 12 2023)
+
+#### 🐛 Bug Fix
+
+- Fix repository url [#20](https://github.com/chromaui/test-archiver/pull/20) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.21 (Tue Sep 12 2023)
 
 #### 🐛 Bug Fix

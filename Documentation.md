@@ -199,7 +199,7 @@ chromatic:
 
 You can further configure things in the following way:
 
-- If a custom [output directory](https://playwright.dev/docs/api/class-testconfig#test-config-output-dir) is used in Playwright, set the `CHROMATIC_ARCHIVE_LOCATION` environment variable to the same location when running `build-archive-storybook` and `archive-storybook`.
+- If a custom [output directory](https://playwright.dev/docs/api/class-testconfig#test-config-output-dir) is used in Playwright, set the `CHROMATIC_ARCHIVE_LOCATION` environment variable to this location when running `build-archive-storybook` and `archive-storybook`.
 
 Example:
 

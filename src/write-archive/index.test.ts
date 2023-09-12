@@ -18,18 +18,16 @@ describe('writeTestResult', () => {
     // @ts-expect-error Jest mock
     fs.ensureDir.mockReturnValue(true);
     await writeTestResult(
-      'Test Story',
+      { title: 'Test Story', outputDir: resolve('test-results/test-story-chromium') },
       { home: Buffer.from('Chromatic') },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
       { viewport: { height: 480, width: 720 } }
     );
-    expect(fs.ensureDir).toHaveBeenCalledTimes(2);
-    expect(fs.ensureSymlink).toHaveBeenCalledTimes(1);
-    expect(fs.remove).not.toHaveBeenCalled();
+    expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
     expect(fs.outputJson).toHaveBeenCalledTimes(1);
     expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./test-archives/11-1-1999-12-00-00-am/test-story.stories.json'),
+      resolve('./test-results/chromatic-archives/test-story.stories.json'),
       {
         stories: [
           {

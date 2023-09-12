@@ -1,5 +1,6 @@
 import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
+import type { TestInfo } from '@playwright/test';
 
 import type { ResourceArchive } from '../resource-archive';
 import { logger } from '../utils/logger';
@@ -23,7 +24,7 @@ export const sanitize = (string: string) => {
 // archive/<file>.<ext>
 
 export async function writeTestResult(
-  testInfo: any,
+  testInfo: TestInfo,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
   chromaticOptions: { viewport: { width: number; height: number } }

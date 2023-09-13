@@ -1,3 +1,15 @@
+# v0.0.24 (Wed Sep 13 2023)
+
+#### 🐛 Bug Fix
+
+- Spelling fix [#18](https://github.com/chromaui/test-archiver/pull/18) ([@codykaup](https://github.com/codykaup))
+
+#### Authors: 1
+
+- Cody Kaup ([@codykaup](https://github.com/codykaup))
+
+---
+
 # v0.0.23 (Wed Sep 13 2023)
 
 #### 🐛 Bug Fix

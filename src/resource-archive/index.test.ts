@@ -115,7 +115,7 @@ describe('new', () => {
 
     const archive = await complete();
 
-    expectArchiveContains(archive, ['/', '/img.png', '/style.css']);
+    expectArchiveContains(archive, ['/img.png', '/style.css']);
   });
 
   // eslint-disable-next-line jest/expect-expect
@@ -130,6 +130,6 @@ describe('new', () => {
 
     const archive = await complete();
 
-    expectArchiveContains(archive, [indexPath, '/img.png', '/style.css']);
+    expectArchiveContains(archive, ['/img.png', '/style.css']);
   });
 });

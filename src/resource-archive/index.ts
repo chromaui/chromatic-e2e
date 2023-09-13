@@ -24,6 +24,7 @@ class Watcher {
   /**
    * We assume the first URL loaded after @watch is called is the base URL of the
    * page and we only save resources that are loaded from the same protocol/host/port combination.
+   * We also skip archiving this page because we only care about resources requested by this page.
    */
   private firstUrl: URL;
 
@@ -131,7 +132,9 @@ class Watcher {
       }
       const { body, base64Encoded } = result;
 
-      if (isLocalRequest) {
+      // No need to capture the response of the top level page request
+      const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
+      if (isLocalRequest && !isFirstRequest) {
         this.archive[request.url] = {
           statusCode: responseStatusCode,
           statusText: responseStatusText,

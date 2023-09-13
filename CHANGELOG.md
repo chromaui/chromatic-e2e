@@ -1,3 +1,15 @@
+# v0.0.23 (Wed Sep 13 2023)
+
+#### 🐛 Bug Fix
+
+- Do not archive top level page requests [#19](https://github.com/chromaui/test-archiver/pull/19) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.22 (Tue Sep 12 2023)
 
 #### 🐛 Bug Fix

@@ -2,7 +2,7 @@
 
 Chromatic **Standalone Snapshots** is a feature that allows you to use the full Chromatic [**UI Tests**](https://www.chromatic.com/docs/test) and [**UI Review**](https://www.chromatic.com/docs/review) features with pages visited during end-to-end tests in [Playwright](https://playwright.dev/). This allows you to use Chromatic _without_ setting up [Storybook](https://js.storybook.org).
 
-You can use use Standalone Snapshots to capture live “archives” of pages at the end of a test and, optionally, at any point during a test. An **archive** is a self-contained, re-renderable HTML “snapshot” of your page at a certain point in time extracted from the Playwright driven browser’s DOM.
+You can use Standalone Snapshots to capture live “archives” of pages at the end of a test and, optionally, at any point during a test. An **archive** is a self-contained, re-renderable HTML “snapshot” of your page at a certain point in time extracted from the Playwright driven browser’s DOM.
 
 Those archives are then passed to Chromatic’s normal build process, which screenshots those archives in parallel in whichever [cloud browsers](https://www.chromatic.com/docs/browsers) you like, compares the output, and presents you with the changes to review.
 

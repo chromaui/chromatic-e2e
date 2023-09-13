@@ -108,6 +108,24 @@ describe('new', () => {
   });
 
   // eslint-disable-next-line jest/expect-expect
+  it('should respond with an exception if the network times out waiting for requests', async () => {
+    const complete = await createResourceArchive(page, 1);
+
+    await page.goto(baseUrl);
+
+    // eslint-disable-next-line jest/valid-expect-in-promise
+    complete()
+      .then(() => {
+        throw new Error('Test did not throw an exception');
+      })
+
+      .catch((e) => {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(e).toEqual(new Error(`Global timeout of 1ms reached`));
+      });
+  });
+
+  // eslint-disable-next-line jest/expect-expect
   it('gathers basic resources used by the page', async () => {
     const complete = await createResourceArchive(page);
 

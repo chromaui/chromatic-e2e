@@ -1,3 +1,15 @@
+# v0.0.25 (Thu Sep 14 2023)
+
+#### 🐛 Bug Fix
+
+- Wait for all resources to load before indicating Watcher is idle [#16](https://github.com/chromaui/test-archiver/pull/16) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
 # v0.0.24 (Wed Sep 13 2023)
 
 #### 🐛 Bug Fix

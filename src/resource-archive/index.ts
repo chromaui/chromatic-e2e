@@ -1,6 +1,8 @@
-import type { CDPSession, Page } from 'playwright';
+import type { CDPSession, Page, Request } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
+
+const DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS = 2000;
 
 type UrlString = string;
 
@@ -21,6 +23,8 @@ class Watcher {
 
   private client: CDPSession;
 
+  private globalNetworkTimeoutMs;
+
   /**
    * We assume the first URL loaded after @watch is called is the base URL of the
    * page and we only save resources that are loaded from the same protocol/host/port combination.
@@ -30,7 +34,13 @@ class Watcher {
 
   private closed = false;
 
-  constructor(private page: Page) {}
+  private globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
+
+  private globalNetworkRejector: (reason: Error) => void;
+
+  constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS) {
+    this.globalNetworkTimeoutMs = networkTimeoutMs;
+  }
 
   async watch() {
     this.client = await this.page.context().newCDPSession(this.page);
@@ -43,8 +53,28 @@ class Watcher {
   }
 
   async idle() {
-    // TODO -- wait for network idle
-    await new Promise((r) => setTimeout(r, 1000));
+    // XXX_jwir3: The way this works is as follows:
+    // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
+
+    // The first promise wraps a global timeout, where all requests MUST complete before that timeout has passed.
+    // If the timeout passes, an error is thrown. This promise can only throw errors, it cannot resolve successfully.
+    const globalNetworkTimeout = new Promise<void>((resolve, reject) => {
+      this.globalNetworkRejector = reject;
+
+      this.globalNetworkTimerId = setTimeout(() => {
+        this.globalNetworkRejector(
+          new Error(`Global timeout of ${this.globalNetworkTimeoutMs}ms reached`)
+        );
+      }, this.globalNetworkTimeoutMs);
+    });
+
+    // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
+    // is idle.
+    const networkIdlePromise = this.page.waitForLoadState('networkidle').finally(() => {
+      clearTimeout(this.globalNetworkTimerId);
+    });
+
+    await Promise.race([globalNetworkTimeout, networkIdlePromise]);
 
     logger.log('Watcher closing');
     this.closed = true;
@@ -171,8 +201,11 @@ class Watcher {
   }
 }
 
-export async function createResourceArchive(page: Page): Promise<() => Promise<ResourceArchive>> {
-  const watcher = new Watcher(page);
+export async function createResourceArchive(
+  page: Page,
+  networkTimeout = DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS
+): Promise<() => Promise<ResourceArchive>> {
+  const watcher = new Watcher(page, networkTimeout);
   await watcher.watch();
 
   return async () => {

@@ -1,7 +1,7 @@
 import type { TestType } from '@playwright/test';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
-import { contentType, takeSnapshot } from './takeSnapshot';
+import { contentType, takeArchive } from './takeArchive';
 import { trackComplete, trackRun } from '../utils/analytics';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
@@ -27,7 +27,7 @@ export const makeTest = (base: TestType<any, any>) =>
         const completeArchive = await createResourceArchive(page);
         await use();
 
-        await takeSnapshot(page, testInfo);
+        await takeArchive(page, testInfo);
 
         const resourceArchive = await completeArchive();
 

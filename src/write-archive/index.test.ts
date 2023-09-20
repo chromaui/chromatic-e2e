@@ -19,7 +19,7 @@ describe('writeTestResult', () => {
       { title: 'Test Story', outputDir: resolve('test-results/test-story-chromium') } as TestInfo,
       { home: Buffer.from('Chromatic') },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      { viewport: { height: 480, width: 720 } },
+      { diffThreshold: 5, viewports: [720] },
       new Map<string, string>()
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
@@ -32,7 +32,7 @@ describe('writeTestResult', () => {
           {
             name: 'home',
             parameters: {
-              chromatic: { viewports: [720] },
+              chromatic: { diffThreshold: 5, viewports: [720] },
               server: { id: 'test-story-home.snapshot.json' },
             },
           },
@@ -119,7 +119,7 @@ describe('writeTestResult', () => {
       } as TestInfo,
       { home: Buffer.from('Chromatic') },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      { viewport: { height: 480, width: 720 } },
+      { viewports: [720] },
       new Map<string, string>()
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);

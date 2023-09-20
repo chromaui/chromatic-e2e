@@ -5,11 +5,21 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
-import type { ChromaticConfig } from 'src/types';
+import type { ChromaticConfig, ChromaticParameters, ChromaticStorybookParameters } from 'src/types';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
 import { trackComplete, trackRun } from '../utils/analytics';
+
+function createStorybookParams(
+  chromaticPlaywrightParams: ChromaticParameters,
+  viewportSize: { width: number; height: number }
+): ChromaticStorybookParameters {
+  return {
+    ...chromaticPlaywrightParams,
+    viewports: [viewportSize.width],
+  };
+}
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:
@@ -56,9 +66,15 @@ export const makeTest = (
             .map(({ name, body }) => [name, body])
         ) as Record<string, Buffer>;
 
-        const viewport = page.viewportSize();
+        const chromaticStorybookParams = createStorybookParams(chromatic, page.viewportSize());
 
-        await writeTestResult(testInfo, snapshots, resourceArchive, { viewport }, sourceMap);
+        await writeTestResult(
+          testInfo,
+          snapshots,
+          resourceArchive,
+          chromaticStorybookParams,
+          sourceMap
+        );
 
         trackComplete();
       },

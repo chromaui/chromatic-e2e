@@ -5,6 +5,7 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
+import type { ChromaticConfig } from 'src/types';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
@@ -21,9 +22,12 @@ export const makeTest = (
     PlaywrightWorkerArgs & PlaywrightWorkerOptions
   >
 ) =>
-  base.extend<{ save: void }>({
+  base.extend<ChromaticConfig & { save: void }>({
+    // ChromaticOptions defaults
+    chromatic: [{}, { option: true }],
+
     save: [
-      async ({ page }, use, testInfo) => {
+      async ({ page, chromatic }, use, testInfo) => {
         trackRun();
 
         // CDP only works in Chromium, so we only capture archives in Chromium.
@@ -38,7 +42,11 @@ export const makeTest = (
         const completeArchive = await createResourceArchive(page);
         await use();
 
-        const sourceMap = await takeArchive(page, testInfo);
+        let sourceMap;
+        const takeAutoCapture = !chromatic.disableE2EAutoCapture;
+        if (takeAutoCapture) {
+          sourceMap = await takeArchive(page, testInfo);
+        }
 
         const resourceArchive = await completeArchive();
 

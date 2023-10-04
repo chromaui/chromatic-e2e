@@ -4,6 +4,7 @@ import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
 import { createResourceArchive, type ResourceArchive } from './index';
+import { expectArchiveContains } from '../utils/testUtils';
 
 const { TEST_PORT = 13337 } = process.env;
 
@@ -67,34 +68,6 @@ afterEach(async () => {
   await server.close();
 });
 
-function expectArchiveContains(archive: ResourceArchive, paths: string[]) {
-  expect(Object.keys(archive)).toHaveLength(paths.length);
-
-  for (const path of paths) {
-    expectArchiveContainsPath(archive, path);
-  }
-}
-
-function expectArchiveContainsPath(archive: ResourceArchive, path: string) {
-  const pathUrl = new URL(path, baseUrl);
-  const { pathname } = pathUrl;
-  if (!(pathname in pathToResponseInfo)) throw new Error(`Cannot check path ${path}`);
-
-  // Expect path as given to be in the archive
-  expect(Object.keys(archive)).toContain(pathUrl.toString());
-
-  const expectedContent = pathToResponseInfo[pathname as keyof typeof pathToResponseInfo].content;
-  // Expect the content to match the archive's content, unless it's dynamic
-  if (typeof expectedContent !== 'function') {
-    const expectedBase64 = Buffer.from(expectedContent).toString('base64');
-    const response = archive[pathUrl.toString()];
-    if ('error' in response) {
-      throw new Error(`Response to ${path} should not be an error`);
-    }
-    expect(response.body.toString('base64')).toEqual(expectedBase64);
-  }
-}
-
 describe('new', () => {
   let browser: Browser;
   let page: Page;
@@ -133,7 +106,7 @@ describe('new', () => {
 
     const archive = await complete();
 
-    expectArchiveContains(archive, ['/img.png', '/style.css']);
+    expectArchiveContains(archive, ['/img.png', '/style.css'], pathToResponseInfo, baseUrl);
   });
 
   // eslint-disable-next-line jest/expect-expect
@@ -148,6 +121,6 @@ describe('new', () => {
 
     const archive = await complete();
 
-    expectArchiveContains(archive, ['/img.png', '/style.css']);
+    expectArchiveContains(archive, ['/img.png', '/style.css'], pathToResponseInfo, baseUrl);
   });
 });

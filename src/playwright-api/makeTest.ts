@@ -1,4 +1,10 @@
-import type { TestType } from '@playwright/test';
+import type {
+  TestType,
+  PlaywrightTestArgs,
+  PlaywrightTestOptions,
+  PlaywrightWorkerArgs,
+  PlaywrightWorkerOptions,
+} from '@playwright/test';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
@@ -9,7 +15,12 @@ import { trackComplete, trackRun } from '../utils/analytics';
 //
 //   import { makeTest } from '@chromaui/test-archiver/src/playwright-api/makeTest';
 //   import { takeSnapshot as snapshot } from '@chromaui/test-archiver/src/playwright-api/takeSnapshot';
-export const makeTest = (base: TestType<any, any>) =>
+export const makeTest = (
+  base: TestType<
+    PlaywrightTestArgs & PlaywrightTestOptions,
+    PlaywrightWorkerArgs & PlaywrightWorkerOptions
+  >
+) =>
   base.extend<{ save: void }>({
     save: [
       async ({ page }, use, testInfo) => {

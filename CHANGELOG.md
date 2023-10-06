@@ -1,3 +1,15 @@
+# v0.0.26 (Fri Oct 06 2023)
+
+#### 🐛 Bug Fix
+
+- Exported test function typed [#23](https://github.com/chromaui/test-archiver/pull/23) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.25 (Thu Sep 14 2023)
 
 #### 🐛 Bug Fix

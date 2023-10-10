@@ -7,10 +7,9 @@ export function expectArchiveContains(
   baseUrl: string
 ) {
   expect(Object.keys(archive)).toHaveLength(paths.length);
-
-  for (const path of paths) {
-    expectArchiveContainsPath(archive, path, pathToResponseInfo, baseUrl);
-  }
+  Object.keys(paths).forEach((value: string, index: number) => {
+    expectArchiveContainsPath(archive, paths[index], pathToResponseInfo, baseUrl);
+  });
 }
 
 function expectArchiveContainsPath(

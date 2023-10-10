@@ -11,6 +11,13 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist/**/*",
     "README.md",
@@ -27,9 +34,7 @@
     "release": "yarn build && auto shipit",
     "lint": "eslint src/*",
     "prettier": "prettier",
-    "prepare": "husky install",
-    "test:playwright": "playwright test makeTest",
-    "test:playwright:server": "node src/__playwrightTests__/server.js"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@auto-it/released": "^10.32.6",

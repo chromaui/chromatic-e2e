@@ -5,7 +5,7 @@ export interface ChromaticConfig {
 export interface ChromaticParameters {
   diffIncludeAntiAliasing?: boolean;
   diffThreshold?: number;
-  disableE2EAutoCapture?: boolean;
+  disableAutoCapture?: boolean;
   pauseAnimationAtEnd?: boolean;
 }
 

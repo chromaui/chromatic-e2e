@@ -53,7 +53,7 @@ export const makeTest = (
         await use();
 
         let sourceMap;
-        const takeAutoCapture = !chromatic.disableE2EAutoCapture;
+        const takeAutoCapture = !chromatic.disableAutoCapture;
         if (takeAutoCapture) {
           sourceMap = await takeArchive(page, testInfo);
         }

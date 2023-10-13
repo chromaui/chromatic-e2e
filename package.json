@@ -16,13 +16,18 @@
       "require": "./dist/index.js",
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
+    },
+    "./cypress-api/commands": {
+      "import": "./src/cypress-api/commands.js",
+      "default": "./src/cypress-api/commands.js"
     }
   },
   "files": [
     "dist/**/*",
     "README.md",
     "*.js",
-    "*.d.ts"
+    "*.d.ts",
+    "src/**/*"
   ],
   "scripts": {
     "clean": "rimraf ./dist",
@@ -54,6 +59,7 @@
     "auto": "^10.3.0",
     "babel-jest": "^27.0.6",
     "concurrently": "^7.0.0",
+    "cypress": "^13.3.0",
     "eslint": "^7.32.0",
     "express": "^4.18.2",
     "husky": ">=6",

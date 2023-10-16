@@ -1,3 +1,15 @@
+# v0.0.27 (Mon Oct 16 2023)
+
+#### 🐛 Bug Fix
+
+- Truncate and map filenames that are too long in test archiver [#24](https://github.com/chromaui/test-archiver/pull/24) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
 # v0.0.26 (Fri Oct 06 2023)
 
 #### 🐛 Bug Fix

@@ -100,7 +100,7 @@ async function writeSnapshotFiles(
 
     await outputFile(
       join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
-      domSnapshot
+      mappedSnapshot
     );
   });
 }

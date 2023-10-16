@@ -5,21 +5,11 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
-import type { ChromaticConfig, ChromaticParameters, ChromaticStorybookParameters } from 'src/types';
+import type { ChromaticConfig, ChromaticStorybookParameters } from 'src/types';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
 import { trackComplete, trackRun } from '../utils/analytics';
-
-function createStorybookParams(
-  chromaticPlaywrightParams: ChromaticParameters,
-  viewportSize: { width: number; height: number }
-): ChromaticStorybookParameters {
-  return {
-    ...chromaticPlaywrightParams,
-    viewports: [viewportSize.width],
-  };
-}
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:
@@ -33,11 +23,30 @@ export const makeTest = (
   >
 ) =>
   base.extend<ChromaticConfig & { save: void }>({
-    // ChromaticOptions defaults
-    chromatic: [{}, { option: true }],
+    // ChromaticConfig defaults
+    delay: [undefined, { option: true }],
+    diffIncludeAntiAliasing: [undefined, { option: true }],
+    diffThreshold: [undefined, { option: true }],
+    disableAutoCapture: [false, { option: true }],
+    forcedColors: [undefined, { option: true }],
+    pauseAnimationAtEnd: [undefined, { option: true }],
+    prefersReducedMotion: [undefined, { option: true }],
 
     save: [
-      async ({ page, chromatic }, use, testInfo) => {
+      async (
+        {
+          page,
+          delay,
+          diffIncludeAntiAliasing,
+          diffThreshold,
+          disableAutoCapture,
+          forcedColors,
+          pauseAnimationAtEnd,
+          prefersReducedMotion,
+        },
+        use,
+        testInfo
+      ) => {
         trackRun();
 
         // CDP only works in Chromium, so we only capture archives in Chromium.
@@ -53,8 +62,7 @@ export const makeTest = (
         await use();
 
         let sourceMap;
-        const takeAutoCapture = !chromatic.disableAutoCapture;
-        if (takeAutoCapture) {
+        if (!disableAutoCapture) {
           sourceMap = await takeArchive(page, testInfo);
         }
 
@@ -66,7 +74,15 @@ export const makeTest = (
             .map(({ name, body }) => [name, body])
         ) as Record<string, Buffer>;
 
-        const chromaticStorybookParams = createStorybookParams(chromatic, page.viewportSize());
+        const chromaticStorybookParams = {
+          ...(delay && { delay }),
+          ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
+          ...(diffThreshold && { diffThreshold }),
+          ...(forcedColors && { forcedColors }),
+          ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
+          ...(prefersReducedMotion && { prefersReducedMotion }),
+          viewports: [page.viewportSize().width],
+        };
 
         await writeTestResult(
           testInfo,

@@ -1,14 +1,13 @@
 export interface ChromaticConfig {
-  chromatic: ChromaticParameters;
-}
-
-export interface ChromaticParameters {
+  delay?: number;
   diffIncludeAntiAliasing?: boolean;
   diffThreshold?: number;
   disableAutoCapture?: boolean;
+  forcedColors?: string;
   pauseAnimationAtEnd?: boolean;
+  prefersReducedMotion?: string;
 }
 
-export interface ChromaticStorybookParameters extends ChromaticParameters {
+export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoCapture'> {
   viewports: number[];
 }

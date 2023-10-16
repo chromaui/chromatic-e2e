@@ -84,7 +84,7 @@ describe('writeTestResult', () => {
           body: Buffer.from(JSON.stringify(storyJson)),
         },
       },
-      { viewport: { height: 480, width: 720 } },
+      { viewports: [720] },
       sourceMapping
     );
 

@@ -38,7 +38,7 @@ export const makeTest = (
         const completeArchive = await createResourceArchive(page);
         await use();
 
-        await takeArchive(page, testInfo);
+        const sourceMap = await takeArchive(page, testInfo);
 
         const resourceArchive = await completeArchive();
 
@@ -50,7 +50,7 @@ export const makeTest = (
 
         const viewport = page.viewportSize();
 
-        await writeTestResult(testInfo, snapshots, resourceArchive, { viewport });
+        await writeTestResult(testInfo, snapshots, resourceArchive, { viewport }, sourceMap);
 
         trackComplete();
       },

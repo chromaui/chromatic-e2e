@@ -1,3 +1,15 @@
+# v0.0.28 (Tue Oct 17 2023)
+
+#### 🐛 Bug Fix
+
+- Allow Chromatic configuration options [#22](https://github.com/chromaui/test-archiver/pull/22) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.27 (Mon Oct 16 2023)
 
 #### 🐛 Bug Fix

@@ -6,3 +6,4 @@ export const test = makeTest(base);
 export { expect };
 
 export { takeArchive } from './playwright-api/takeArchive';
+export type { ChromaticConfig } from './types';

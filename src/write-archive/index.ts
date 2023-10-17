@@ -2,7 +2,7 @@ import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
 import type { TestInfo } from '@playwright/test';
 import type { elementNode } from '@chromaui/rrweb-snapshot';
-
+import type { ChromaticStorybookParameters } from '../types';
 import type { ResourceArchive } from '../resource-archive';
 import { logger } from '../utils/logger';
 
@@ -28,7 +28,7 @@ export async function writeTestResult(
   testInfo: TestInfo,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
-  chromaticOptions: { viewport: { width: number; height: number } },
+  chromaticStorybookParams: ChromaticStorybookParameters,
   sourceMap: Map<string, string>
 ) {
   const { title, outputDir } = testInfo;
@@ -72,7 +72,7 @@ export async function writeTestResult(
     join(finalOutputDir, `${sanitize(title)}.stories.json`),
     title,
     domSnapshots,
-    chromaticOptions
+    chromaticStorybookParams
   );
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
@@ -137,7 +137,7 @@ async function writeStoriesFile(
   storiesFilename: string,
   title: string,
   domSnapshots: Record<string, Buffer>,
-  chromaticOptions: { viewport: { width: number; height: number } }
+  chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   logger.log(`Writing ${storiesFilename}`);
   await outputJson(storiesFilename, {
@@ -147,7 +147,7 @@ async function writeStoriesFile(
       parameters: {
         server: { id: `${sanitize(title)}-${sanitize(name)}.snapshot.json` },
         chromatic: {
-          viewports: [chromaticOptions.viewport.width],
+          ...chromaticStorybookParams,
         },
       },
     })),

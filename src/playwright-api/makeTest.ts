@@ -5,6 +5,7 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
+import type { ChromaticConfig, ChromaticStorybookParameters } from '../types';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
@@ -21,9 +22,31 @@ export const makeTest = (
     PlaywrightWorkerArgs & PlaywrightWorkerOptions
   >
 ) =>
-  base.extend<{ save: void }>({
+  base.extend<ChromaticConfig & { save: void }>({
+    // ChromaticConfig defaults
+    delay: [undefined, { option: true }],
+    diffIncludeAntiAliasing: [undefined, { option: true }],
+    diffThreshold: [undefined, { option: true }],
+    disableAutoCapture: [false, { option: true }],
+    forcedColors: [undefined, { option: true }],
+    pauseAnimationAtEnd: [undefined, { option: true }],
+    prefersReducedMotion: [undefined, { option: true }],
+
     save: [
-      async ({ page }, use, testInfo) => {
+      async (
+        {
+          page,
+          delay,
+          diffIncludeAntiAliasing,
+          diffThreshold,
+          disableAutoCapture,
+          forcedColors,
+          pauseAnimationAtEnd,
+          prefersReducedMotion,
+        },
+        use,
+        testInfo
+      ) => {
         trackRun();
 
         // CDP only works in Chromium, so we only capture archives in Chromium.
@@ -38,7 +61,10 @@ export const makeTest = (
         const completeArchive = await createResourceArchive(page);
         await use();
 
-        const sourceMap = await takeArchive(page, testInfo);
+        let sourceMap;
+        if (!disableAutoCapture) {
+          sourceMap = await takeArchive(page, testInfo);
+        }
 
         const resourceArchive = await completeArchive();
 
@@ -48,9 +74,23 @@ export const makeTest = (
             .map(({ name, body }) => [name, body])
         ) as Record<string, Buffer>;
 
-        const viewport = page.viewportSize();
+        const chromaticStorybookParams = {
+          ...(delay && { delay }),
+          ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
+          ...(diffThreshold && { diffThreshold }),
+          ...(forcedColors && { forcedColors }),
+          ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
+          ...(prefersReducedMotion && { prefersReducedMotion }),
+          viewports: [page.viewportSize().width],
+        };
 
-        await writeTestResult(testInfo, snapshots, resourceArchive, { viewport }, sourceMap);
+        await writeTestResult(
+          testInfo,
+          snapshots,
+          resourceArchive,
+          chromaticStorybookParams,
+          sourceMap
+        );
 
         trackComplete();
       },

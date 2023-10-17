@@ -27,8 +27,7 @@ export const archiveCypress = async ({ domSnapshot, resourceArchive }) => {
       fromCypress: Buffer.from(JSON.stringify(domSnapshot)),
     },
     Object.fromEntries(bufferedArchiveList),
-    // @ts-ignore
-    {},
+    { viewport: { width: 500, height: 500 } },
     sourceMap
   );
 };

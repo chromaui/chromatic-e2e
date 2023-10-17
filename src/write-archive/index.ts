@@ -31,18 +31,7 @@ export async function writeTestResult(
   chromaticOptions: { viewport: { width: number; height: number } },
   sourceMap: Map<string, string>
 ) {
-  if (!testInfo) {
-    // quick+dirty way to write the snapshot to disk for Cypress.
-    // Need to pull testInfo out of writeTestResult so we can use the whole function for both test frameworks
-    await writeSnapshotFiles(
-      domSnapshots,
-      'dir-to-archive-cypress-stuff',
-      'i-am-a-placeholder-test-title'
-    );
-    return;
-  }
-
-  const { title, outputDir } = testInfo;
+  const { title, outputDir } = testInfo || { title: 'a-test-title', outputDir: './create-me' };
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');
@@ -90,7 +79,7 @@ async function writeSnapshotFiles(
   domSnapshots: Record<string, Buffer>,
   archiveDir: string,
   title: string,
-  sourceMap?: Map<string, string>
+  sourceMap: Map<string, string>
 ) {
   // The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object
   await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {

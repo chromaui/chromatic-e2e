@@ -5,7 +5,7 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
-import type { ChromaticConfig, ChromaticStorybookParameters } from 'src/types';
+import type { ChromaticConfig, ChromaticStorybookParameters } from '../types';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';

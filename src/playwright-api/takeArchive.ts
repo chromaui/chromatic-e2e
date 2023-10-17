@@ -85,4 +85,4 @@ function shortenFileNameSrc(
   return existingSourceMap;
 }
 
-export { takeArchive };
+export { takeArchive, shortenFileNameSrc };

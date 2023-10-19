@@ -1,10 +1,10 @@
 import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
 import type { elementNode, serializedNodeWithId } from '@chromaui/rrweb-snapshot';
-import { NodeType } from '@chromaui/rrweb-snapshot';
 
 import dedent from 'ts-dedent';
 
+import { SourceMapper } from '../utils/source-mapper';
 import { logger } from '../utils/logger';
 
 const rrweb = readFileSync(
@@ -48,41 +48,13 @@ async function takeArchive(
   `);
 
   // XXX_jwir3: We go through and filter any of these that would have file names that would be too large.
-  const sourceMap: Map<string, string> = new Map<string, string>();
-  if (domSnapshot.childNodes.length !== 0) {
-    shortenFileNameSrc(domSnapshot.childNodes, sourceMap);
-  }
+  // const sourceMap: Map<string, string> = new Map<string, string>();
+  const sourceMapper: SourceMapper = new SourceMapper(domSnapshot);
+  const sourceMap = sourceMapper.shortenFileNamesLongerThan(250).build();
 
   testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });
 
   return Promise.resolve(sourceMap);
-}
-
-function shortenFileNameSrc(
-  input: Array<serializedNodeWithId>,
-  existingSourceMap: Map<string, string>
-): Map<string, string> {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const nextChildNode of input) {
-    if ('attributes' in nextChildNode && 'src' in nextChildNode.attributes) {
-      const stringBuffer = Buffer.from(nextChildNode.attributes.src as string);
-      if (stringBuffer.length > 250) {
-        const shortName: string = stringBuffer.toString('utf-8', 0, 250);
-        logger.log(`Filename '${stringBuffer}' is too long. Shortening to '${shortName}'`);
-        existingSourceMap.set(stringBuffer.toString('utf-8'), shortName);
-      }
-    }
-
-    if (nextChildNode.type === NodeType.Element) {
-      const childElementNode: elementNode = nextChildNode as elementNode;
-
-      if (childElementNode.childNodes.length !== 0) {
-        shortenFileNameSrc(childElementNode.childNodes, existingSourceMap);
-      }
-    }
-  }
-
-  return existingSourceMap;
 }
 
 export { takeArchive };

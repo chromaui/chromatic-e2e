@@ -5,6 +5,7 @@ import { Browser, chromium, Page } from 'playwright';
 
 import { createResourceArchive, type ResourceArchive } from './index';
 import { expectArchiveContains } from '../utils/testUtils';
+import { logger } from '../utils/logger';
 
 const { TEST_PORT = 13337 } = process.env;
 
@@ -71,6 +72,8 @@ afterEach(async () => {
 describe('new', () => {
   let browser: Browser;
   let page: Page;
+  const mockWarn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+
   beforeEach(async () => {
     browser = await chromium.launch();
     page = await browser.newPage();
@@ -81,21 +84,15 @@ describe('new', () => {
   });
 
   // eslint-disable-next-line jest/expect-expect
-  it('should respond with an exception if the network times out waiting for requests', async () => {
+  it('should log if the network times out waiting for requests', async () => {
     const complete = await createResourceArchive(page, 1);
 
     await page.goto(baseUrl);
 
     // eslint-disable-next-line jest/valid-expect-in-promise
-    complete()
-      .then(() => {
-        throw new Error('Test did not throw an exception');
-      })
+    await complete();
 
-      .catch((e) => {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(e).toEqual(new Error(`Global timeout of 1ms reached`));
-      });
+    expect(mockWarn).toBeCalledWith(`Global timeout of 1ms reached`);
   });
 
   // eslint-disable-next-line jest/expect-expect

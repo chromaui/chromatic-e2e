@@ -32,7 +32,7 @@ export const makeTest = (
     forcedColors: [undefined, { option: true }],
     pauseAnimationAtEnd: [undefined, { option: true }],
     prefersReducedMotion: [undefined, { option: true }],
-    networkTimeout: [DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS, { option: true }],
+    resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
 
     save: [
       async (

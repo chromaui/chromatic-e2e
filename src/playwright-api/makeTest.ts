@@ -10,7 +10,7 @@ import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
 import { trackComplete, trackRun } from '../utils/analytics';
-import { DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS } from '../constants';
+import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:
@@ -45,7 +45,7 @@ export const makeTest = (
           forcedColors,
           pauseAnimationAtEnd,
           prefersReducedMotion,
-          networkTimeout,
+          resourceArchiveTimeout,
         },
         use,
         testInfo
@@ -61,7 +61,7 @@ export const makeTest = (
           return;
         }
 
-        const completeArchive = await createResourceArchive(page, networkTimeout);
+        const completeArchive = await createResourceArchive(page, resourceArchiveTimeout);
         await use();
 
         let sourceMap;

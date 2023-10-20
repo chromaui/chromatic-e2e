@@ -2,7 +2,7 @@ import type { CDPSession, Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
 
-import { DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS } from '../constants';
+import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 
 type UrlString = string;
 
@@ -38,7 +38,7 @@ class Watcher {
 
   private globalNetworkResolver: () => void;
 
-  constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS) {
+  constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) {
     this.globalNetworkTimeoutMs = networkTimeoutMs;
   }
 
@@ -203,7 +203,7 @@ class Watcher {
 
 export async function createResourceArchive(
   page: Page,
-  networkTimeout = DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS
+  networkTimeout = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS
 ): Promise<() => Promise<ResourceArchive>> {
   const watcher = new Watcher(page, networkTimeout);
   await watcher.watch();

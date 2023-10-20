@@ -47,8 +47,10 @@ async function takeArchive(
     rrwebSnapshot.snapshot(document, { noAbsolute: true });
   `);
 
-  // XXX_jwir3: We go through and filter any of these that would have file names that would be too large.
-  // const sourceMap: Map<string, string> = new Map<string, string>();
+  // XXX_jwir3: We go through and filter any of these that would have file names that would be too long.
+  //            This is limited to 250 bytes. Technically, the file system is limited to 256 bytes, but
+  //            this gives us 5 bytes for a period and four characters, in the event that we want to
+  //            add a file extension.
   const sourceMapper: SourceMapper = new SourceMapper(domSnapshot);
   const sourceMap = sourceMapper.shortenFileNamesLongerThan(250).build();
 

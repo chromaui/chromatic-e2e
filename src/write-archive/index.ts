@@ -5,6 +5,7 @@ import type { elementNode } from '@chromaui/rrweb-snapshot';
 import type { ChromaticStorybookParameters } from '../types';
 import type { ResourceArchive } from '../resource-archive';
 import { logger } from '../utils/logger';
+import mime from 'mime';
 
 // @storybook/csf's sanitize function, we could import this
 export const sanitize = (string: string) => {
@@ -51,6 +52,18 @@ export async function writeTestResult(
       let fileName = pathname.endsWith('/') ? `${pathname}index.html` : pathname;
       if (sourceMap.has(pathname)) {
         fileName = sourceMap.get(pathname);
+      }
+
+      // Let's add an extension to this, if it's a file.
+      if (response.contentType) {
+        const fileExtension = mime.getExtension(response.contentType.value);
+        if (fileExtension) {
+          fileName = `${fileName}.${fileExtension}`;
+
+          if (sourceMap.has(pathname)) {
+            sourceMap.set(pathname, fileName);
+          }
+        }
       }
 
       await outputFile(join(archiveDir, fileName), response.body);

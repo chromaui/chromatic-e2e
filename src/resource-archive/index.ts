@@ -1,8 +1,8 @@
-import type { CDPSession, Page, Request } from 'playwright';
+import type { CDPSession, Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
 
-const DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS = 2000;
+import { DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS } from '../constants';
 
 type UrlString = string;
 
@@ -36,7 +36,7 @@ class Watcher {
 
   private globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
 
-  private globalNetworkRejector: (reason: Error) => void;
+  private globalNetworkResolver: () => void;
 
   constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS) {
     this.globalNetworkTimeoutMs = networkTimeoutMs;
@@ -59,12 +59,12 @@ class Watcher {
     // The first promise wraps a global timeout, where all requests MUST complete before that timeout has passed.
     // If the timeout passes, an error is thrown. This promise can only throw errors, it cannot resolve successfully.
     const globalNetworkTimeout = new Promise<void>((resolve, reject) => {
-      this.globalNetworkRejector = reject;
+      // this.globalNetworkRejector = reject;
+      this.globalNetworkResolver = resolve;
 
       this.globalNetworkTimerId = setTimeout(() => {
-        this.globalNetworkRejector(
-          new Error(`Global timeout of ${this.globalNetworkTimeoutMs}ms reached`)
-        );
+        logger.warn(`Global timeout of ${this.globalNetworkTimeoutMs}ms reached`);
+        this.globalNetworkResolver();
       }, this.globalNetworkTimeoutMs);
     });
 

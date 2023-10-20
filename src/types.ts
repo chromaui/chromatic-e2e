@@ -19,6 +19,10 @@ export interface ChromaticConfig {
 
   // https://www.chromatic.com/docs/media-features/#verify-reduced-motion-animations
   prefersReducedMotion?: string;
+
+  // Specify a network timeout, in milliseconds. This is the maximum amount of time that
+  // each test will wait for the network to be idle.
+  networkTimeout?: number;
 }
 
 export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoCapture'> {

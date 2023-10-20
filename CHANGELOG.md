@@ -1,3 +1,15 @@
+# v0.0.29 (Fri Oct 20 2023)
+
+#### 🐛 Bug Fix
+
+- :goal_net: Make Watcher not throw an exception if network idle times out [#25](https://github.com/chromaui/test-archiver/pull/25) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
 # v0.0.28 (Tue Oct 17 2023)
 
 #### 🐛 Bug Fix

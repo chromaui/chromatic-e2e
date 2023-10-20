@@ -1,3 +1,15 @@
+# v0.0.30 (Fri Oct 20 2023)
+
+#### 🐛 Bug Fix
+
+- :bug: Fix issue where the networkTimeout wasn't renamed everywhere. [#26](https://github.com/chromaui/test-archiver/pull/26) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
 # v0.0.29 (Fri Oct 20 2023)
 
 #### 🐛 Bug Fix

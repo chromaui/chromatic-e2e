@@ -1,11 +1,12 @@
+import mime from 'mime';
+
 import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
 import type { TestInfo } from '@playwright/test';
 import type { elementNode } from '@chromaui/rrweb-snapshot';
-import type { ChromaticStorybookParameters } from '../types';
-import type { ResourceArchive } from '../resource-archive';
 import { logger } from '../utils/logger';
-import mime from 'mime';
+import type { ResourceArchive } from '../resource-archive';
+import type { ChromaticStorybookParameters } from '../types';
 
 // @storybook/csf's sanitize function, we could import this
 export const sanitize = (string: string) => {

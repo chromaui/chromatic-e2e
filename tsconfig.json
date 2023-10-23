@@ -18,5 +18,5 @@
     "types": ["jest", "node"],
     "moduleResolution": "node"
   },
-  "include": ["src", "scripts", ".eslintrc.js", "jest.config.js"]
+  "include": ["src", "__playwright-tests__", "scripts", ".eslintrc.js", "jest.config.js"]
 }

@@ -10,10 +10,13 @@ module.exports = {
       },
     },
     {
-      files: ['**/*.test.ts'],
+      files: ['**/*.test.ts', '**/*.spec.ts'],
       rules: {
         'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
         'no-restricted-syntax': 'off',
+      },
+      parserOptions: {
+        project: ['tsconfig.json'],
       },
     },
   ],

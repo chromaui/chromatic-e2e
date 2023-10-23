@@ -11,6 +11,7 @@ type ArchiveResponse =
       statusCode: number;
       statusText?: string;
       body: Buffer;
+      contentType: Protocol.Fetch.HeaderEntry;
     }
   | {
       error: Error;
@@ -114,6 +115,7 @@ class Watcher {
     responseStatusCode,
     responseStatusText,
     responseErrorReason,
+    responseHeaders,
   }: Protocol.Fetch.requestPausedPayload) {
     const requestUrl = new URL(request.url);
 
@@ -162,6 +164,11 @@ class Watcher {
       }
       const { body, base64Encoded } = result;
 
+      // If the Content-Type header is present, let's capture it.
+      const contentTypeHeader: Protocol.Fetch.HeaderEntry = responseHeaders.find(
+        ({ name }) => name === 'Content-Type'
+      );
+
       // No need to capture the response of the top level page request
       const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
       if (isLocalRequest && !isFirstRequest) {
@@ -169,6 +176,7 @@ class Watcher {
           statusCode: responseStatusCode,
           statusText: responseStatusText,
           body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
+          contentType: contentTypeHeader,
         };
       }
 

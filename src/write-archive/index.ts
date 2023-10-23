@@ -31,7 +31,7 @@ export async function writeTestResult(
   chromaticOptions: { viewport: { width: number; height: number } },
   sourceMap: Map<string, string>
 ) {
-  const { title, outputDir } = testInfo || { title: 'a-test-title', outputDir: './create-me' };
+  const { title, outputDir } = testInfo;
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');

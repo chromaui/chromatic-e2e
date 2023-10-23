@@ -1,7 +1,7 @@
 import { writeTestResult } from '../write-archive';
 import { shortenFileNameSrc } from '../playwright-api/takeArchive';
 // @ts-ignore
-export const archiveCypress = async ({ domSnapshot, resourceArchive }) => {
+export const archiveCypress = async ({ testTitle, domSnapshot, resourceArchive }) => {
   const sourceMap: Map<string, string> = new Map<string, string>();
   if (domSnapshot.childNodes.length !== 0) {
     shortenFileNameSrc(domSnapshot.childNodes, sourceMap);
@@ -22,7 +22,11 @@ export const archiveCypress = async ({ domSnapshot, resourceArchive }) => {
   });
 
   await writeTestResult(
-    null,
+    // @ts-ignore
+    {
+      title: testTitle,
+      outputDir: './create-me',
+    },
     {
       fromCypress: Buffer.from(JSON.stringify(domSnapshot)),
     },

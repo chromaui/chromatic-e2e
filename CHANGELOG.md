@@ -1,3 +1,15 @@
+# v0.0.31 (Mon Oct 23 2023)
+
+#### 🐛 Bug Fix
+
+- Add a file extension based on Content-Type header for files that have it [#27](https://github.com/chromaui/test-archiver/pull/27) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
 # v0.0.30 (Fri Oct 20 2023)
 
 #### 🐛 Bug Fix

@@ -30,8 +30,7 @@ export async function writeTestResult(
   testInfo: TestInfo,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
-  chromaticStorybookParams: ChromaticStorybookParameters,
-  sourceMap: Map<string, string>
+  chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   const { title, outputDir } = testInfo;
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
@@ -43,6 +42,9 @@ export async function writeTestResult(
   await ensureDir(finalOutputDir);
 
   logger.log(`Writing test results for "${title}"`);
+
+  // TEMP
+  const sourceMap = new Map<string, string>();
 
   await Promise.all(
     Object.entries(archive).map(async ([url, response]) => {

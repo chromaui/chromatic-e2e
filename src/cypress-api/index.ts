@@ -1,11 +1,15 @@
 import { writeTestResult } from '../write-archive';
 import { shortenFileNameSrc } from '../playwright-api/takeArchive';
 // @ts-ignore
-export const archiveCypress = async ({ testTitle, domSnapshot, resourceArchive }) => {
+export const archiveCypress = async ({ testTitle, domSnapshots, resourceArchive }) => {
   const sourceMap: Map<string, string> = new Map<string, string>();
-  if (domSnapshot.childNodes.length !== 0) {
-    shortenFileNameSrc(domSnapshot.childNodes, sourceMap);
-  }
+
+  // @ts-ignore
+  domSnapshots.forEach((snapshot) => {
+    if (snapshot.childNodes.length !== 0) {
+      shortenFileNameSrc(snapshot.childNodes, sourceMap);
+    }
+  });
 
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -21,15 +25,19 @@ export const archiveCypress = async ({ testTitle, domSnapshot, resourceArchive }
     ];
   });
 
+  const allSnapshots = Object.fromEntries(
+    // @ts-ignore
+    domSnapshots.map((item, index) => [`Snapshot #${index + 1}`, Buffer.from(JSON.stringify(item))])
+  ) as Record<string, Buffer>;
+
   await writeTestResult(
     // @ts-ignore
     {
       title: testTitle,
-      outputDir: './create-me',
+      // doesn't matter what value we put here, as long as it's a subdirectory of where we want this to actually go
+      outputDir: './some',
     },
-    {
-      fromCypress: Buffer.from(JSON.stringify(domSnapshot)),
-    },
+    allSnapshots,
     Object.fromEntries(bufferedArchiveList),
     { viewport: { width: 500, height: 500 } },
     sourceMap

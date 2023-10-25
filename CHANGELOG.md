@@ -1,3 +1,51 @@
+# v0.0.31 (Mon Oct 23 2023)
+
+#### 🐛 Bug Fix
+
+- Add a file extension based on Content-Type header for files that have it [#27](https://github.com/chromaui/test-archiver/pull/27) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
+# v0.0.30 (Fri Oct 20 2023)
+
+#### 🐛 Bug Fix
+
+- :bug: Fix issue where the networkTimeout wasn't renamed everywhere. [#26](https://github.com/chromaui/test-archiver/pull/26) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
+# v0.0.29 (Fri Oct 20 2023)
+
+#### 🐛 Bug Fix
+
+- :goal_net: Make Watcher not throw an exception if network idle times out [#25](https://github.com/chromaui/test-archiver/pull/25) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
+# v0.0.28 (Tue Oct 17 2023)
+
+#### 🐛 Bug Fix
+
+- Allow Chromatic configuration options [#22](https://github.com/chromaui/test-archiver/pull/22) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.27 (Mon Oct 16 2023)
 
 #### 🐛 Bug Fix

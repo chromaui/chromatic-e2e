@@ -5,10 +5,12 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
+import type { ChromaticConfig, ChromaticStorybookParameters } from '../types';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
 import { trackComplete, trackRun } from '../utils/analytics';
+import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:
@@ -21,9 +23,33 @@ export const makeTest = (
     PlaywrightWorkerArgs & PlaywrightWorkerOptions
   >
 ) =>
-  base.extend<{ save: void }>({
+  base.extend<ChromaticConfig & { save: void }>({
+    // ChromaticConfig defaults
+    delay: [undefined, { option: true }],
+    diffIncludeAntiAliasing: [undefined, { option: true }],
+    diffThreshold: [undefined, { option: true }],
+    disableAutoCapture: [false, { option: true }],
+    forcedColors: [undefined, { option: true }],
+    pauseAnimationAtEnd: [undefined, { option: true }],
+    prefersReducedMotion: [undefined, { option: true }],
+    resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
+
     save: [
-      async ({ page }, use, testInfo) => {
+      async (
+        {
+          page,
+          delay,
+          diffIncludeAntiAliasing,
+          diffThreshold,
+          disableAutoCapture,
+          forcedColors,
+          pauseAnimationAtEnd,
+          prefersReducedMotion,
+          resourceArchiveTimeout,
+        },
+        use,
+        testInfo
+      ) => {
         trackRun();
 
         // CDP only works in Chromium, so we only capture archives in Chromium.
@@ -35,10 +61,13 @@ export const makeTest = (
           return;
         }
 
-        const completeArchive = await createResourceArchive(page);
+        const completeArchive = await createResourceArchive(page, resourceArchiveTimeout);
         await use();
 
-        const sourceMap = await takeArchive(page, testInfo);
+        let sourceMap;
+        if (!disableAutoCapture) {
+          sourceMap = await takeArchive(page, testInfo);
+        }
 
         const resourceArchive = await completeArchive();
 
@@ -48,9 +77,23 @@ export const makeTest = (
             .map(({ name, body }) => [name, body])
         ) as Record<string, Buffer>;
 
-        const viewport = page.viewportSize();
+        const chromaticStorybookParams = {
+          ...(delay && { delay }),
+          ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
+          ...(diffThreshold && { diffThreshold }),
+          ...(forcedColors && { forcedColors }),
+          ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
+          ...(prefersReducedMotion && { prefersReducedMotion }),
+          viewports: [page.viewportSize().width],
+        };
 
-        await writeTestResult(testInfo, snapshots, resourceArchive, { viewport }, sourceMap);
+        await writeTestResult(
+          testInfo,
+          snapshots,
+          resourceArchive,
+          chromaticStorybookParams,
+          sourceMap
+        );
 
         trackComplete();
       },

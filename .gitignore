@@ -8,3 +8,6 @@ build-storybook.log
 yarn-error.log
 
 test-archives
+/test-results/
+/playwright-report/
+/playwright/.cache/

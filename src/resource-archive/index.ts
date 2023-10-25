@@ -1,8 +1,8 @@
-import type { CDPSession, Page, Request } from 'playwright';
+import type { CDPSession, Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
 
-const DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS = 2000;
+import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 
 type UrlString = string;
 
@@ -11,6 +11,7 @@ type ArchiveResponse =
       statusCode: number;
       statusText?: string;
       body: Buffer;
+      contentType: Protocol.Fetch.HeaderEntry;
     }
   | {
       error: Error;
@@ -36,9 +37,9 @@ class Watcher {
 
   private globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
 
-  private globalNetworkRejector: (reason: Error) => void;
+  private globalNetworkResolver: () => void;
 
-  constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS) {
+  constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) {
     this.globalNetworkTimeoutMs = networkTimeoutMs;
   }
 
@@ -59,12 +60,12 @@ class Watcher {
     // The first promise wraps a global timeout, where all requests MUST complete before that timeout has passed.
     // If the timeout passes, an error is thrown. This promise can only throw errors, it cannot resolve successfully.
     const globalNetworkTimeout = new Promise<void>((resolve, reject) => {
-      this.globalNetworkRejector = reject;
+      // this.globalNetworkRejector = reject;
+      this.globalNetworkResolver = resolve;
 
       this.globalNetworkTimerId = setTimeout(() => {
-        this.globalNetworkRejector(
-          new Error(`Global timeout of ${this.globalNetworkTimeoutMs}ms reached`)
-        );
+        logger.warn(`Global timeout of ${this.globalNetworkTimeoutMs}ms reached`);
+        this.globalNetworkResolver();
       }, this.globalNetworkTimeoutMs);
     });
 
@@ -114,6 +115,7 @@ class Watcher {
     responseStatusCode,
     responseStatusText,
     responseErrorReason,
+    responseHeaders,
   }: Protocol.Fetch.requestPausedPayload) {
     const requestUrl = new URL(request.url);
 
@@ -162,6 +164,11 @@ class Watcher {
       }
       const { body, base64Encoded } = result;
 
+      // If the Content-Type header is present, let's capture it.
+      const contentTypeHeader: Protocol.Fetch.HeaderEntry = responseHeaders.find(
+        ({ name }) => name === 'Content-Type'
+      );
+
       // No need to capture the response of the top level page request
       const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
       if (isLocalRequest && !isFirstRequest) {
@@ -169,6 +176,7 @@ class Watcher {
           statusCode: responseStatusCode,
           statusText: responseStatusText,
           body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
+          contentType: contentTypeHeader,
         };
       }
 
@@ -203,7 +211,7 @@ class Watcher {
 
 export async function createResourceArchive(
   page: Page,
-  networkTimeout = DEFAULT_GLOBAL_NETWORK_TIMEOUT_MS
+  networkTimeout = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS
 ): Promise<() => Promise<ResourceArchive>> {
   const watcher = new Watcher(page, networkTimeout);
   await watcher.watch();

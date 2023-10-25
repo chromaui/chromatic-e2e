@@ -1,10 +1,12 @@
+import mime from 'mime';
+
 import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
 import type { TestInfo } from '@playwright/test';
 import type { elementNode } from '@chromaui/rrweb-snapshot';
-
-import type { ResourceArchive } from '../resource-archive';
 import { logger } from '../utils/logger';
+import type { ResourceArchive } from '../resource-archive';
+import type { ChromaticStorybookParameters } from '../types';
 
 // @storybook/csf's sanitize function, we could import this
 export const sanitize = (string: string) => {
@@ -28,7 +30,7 @@ export async function writeTestResult(
   testInfo: TestInfo,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
-  chromaticOptions: { viewport: { width: number; height: number } },
+  chromaticStorybookParams: ChromaticStorybookParameters,
   sourceMap: Map<string, string>
 ) {
   const { title, outputDir } = testInfo;
@@ -53,6 +55,18 @@ export async function writeTestResult(
         fileName = sourceMap.get(pathname);
       }
 
+      // Let's add an extension to this, if it's a file.
+      if (response.contentType) {
+        const fileExtension = mime.getExtension(response.contentType.value);
+        if (fileExtension) {
+          fileName = `${fileName}.${fileExtension}`;
+
+          if (sourceMap.has(pathname)) {
+            sourceMap.set(pathname, fileName);
+          }
+        }
+      }
+
       await outputFile(join(archiveDir, fileName), response.body);
     })
   );
@@ -63,7 +77,7 @@ export async function writeTestResult(
     join(finalOutputDir, `${sanitize(title)}.stories.json`),
     title,
     domSnapshots,
-    chromaticOptions
+    chromaticStorybookParams
   );
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
@@ -146,7 +160,7 @@ async function writeStoriesFile(
   storiesFilename: string,
   title: string,
   domSnapshots: Record<string, Buffer>,
-  chromaticOptions: { viewport: { width: number; height: number } }
+  chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   logger.log(`Writing ${storiesFilename}`);
   await outputJson(storiesFilename, {
@@ -156,7 +170,7 @@ async function writeStoriesFile(
       parameters: {
         server: { id: `${sanitize(title)}-${sanitize(name)}.snapshot.json` },
         chromatic: {
-          viewports: [chromaticOptions.viewport.width],
+          ...chromaticStorybookParams,
         },
       },
     })),

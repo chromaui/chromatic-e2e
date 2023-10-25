@@ -9,3 +9,4 @@ export { expect };
 export { archiveCypress } from './cypress-api';
 
 export { takeArchive } from './playwright-api/takeArchive';
+export type { ChromaticConfig } from './types';

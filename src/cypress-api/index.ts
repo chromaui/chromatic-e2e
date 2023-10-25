@@ -1,15 +1,23 @@
 import { writeTestResult } from '../write-archive';
-import { shortenFileNameSrc } from '../playwright-api/takeArchive';
-// @ts-ignore
-export const archiveCypress = async ({ testTitle, domSnapshots, resourceArchive }) => {
-  const sourceMap: Map<string, string> = new Map<string, string>();
+import { SourceMapper } from '../utils/source-mapper';
 
+export const archiveCypress = async ({
   // @ts-ignore
-  domSnapshots.forEach((snapshot) => {
-    if (snapshot.childNodes.length !== 0) {
-      shortenFileNameSrc(snapshot.childNodes, sourceMap);
-    }
-  });
+  testTitle,
+  // @ts-ignore
+  domSnapshots,
+  // @ts-ignore
+  resourceArchive,
+  // @ts-ignore
+  chromaticStorybookParams,
+}) => {
+  let sourceMap: Map<string, string> | null = null;
+
+  if (domSnapshots.length > 0) {
+    // shortens file names in the last snapshot (which is the automatic one)
+    const sourceMapper: SourceMapper = new SourceMapper(domSnapshots[domSnapshots.length - 1]);
+    sourceMap = sourceMapper.shortenFileNamesLongerThan(250).build();
+  }
 
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -39,7 +47,7 @@ export const archiveCypress = async ({ testTitle, domSnapshots, resourceArchive 
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),
-    { viewport: { width: 500, height: 500 } },
+    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } },
     sourceMap
   );
 };

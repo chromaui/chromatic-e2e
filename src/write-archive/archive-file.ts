@@ -4,6 +4,18 @@ import { createHash } from 'node:crypto';
 import { logger } from '../utils/logger';
 import type { ArchiveResponse, UrlString } from '../resource-archive';
 
+/**
+ * Handles converting the full URL of assets loaded during a test
+ * captured in the resource archive into a file system friendly path so
+ * that they can be safely written to the file system.
+ *
+ * This includes:
+ * - ensuring the path has a file name to avoid colliding with a directory
+ * - encoding the query string into the file name to avoid overwriting files
+ *   that have a different response due to the query string
+ * - truncating file names and path parts that are too big for some file systems
+ * - ensuring the file name has an extension
+ */
 export class ArchiveFile {
   url: URL;
 
@@ -34,7 +46,6 @@ export class ArchiveFile {
   }
 
   private ensureNonDirectory(pathname: string) {
-    // TODO maybe drop the .html?
     return pathname.endsWith('/') ? `${pathname}index.html` : pathname;
   }
 
@@ -42,7 +53,6 @@ export class ArchiveFile {
     const queryString = this.url.search;
     if (!queryString) return pathname;
 
-    // TODO maybe prepend the last file name in case it has an extension?
     const safeQueryString = this.hash(queryString);
     return `${pathname}-${safeQueryString}`;
   }

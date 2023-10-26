@@ -42,6 +42,8 @@ export async function writeTestResult(
 
   logger.log(`Writing test results for "${title}"`);
 
+  // Used to store any changes to the asset paths made in order to save them to the file system
+  // so that we can update the `src` attributes in the DOM snapshots.
   const sourceMap = new Map<string, string>();
 
   await Promise.all(

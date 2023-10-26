@@ -7,7 +7,7 @@ const response = {
   statusCode: 200,
   statusText: 'ok',
   body: Buffer.from(imgPng, 'base64'),
-  contentType: { name: 'Content-Type', value: 'image/png' },
+  contentType: 'image/png',
 };
 
 describe('ArchiveFile', () => {

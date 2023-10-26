@@ -73,7 +73,7 @@ export class ArchiveFile {
     // Add an extension if needed
     let nameWithExtension = pathname;
     if (!path.extname(nameWithExtension)) {
-      const fileExtension = mime.getExtension(this.response.contentType.value);
+      const fileExtension = mime.getExtension(this.response.contentType);
       if (fileExtension) {
         nameWithExtension = `${pathname}.${fileExtension}`;
       }

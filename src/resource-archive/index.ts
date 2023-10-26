@@ -11,7 +11,7 @@ export type ArchiveResponse =
       statusCode: number;
       statusText?: string;
       body: Buffer;
-      contentType: Protocol.Fetch.HeaderEntry;
+      contentType?: string;
     }
   | {
       error: Error;
@@ -176,7 +176,7 @@ class Watcher {
           statusCode: responseStatusCode,
           statusText: responseStatusText,
           body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
-          contentType: contentTypeHeader,
+          contentType: contentTypeHeader?.value,
         };
       }
 

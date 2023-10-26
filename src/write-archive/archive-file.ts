@@ -71,13 +71,15 @@ export class ArchiveFile {
     if ('error' in this.response || !this.response.contentType) return pathname;
 
     // Add an extension if needed
-    let withExtension = pathname;
-    const fileExtension = mime.getExtension(this.response.contentType.value);
-    if (fileExtension) {
-      withExtension = `${pathname}.${fileExtension}`;
+    let nameWithExtension = pathname;
+    if (!path.extname(nameWithExtension)) {
+      const fileExtension = mime.getExtension(this.response.contentType.value);
+      if (fileExtension) {
+        nameWithExtension = `${pathname}.${fileExtension}`;
+      }
     }
 
-    return withExtension;
+    return nameWithExtension;
   }
 
   private hash(name: string) {

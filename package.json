@@ -17,9 +17,9 @@
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
-    "./cypress-api/commands": {
-      "import": "./src/cypress-api/commands.js",
-      "default": "./src/cypress-api/commands.js"
+    "./cypress-api/support": {
+      "import": "./src/cypress-api/support.js",
+      "default": "./src/cypress-api/support.js"
     }
   },
   "files": [

@@ -1,57 +1,34 @@
-// @ts-nocheck
+import { snapshot } from '@chromaui/rrweb-snapshot';
 
-import { writeTestResult } from '../write-archive';
-import { SourceMapper } from '../utils/source-mapper';
+// Import commands.js using ES2015 syntax:
+import './commands';
 
-export const doArchive = async ({
-  testTitle,
-  domSnapshots,
-  resourceArchive,
-  chromaticStorybookParams,
-}) => {
-  let sourceMap: Map<string, string> | null = null;
-
-  if (domSnapshots.length > 0) {
-    // shortens file names in the last snapshot (which is the automatic one)
-    const sourceMapper: SourceMapper = new SourceMapper(domSnapshots[domSnapshots.length - 1]);
-    sourceMap = sourceMapper.shortenFileNamesLongerThan(250).build();
-  }
-
-  const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
-    return [
-      key,
-      {
-        ...value,
-        // we can't use Buffer in the browser (when we collect the responses)
-        // so we go through one by one here and bufferize them
-        body: Buffer.from(value.body, 'utf8'),
-      },
-    ];
+// these could go with before and afters, or more properly in a commands file... but that's an extra import
+Cypress.Commands.add('takeChromaticArchive', () => {
+  cy.document().then((doc) => {
+    // here, handle the source map
+    const snappy = snapshot(doc, { noAbsolute: true });
+    // reassign manualSnapshots so it includes this new element
+    cy.get('@manualSnapshots')
+      .then((snappies) => {
+        return [...snappies, snappy];
+      })
+      .as('manualSnapshots');
   });
+});
 
-  const allSnapshots = Object.fromEntries(
-    domSnapshots.map((item, index) => [`Snapshot #${index + 1}`, Buffer.from(JSON.stringify(item))])
-  ) as Record<string, Buffer>;
+// import our own custom commands
 
-  await writeTestResult(
-    {
-      title: testTitle,
-      // doesn't matter what value we put here, as long as it's a subdirectory of where we want this to actually go
-      outputDir: './some',
-    },
-    allSnapshots,
-    Object.fromEntries(bufferedArchiveList),
-    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } },
-    sourceMap
-  );
-};
+// Alternatively you can use CommonJS syntax:
+// require('./commands')
 
-export const setupNetworkListener = () => {
-  let pageUrl: URL | null = null;
+const setupNetworkListener = () => {
+  let pageUrl = '';
   cy.wrap({}).as('archive');
   cy.wrap([]).as('manualSnapshots');
 
   // since we don't know where the user will navigate, we'll archive whatever domain they're on first.
+  // should be cross-browser
   cy.intercept(`**/*`, (req) => {
     // don't archive the page itself -- we'll do that with rrweb
     // TODO: See if this will work for both slash and not slash endings or if we have to do same "first URL visited" stuff
@@ -73,8 +50,8 @@ export const setupNetworkListener = () => {
     // (https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304)
     delete req.headers['if-modified-since'];
     req.continue((response) => {
+      // console.log('response', response);
       cy.get('@archive').then((archive) => {
-        // eslint-disable-next-line no-param-reassign
         archive[response.url] = {
           statusCode: response.statusCode,
           statusText: response.statusMessage,
@@ -85,7 +62,7 @@ export const setupNetworkListener = () => {
   });
 };
 
-export const completeArchive = () => {
+const completeArchive = () => {
   cy.get('@archive').then((archive) => {
     // can we be sure this always fires after all the requests are back?
     cy.document().then((doc) => {
@@ -106,8 +83,12 @@ export const completeArchive = () => {
   });
 };
 
-export const archiveCypress = (stuff) => {
-  // https://docs.cypress.io/api/commands/task#Usage
-  doArchive(stuff);
-  return null;
-};
+// import the entire beforeEach and afterEach...
+// https://github.com/cypress-io/code-coverage/blob/master/support.js
+beforeEach(() => {
+  setupNetworkListener();
+});
+
+afterEach(() => {
+  completeArchive();
+});

@@ -4,9 +4,9 @@ import { logger } from '../utils/logger';
 
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 
-type UrlString = string;
+export type UrlString = string;
 
-type ArchiveResponse =
+export type ArchiveResponse =
   | {
       statusCode: number;
       statusText?: string;

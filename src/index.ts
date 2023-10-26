@@ -6,8 +6,5 @@ export const test = makeTest(base);
 
 export { expect };
 
-export { archiveCypress, setupNetworkListener, completeArchive } from './cypress-api';
-export { addCommands } from './cypress-api/commands';
-
 export { takeArchive } from './playwright-api/takeArchive';
 export type { ChromaticConfig } from './types';

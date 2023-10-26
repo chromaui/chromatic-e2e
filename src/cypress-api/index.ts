@@ -3,7 +3,7 @@
 import { writeTestResult } from '../write-archive';
 import { SourceMapper } from '../utils/source-mapper';
 
-export const doArchive = async ({
+const doArchive = async ({
   testTitle,
   domSnapshots,
   resourceArchive,

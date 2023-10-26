@@ -17,10 +17,8 @@
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
-    "./cypress/support": {
-      "import": "./dist/cypress-api/support.js",
-      "default": "./dist/cypress-api/support.js"
-    }
+    "./cypress": "./dist/cypress-api/index.js",
+    "./cypress/support": "./dist/cypress-api/support.js"
   },
   "files": [
     "dist/**/*",

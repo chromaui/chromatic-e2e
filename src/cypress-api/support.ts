@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { snapshot } from '@chromaui/rrweb-snapshot';
 
 // Import commands.js using ES2015 syntax:

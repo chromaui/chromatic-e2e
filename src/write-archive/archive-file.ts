@@ -26,6 +26,7 @@ export class ArchiveFile {
     let sanitizedSrc = this.url.pathname;
 
     sanitizedSrc = this.ensureNonDirectory(sanitizedSrc);
+    sanitizedSrc = this.encodeQueryString(sanitizedSrc);
     sanitizedSrc = this.truncateFileName(sanitizedSrc);
     sanitizedSrc = this.addExtension(sanitizedSrc);
 
@@ -35,6 +36,15 @@ export class ArchiveFile {
   private ensureNonDirectory(pathname: string) {
     // TODO maybe drop the .html?
     return pathname.endsWith('/') ? `${pathname}index.html` : pathname;
+  }
+
+  private encodeQueryString(pathname: string) {
+    const queryString = this.url.search;
+    if (!queryString) return pathname;
+
+    // TODO maybe prepend the last file name in case it has an extension?
+    const safeQueryString = this.hash(queryString);
+    return `${pathname}-${safeQueryString}`;
   }
 
   private truncateFileName(pathname: string) {
@@ -68,5 +78,9 @@ export class ArchiveFile {
     }
 
     return withExtension;
+  }
+
+  private hash(name: string) {
+    return createHash('md5').update(name).digest('hex');
   }
 }

@@ -37,6 +37,7 @@ const doArchive = async ({
     {
       title: testTitle,
       // doesn't matter what value we put here, as long as it's a subdirectory of where we want this to actually go
+      // TODO: change so we don't have to do this trickery
       outputDir: './some',
     },
     allSnapshots,
@@ -89,7 +90,6 @@ export const completeArchive = () => {
   cy.get('@archive').then((archive) => {
     // can we be sure this always fires after all the requests are back?
     cy.document().then((doc) => {
-      // here, handle the source map
       const snap = snapshot(doc, { noAbsolute: true });
       cy.get('@manualSnapshots').then((manualSnapshots = []) => {
         // pass the snapshot to the server to write to disk

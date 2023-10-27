@@ -1,11 +1,14 @@
+import type { elementNode } from '@chromaui/rrweb-snapshot';
 import { writeTestResult } from '../write-archive';
 import { SourceMapper } from '../utils/source-mapper';
+import type { ChromaticStorybookParameters } from '../types';
+import type { ResourceArchive } from '../resource-archive';
 
 interface ArchiveParams {
   testTitle: string;
-  domSnapshots: any[];
-  resourceArchive: any;
-  chromaticStorybookParams: any;
+  domSnapshots: elementNode[];
+  resourceArchive: ResourceArchive;
+  chromaticStorybookParams: ChromaticStorybookParameters;
 }
 
 const doArchive = async ({
@@ -26,7 +29,6 @@ const doArchive = async ({
     return [
       key,
       {
-        // @ts-expect-error will fix when Cypress has its own package
         ...value,
         // we can't use Buffer in the browser (when we collect the responses)
         // so we go through one by one here and bufferize them

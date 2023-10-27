@@ -107,7 +107,8 @@ export const completeArchive = () => {
 };
 
 export const archiveCypress = (stuff) => {
-  // https://docs.cypress.io/api/commands/task#Usage
   doArchive(stuff);
+
+  // Cypress tasks must return a value or null: https://docs.cypress.io/api/commands/task#Usage
   return null;
 };

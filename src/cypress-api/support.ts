@@ -1,21 +1,16 @@
 // @ts-nocheck
 import { snapshot } from '@chromaui/rrweb-snapshot';
-
-// Import commands.js using ES2015 syntax:
 import './commands';
-
-// import our own custom commands
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
 
 const setupNetworkListener = () => {
   let pageUrl = '';
+  // these "archive" and "manualSnapshots" variables will be available before, during, and after the test,
+  // then cleaned up before the next test is run
+  // (see https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
   cy.wrap({}).as('archive');
   cy.wrap([]).as('manualSnapshots');
 
   // since we don't know where the user will navigate, we'll archive whatever domain they're on first.
-  // should be cross-browser
   cy.intercept(`**/*`, (req) => {
     // don't archive the page itself -- we'll do that with rrweb
     // TODO: See if this will work for both slash and not slash endings or if we have to do same "first URL visited" stuff
@@ -37,7 +32,6 @@ const setupNetworkListener = () => {
     // (https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304)
     delete req.headers['if-modified-since'];
     req.continue((response) => {
-      // console.log('response', response);
       cy.get('@archive').then((archive) => {
         archive[response.url] = {
           statusCode: response.statusCode,
@@ -53,7 +47,6 @@ const completeArchive = () => {
   cy.get('@archive').then((archive) => {
     // can we be sure this always fires after all the requests are back?
     cy.document().then((doc) => {
-      // here, handle the source map
       const snap = snapshot(doc, { noAbsolute: true });
       cy.get('@manualSnapshots').then((manualSnapshots = []) => {
         // pass the snapshot to the server to write to disk
@@ -70,8 +63,7 @@ const completeArchive = () => {
   });
 };
 
-// import the entire beforeEach and afterEach...
-// https://github.com/cypress-io/code-coverage/blob/master/support.js
+// these lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
   setupNetworkListener();
 });

@@ -24,8 +24,7 @@
     "dist/**/*",
     "README.md",
     "*.js",
-    "*.d.ts",
-    "src/**/*"
+    "*.d.ts"
   ],
   "scripts": {
     "clean": "rimraf ./dist",

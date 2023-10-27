@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { snapshot } from '@chromaui/rrweb-snapshot';
 
 Cypress.Commands.add('takeChromaticArchive', () => {

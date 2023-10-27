@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { writeTestResult } from '../write-archive';
 import { SourceMapper } from '../utils/source-mapper';
 
@@ -9,11 +7,11 @@ const doArchive = async ({
   resourceArchive,
   chromaticStorybookParams,
 }) => {
-  let sourceMap: Map<string, string> | null = null;
+  let sourceMap = null;
 
   if (domSnapshots.length > 0) {
     // shortens file names in the last snapshot (which is the automatic one)
-    const sourceMapper: SourceMapper = new SourceMapper(domSnapshots[domSnapshots.length - 1]);
+    const sourceMapper = new SourceMapper(domSnapshots[domSnapshots.length - 1]);
     sourceMap = sourceMapper.shortenFileNamesLongerThan(250).build();
   }
 
@@ -31,7 +29,7 @@ const doArchive = async ({
 
   const allSnapshots = Object.fromEntries(
     domSnapshots.map((item, index) => [`Snapshot #${index + 1}`, Buffer.from(JSON.stringify(item))])
-  ) as Record<string, Buffer>;
+  );
 
   await writeTestResult(
     {

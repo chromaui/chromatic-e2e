@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { snapshot } from '@chromaui/rrweb-snapshot';
 import './commands';
 

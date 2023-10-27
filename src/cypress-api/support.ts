@@ -38,13 +38,20 @@ const setupNetworkListener = () => {
     // @ts-expect-error will fix when Cypress has its own package
     req.continue((response) => {
       // @ts-expect-error will fix when Cypress has its own package
-      cy.get('@archive').then((archive) => {
-        archive[response.url] = {
-          statusCode: response.statusCode,
-          statusText: response.statusMessage,
-          body: response.body,
-        };
-      });
+      cy.get('@archive')
+        // @ts-expect-error will fix when Cypress has its own package
+        .then((archive) => {
+          const updatedArchive = {
+            ...archive,
+            [response.url]: {
+              statusCode: response.statusCode,
+              statusText: response.statusMessage,
+              body: response.body,
+            },
+          };
+          return updatedArchive;
+        })
+        .as('archive');
     });
   });
 };

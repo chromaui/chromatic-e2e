@@ -64,9 +64,8 @@ export const makeTest = (
         const completeArchive = await createResourceArchive(page, resourceArchiveTimeout);
         await use();
 
-        let sourceMap;
         if (!disableAutoCapture) {
-          sourceMap = await takeArchive(page, testInfo);
+          await takeArchive(page, testInfo);
         }
 
         const resourceArchive = await completeArchive();
@@ -87,13 +86,7 @@ export const makeTest = (
           viewports: [page.viewportSize().width],
         };
 
-        await writeTestResult(
-          testInfo,
-          snapshots,
-          resourceArchive,
-          chromaticStorybookParams,
-          sourceMap
-        );
+        await writeTestResult(testInfo, snapshots, resourceArchive, chromaticStorybookParams);
 
         trackComplete();
       },

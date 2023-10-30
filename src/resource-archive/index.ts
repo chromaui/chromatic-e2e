@@ -4,14 +4,14 @@ import { logger } from '../utils/logger';
 
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 
-type UrlString = string;
+export type UrlString = string;
 
-type ArchiveResponse =
+export type ArchiveResponse =
   | {
       statusCode: number;
       statusText?: string;
       body: Buffer;
-      contentType: Protocol.Fetch.HeaderEntry;
+      contentType?: string;
     }
   | {
       error: Error;
@@ -176,7 +176,7 @@ class Watcher {
           statusCode: responseStatusCode,
           statusText: responseStatusText,
           body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
-          contentType: contentTypeHeader,
+          contentType: contentTypeHeader?.value,
         };
       }
 

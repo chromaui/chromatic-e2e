@@ -1,3 +1,15 @@
+# v0.0.32 (Mon Oct 30 2023)
+
+#### 🐛 Bug Fix
+
+- Consolidate asset path modifications and mappings [#28](https://github.com/chromaui/test-archiver/pull/28) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.31 (Mon Oct 23 2023)
 
 #### 🐛 Bug Fix

@@ -6,6 +6,7 @@ build-storybook.log
 .env
 .cache
 yarn-error.log
+chromatic.log
 
 test-archives
 /test-results/

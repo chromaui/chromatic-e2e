@@ -1,3 +1,15 @@
+# v0.0.33 (Tue Oct 31 2023)
+
+#### 🐛 Bug Fix
+
+- Publish Archive Storybook to Chromatic [#30](https://github.com/chromaui/test-archiver/pull/30) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.32 (Mon Oct 30 2023)
 
 #### 🐛 Bug Fix

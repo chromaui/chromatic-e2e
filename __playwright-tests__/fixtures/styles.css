@@ -1,0 +1,18 @@
+.with-background-img {
+  background-image: url('/background-img.png');
+}
+
+.with-external-background-img {
+  background-image: url('https://www.chromatic.com/emails/icon-chroma-64x64.png?test=query');
+}
+
+.with-rewritten-background-img {
+  background-image: url('/img?url=fixtures/purple.png');
+}
+
+.image-container > div {
+  height: 200px;
+  width: 200px;
+  margin: 5px;
+  border: 1px solid black;
+}

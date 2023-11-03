@@ -8,14 +8,20 @@ const port = 3000;
 const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
 
+// Pages
+
 app.get('/', (req, res) => {
-  res.send(`${htmlIntro}<body>testing 1 2 3</body>${htmlOutro}`);
+  res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);
 });
 
-app.get('/toolong', (req, res) => {
-  res.send(
-    `${htmlIntro}<body><img src="/blahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahb"></body>${htmlOutro}`
-  );
+app.get('/asset-paths', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths.html'));
+});
+
+// Assets
+
+app.get('/styles.css', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/styles.css'));
 });
 
 app.get(
@@ -24,16 +30,6 @@ app.get(
     res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
   }
 );
-
-app.get('/conflict', (req, res) => {
-  res.send(`${htmlIntro}<body><img src="/img"></img><img src="/img/another"></body>${htmlOutro}`);
-});
-
-app.get('/assets-with-queryparams', (req, res) => {
-  res.send(
-    `${htmlIntro}<body><img width="200" src="/img?url=fixtures/blue.png"/><img width="200" src="/img?url=fixtures/purple.png"/><img width="200" src="/img?url=fixtures/pink.png"/></body>${htmlOutro}`
-  );
-});
 
 app.get('/img', (req, res) => {
   if (req.query.url) {
@@ -45,6 +41,10 @@ app.get('/img', (req, res) => {
 
 app.get('/img/another', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
+});
+
+app.get('/background-img.png', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
 });
 
 app.listen(port, () => {

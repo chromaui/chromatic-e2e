@@ -1,3 +1,15 @@
+# v0.0.34 (Fri Nov 03 2023)
+
+#### 🐛 Bug Fix
+
+- Consolidate all asset path Playwright testing into one page [#31](https://github.com/chromaui/test-archiver/pull/31) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.33 (Tue Oct 31 2023)
 
 #### 🐛 Bug Fix

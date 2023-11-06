@@ -1,6 +1,5 @@
 import type { elementNode } from '@chromaui/rrweb-snapshot';
 import { writeTestResult } from '../write-archive';
-import { SourceMapper } from '../utils/source-mapper';
 import type { ChromaticStorybookParameters } from '../types';
 import type { ResourceArchive } from '../resource-archive';
 
@@ -17,14 +16,6 @@ const doArchive = async ({
   resourceArchive,
   chromaticStorybookParams,
 }: ArchiveParams) => {
-  let sourceMap = null;
-
-  if (domSnapshots.length > 0) {
-    // shortens file names in the last snapshot (which is the automatic one)
-    const sourceMapper = new SourceMapper(domSnapshots[domSnapshots.length - 1]);
-    sourceMap = sourceMapper.shortenFileNamesLongerThan(250).build();
-  }
-
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
       key,
@@ -52,8 +43,7 @@ const doArchive = async ({
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),
-    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } },
-    sourceMap
+    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } }
   );
 };
 

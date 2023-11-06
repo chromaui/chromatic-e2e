@@ -47,9 +47,6 @@ const doArchive = async ({
   );
 };
 
-export const archiveCypress = (stuff: ArchiveParams): null => {
-  doArchive(stuff);
-
-  // Cypress tasks must return a value or null: https://docs.cypress.io/api/commands/task#Usage
-  return null;
+export const archiveCypress = async (stuff: ArchiveParams) => {
+  await doArchive(stuff);
 };

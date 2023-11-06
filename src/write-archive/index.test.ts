@@ -23,8 +23,7 @@ describe('writeTestResult', () => {
         diffThreshold: 5,
         pauseAnimationAtEnd: true,
         viewports: [720],
-      },
-      new Map<string, string>()
+      }
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
@@ -53,7 +52,12 @@ describe('writeTestResult', () => {
       childNodes: [
         {
           attributes: {
-            src: '/bogano',
+            src: '/home/',
+          },
+        },
+        {
+          attributes: {
+            src: '/img?src=some-path',
           },
         },
       ],
@@ -63,14 +67,16 @@ describe('writeTestResult', () => {
       childNodes: [
         {
           attributes: {
-            src: '/coruscant',
+            src: '/home/index.html',
+          },
+        },
+        {
+          attributes: {
+            src: '/img-fe2b41833610050d950fb9112407d3b3.png',
           },
         },
       ],
     };
-
-    const sourceMapping = new Map<string, string>();
-    sourceMapping.set('/bogano', '/coruscant');
 
     const expectedBuffer = Buffer.from(JSON.stringify(expectedMappedJson));
 
@@ -79,18 +85,22 @@ describe('writeTestResult', () => {
       { title: 'Toy Story', outputDir: resolve('test-results/toy-story-chromium') } as TestInfo,
       { home: Buffer.from(JSON.stringify(storyJson)) },
       {
-        'http://localhost:3000/home': {
+        'http://localhost:3000/home/': {
           statusCode: 200,
           body: Buffer.from(JSON.stringify(storyJson)),
         },
+        'http://localhost:3000/img?src=some-path': {
+          statusCode: 200,
+          body: Buffer.from(JSON.stringify(storyJson)),
+          contentType: 'image/png',
+        },
       },
-      { viewports: [720] },
-      sourceMapping
+      { viewports: [720] }
     );
 
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputJson).toHaveBeenCalledTimes(1);
-    expect(fs.outputFile).toHaveBeenCalledTimes(2);
+    expect(fs.outputFile).toHaveBeenCalledTimes(3);
     expect(fs.outputFile).toHaveBeenCalledWith(
       resolve('./test-results/chromatic-archives/archive/toy-story-home.snapshot.json'),
       expectedBuffer
@@ -123,8 +133,7 @@ describe('writeTestResult', () => {
       } as TestInfo,
       { home: Buffer.from('Chromatic') },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      { viewports: [720] },
-      new Map<string, string>()
+      { viewports: [720] }
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);

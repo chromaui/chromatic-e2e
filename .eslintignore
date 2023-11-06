@@ -3,3 +3,4 @@ storybook-static/**/*.js
 
 tsup.config.ts
 playwright.config.ts
+__playwright-tests__

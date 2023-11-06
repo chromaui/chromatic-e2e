@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js 16.x
         uses: actions/setup-node@v1
@@ -28,3 +30,9 @@ jobs:
         run: |
           yarn test:unit
           yarn test:playwright
+
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_ARCHIVE_PROJECT_TOKEN }}
+          buildScriptName: build-archive-storybook

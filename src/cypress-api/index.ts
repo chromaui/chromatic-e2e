@@ -47,6 +47,8 @@ const doArchive = async ({
   );
 };
 
-export const archiveCypress = async (params: ArchiveParams) => {
+export const archiveCypress = async (params: ArchiveParams): Promise<null> => {
   await doArchive(params);
+
+  return null;
 };

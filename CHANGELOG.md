@@ -1,3 +1,15 @@
+# v0.0.35 (Wed Nov 08 2023)
+
+#### 🐛 Bug Fix
+
+- Only archive assets fetched via GET [#32](https://github.com/chromaui/test-archiver/pull/32) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.34 (Fri Nov 03 2023)
 
 #### 🐛 Bug Fix

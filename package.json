@@ -16,7 +16,9 @@
       "require": "./dist/index.js",
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./cypress": "./dist/cypress-api/index.js",
+    "./cypress/support": "./dist/cypress-api/support.js"
   },
   "files": [
     "dist/**/*",
@@ -64,6 +66,7 @@
     "auto": "^10.3.0",
     "babel-jest": "^27.0.6",
     "concurrently": "^7.0.0",
+    "cypress": "^13.4.0",
     "eslint": "^7.32.0",
     "express": "^4.18.2",
     "husky": ">=6",

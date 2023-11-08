@@ -62,7 +62,16 @@ export async function writeTestResult(
     })
   );
 
-  await writeSnapshotFiles(domSnapshots, archiveDir, title, sourceMap);
+  await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
+    // XXX_jwir3: We go through our stories here and map any instances that are found in
+    //            the keys of the source map to their respective values.
+    const mappedSnapshot = await mapSourceEntries(domSnapshot, sourceMap);
+
+    await outputFile(
+      join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
+      mappedSnapshot
+    );
+  });
 
   await writeStoriesFile(
     join(finalOutputDir, `${sanitize(title)}.stories.json`),
@@ -80,24 +89,6 @@ export async function writeTestResult(
   }
 }
 
-async function writeSnapshotFiles(
-  domSnapshots: Record<string, Buffer>,
-  archiveDir: string,
-  title: string,
-  sourceMap: Map<string, string>
-) {
-  // The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object
-  await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
-    // XXX_jwir3: We go through our stories here and map any instances that are found in
-    //            the keys of the source map to their respective values.
-    const mappedSnapshot = await mapSourceEntries(domSnapshot, sourceMap);
-
-    await outputFile(
-      join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
-      mappedSnapshot
-    );
-  });
-}
 /**
  * Accepts a DOM snapshot, which is either a `Buffer` or an object in json form, and maps all `src` attributes that are equivalent to
  * one of the entries in the `sourceMap` to the resulting value.

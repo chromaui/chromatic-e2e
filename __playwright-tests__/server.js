@@ -18,6 +18,22 @@ app.get('/asset-paths', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/asset-paths.html'));
 });
 
+app.get('/forms', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/forms.html'));
+});
+
+// Send a redirect to the GET handler with the same path to ensure we're not caching POST responses and serving
+// it instead of the real GET response.
+app.post('/form-success', (req, res) => {
+  res.send(
+    `${htmlIntro}<head><meta http-equiv="refresh" content="0; URL=/form-success" /></head><body></body>${htmlOutro}`
+  );
+});
+
+app.get('/form-success', (req, res) => {
+  res.send(`${htmlIntro}<body><p>OK!</p></body>${htmlOutro}`);
+});
+
 // Assets
 
 app.get('/styles.css', (req, res) => {

@@ -1,3 +1,8 @@
+body.page {
+  padding: 20px;
+  background-color: ghostwhite;
+}
+
 .with-background-img {
   background-image: url('/background-img.png');
 }

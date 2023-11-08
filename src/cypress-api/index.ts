@@ -47,6 +47,6 @@ const doArchive = async ({
   );
 };
 
-export const archiveCypress = async (stuff: ArchiveParams) => {
-  await doArchive(stuff);
+export const archiveCypress = async (params: ArchiveParams) => {
+  await doArchive(params);
 };

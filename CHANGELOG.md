@@ -1,3 +1,15 @@
+# v0.0.36 (Wed Nov 08 2023)
+
+#### 🐛 Bug Fix
+
+- Cypress support (basic) [#29](https://github.com/chromaui/test-archiver/pull/29) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.35 (Wed Nov 08 2023)
 
 #### 🐛 Bug Fix

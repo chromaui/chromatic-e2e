@@ -117,6 +117,13 @@ class Watcher {
     responseErrorReason,
     responseHeaders,
   }: Protocol.Fetch.requestPausedPayload) {
+    // We only need to capture assets that will render when the DOM snapshot is rendered,
+    // so we only need to handle GET requests.
+    if (!request.method.match(/get/i)) {
+      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
+      return;
+    }
+
     const requestUrl = new URL(request.url);
 
     this.firstUrl ??= requestUrl;

@@ -3,16 +3,16 @@
 import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import { NodeType } from '@chromaui/rrweb-snapshot';
 
+// Matches `url(...)` function in CSS text, excluding data URLs
 const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
 
 /**
- * TODO rrweb flavored dom snapshot
+ * Wraps a snapshot from rrweb and handles post-processing to remap asset paths.
  */
 export class DOMSnapshot {
   snapshot: serializedNodeWithId;
 
   constructor(snapshot: Buffer | string) {
-    // TODO do we need to handle string here?
     if (Buffer.isBuffer(snapshot)) {
       const bufferAsString = snapshot.toString('utf-8');
       this.snapshot = JSON.parse(bufferAsString);
@@ -21,7 +21,7 @@ export class DOMSnapshot {
     }
   }
 
-  async mapSourceEntries(sourceMap: Map<string, string>) {
+  async mapAssetPaths(sourceMap: Map<string, string>) {
     const transformedSnapshot = await this.mapNode(this.snapshot, sourceMap);
     return JSON.stringify(transformedSnapshot);
   }
@@ -56,7 +56,7 @@ export class DOMSnapshot {
         node.attributes.style = mappedCssText;
       }
 
-      // This is how rr-web stores the contents of an external stylesheet
+      // This is how rrweb stores the contents of an external stylesheet
       // that it will put into a `style` tag on render
       if (node.attributes._cssText) {
         const cssText = node.attributes._cssText as string;

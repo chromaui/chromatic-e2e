@@ -62,17 +62,19 @@ export async function writeTestResult(
     })
   );
 
-  await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
-    // XXX_jwir3: We go through our stories here and map any instances that are found in
-    //            the keys of the source map to their respective values.
-    const snapshot = new DOMSnapshot(domSnapshot);
-    const mappedSnapshot = await snapshot.mapAssetPaths(sourceMap);
+  await Promise.all(
+    await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
+      // XXX_jwir3: We go through our stories here and map any instances that are found in
+      //            the keys of the source map to their respective values.
+      const snapshot = new DOMSnapshot(domSnapshot);
+      const mappedSnapshot = await snapshot.mapAssetPaths(sourceMap);
 
-    await outputFile(
-      join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
-      mappedSnapshot
-    );
-  });
+      await outputFile(
+        join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
+        mappedSnapshot
+      );
+    })
+  );
 
   await writeStoriesFile(
     join(finalOutputDir, `${sanitize(title)}.stories.json`),

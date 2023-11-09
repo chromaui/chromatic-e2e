@@ -1,54 +1,47 @@
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+import { NodeType } from '@chromaui/rrweb-snapshot';
 
 /**
  * TODO rrweb flavored dom snapshot
  */
 export class DOMSnapshot {
-  snapshot: Buffer;
+  snapshot: serializedNodeWithId;
 
-  constructor(snapshot: Buffer) {
-    this.snapshot = snapshot;
+  constructor(snapshot: Buffer | string) {
+    // TODO do we need to handle string here?
+    if (Buffer.isBuffer(snapshot)) {
+      const bufferAsString = snapshot.toString('utf-8');
+      this.snapshot = JSON.parse(bufferAsString);
+    } else {
+      this.snapshot = JSON.parse(snapshot);
+    }
   }
 
   async mapSourceEntries(sourceMap: Map<string, string>) {
     const transformedSnapshot = await this.mapNode(this.snapshot, sourceMap);
-    return Buffer.from(JSON.stringify(transformedSnapshot));
+    return JSON.stringify(transformedSnapshot);
   }
 
-  async mapNode(domSnapshot: Buffer, sourceMap: Map<string, string>) {
-    let jsonBuffer: elementNode;
-    if (Buffer.isBuffer(domSnapshot)) {
-      const bufferAsString = domSnapshot.toString('utf-8');
-
-      // Try to parse as JSON. Our tests don't always return JSON, so this is kind of a hack
-      // to avoid a situation where JSON is expected but not actually given.
-      try {
-        jsonBuffer = JSON.parse(bufferAsString);
-      } catch (err) {
-        return domSnapshot;
-      }
-    } else {
-      jsonBuffer = domSnapshot;
-    }
-
-    if (jsonBuffer.attributes && jsonBuffer.attributes.src) {
-      const sourceVal = jsonBuffer.attributes.src as string;
-      if (sourceMap.has(sourceVal)) {
-        jsonBuffer.attributes.src = sourceMap.get(sourceVal);
+  private async mapNode(node: serializedNodeWithId, sourceMap: Map<string, string>) {
+    if (node.type === NodeType.Element) {
+      if (node.attributes && node.attributes.src) {
+        const sourceVal = node.attributes.src as string;
+        if (sourceMap.has(sourceVal)) {
+          // eslint-disable-next-line no-param-reassign
+          node.attributes.src = sourceMap.get(sourceVal);
+        }
       }
     }
 
-    if (jsonBuffer.childNodes) {
-      jsonBuffer.childNodes = await Promise.all(
-        jsonBuffer.childNodes.map(async (child) => {
-          const jsonString = JSON.stringify(child);
-          const mappedSourceEntriesBuffer = await this.mapNode(Buffer.from(jsonString), sourceMap);
-          const mappedSourceEntries = JSON.parse(mappedSourceEntriesBuffer.toString('utf-8'));
-          return mappedSourceEntries;
+    if ('childNodes' in node) {
+      // eslint-disable-next-line no-param-reassign
+      node.childNodes = await Promise.all(
+        node.childNodes.map(async (childNode) => {
+          return this.mapNode(childNode, sourceMap);
         })
       );
     }
 
-    return Buffer.from(JSON.stringify(jsonBuffer));
+    return node;
   }
 }

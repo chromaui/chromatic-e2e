@@ -1,15 +1,12 @@
 import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import type { elementNode } from 'rrweb-snapshot';
 
 import dedent from 'ts-dedent';
 
 import { logger } from '../utils/logger';
 
-const rrweb = readFileSync(
-  require.resolve('@chromaui/rrweb-snapshot/dist/rrweb-snapshot.js'),
-  'utf8'
-);
+const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.js'), 'utf8');
 
 export const contentType = 'application/rrweb.snapshot+json';
 
@@ -39,7 +36,7 @@ async function takeArchive(
   // Serialize and capture the DOM
   const domSnapshot: elementNode = await page.evaluate(dedent`
     ${rrweb};
-    rrwebSnapshot.snapshot(document, { noAbsolute: true });
+    rrwebSnapshot.snapshot(document);
   `);
 
   testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });

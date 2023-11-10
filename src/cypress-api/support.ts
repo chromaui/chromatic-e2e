@@ -1,4 +1,4 @@
-import { snapshot } from '@chromaui/rrweb-snapshot';
+import { snapshot } from 'rrweb-snapshot';
 import type { ResourceArchive } from '../resource-archive';
 import './commands';
 
@@ -55,7 +55,7 @@ const completeArchive = () => {
   cy.get('@archive').then((archive) => {
     // can we be sure this always fires after all the requests are back?
     cy.document().then((doc) => {
-      const snap = snapshot(doc, { noAbsolute: true });
+      const snap = snapshot(doc);
       // @ts-expect-error will fix when Cypress has its own package
       cy.get('@manualSnapshots').then((manualSnapshots = []) => {
         // pass the snapshot to the server to write to disk

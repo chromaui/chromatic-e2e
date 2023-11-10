@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import type { TestInfo } from '@playwright/test';
-import { NodeType } from '@chromaui/rrweb-snapshot';
+import { NodeType } from 'rrweb-snapshot';
 import { writeTestResult } from '.';
 
 jest.mock('fs-extra');

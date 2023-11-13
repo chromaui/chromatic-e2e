@@ -1,3 +1,15 @@
+# v0.0.37 (Mon Nov 13 2023)
+
+#### 🐛 Bug Fix
+
+- Fix mapping of CSS URLs [#33](https://github.com/chromaui/test-archiver/pull/33) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.36 (Wed Nov 08 2023)
 
 #### 🐛 Bug Fix

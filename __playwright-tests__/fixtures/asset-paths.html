@@ -4,6 +4,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="/styles.css" />
+
+    <style>
+      .with-rewritten-background-img-inline {
+        background-image: url('/img?url=fixtures/blue.png');
+      }
+    </style>
   </head>
   <body>
     <div class="image-container flex flex-wrap">
@@ -17,6 +23,8 @@
       <div class="with-background-img"></div>
       <div class="with-external-background-img"></div>
       <div class="with-rewritten-background-img"></div>
+      <div class="with-rewritten-background-img-inline"></div>
+      <div style="background: url('/img?url=fixtures/pink.png'); no-repeat center;"></div>
     </div>
   </body>
 </html>

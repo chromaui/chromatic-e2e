@@ -1,9 +1,9 @@
 import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
 import type { TestInfo } from '@playwright/test';
-import type { elementNode } from '@chromaui/rrweb-snapshot';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
+import { DOMSnapshot } from './dom-snapshot';
 import type { ResourceArchive } from '../resource-archive';
 import type { ChromaticStorybookParameters } from '../types';
 
@@ -62,16 +62,19 @@ export async function writeTestResult(
     })
   );
 
-  await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
-    // XXX_jwir3: We go through our stories here and map any instances that are found in
-    //            the keys of the source map to their respective values.
-    const mappedSnapshot = await mapSourceEntries(domSnapshot, sourceMap);
+  await Promise.all(
+    await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
+      // XXX_jwir3: We go through our stories here and map any instances that are found in
+      //            the keys of the source map to their respective values.
+      const snapshot = new DOMSnapshot(domSnapshot);
+      const mappedSnapshot = await snapshot.mapAssetPaths(sourceMap);
 
-    await outputFile(
-      join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
-      mappedSnapshot
-    );
-  });
+      await outputFile(
+        join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
+        mappedSnapshot
+      );
+    })
+  );
 
   await writeStoriesFile(
     join(finalOutputDir, `${sanitize(title)}.stories.json`),
@@ -87,55 +90,6 @@ export async function writeTestResult(
       errors: Object.fromEntries(errors),
     });
   }
-}
-
-/**
- * Accepts a DOM snapshot, which is either a `Buffer` or an object in json form, and maps all `src` attributes that are equivalent to
- * one of the entries in the `sourceMap` to the resulting value.
- *
- * @param domSnapshot The DOM snapshot upon which to run the mapping, as a Buffer
- * @param sourceMap A mapping of `string` objects to other `string` objects. All `src` attributes that are keys in this map will be
- *                  adjusted to be the resulting value.
- * @returns A JSON string representing the mapped DOM snapshot.
- */
-async function mapSourceEntries(domSnapshot: Buffer, sourceMap: Map<string, string>) {
-  let jsonBuffer: elementNode;
-  if (Buffer.isBuffer(domSnapshot)) {
-    const bufferAsString = domSnapshot.toString('utf-8');
-
-    // Try to parse as JSON. Our tests don't always return JSON, so this is kind of a hack
-    // to avoid a situation where JSON is expected but not actually given.
-    try {
-      jsonBuffer = JSON.parse(bufferAsString);
-    } catch (err) {
-      return domSnapshot;
-    }
-  } else {
-    jsonBuffer = domSnapshot;
-  }
-
-  if (jsonBuffer.attributes && jsonBuffer.attributes.src) {
-    const sourceVal = jsonBuffer.attributes.src as string;
-    if (sourceMap.has(sourceVal)) {
-      jsonBuffer.attributes.src = sourceMap.get(sourceVal);
-    }
-  }
-
-  if (jsonBuffer.childNodes) {
-    jsonBuffer.childNodes = await Promise.all(
-      jsonBuffer.childNodes.map(async (child) => {
-        const jsonString = JSON.stringify(child);
-        const mappedSourceEntriesBuffer = await mapSourceEntries(
-          Buffer.from(jsonString),
-          sourceMap
-        );
-        const mappedSourceEntries = JSON.parse(mappedSourceEntriesBuffer.toString('utf-8'));
-        return mappedSourceEntries;
-      })
-    );
-  }
-
-  return Buffer.from(JSON.stringify(jsonBuffer));
 }
 
 async function writeStoriesFile(

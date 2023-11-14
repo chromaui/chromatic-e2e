@@ -102,5 +102,14 @@ describe('ArchiveFile', () => {
 
       expect(originalSrc).toEqual('/some/directory/ok?src=some-other-url');
     });
+
+    it('retains the domain from the asset URL if cross-domain', () => {
+      const archiveFile = createArchiveFile('http://subdomain.some-other-host/some-path/me.png');
+
+      archiveFile.toFileSystemPath();
+      const originalSrc = archiveFile.originalSrc();
+
+      expect(originalSrc).toEqual('http://subdomain.some-other-host/some-path/me.png');
+    });
   });
 });

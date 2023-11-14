@@ -13,7 +13,11 @@ const response = {
 describe('ArchiveFile', () => {
   describe('toFileSystemPath', () => {
     it('has no effect on valid paths', () => {
-      const archiveFile = new ArchiveFile('http://localhost:333/some/directory/hi.png', response);
+      const archiveFile = new ArchiveFile(
+        'http://localhost:333/some/directory/hi.png',
+        response,
+        'http://localhost:333'
+      );
 
       const filePath = archiveFile.toFileSystemPath();
 
@@ -21,7 +25,11 @@ describe('ArchiveFile', () => {
     });
 
     it('ensures path is not a directory', () => {
-      const archiveFile = new ArchiveFile('http://localhost:333/some/directory/', response);
+      const archiveFile = new ArchiveFile(
+        'http://localhost:333/some/directory/',
+        response,
+        'http://localhost:333'
+      );
 
       const filePath = archiveFile.toFileSystemPath();
 
@@ -31,7 +39,8 @@ describe('ArchiveFile', () => {
     it('appends encoded query string to file name', () => {
       const archiveFile = new ArchiveFile(
         'http://localhost:333/some/directory/img?src=https://someotherdomain.com/image.jpg',
-        response
+        response,
+        'http://localhost:333'
       );
 
       const filePath = archiveFile.toFileSystemPath();
@@ -40,7 +49,11 @@ describe('ArchiveFile', () => {
     });
 
     it('truncates long file names and path parts', () => {
-      const archiveFile = new ArchiveFile('http://localhost:333/some/directory/ok.jpg', response);
+      const archiveFile = new ArchiveFile(
+        'http://localhost:333/some/directory/ok.jpg',
+        response,
+        'http://localhost:333'
+      );
       archiveFile.shortenedFileNameLength = 5;
 
       const filePath = archiveFile.toFileSystemPath();
@@ -49,7 +62,11 @@ describe('ArchiveFile', () => {
     });
 
     it('adds a file extension based on content type when there is not one already', () => {
-      const archiveFile = new ArchiveFile('http://localhost:333/some/directory/ok', response);
+      const archiveFile = new ArchiveFile(
+        'http://localhost:333/some/directory/ok',
+        response,
+        'http://localhost:333'
+      );
 
       const filePath = archiveFile.toFileSystemPath();
 
@@ -60,11 +77,39 @@ describe('ArchiveFile', () => {
       const noContentType = { ...response };
       delete noContentType.contentType;
 
-      const archiveFile = new ArchiveFile('http://localhost:333/some/directory/ok', noContentType);
+      const archiveFile = new ArchiveFile(
+        'http://localhost:333/some/directory/ok',
+        noContentType,
+        'http://localhost:333'
+      );
 
       const filePath = archiveFile.toFileSystemPath();
 
       expect(filePath).toEqual('/some/directory/ok');
+    });
+
+    it('prepends domain name (if archiving additional domains)', () => {
+      const archiveFile = new ArchiveFile(
+        'http://subdomain.some-other-host/some-path/me.png',
+        response,
+        'http://localhost:333'
+      );
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toEqual('/subdomain.some-other-host/some-path/me.png');
+    });
+
+    it('prepends domain name if port is all that differs', () => {
+      const archiveFile = new ArchiveFile(
+        'http://localhost:333/some/directory/hi.png',
+        response,
+        'http://localhost:3000'
+      );
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toEqual('/localhost%3A333/some/directory/hi.png');
     });
   });
 
@@ -72,7 +117,8 @@ describe('ArchiveFile', () => {
     it('retains the original source from the asset URL', () => {
       const archiveFile = new ArchiveFile(
         'http://localhost:333/some/directory/ok?src=some-other-url',
-        response
+        response,
+        'http://localhost:333'
       );
 
       archiveFile.toFileSystemPath();

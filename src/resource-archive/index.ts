@@ -135,14 +135,16 @@ class Watcher {
 
     this.firstUrl ??= requestUrl;
 
-    const isLocalRequest = requestUrl.origin === this.firstUrl.origin;
+    const isRequestFromAllowedDomain =
+      requestUrl.origin === this.firstUrl.origin ||
+      this.allowedExternalDomains.includes(requestUrl.origin);
 
     logger.log(
       'requestPaused',
       requestUrl.toString(),
       responseStatusCode || responseErrorReason ? 'response' : 'request',
       this.firstUrl.toString(),
-      isLocalRequest
+      isRequestFromAllowedDomain
     );
 
     if (this.closed) {
@@ -182,10 +184,7 @@ class Watcher {
 
       // No need to capture the response of the top level page request
       const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
-      if (
-        (isLocalRequest || this.allowedExternalDomains.includes(requestUrl.origin)) &&
-        !isFirstRequest
-      ) {
+      if (isRequestFromAllowedDomain && !isFirstRequest) {
         this.archive[request.url] = {
           statusCode: responseStatusCode,
           statusText: responseStatusText,

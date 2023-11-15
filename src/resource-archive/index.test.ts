@@ -97,7 +97,7 @@ describe('new', () => {
 
   // eslint-disable-next-line jest/expect-expect
   it('should log if the network times out waiting for requests', async () => {
-    const complete = await createResourceArchive(page, 1);
+    const complete = await createResourceArchive({ page, networkTimeout: 1 });
 
     await page.goto(baseUrl);
 
@@ -108,7 +108,7 @@ describe('new', () => {
   });
 
   it('gathers basic resources used by the page', async () => {
-    const complete = await createResourceArchive(page);
+    const complete = await createResourceArchive({ page });
 
     await page.goto(baseUrl);
 
@@ -134,7 +134,7 @@ describe('new', () => {
     const externalUrl = 'https://i-ama.fake/external/domain/image.png';
     const indexPath = `/?inject=${encodeURIComponent(`<img src="${externalUrl}">`)}`;
 
-    const complete = await createResourceArchive(page);
+    const complete = await createResourceArchive({ page });
 
     await page.goto(new URL(indexPath, baseUrl).toString());
 
@@ -165,11 +165,14 @@ describe('new', () => {
       externalUrls.map((url) => `<img src="${url}">`).join()
     )}`;
 
-    const complete = await createResourceArchive(page, 10000, [
-      // external origins we allow-list
-      'https://i-ama.fake',
-      'https://another-domain.com',
-    ]);
+    const complete = await createResourceArchive({
+      page,
+      allowedDomains: [
+        // external origins we allow-list
+        'https://i-ama.fake',
+        'https://another-domain.com',
+      ],
+    });
 
     await page.goto(new URL(indexPath, baseUrl).toString());
 

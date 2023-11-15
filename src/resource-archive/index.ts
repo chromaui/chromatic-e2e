@@ -223,12 +223,20 @@ class Watcher {
   }
 }
 
-export async function createResourceArchive(
-  page: Page,
-  networkTimeout = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-  allowedDomains?: string[]
-): Promise<() => Promise<ResourceArchive>> {
-  const watcher = new Watcher(page, networkTimeout, allowedDomains);
+export async function createResourceArchive({
+  page,
+  networkTimeout,
+  allowedDomains,
+}: {
+  page: Page;
+  networkTimeout?: number;
+  allowedDomains?: string[];
+}): Promise<() => Promise<ResourceArchive>> {
+  const watcher = new Watcher(
+    page,
+    networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
+    allowedDomains
+  );
   await watcher.watch();
 
   return async () => {

@@ -135,10 +135,7 @@ class Watcher {
 
     this.firstUrl ??= requestUrl;
 
-    const isLocalRequest =
-      requestUrl.protocol === this.firstUrl.protocol &&
-      requestUrl.host === this.firstUrl.host &&
-      requestUrl.port === this.firstUrl.port;
+    const isLocalRequest = requestUrl.origin === this.firstUrl.origin;
 
     logger.log(
       'requestPaused',

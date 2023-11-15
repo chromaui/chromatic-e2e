@@ -89,13 +89,16 @@ describe('new', () => {
     await page.route('https://another-domain.com/picture.png', async (route) => {
       await route.fulfill({ body: Buffer.from(anotherExternalImg, 'base64') });
     });
+
+    await page.route('https://unwanted-domain.com/img.png', async (route) => {
+      await route.fulfill({ body: Buffer.from(anotherExternalImg, 'base64') });
+    });
   });
 
   afterEach(async () => {
     await browser.close();
   });
 
-  // eslint-disable-next-line jest/expect-expect
   it('should log if the network times out waiting for requests', async () => {
     const complete = await createResourceArchive({ page, networkTimeout: 1 });
 
@@ -160,6 +163,8 @@ describe('new', () => {
     const externalUrls = [
       'https://i-ama.fake/external/domain/image.png',
       'https://another-domain.com/picture.png',
+      // this image won't be in allow-list
+      'https://unwanted-domain.com/img.png',
     ];
     const indexPath = `/?inject=${encodeURIComponent(
       externalUrls.map((url) => `<img src="${url}">`).join()
@@ -167,7 +172,7 @@ describe('new', () => {
 
     const complete = await createResourceArchive({
       page,
-      allowedDomains: [
+      allowedExternalDomains: [
         // external origins we allow-list
         'https://i-ama.fake',
         'https://another-domain.com',
@@ -191,6 +196,7 @@ describe('new', () => {
         body: Buffer.from(imgPng, 'base64'),
         contentType: undefined,
       },
+      // includes cross-origin images
       'https://i-ama.fake/external/domain/image.png': {
         statusCode: 200,
         statusText: 'OK',

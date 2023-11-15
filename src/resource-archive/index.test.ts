@@ -4,7 +4,6 @@ import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
 import { createResourceArchive, type ResourceArchive } from './index';
-import { expectArchiveContains } from '../utils/testUtils';
 import { logger } from '../utils/logger';
 
 const { TEST_PORT = 13337 } = process.env;
@@ -103,7 +102,20 @@ describe('new', () => {
 
     const archive = await complete();
 
-    expectArchiveContains(archive, ['/img.png', '/style.css'], pathToResponseInfo, baseUrl);
+    expect(archive).toEqual({
+      'http://localhost:13337/style.css': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(styleCss),
+        contentType: 'text/css; charset=utf-8',
+      },
+      'http://localhost:13337/img.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(imgPng, 'base64'),
+        contentType: undefined,
+      },
+    });
   });
 
   // eslint-disable-next-line jest/expect-expect
@@ -118,6 +130,19 @@ describe('new', () => {
 
     const archive = await complete();
 
-    expectArchiveContains(archive, ['/img.png', '/style.css'], pathToResponseInfo, baseUrl);
+    expect(archive).toEqual({
+      'http://localhost:13337/style.css': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(styleCss),
+        contentType: 'text/css; charset=utf-8',
+      },
+      'http://localhost:13337/img.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(imgPng, 'base64'),
+        contentType: undefined,
+      },
+    });
   });
 });

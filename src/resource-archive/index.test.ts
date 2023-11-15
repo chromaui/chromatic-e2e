@@ -30,6 +30,9 @@ const styleCss = dedent`
 const imgPng =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
+// stubbed external img so we're not relying on a placeholder
+const externalImgPng = 'iamexternal';
+
 const pathToResponseInfo = {
   '/': {
     content: ({ query: { inject = '' } }: Request) =>
@@ -76,6 +79,11 @@ describe('new', () => {
   beforeEach(async () => {
     browser = await chromium.launch();
     page = await browser.newPage();
+
+    // mock external image request
+    await page.route('https://i-ama.fake/external/domain/image.png', async (route) => {
+      await route.fulfill({ body: Buffer.from(externalImgPng, 'base64') });
+    });
   });
 
   afterEach(async () => {
@@ -94,7 +102,6 @@ describe('new', () => {
     expect(mockWarn).toBeCalledWith(`Global timeout of 1ms reached`);
   });
 
-  // eslint-disable-next-line jest/expect-expect
   it('gathers basic resources used by the page', async () => {
     const complete = await createResourceArchive(page);
 
@@ -118,10 +125,8 @@ describe('new', () => {
     });
   });
 
-  // eslint-disable-next-line jest/expect-expect
   it('ignores remote resources', async () => {
-    const externalUrl =
-      'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+    const externalUrl = 'https://i-ama.fake/external/domain/image.png';
     const indexPath = `/?inject=${encodeURIComponent(`<img src="${externalUrl}">`)}`;
 
     const complete = await createResourceArchive(page);
@@ -141,6 +146,38 @@ describe('new', () => {
         statusCode: 200,
         statusText: 'OK',
         body: Buffer.from(imgPng, 'base64'),
+        contentType: undefined,
+      },
+    });
+  });
+
+  it('includes remote resources when told to', async () => {
+    const externalUrl = 'https://i-ama.fake/external/domain/image.png';
+    const indexPath = `/?inject=${encodeURIComponent(`<img src="${externalUrl}">`)}`;
+
+    const complete = await createResourceArchive(page, 10000, 'https://i-ama.fake');
+
+    await page.goto(new URL(indexPath, baseUrl).toString());
+
+    const archive = await complete();
+
+    expect(archive).toEqual({
+      'http://localhost:13337/style.css': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(styleCss),
+        contentType: 'text/css; charset=utf-8',
+      },
+      'http://localhost:13337/img.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(imgPng, 'base64'),
+        contentType: undefined,
+      },
+      'https://i-ama.fake/external/domain/image.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(externalImgPng, 'base64'),
         contentType: undefined,
       },
     });

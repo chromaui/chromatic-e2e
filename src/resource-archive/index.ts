@@ -26,6 +26,8 @@ class Watcher {
 
   private globalNetworkTimeoutMs;
 
+  private allowedDomain: string;
+
   /**
    * We assume the first URL loaded after @watch is called is the base URL of the
    * page and we only save resources that are loaded from the same protocol/host/port combination.
@@ -39,8 +41,13 @@ class Watcher {
 
   private globalNetworkResolver: () => void;
 
-  constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) {
+  constructor(
+    private page: Page,
+    networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
+    allowedDomain?: string
+  ) {
     this.globalNetworkTimeoutMs = networkTimeoutMs;
+    this.allowedDomain = allowedDomain || '';
   }
 
   async watch() {
@@ -178,7 +185,7 @@ class Watcher {
 
       // No need to capture the response of the top level page request
       const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
-      if (isLocalRequest && !isFirstRequest) {
+      if ((isLocalRequest || requestUrl.origin === this.allowedDomain) && !isFirstRequest) {
         this.archive[request.url] = {
           statusCode: responseStatusCode,
           statusText: responseStatusText,
@@ -218,9 +225,10 @@ class Watcher {
 
 export async function createResourceArchive(
   page: Page,
-  networkTimeout = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS
+  networkTimeout = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
+  allowedDomain?: string
 ): Promise<() => Promise<ResourceArchive>> {
-  const watcher = new Watcher(page, networkTimeout);
+  const watcher = new Watcher(page, networkTimeout, allowedDomain);
   await watcher.watch();
 
   return async () => {

@@ -26,7 +26,7 @@ class Watcher {
 
   private globalNetworkTimeoutMs;
 
-  private allowedDomain: string;
+  private allowedDomains: string[];
 
   /**
    * We assume the first URL loaded after @watch is called is the base URL of the
@@ -44,10 +44,10 @@ class Watcher {
   constructor(
     private page: Page,
     networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-    allowedDomain?: string
+    allowedDomains?: string[]
   ) {
     this.globalNetworkTimeoutMs = networkTimeoutMs;
-    this.allowedDomain = allowedDomain || '';
+    this.allowedDomains = allowedDomains || [];
   }
 
   async watch() {
@@ -185,7 +185,7 @@ class Watcher {
 
       // No need to capture the response of the top level page request
       const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
-      if ((isLocalRequest || requestUrl.origin === this.allowedDomain) && !isFirstRequest) {
+      if ((isLocalRequest || this.allowedDomains.includes(requestUrl.origin)) && !isFirstRequest) {
         this.archive[request.url] = {
           statusCode: responseStatusCode,
           statusText: responseStatusText,
@@ -226,9 +226,9 @@ class Watcher {
 export async function createResourceArchive(
   page: Page,
   networkTimeout = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-  allowedDomain?: string
+  allowedDomains?: string[]
 ): Promise<() => Promise<ResourceArchive>> {
-  const watcher = new Watcher(page, networkTimeout, allowedDomain);
+  const watcher = new Watcher(page, networkTimeout, allowedDomains);
   await watcher.watch();
 
   return async () => {

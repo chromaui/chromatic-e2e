@@ -3,10 +3,10 @@ import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
-import { createResourceArchive, type ResourceArchive } from './index';
+import { createResourceArchive } from './index';
 import { logger } from '../utils/logger';
 
-const { TEST_PORT = 13337 } = process.env;
+const TEST_PORT = 13337;
 
 const baseUrl = `http://localhost:${TEST_PORT}`;
 
@@ -30,8 +30,9 @@ const styleCss = dedent`
 const imgPng =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
-// stubbed external img so we're not relying on a placeholder
+// stubbed external imgs so we're not relying on a placeholder
 const externalImgPng = 'iamexternal';
+const anotherExternalImg = 'anotherone';
 
 const pathToResponseInfo = {
   '/': {
@@ -80,9 +81,13 @@ describe('new', () => {
     browser = await chromium.launch();
     page = await browser.newPage();
 
-    // mock external image request
+    // mock external image requests
     await page.route('https://i-ama.fake/external/domain/image.png', async (route) => {
       await route.fulfill({ body: Buffer.from(externalImgPng, 'base64') });
+    });
+
+    await page.route('https://another-domain.com/picture.png', async (route) => {
+      await route.fulfill({ body: Buffer.from(anotherExternalImg, 'base64') });
     });
   });
 
@@ -151,11 +156,20 @@ describe('new', () => {
     });
   });
 
-  it('includes remote resources when told to', async () => {
-    const externalUrl = 'https://i-ama.fake/external/domain/image.png';
-    const indexPath = `/?inject=${encodeURIComponent(`<img src="${externalUrl}">`)}`;
+  it('includes remote resource when told to', async () => {
+    const externalUrls = [
+      'https://i-ama.fake/external/domain/image.png',
+      'https://another-domain.com/picture.png',
+    ];
+    const indexPath = `/?inject=${encodeURIComponent(
+      externalUrls.map((url) => `<img src="${url}">`).join()
+    )}`;
 
-    const complete = await createResourceArchive(page, 10000, 'https://i-ama.fake');
+    const complete = await createResourceArchive(page, 10000, [
+      // external origins we allow-list
+      'https://i-ama.fake',
+      'https://another-domain.com',
+    ]);
 
     await page.goto(new URL(indexPath, baseUrl).toString());
 
@@ -178,6 +192,12 @@ describe('new', () => {
         statusCode: 200,
         statusText: 'OK',
         body: Buffer.from(externalImgPng, 'base64'),
+        contentType: undefined,
+      },
+      'https://another-domain.com/picture.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(anotherExternalImg, 'base64'),
         contentType: undefined,
       },
     });

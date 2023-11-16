@@ -1,3 +1,15 @@
+# v0.0.38 (Thu Nov 16 2023)
+
+#### 🐛 Bug Fix
+
+- Use non-forked rrweb [#34](https://github.com/chromaui/test-archiver/pull/34) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.37 (Mon Nov 13 2023)
 
 #### 🐛 Bug Fix

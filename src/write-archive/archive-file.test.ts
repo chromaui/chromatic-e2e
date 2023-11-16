@@ -100,7 +100,7 @@ describe('ArchiveFile', () => {
       archiveFile.toFileSystemPath();
       const originalSrc = archiveFile.originalSrc();
 
-      expect(originalSrc).toEqual('/some/directory/ok?src=some-other-url');
+      expect(originalSrc).toEqual('http://localhost:333/some/directory/ok?src=some-other-url');
     });
 
     it('retains the domain from the asset URL if cross-domain', () => {

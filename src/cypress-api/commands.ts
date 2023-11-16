@@ -1,10 +1,10 @@
-import { snapshot } from '@chromaui/rrweb-snapshot';
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import { snapshot } from 'rrweb-snapshot';
+import type { elementNode } from 'rrweb-snapshot';
 // @ts-expect-error will fix when Cypress has its own package
 Cypress.Commands.add('takeChromaticArchive', () => {
   cy.document().then((doc) => {
     // here, handle the source map
-    const manualSnapshot = snapshot(doc, { noAbsolute: true });
+    const manualSnapshot = snapshot(doc);
     // reassign manualSnapshots so it includes this new snapshot
     cy.get('@manualSnapshots')
       // @ts-expect-error will fix when Cypress has its own package

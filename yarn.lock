@@ -2052,17 +2052,6 @@
   resolved "https://registry.npmjs.org/@chromaui/rrweb-snapshot/-/rrweb-snapshot-2.0.0-alpha.7-noAbsolute.2.tgz"
   integrity sha512-vOVSOgfNyxomxm6ENMqm1C4rLkLLOlyEyhR5J2SKBALuFfuJHjhIqNLSOgqVRO9J3++AUOCktknyJ/F+mSvEfA==
 
-"@chromaui/test-archiver@^0.0.32":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@chromaui/test-archiver/-/test-archiver-0.0.32.tgz#6e0560b39108581b9d3d55d3f5e462350b3cda9c"
-  integrity sha512-O6le42KqoliioAQG2RY+XhrwSttwnYHV2lIk3TNKJ1l9sTjQT5AUAZJ6N4CkUAsU8TVtX8wEDUY0mrNL00M/DQ==
-  dependencies:
-    "@chromaui/rrweb-snapshot" "2.0.0-alpha.7-noAbsolute.2"
-    "@segment/analytics-node" "^1.1.0"
-    fs-extra "^11.1.1"
-    mime "^3.0.0"
-    ts-dedent "^2.2.0"
-
 "@colors/colors@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
@@ -11570,6 +11559,11 @@ rollup@^3.2.5:
   integrity sha512-3zwkBQl7Ai7MFYQE0y1MeQ15+9jsi7XxfrqwTb/9EK8D9C9+//EBR4M+CuA1KODRaNbFez/lWxA5vhEGZp4MUg==
   optionalDependencies:
     fsevents "~2.3.2"
+
+rrweb-snapshot@^2.0.0-alpha.4:
+  version "2.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/rrweb-snapshot/-/rrweb-snapshot-2.0.0-alpha.4.tgz#2801bf5946177b9d685a01661a62d9d2e958f174"
+  integrity sha512-KQ2OtPpXO5jLYqg1OnXS/Hf+EzqnZyP5A+XPqBCjYpj3XIje/Od4gdUwjbFo3cVuWq5Cw5Y1d3/xwgIS7/XpQQ==
 
 run-parallel@^1.1.9:
   version "1.2.0"

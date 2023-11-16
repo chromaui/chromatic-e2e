@@ -33,12 +33,7 @@ export class ArchiveFile {
   }
 
   originalSrc() {
-    if (this.url.origin === this.siteUrl.origin) {
-      // Same-domain assets that we capture will be stripped of the domain in the source
-      return `${this.url.pathname}${this.url.search}`;
-    }
-
-    return this.url.href;
+    return this.url.toString();
   }
 
   toFileSystemPath() {

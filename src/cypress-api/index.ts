@@ -1,4 +1,4 @@
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import type { elementNode } from 'rrweb-snapshot';
 import { writeTestResult } from '../write-archive';
 import type { ChromaticStorybookParameters } from '../types';
 import type { ResourceArchive } from '../resource-archive';

@@ -23,6 +23,8 @@ const snapshotJson = {
   ],
 };
 
+const pageUrl = 'http://localhost:3000';
+
 describe('writeTestResult', () => {
   beforeEach(() => {
     fs.ensureDir.mockClear();
@@ -42,7 +44,8 @@ describe('writeTestResult', () => {
         diffThreshold: 5,
         pauseAnimationAtEnd: true,
         viewports: [720],
-      }
+      },
+      pageUrl
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
@@ -100,7 +103,8 @@ describe('writeTestResult', () => {
           contentType: 'image/png',
         },
       },
-      { viewports: [720] }
+      { viewports: [720] },
+      pageUrl
     );
 
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
@@ -138,7 +142,8 @@ describe('writeTestResult', () => {
       } as TestInfo,
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      { viewports: [720] }
+      { viewports: [720] },
+      pageUrl
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);

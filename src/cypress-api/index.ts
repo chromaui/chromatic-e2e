@@ -8,6 +8,7 @@ interface ArchiveParams {
   domSnapshots: elementNode[];
   resourceArchive: ResourceArchive;
   chromaticStorybookParams: ChromaticStorybookParameters;
+  pageUrl: string;
 }
 
 const doArchive = async ({
@@ -15,6 +16,7 @@ const doArchive = async ({
   domSnapshots,
   resourceArchive,
   chromaticStorybookParams,
+  pageUrl,
 }: ArchiveParams) => {
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -43,7 +45,8 @@ const doArchive = async ({
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),
-    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } }
+    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } },
+    pageUrl
   );
 };
 

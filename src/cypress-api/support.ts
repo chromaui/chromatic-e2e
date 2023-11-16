@@ -58,14 +58,17 @@ const completeArchive = () => {
       const snap = snapshot(doc, { noAbsolute: true });
       // @ts-expect-error will fix when Cypress has its own package
       cy.get('@manualSnapshots').then((manualSnapshots = []) => {
-        // pass the snapshot to the server to write to disk
-        cy.task('archiveCypress', {
-          testTitle: Cypress.currentTest.title,
-          domSnapshots: [...manualSnapshots, snap],
-          resourceArchive: archive,
-          chromaticStorybookParams: {
-            diffThreshold: Cypress.env('diffThreshold'),
-          },
+        cy.url().then((url) => {
+          // pass the snapshot to the server to write to disk
+          cy.task('archiveCypress', {
+            testTitle: Cypress.currentTest.title,
+            domSnapshots: [...manualSnapshots, snap],
+            resourceArchive: archive,
+            chromaticStorybookParams: {
+              diffThreshold: Cypress.env('diffThreshold'),
+            },
+            pageUrl: url,
+          });
         });
       });
     });

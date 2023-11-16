@@ -92,7 +92,13 @@ export const makeTest = (
           viewports: [page.viewportSize().width],
         };
 
-        await writeTestResult(testInfo, snapshots, resourceArchive, chromaticStorybookParams);
+        await writeTestResult(
+          testInfo,
+          snapshots,
+          resourceArchive,
+          chromaticStorybookParams,
+          page.url()
+        );
 
         trackComplete();
       },

@@ -26,6 +26,10 @@ class Watcher {
 
   private globalNetworkTimeoutMs;
 
+  /** 
+   Specifies which domains (origins) we should archive resources for (by default we only archive same-origin resources).
+   Useful in situations where the environment running the archived storybook (e.g. in CI) may be restricted to an intranet or other domain restrictions
+  */
   private allowedExternalDomains: string[];
 
   /**

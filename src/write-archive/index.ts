@@ -29,7 +29,8 @@ export async function writeTestResult(
   testInfo: TestInfo,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
-  chromaticStorybookParams: ChromaticStorybookParameters
+  chromaticStorybookParams: ChromaticStorybookParameters,
+  pageUrl: string
 ) {
   const { title, outputDir } = testInfo;
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
@@ -50,7 +51,7 @@ export async function writeTestResult(
     Object.entries(archive).map(async ([url, response]) => {
       if ('error' in response) return;
 
-      const archiveFile = new ArchiveFile(url, response);
+      const archiveFile = new ArchiveFile(url, response, pageUrl);
       const origSrcPath = archiveFile.originalSrc();
       const fileSystemPath = archiveFile.toFileSystemPath();
 

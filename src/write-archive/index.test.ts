@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import type { TestInfo } from '@playwright/test';
-import { NodeType } from '@chromaui/rrweb-snapshot';
+import { NodeType } from 'rrweb-snapshot';
 import { writeTestResult } from '.';
 
 jest.mock('fs-extra');
@@ -11,13 +11,13 @@ const snapshotJson = {
     {
       type: NodeType.Element,
       attributes: {
-        src: '/home/',
+        src: 'http://localhost:3000/home/',
       },
     },
     {
       type: NodeType.Element,
       attributes: {
-        src: '/img?src=some-path',
+        src: 'http://localhost:3000/img?src=some-path',
       },
     },
   ],

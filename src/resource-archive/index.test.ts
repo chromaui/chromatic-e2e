@@ -174,9 +174,9 @@ describe('new', () => {
     const complete = await createResourceArchive({
       page,
       allowedArchiveDomains: [
-        // external origins we allow-list
-        'https://i-ama.fake',
-        'https://another-domain.com',
+        // external domains we allow-list
+        'i-ama.fake',
+        'another-domain.com',
       ],
     });
 

@@ -24,9 +24,9 @@ export interface ChromaticConfig {
   // each test will wait for the network to be idle while archiving resources.
   resourceArchiveTimeout?: number;
 
-  // domains (besides localhost) that assets should be archived from
+  // domains (besides where the test is being run from) that assets should be archived from
   // (needed when, for example, CI environment can't access the archives later on)
-  // ex: https://www.some-domain.com
+  // ex: www.some-domain.com
   allowedArchiveDomains?: string[];
 }
 

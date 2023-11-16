@@ -30,7 +30,7 @@ class Watcher {
    Specifies which domains (origins) we should archive resources for (by default we only archive same-origin resources).
    Useful in situations where the environment running the archived storybook (e.g. in CI) may be restricted to an intranet or other domain restrictions
   */
-  private allowedExternalDomains: string[];
+  private allowedArchiveDomains: string[];
 
   /**
    * We assume the first URL loaded after @watch is called is the base URL of the
@@ -51,7 +51,7 @@ class Watcher {
     allowedDomains?: string[]
   ) {
     this.globalNetworkTimeoutMs = networkTimeoutMs;
-    this.allowedExternalDomains = allowedDomains || [];
+    this.allowedArchiveDomains = allowedDomains || [];
   }
 
   async watch() {
@@ -141,7 +141,7 @@ class Watcher {
 
     const isRequestFromAllowedDomain =
       requestUrl.origin === this.firstUrl.origin ||
-      this.allowedExternalDomains.includes(requestUrl.origin);
+      this.allowedArchiveDomains.includes(requestUrl.origin);
 
     logger.log(
       'requestPaused',
@@ -229,16 +229,16 @@ class Watcher {
 export async function createResourceArchive({
   page,
   networkTimeout,
-  allowedExternalDomains,
+  allowedArchiveDomains,
 }: {
   page: Page;
   networkTimeout?: number;
-  allowedExternalDomains?: string[];
+  allowedArchiveDomains?: string[];
 }): Promise<() => Promise<ResourceArchive>> {
   const watcher = new Watcher(
     page,
     networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-    allowedExternalDomains
+    allowedArchiveDomains
   );
   await watcher.watch();
 

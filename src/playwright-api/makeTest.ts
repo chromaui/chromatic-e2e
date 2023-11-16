@@ -33,7 +33,7 @@ export const makeTest = (
     pauseAnimationAtEnd: [undefined, { option: true }],
     prefersReducedMotion: [undefined, { option: true }],
     resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
-    allowedExternalDomains: [[], { option: true }],
+    allowedArchiveDomains: [[], { option: true }],
 
     save: [
       async (
@@ -47,7 +47,7 @@ export const makeTest = (
           pauseAnimationAtEnd,
           prefersReducedMotion,
           resourceArchiveTimeout,
-          allowedExternalDomains,
+          allowedArchiveDomains,
         },
         use,
         testInfo
@@ -66,7 +66,7 @@ export const makeTest = (
         const completeArchive = await createResourceArchive({
           page,
           networkTimeout: resourceArchiveTimeout,
-          allowedExternalDomains,
+          allowedArchiveDomains,
         });
         await use();
 

@@ -27,7 +27,7 @@ export interface ChromaticConfig {
   // domains (besides localhost) that assets should be archived from
   // (needed when, for example, CI environment can't access the archives later on)
   // ex: https://www.some-domain.com
-  allowedExternalDomains?: string[];
+  allowedArchiveDomains?: string[];
 }
 
 export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoCapture'> {

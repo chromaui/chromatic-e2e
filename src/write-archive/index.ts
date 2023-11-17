@@ -1,6 +1,5 @@
 import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
-import type { TestInfo } from '@playwright/test';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';

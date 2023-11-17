@@ -1,4 +1,3 @@
-import fs from 'fs';
 import type { elementNode } from 'rrweb-snapshot';
 import { writeTestResult } from '../write-archive';
 import type { ChromaticStorybookParameters } from '../types';
@@ -39,9 +38,9 @@ const doArchive = async ({
   await writeTestResult(
     {
       title: testTitle,
-      // doesn't matter what value we put here, as long as it's a subdirectory of where we want this to actually go
+      // this will store it at ./cypress/downloads (the last directory doesn't matter)
       // TODO: change so we don't have to do this trickery
-      outputDir: './some',
+      outputDir: './cypress/downloads/some',
       pageUrl,
     },
     allSnapshots,
@@ -55,16 +54,4 @@ export const archiveCypress = async (params: ArchiveParams): Promise<null> => {
   await doArchive(params);
 
   return null;
-};
-
-/**
- * To be run in the before:run Cypress command
- * before:run only runs if Cypress is in non-interactive mode, e.g. "npx cypress run" (https://docs.cypress.io/api/plugins/before-run-api#Syntax)
- */
-export const ensureCleanDirectory = () => {
-  const archivesPath = './chromatic-archives';
-  // remove archives directory so we have a fresh start with each run
-  if (fs.existsSync(archivesPath)) {
-    fs.rmSync(archivesPath, { recursive: true });
-  }
 };

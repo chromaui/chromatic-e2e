@@ -23,6 +23,11 @@ export interface ChromaticConfig {
   // Specify a network timeout, in milliseconds. This is the maximum amount of time that
   // each test will wait for the network to be idle while archiving resources.
   resourceArchiveTimeout?: number;
+
+  // domains (besides where the test is being run from) that assets should be archived from
+  // (needed when, for example, CI environment can't access the archives later on)
+  // ex: www.some-domain.com
+  allowedArchiveDomains?: string[];
 }
 
 export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoCapture'> {

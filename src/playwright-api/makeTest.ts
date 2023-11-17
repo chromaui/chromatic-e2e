@@ -5,7 +5,7 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
-import type { ChromaticConfig, ChromaticStorybookParameters } from '../types';
+import type { ChromaticConfig } from '../types';
 import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
@@ -33,6 +33,7 @@ export const makeTest = (
     pauseAnimationAtEnd: [undefined, { option: true }],
     prefersReducedMotion: [undefined, { option: true }],
     resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
+    allowedArchiveDomains: [[], { option: true }],
 
     save: [
       async (
@@ -46,6 +47,7 @@ export const makeTest = (
           pauseAnimationAtEnd,
           prefersReducedMotion,
           resourceArchiveTimeout,
+          allowedArchiveDomains,
         },
         use,
         testInfo
@@ -61,7 +63,11 @@ export const makeTest = (
           return;
         }
 
-        const completeArchive = await createResourceArchive(page, resourceArchiveTimeout);
+        const completeArchive = await createResourceArchive({
+          page,
+          networkTimeout: resourceArchiveTimeout,
+          allowedArchiveDomains,
+        });
         await use();
 
         if (!disableAutoCapture) {
@@ -86,7 +92,12 @@ export const makeTest = (
           viewports: [page.viewportSize().width],
         };
 
-        await writeTestResult(testInfo, snapshots, resourceArchive, chromaticStorybookParams);
+        await writeTestResult(
+          { ...testInfo, pageUrl: page.url() },
+          snapshots,
+          resourceArchive,
+          chromaticStorybookParams
+        );
 
         trackComplete();
       },

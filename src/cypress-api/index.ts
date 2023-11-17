@@ -8,6 +8,7 @@ interface ArchiveParams {
   domSnapshots: elementNode[];
   resourceArchive: ResourceArchive;
   chromaticStorybookParams: ChromaticStorybookParameters;
+  pageUrl: string;
 }
 
 const doArchive = async ({
@@ -15,6 +16,7 @@ const doArchive = async ({
   domSnapshots,
   resourceArchive,
   chromaticStorybookParams,
+  pageUrl,
 }: ArchiveParams) => {
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -34,15 +36,16 @@ const doArchive = async ({
   );
 
   await writeTestResult(
-    // @ts-expect-error will fix when Cypress has its own package
     {
       title: testTitle,
       // doesn't matter what value we put here, as long as it's a subdirectory of where we want this to actually go
       // TODO: change so we don't have to do this trickery
       outputDir: './some',
+      pageUrl,
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),
+    // @ts-expect-error will fix when Cypress has its own package
     { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } }
   );
 };

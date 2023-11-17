@@ -3,11 +3,10 @@ import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
-import { createResourceArchive, type ResourceArchive } from './index';
-import { expectArchiveContains } from '../utils/testUtils';
+import { createResourceArchive } from './index';
 import { logger } from '../utils/logger';
 
-const { TEST_PORT = 13337 } = process.env;
+const TEST_PORT = 13337;
 
 const baseUrl = `http://localhost:${TEST_PORT}`;
 
@@ -30,6 +29,10 @@ const styleCss = dedent`
 
 const imgPng =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
+// stubbed external imgs so we're not relying on a placeholder
+const externalImgPng = 'iamexternal';
+const anotherExternalImg = 'anotherone';
 
 const pathToResponseInfo = {
   '/': {
@@ -75,17 +78,30 @@ describe('new', () => {
   const mockWarn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
 
   beforeEach(async () => {
+    // create a bare-bones Playwright test launch (https://playwright.dev/docs/library)
     browser = await chromium.launch();
     page = await browser.newPage();
+
+    // mock external image requests
+    await page.route('https://i-ama.fake/external/domain/image.png', async (route) => {
+      await route.fulfill({ body: Buffer.from(externalImgPng, 'base64') });
+    });
+
+    await page.route('https://another-domain.com/picture.png', async (route) => {
+      await route.fulfill({ body: Buffer.from(anotherExternalImg, 'base64') });
+    });
+
+    await page.route('https://unwanted-domain.com/img.png', async (route) => {
+      await route.fulfill({ body: Buffer.from(anotherExternalImg, 'base64') });
+    });
   });
 
   afterEach(async () => {
     await browser.close();
   });
 
-  // eslint-disable-next-line jest/expect-expect
   it('should log if the network times out waiting for requests', async () => {
-    const complete = await createResourceArchive(page, 1);
+    const complete = await createResourceArchive({ page, networkTimeout: 1 });
 
     await page.goto(baseUrl);
 
@@ -95,29 +111,105 @@ describe('new', () => {
     expect(mockWarn).toBeCalledWith(`Global timeout of 1ms reached`);
   });
 
-  // eslint-disable-next-line jest/expect-expect
   it('gathers basic resources used by the page', async () => {
-    const complete = await createResourceArchive(page);
+    const complete = await createResourceArchive({ page });
 
     await page.goto(baseUrl);
 
     const archive = await complete();
 
-    expectArchiveContains(archive, ['/img.png', '/style.css'], pathToResponseInfo, baseUrl);
+    expect(archive).toEqual({
+      'http://localhost:13337/style.css': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(styleCss),
+        contentType: 'text/css; charset=utf-8',
+      },
+      'http://localhost:13337/img.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(imgPng, 'base64'),
+        contentType: undefined,
+      },
+    });
   });
 
-  // eslint-disable-next-line jest/expect-expect
   it('ignores remote resources', async () => {
-    const externalUrl =
-      'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+    const externalUrl = 'https://i-ama.fake/external/domain/image.png';
     const indexPath = `/?inject=${encodeURIComponent(`<img src="${externalUrl}">`)}`;
 
-    const complete = await createResourceArchive(page);
+    const complete = await createResourceArchive({ page });
 
     await page.goto(new URL(indexPath, baseUrl).toString());
 
     const archive = await complete();
 
-    expectArchiveContains(archive, ['/img.png', '/style.css'], pathToResponseInfo, baseUrl);
+    expect(archive).toEqual({
+      'http://localhost:13337/style.css': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(styleCss),
+        contentType: 'text/css; charset=utf-8',
+      },
+      'http://localhost:13337/img.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(imgPng, 'base64'),
+        contentType: undefined,
+      },
+    });
+  });
+
+  it('includes remote resource when told to', async () => {
+    const externalUrls = [
+      'https://i-ama.fake/external/domain/image.png',
+      'https://another-domain.com/picture.png',
+      // this image won't be in allow-list
+      'https://unwanted-domain.com/img.png',
+    ];
+    const indexPath = `/?inject=${encodeURIComponent(
+      externalUrls.map((url) => `<img src="${url}">`).join()
+    )}`;
+
+    const complete = await createResourceArchive({
+      page,
+      allowedArchiveDomains: [
+        // external domains we allow-list
+        'i-ama.fake',
+        'another-domain.com',
+      ],
+    });
+
+    await page.goto(new URL(indexPath, baseUrl).toString());
+
+    const archive = await complete();
+
+    expect(archive).toEqual({
+      'http://localhost:13337/style.css': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(styleCss),
+        contentType: 'text/css; charset=utf-8',
+      },
+      'http://localhost:13337/img.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(imgPng, 'base64'),
+        contentType: undefined,
+      },
+      // includes cross-origin images
+      'https://i-ama.fake/external/domain/image.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(externalImgPng, 'base64'),
+        contentType: undefined,
+      },
+      'https://another-domain.com/picture.png': {
+        statusCode: 200,
+        statusText: 'OK',
+        body: Buffer.from(anotherExternalImg, 'base64'),
+        contentType: undefined,
+      },
+    });
   });
 });

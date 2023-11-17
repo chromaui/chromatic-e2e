@@ -1,6 +1,5 @@
 import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
-import type { TestInfo } from '@playwright/test';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';
@@ -25,13 +24,19 @@ export const sanitize = (string: string) => {
 // archive/<test-title>.json
 // archive/<file>.<ext>
 
+interface E2ETestInfo {
+  title: string;
+  outputDir: string;
+  pageUrl: string;
+}
+
 export async function writeTestResult(
-  testInfo: TestInfo,
+  e2eTestInfo: E2ETestInfo,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { title, outputDir } = testInfo;
+  const { title, outputDir, pageUrl } = e2eTestInfo;
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');
@@ -50,7 +55,7 @@ export async function writeTestResult(
     Object.entries(archive).map(async ([url, response]) => {
       if ('error' in response) return;
 
-      const archiveFile = new ArchiveFile(url, response);
+      const archiveFile = new ArchiveFile(url, response, pageUrl);
       const origSrcPath = archiveFile.originalSrc();
       const fileSystemPath = archiveFile.toFileSystemPath();
 

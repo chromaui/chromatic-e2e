@@ -23,10 +23,13 @@ export class ArchiveFile {
 
   shortenedFileNameLength: number;
 
-  constructor(url: UrlString, response: ArchiveResponse) {
+  pageUrl: URL;
+
+  constructor(url: UrlString, response: ArchiveResponse, pageUrl: UrlString) {
     this.url = new URL(url);
     this.response = response;
     this.shortenedFileNameLength = 250;
+    this.pageUrl = new URL(pageUrl);
   }
 
   originalSrc() {
@@ -36,6 +39,7 @@ export class ArchiveFile {
   toFileSystemPath() {
     let sanitizedSrc = this.url.pathname;
 
+    sanitizedSrc = this.preserveExternalDomain(this.url);
     sanitizedSrc = this.ensureNonDirectory(sanitizedSrc);
     sanitizedSrc = this.encodeQueryString(sanitizedSrc);
     sanitizedSrc = this.truncateFileName(sanitizedSrc);
@@ -89,6 +93,17 @@ export class ArchiveFile {
     }
 
     return nameWithExtension;
+  }
+
+  private preserveExternalDomain(fullUrl: URL) {
+    if (fullUrl.origin === this.pageUrl.origin) {
+      return fullUrl.pathname;
+    }
+
+    // Windows doesn't support colons in file names
+    const encodedHost = encodeURIComponent(fullUrl.host);
+
+    return `/${encodedHost}/${fullUrl.pathname}`;
   }
 
   private hash(name: string) {

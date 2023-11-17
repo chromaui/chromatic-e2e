@@ -26,6 +26,12 @@ class Watcher {
 
   private globalNetworkTimeoutMs;
 
+  /** 
+   Specifies which domains (origins) we should archive resources for (by default we only archive same-origin resources).
+   Useful in situations where the environment running the archived storybook (e.g. in CI) may be restricted to an intranet or other domain restrictions
+  */
+  private allowedArchiveOrigins: string[];
+
   /**
    * We assume the first URL loaded after @watch is called is the base URL of the
    * page and we only save resources that are loaded from the same protocol/host/port combination.
@@ -39,8 +45,14 @@ class Watcher {
 
   private globalNetworkResolver: () => void;
 
-  constructor(private page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) {
+  constructor(
+    private page: Page,
+    networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
+    allowedDomains?: string[]
+  ) {
     this.globalNetworkTimeoutMs = networkTimeoutMs;
+    // tack on the protocol so we can properly check if requests are cross-origin
+    this.allowedArchiveOrigins = (allowedDomains || []).map((domain) => `https://${domain}`);
   }
 
   async watch() {
@@ -128,17 +140,16 @@ class Watcher {
 
     this.firstUrl ??= requestUrl;
 
-    const isLocalRequest =
-      requestUrl.protocol === this.firstUrl.protocol &&
-      requestUrl.host === this.firstUrl.host &&
-      requestUrl.port === this.firstUrl.port;
+    const isRequestFromAllowedDomain =
+      requestUrl.origin === this.firstUrl.origin ||
+      this.allowedArchiveOrigins.includes(requestUrl.origin);
 
     logger.log(
       'requestPaused',
       requestUrl.toString(),
       responseStatusCode || responseErrorReason ? 'response' : 'request',
       this.firstUrl.toString(),
-      isLocalRequest
+      isRequestFromAllowedDomain
     );
 
     if (this.closed) {
@@ -178,7 +189,7 @@ class Watcher {
 
       // No need to capture the response of the top level page request
       const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
-      if (isLocalRequest && !isFirstRequest) {
+      if (isRequestFromAllowedDomain && !isFirstRequest) {
         this.archive[request.url] = {
           statusCode: responseStatusCode,
           statusText: responseStatusText,
@@ -216,11 +227,20 @@ class Watcher {
   }
 }
 
-export async function createResourceArchive(
-  page: Page,
-  networkTimeout = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS
-): Promise<() => Promise<ResourceArchive>> {
-  const watcher = new Watcher(page, networkTimeout);
+export async function createResourceArchive({
+  page,
+  networkTimeout,
+  allowedArchiveDomains,
+}: {
+  page: Page;
+  networkTimeout?: number;
+  allowedArchiveDomains?: string[];
+}): Promise<() => Promise<ResourceArchive>> {
+  const watcher = new Watcher(
+    page,
+    networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
+    allowedArchiveDomains
+  );
   await watcher.watch();
 
   return async () => {

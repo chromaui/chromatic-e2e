@@ -23,13 +23,13 @@ export class ArchiveFile {
 
   shortenedFileNameLength: number;
 
-  siteUrl: URL;
+  pageUrl: URL;
 
-  constructor(url: UrlString, response: ArchiveResponse, siteUrl: UrlString) {
+  constructor(url: UrlString, response: ArchiveResponse, pageUrl: UrlString) {
     this.url = new URL(url);
     this.response = response;
     this.shortenedFileNameLength = 250;
-    this.siteUrl = new URL(siteUrl);
+    this.pageUrl = new URL(pageUrl);
   }
 
   originalSrc() {
@@ -96,7 +96,7 @@ export class ArchiveFile {
   }
 
   private preserveExternalDomain(fullUrl: URL) {
-    if (fullUrl.origin === this.siteUrl.origin) {
+    if (fullUrl.origin === this.pageUrl.origin) {
       return fullUrl.pathname;
     }
 

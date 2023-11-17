@@ -1,3 +1,15 @@
+# v0.0.39 (Fri Nov 17 2023)
+
+#### 🐛 Bug Fix
+
+- Allow archiving from specified external domains [#37](https://github.com/chromaui/test-archiver/pull/37) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.38 (Thu Nov 16 2023)
 
 #### 🐛 Bug Fix

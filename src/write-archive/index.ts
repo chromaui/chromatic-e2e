@@ -25,14 +25,19 @@ export const sanitize = (string: string) => {
 // archive/<test-title>.json
 // archive/<file>.<ext>
 
+interface E2ETestInfo {
+  title: string;
+  outputDir: string;
+  pageUrl: string;
+}
+
 export async function writeTestResult(
-  testInfo: TestInfo,
+  e2eTestInfo: E2ETestInfo,
   domSnapshots: Record<string, Buffer>,
   archive: ResourceArchive,
-  chromaticStorybookParams: ChromaticStorybookParameters,
-  pageUrl: string
+  chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { title, outputDir } = testInfo;
+  const { title, outputDir, pageUrl } = e2eTestInfo;
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');

@@ -93,11 +93,10 @@ export const makeTest = (
         };
 
         await writeTestResult(
-          testInfo,
+          { ...testInfo, pageUrl: page.url() },
           snapshots,
           resourceArchive,
-          chromaticStorybookParams,
-          page.url()
+          chromaticStorybookParams
         );
 
         trackComplete();

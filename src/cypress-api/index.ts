@@ -36,17 +36,17 @@ const doArchive = async ({
   );
 
   await writeTestResult(
-    // @ts-expect-error will fix when Cypress has its own package
     {
       title: testTitle,
       // doesn't matter what value we put here, as long as it's a subdirectory of where we want this to actually go
       // TODO: change so we don't have to do this trickery
       outputDir: './some',
+      pageUrl,
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),
-    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } },
-    pageUrl
+    // @ts-expect-error will fix when Cypress has its own package
+    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } }
   );
 };
 

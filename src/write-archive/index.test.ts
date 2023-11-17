@@ -1,6 +1,5 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import type { TestInfo } from '@playwright/test';
 import { NodeType } from 'rrweb-snapshot';
 import { writeTestResult } from '.';
 
@@ -23,8 +22,6 @@ const snapshotJson = {
   ],
 };
 
-const pageUrl = 'http://localhost:3000';
-
 describe('writeTestResult', () => {
   beforeEach(() => {
     fs.ensureDir.mockClear();
@@ -37,15 +34,18 @@ describe('writeTestResult', () => {
     fs.ensureDir.mockReturnValue(true);
     await writeTestResult(
       // the default output directory in playwright
-      { title: 'Test Story', outputDir: resolve('test-results/test-story-chromium') } as TestInfo,
+      {
+        title: 'Test Story',
+        outputDir: resolve('test-results/test-story-chromium'),
+        pageUrl: 'http://localhost:3000/',
+      },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
       {
         diffThreshold: 5,
         pauseAnimationAtEnd: true,
         viewports: [720],
-      },
-      pageUrl
+      }
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
@@ -90,7 +90,11 @@ describe('writeTestResult', () => {
 
     await writeTestResult(
       // the default output directory in playwright
-      { title: 'Toy Story', outputDir: resolve('test-results/toy-story-chromium') } as TestInfo,
+      {
+        title: 'Toy Story',
+        outputDir: resolve('test-results/toy-story-chromium'),
+        pageUrl: 'http://localhost:3000/',
+      },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       {
         'http://localhost:3000/home/': {
@@ -103,8 +107,7 @@ describe('writeTestResult', () => {
           contentType: 'image/png',
         },
       },
-      { viewports: [720] },
-      pageUrl
+      { viewports: [720] }
     );
 
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
@@ -139,11 +142,11 @@ describe('writeTestResult', () => {
         title: 'Test Story',
         // simulates setting a custom output directory in Playwright
         outputDir: resolve('some-custom-directory/directory/test-story-chromium'),
-      } as TestInfo,
+        pageUrl: 'http://localhost:3000/',
+      },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      { viewports: [720] },
-      pageUrl
+      { viewports: [720] }
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);

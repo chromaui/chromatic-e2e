@@ -38,9 +38,9 @@ const doArchive = async ({
   await writeTestResult(
     {
       title: testTitle,
-      // doesn't matter what value we put here, as long as it's a subdirectory of where we want this to actually go
+      // this will store it at ./cypress/downloads (the last directory doesn't matter)
       // TODO: change so we don't have to do this trickery
-      outputDir: './some',
+      outputDir: './cypress/downloads/some',
       pageUrl,
     },
     allSnapshots,

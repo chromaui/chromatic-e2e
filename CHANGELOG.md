@@ -1,3 +1,15 @@
+# v0.0.40 (Mon Nov 20 2023)
+
+#### 🐛 Bug Fix
+
+- Put Cypress archives in temp directory [#38](https://github.com/chromaui/test-archiver/pull/38) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.39 (Fri Nov 17 2023)
 
 #### 🐛 Bug Fix

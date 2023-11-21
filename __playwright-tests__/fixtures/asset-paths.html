@@ -28,5 +28,16 @@
       <div class="with-rewritten-background-img-inline"></div>
       <div style="background: url('/img?url=fixtures/pink.png'); no-repeat center;"></div>
     </div>
+
+    <h2>srcset</h2>
+
+    <img
+      class="border-2 border-black ml-1 w-48"
+      srcset="/img?url=fixtures/blue.png&cachebust=srcset 384w, /img?url=fixtures/pink.png&cachebust=srcset 1920w"
+      sizes="(min-width: 768px) 768px, 192px"
+      src="/img?url=fixtures/purple.png&cachebust=srcset"
+    />
+    <p class="text-sm">blue < 768px <= pink</p>
+    
   </body>
 </html>

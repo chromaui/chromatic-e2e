@@ -4,7 +4,7 @@ Archive end-to-end tests to be replayed in Storybook and Chromatic
 
 ## Getting Started
 
-See the [Documentation](https://www.chromatic.com/docs/e2e-visual-tests/).
+See the [documentation](https://www.chromatic.com/docs/e2e-visual-tests/).
 
 ## Contributing
 

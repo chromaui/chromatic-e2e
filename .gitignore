@@ -12,3 +12,4 @@ test-archives
 /test-results/
 /playwright-report/
 /playwright/.cache/
+.vscode/**

@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Dynamic Content E2E Tests</title>
+        <style>
+            * {
+                color: white;
+            }
+            body {
+                background-color: teal;
+            }
+
+            #time-e2e-test-ignore {
+                font-size: 16pt;
+                width: 100vw;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container" style="background-color: teal">
+            <h1>Hello There! The current time is:</h1>
+            <div data-chromatic="ignore" class="chromatic-ignore" id="time-e2e-test-ignore"></div>
+        </div>
+
+        <script>
+            let date = new Date();
+            document.getElementById('time-e2e-test-ignore').innerText = date.toTimeString();
+        </script>
+    </body>
+</html>

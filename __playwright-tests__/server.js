@@ -18,6 +18,10 @@ app.get('/asset-paths', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/asset-paths.html'));
 });
 
+app.get('/ignore', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/dynamic-content.html'));
+});
+
 app.get('/forms', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/forms.html'));
 });

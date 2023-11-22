@@ -1,3 +1,15 @@
+# v0.0.42 (Wed Nov 22 2023)
+
+#### 🐛 Bug Fix
+
+- Archive assets from img srcsets [#40](https://github.com/chromaui/test-archiver/pull/40) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.41 (Wed Nov 22 2023)
 
 #### 🐛 Bug Fix

@@ -1,3 +1,15 @@
+# v0.0.41 (Wed Nov 22 2023)
+
+#### 🐛 Bug Fix
+
+- Removing duplicate documentation [#39](https://github.com/chromaui/test-archiver/pull/39) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.40 (Mon Nov 20 2023)
 
 #### 🐛 Bug Fix

@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 import type { serializedNodeWithId } from 'rrweb-snapshot';
 import { NodeType } from 'rrweb-snapshot';
+import srcset from 'srcset';
 
 // Matches `url(...)` function in CSS text, excluding data URLs
 const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
@@ -63,6 +64,27 @@ export class DOMSnapshot {
         const mappedCssText = this.mapCssUrls(cssText, sourceMap);
         node.attributes._cssText = mappedCssText;
       }
+
+      // When an image tag has the `srcset` attributes, the browser will choose one of the images
+      // from the `srcset` list to load at render time based on the viewport size. To support this,
+      // we parse the URLs in the `srcset` attribute and try to find a match in the asset map.
+      // If a match is found, we'll overwrite the `src` attribute with the mapped asset path,
+      // and we'll remove the `srcset` and `sizes` attributes because we'll only have captured
+      // the one asset that the browser decided to load when this was rendered. We don't want
+      // the browser to try to load one of the others when this snapshot is rendered in Chromatic
+      // because we won't have archived them.
+      if (node.tagName === 'img' && node.attributes.srcset) {
+        const srcsetValue = node.attributes.srcset as string;
+        const currentSrc = this.mapSrcsetUrls(srcsetValue, sourceMap);
+        if (currentSrc) {
+          node.attributes.src = currentSrc;
+
+          // Remove srcset attributes since we'll only have the one that
+          // loaded on render archived
+          delete node.attributes.srcset;
+          delete node.attributes.sizes;
+        }
+      }
     }
 
     return node;
@@ -87,6 +109,18 @@ export class DOMSnapshot {
       }
       return cssUrl;
     });
+  }
+
+  private mapSrcsetUrls(srcsetValue: string, sourceMap: Map<string, string>) {
+    const parsedSrcset = srcset.parse(srcsetValue);
+    let currentSrc;
+    parsedSrcset.forEach((set) => {
+      if (sourceMap.has(set.url)) {
+        currentSrc = sourceMap.get(set.url);
+      }
+    });
+
+    return currentSrc;
   }
 }
 /* eslint-enable no-underscore-dangle */

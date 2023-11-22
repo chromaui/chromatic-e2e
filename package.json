@@ -1,6 +1,6 @@
 {
   "name": "@chromaui/test-archiver",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "Archive end-to-end tests to be replayed in Storybook and Chromatic",
   "repository": {
     "type": "git",

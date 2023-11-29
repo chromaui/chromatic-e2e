@@ -1,3 +1,15 @@
+# v0.0.43 (Wed Nov 29 2023)
+
+#### 🐛 Bug Fix
+
+- :white_check_mark: Add tests for ignored regions in test archiver. [#41](https://github.com/chromaui/test-archiver/pull/41) ([@jwir3](https://github.com/jwir3))
+
+#### Authors: 1
+
+- Scott Johnson ([@jwir3](https://github.com/jwir3))
+
+---
+
 # v0.0.42 (Wed Nov 22 2023)
 
 #### 🐛 Bug Fix

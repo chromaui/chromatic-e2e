@@ -1,3 +1,15 @@
+# v0.0.44 (Thu Dec 07 2023)
+
+#### 🐛 Bug Fix
+
+- Upgrade archive-storybook [#42](https://github.com/chromaui/test-archiver/pull/42) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.43 (Wed Nov 29 2023)
 
 #### 🐛 Bug Fix

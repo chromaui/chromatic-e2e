@@ -2038,19 +2038,14 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@chromaui/archive-storybook@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@chromaui/archive-storybook/-/archive-storybook-0.0.15.tgz#5319d9b09833881b8644a678eaed508f64755041"
-  integrity sha512-jCojz1UbEeIpPuTZCingeTv4r0OB9XO3yQctsVCKnhZ9TXgmSJ4zZxj9jSdW2UC0CSE8A66lMSgUXWwK8b91Qw==
+"@chromaui/archive-storybook@~0.0.15":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@chromaui/archive-storybook/-/archive-storybook-0.0.18.tgz#cdf8770c2c364f3ed8ca0f8da51be2c3e80680fd"
+  integrity sha512-ZzScZjkvB0my4sXOhxy5lPKe6MkW6yr1qfM9sK43dSdGNs6icfCBi/2+BDgBE63KCUa/MMxW375ULNqsYOXS1w==
   dependencies:
-    "@chromaui/rrweb-snapshot" "2.0.0-alpha.7-noAbsolute.2"
     "@storybook/csf" "^0.1.0"
     lodash.debounce "^4.0.8"
-
-"@chromaui/rrweb-snapshot@2.0.0-alpha.7-noAbsolute.2":
-  version "2.0.0-alpha.7-noAbsolute.2"
-  resolved "https://registry.npmjs.org/@chromaui/rrweb-snapshot/-/rrweb-snapshot-2.0.0-alpha.7-noAbsolute.2.tgz"
-  integrity sha512-vOVSOgfNyxomxm6ENMqm1C4rLkLLOlyEyhR5J2SKBALuFfuJHjhIqNLSOgqVRO9J3++AUOCktknyJ/F+mSvEfA==
+    rrweb-snapshot "^2.0.0-alpha.4"
 
 "@colors/colors@1.5.0":
   version "1.5.0"
@@ -3723,9 +3718,9 @@
     ts-dedent "^2.0.0"
 
 "@storybook/csf@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@storybook/csf/-/csf-0.1.1.tgz#abccc8c3e49aed0a6a7e87beb0d1c262b1921c06"
-  integrity sha512-4hE3AlNVxR60Wc5KSC68ASYzUobjPqtSKyhV6G+ge0FIXU55N5nTY7dXGRZHQGDBPq+XqchMkIdlkHPRs8nTHg==
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@storybook/csf/-/csf-0.1.2.tgz#8e7452f0097507f5841b5ade3f5da1525bc9afb2"
+  integrity sha512-ePrvE/pS1vsKR9Xr+o+YwdqNgHUyXvg+1Xjx0h9LrVx7Zq4zNe06pd63F5EvzTbCbJsHj7GHr9tkiaqm7U8WRA==
   dependencies:
     type-fest "^2.19.0"
 
@@ -9568,7 +9563,7 @@ lodash.chunk@^4.2.0:
 
 lodash.debounce@^4.0.8:
   version "4.0.8"
-  resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
 
 lodash.get@^4:

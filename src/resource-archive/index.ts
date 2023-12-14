@@ -202,24 +202,6 @@ class Watcher {
       return;
     }
 
-    const response = this.archive[request.url];
-    if (response && 'statusCode' in response) {
-      logger.log(`pausing request we've seen before, sending previous response`);
-      logger.log({
-        requestId,
-        responseCode: response.statusCode,
-        responsePhrase: response.statusText,
-      });
-      await this.clientSend(request, 'Fetch.fulfillRequest', {
-        requestId,
-        responseCode: response.statusCode,
-        ...(response.statusText && { responsePhrase: response.statusText }),
-        // responseHeaders: response.headers, TODO - mapping
-        body: response.body.toString('base64'),
-      });
-      return;
-    }
-
     await this.clientSend(request, 'Fetch.continueRequest', {
       requestId,
       interceptResponse: true,

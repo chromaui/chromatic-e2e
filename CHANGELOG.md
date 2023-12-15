@@ -1,3 +1,15 @@
+# v0.0.46 (Fri Dec 15 2023)
+
+#### 🐛 Bug Fix
+
+- Remove problematic chars from asset filenames [#44](https://github.com/chromaui/test-archiver/pull/44) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.45 (Fri Dec 15 2023)
 
 #### 🐛 Bug Fix

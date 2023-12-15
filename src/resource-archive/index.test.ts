@@ -129,7 +129,7 @@ describe('new', () => {
         statusCode: 200,
         statusText: 'OK',
         body: Buffer.from(imgPng, 'base64'),
-        contentType: undefined,
+        contentType: 'image/png',
       },
     });
   });
@@ -155,7 +155,7 @@ describe('new', () => {
         statusCode: 200,
         statusText: 'OK',
         body: Buffer.from(imgPng, 'base64'),
-        contentType: undefined,
+        contentType: 'image/png',
       },
     });
   });
@@ -195,7 +195,7 @@ describe('new', () => {
         statusCode: 200,
         statusText: 'OK',
         body: Buffer.from(imgPng, 'base64'),
-        contentType: undefined,
+        contentType: 'image/png',
       },
       // includes cross-origin images
       'https://i-ama.fake/external/domain/image.png': {

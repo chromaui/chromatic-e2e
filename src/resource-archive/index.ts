@@ -190,7 +190,7 @@ class Watcher {
 
       // If the Content-Type header is present, let's capture it.
       const contentTypeHeader: Protocol.Fetch.HeaderEntry = responseHeaders.find(
-        ({ name }) => name === 'Content-Type'
+        ({ name }) => name.toLowerCase() === 'content-type'
       );
 
       // No need to capture the response of the top level page request

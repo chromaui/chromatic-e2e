@@ -87,7 +87,7 @@ describe('ArchiveFile', () => {
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/localhost%3A9999/some/directory/hi.png');
+      expect(filePath).toEqual('/localhost3A9999/some/directory/hi.png');
     });
   });
 

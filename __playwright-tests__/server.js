@@ -63,6 +63,10 @@ app.get('/img/another', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
 });
 
+app.get('/img/another%Cwith%Cpercents', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
+});
+
 app.get('/asset-paths/relative/purple.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
 });

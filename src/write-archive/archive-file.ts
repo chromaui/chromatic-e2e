@@ -14,6 +14,7 @@ import type { ArchiveResponse, UrlString } from '../resource-archive';
  * - encoding the query string into the file name to avoid overwriting files
  *   that have a different response due to the query string
  * - truncating file names and path parts that are too big for some file systems
+ * - removing problematic characters
  * - ensuring the file name has an extension
  */
 export class ArchiveFile {
@@ -43,6 +44,7 @@ export class ArchiveFile {
     sanitizedSrc = this.ensureNonDirectory(sanitizedSrc);
     sanitizedSrc = this.encodeQueryString(sanitizedSrc);
     sanitizedSrc = this.truncateFileName(sanitizedSrc);
+    sanitizedSrc = this.removeSpecialChars(sanitizedSrc);
     sanitizedSrc = this.addExtension(sanitizedSrc);
 
     return sanitizedSrc;
@@ -78,6 +80,11 @@ export class ArchiveFile {
 
     // Re-join the pieces
     return `${pathname.startsWith('/') ? '/' : ''}${path.join(...rebuiltPieces)}`;
+  }
+
+  private removeSpecialChars(pathname: string) {
+    // The storybook server seems to have a problem with percents in file names
+    return pathname.replace(/[%]/g, '');
   }
 
   private addExtension(pathname: string) {

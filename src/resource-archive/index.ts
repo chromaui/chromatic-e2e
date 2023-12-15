@@ -136,6 +136,12 @@ class Watcher {
       return;
     }
 
+    // There's no reponse body for us to archive on 304s
+    if (responseStatusCode === 304) {
+      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
+      return;
+    }
+
     const requestUrl = new URL(request.url);
 
     this.firstUrl ??= requestUrl;

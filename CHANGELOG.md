@@ -1,3 +1,15 @@
+# v0.0.45 (Fri Dec 15 2023)
+
+#### 🐛 Bug Fix
+
+- Remove asset caching [#43](https://github.com/chromaui/test-archiver/pull/43) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.44 (Thu Dec 07 2023)
 
 #### 🐛 Bug Fix

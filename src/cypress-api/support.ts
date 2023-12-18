@@ -1,5 +1,5 @@
 import { snapshot } from 'rrweb-snapshot';
-import type { ResourceArchive } from '../resource-archive';
+import type { ResourceArchive } from '../../packages/shared/src/resource-archive';
 import './commands';
 
 const setupNetworkListener = () => {

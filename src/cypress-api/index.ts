@@ -1,7 +1,7 @@
 import type { elementNode } from 'rrweb-snapshot';
-import { writeTestResult } from '../write-archive';
-import type { ChromaticStorybookParameters } from '../types';
-import type { ResourceArchive } from '../resource-archive';
+import { writeTestResult } from '../../packages/shared/src/write-archive';
+import type { ChromaticStorybookParameters } from '../../packages/shared/src/types';
+import type { ResourceArchive } from '../../packages/shared/src/resource-archive';
 
 interface ArchiveParams {
   testTitle: string;

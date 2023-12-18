@@ -4,7 +4,7 @@ import type { elementNode } from 'rrweb-snapshot';
 
 import dedent from 'ts-dedent';
 
-import { logger } from '../utils/logger';
+import { logger } from '../../packages/shared/src/utils/logger';
 
 const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.js'), 'utf8');
 

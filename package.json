@@ -27,8 +27,8 @@
     "*.d.ts"
   ],
   "scripts": {
-    "archive-storybook": "archive-storybook",
-    "build-archive-storybook": "build-archive-storybook",
+    "archive-storybook": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results archive-storybook",
+    "build-archive-storybook": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results build-archive-storybook",
     "clean": "pnpm -r run clean",
     "prebuild": "pnpm clean",
     "build": "pnpm --stream -r run build",

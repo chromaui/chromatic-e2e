@@ -1,4 +1,3 @@
-const project = resolve(process.cwd(), 'tsconfig.json');
 module.exports = {
   extends: ['@storybook/eslint-config-storybook'],
   overrides: [
@@ -17,11 +16,11 @@ module.exports = {
         'no-restricted-syntax': 'off',
       },
       parserOptions: {
-        project: [project],
+        project: ['tsconfig.json'],
       },
     },
   ],
   parserOptions: {
-    project: [project],
+    project: ['tsconfig.json'],
   },
 };

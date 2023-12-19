@@ -1,7 +1,6 @@
 import type { elementNode } from 'rrweb-snapshot';
 import { writeTestResult } from '@chromaui/shared-e2e';
-import type { ChromaticStorybookParameters } from '@chromaui/shared-e2e';
-import type { ResourceArchive } from '@chromaui/shared-e2e';
+import type { ChromaticStorybookParameters, ResourceArchive } from '@chromaui/shared-e2e';
 
 interface ArchiveParams {
   testTitle: string;

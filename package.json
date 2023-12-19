@@ -38,7 +38,7 @@
     "test:server": "node __playwright-tests__/server",
     "start": "pnpm build:watch",
     "release": "pnpm build && auto shipit",
-    "lint": "eslint src/*",
+    "lint": "pnpm build && pnpm -r run lint",
     "prettier": "prettier",
     "prepare": "husky install"
   },

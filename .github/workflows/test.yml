@@ -10,26 +10,30 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
       - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+        run: pnpm install
 
       - name: Install Playwright
         run: |
-          yarn playwright install
+          pnpm playwright install
 
       - name: Run lint
         run: |
-          yarn lint
+          pnpm lint
 
       - name: Run tests
         run: |
-          yarn test:unit
-          yarn test:playwright
+          pnpm test:unit
+          pnpm test:playwright
 
       - name: Publish to Chromatic
         uses: chromaui/action@v1

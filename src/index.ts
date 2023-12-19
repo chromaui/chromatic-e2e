@@ -1,9 +1,13 @@
-import { test as base, expect } from '@playwright/test';
+// import { test as base, expect } from '@playwright/test';
 
-import { makeTest } from './playwright-api/makeTest';
+// import { makeTest } from './packages/playwright/src/makeTest';
 
-export const test = makeTest(base);
-export { expect };
+// export const test = makeTest(base);
+// export { expect };
 
-export { takeArchive } from './playwright-api/takeArchive';
-export type { ChromaticConfig } from '../packages/shared/src/types';
+// export { takeArchive } from './packages/playwright/src/takeArchive';
+// export type { ChromaticConfig } from '../packages/shared/src/types';
+
+// TODO remove this file
+
+export { test as base, expect } from '@playwright/test';

@@ -9,6 +9,6 @@ yarn-error.log
 chromatic.log
 
 test-archives
-/test-results/
-/playwright-report/
-/playwright/.cache/
+**/test-results/
+**/playwright-report/
+**/playwright/.cache/

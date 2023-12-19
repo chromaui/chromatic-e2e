@@ -5,12 +5,12 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
-import type { ChromaticConfig } from '../../packages/shared/src/types';
-import { createResourceArchive } from '../../packages/shared/src/resource-archive';
-import { writeTestResult } from '../../packages/shared/src/write-archive';
+import type { ChromaticConfig } from '@chromaui/shared-e2e';
+import { createResourceArchive } from '@chromaui/shared-e2e';
+import { writeTestResult } from '@chromaui/shared-e2e';
 import { contentType, takeArchive } from './takeArchive';
-import { trackComplete, trackRun } from '../../packages/shared/src/utils/analytics';
-import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../../packages/shared/src/constants';
+import { trackComplete, trackRun } from '@chromaui/shared-e2e';
+import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromaui/shared-e2e';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:

@@ -4,7 +4,7 @@ import type { elementNode } from 'rrweb-snapshot';
 
 import dedent from 'ts-dedent';
 
-import { logger } from '../../packages/shared/src/utils/logger';
+import { logger } from '@chromaui/shared-e2e';
 
 const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.js'), 'utf8');
 

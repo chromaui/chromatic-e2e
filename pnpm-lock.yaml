@@ -148,6 +148,34 @@ importers:
         specifier: ^4.2.4
         version: 4.9.5
 
+  packages/cypress:
+    dependencies:
+      '@segment/analytics-node':
+        specifier: ^1.1.0
+        version: 1.1.4
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.2.0
+      mime:
+        specifier: ^3.0.0
+        version: 3.0.0
+      rrweb-snapshot:
+        specifier: ^2.0.0-alpha.4
+        version: 2.0.0-alpha.4
+      srcset:
+        specifier: ^4.0.0
+        version: 4.0.0
+      ts-dedent:
+        specifier: ^2.2.0
+        version: 2.2.0
+    devDependencies:
+      '@chromaui/shared-e2e':
+        specifier: workspace:*
+        version: link:../shared
+      cypress:
+        specifier: ^13.4.0
+        version: 13.6.1
+
   packages/playwright:
     dependencies:
       '@segment/analytics-node':

@@ -1,4 +1,4 @@
-name: Test
+name: Tests
 
 on: [push]
 
@@ -13,14 +13,14 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
 
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Install Playwright
         run: |

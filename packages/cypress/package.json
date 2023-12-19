@@ -39,7 +39,6 @@
     "prettier": "prettier"
   },
   "devDependencies": {
-    "@chromaui/shared-e2e": "workspace:*",
     "cypress": "^13.4.0"
   },
   "lint-staged": {
@@ -55,6 +54,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@chromaui/shared-e2e": "workspace:*",
     "@segment/analytics-node": "^1.1.0",
     "fs-extra": "^11.1.1",
     "mime": "^3.0.0",

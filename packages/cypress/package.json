@@ -17,6 +17,11 @@
       "require": "./dist/index.js",
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
+    },
+    "./support": {
+      "require": "./dist/support.js",
+      "import": "./dist/support.mjs",
+      "types": "./dist/support.d.ts"
     }
   },
   "files": [

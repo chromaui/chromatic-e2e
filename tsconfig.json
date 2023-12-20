@@ -18,5 +18,5 @@
     "types": ["jest", "node", "cypress"],
     "moduleResolution": "node"
   },
-  "include": ["src", "__tests__", "cypress", "scripts", ".eslintrc.js", "jest.config.js"]
+  "include": ["src", "tests", "scripts", ".eslintrc.js", "jest.config.js"]
 }

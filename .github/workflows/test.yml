@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Playwright
         run: |
-          yarn playwright install
+          yarn playwright install      
 
       - name: Run lint
         run: |
@@ -30,6 +30,7 @@ jobs:
         run: |
           yarn test:unit
           yarn test:playwright
+          yarn test:cypress
 
       - name: Publish to Chromatic
         uses: chromaui/action@v1

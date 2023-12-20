@@ -1,7 +1,7 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './__tests__/playwright',
+  testDir: './tests/playwright',
   use: { baseURL: 'http://localhost:3000' },
 
   webServer: {

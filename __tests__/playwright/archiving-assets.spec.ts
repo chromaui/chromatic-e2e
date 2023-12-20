@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { test } from '../src';
+import { test } from '../../src';
 
 // domain of external image in test (to archive)
 test.use({ allowedArchiveDomains: ['some.external'] });

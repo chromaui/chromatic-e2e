@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './__playwright-tests__',
+  testDir: './__tests__/playwright',
   use: { baseURL: 'http://localhost:3000' },
 
   webServer: {

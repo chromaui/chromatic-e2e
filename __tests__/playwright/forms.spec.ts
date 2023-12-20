@@ -1,4 +1,4 @@
-import { test, expect } from '../src';
+import { test, expect } from '../../src';
 
 test('form submits succesfully', async ({ page }) => {
   await page.goto('/forms');

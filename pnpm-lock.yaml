@@ -355,6 +355,160 @@ importers:
         specifier: ^4.2.4
         version: 4.9.5
 
+  packages/test-archiver:
+    dependencies:
+      '@changesets/cli':
+        specifier: ^2.27.1
+        version: 2.27.1
+      '@segment/analytics-node':
+        specifier: ^1.1.0
+        version: 1.1.4
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.2.0
+      mime:
+        specifier: ^3.0.0
+        version: 3.0.0
+      rrweb-snapshot:
+        specifier: ^2.0.0-alpha.4
+        version: 2.0.0-alpha.4
+      srcset:
+        specifier: ^4.0.0
+        version: 4.0.0
+      ts-dedent:
+        specifier: ^2.2.0
+        version: 2.2.0
+    devDependencies:
+      '@auto-it/released':
+        specifier: ^10.32.6
+        version: 10.46.0(@swc/core@1.3.100)(@types/node@16.18.68)(typescript@4.9.5)
+      '@babel/preset-env':
+        specifier: ^7.21.4
+        version: 7.23.6(@babel/core@7.23.6)
+      '@babel/preset-react':
+        specifier: ^7.18.6
+        version: 7.23.3(@babel/core@7.23.6)
+      '@babel/preset-typescript':
+        specifier: ^7.21.4
+        version: 7.23.3(@babel/core@7.23.6)
+      '@chromaui/archive-storybook':
+        specifier: ~0.0.15
+        version: 0.0.18(@storybook/addon-essentials@7.6.4)(@storybook/cli@7.6.4)(@storybook/server-webpack5@7.6.4)
+      '@chromaui/cypress-e2e':
+        specifier: 'workspace: *'
+        version: link:../cypress
+      '@chromaui/playwright-e2e':
+        specifier: 'workspace: *'
+        version: link:../playwright
+      '@chromaui/shared-e2e':
+        specifier: 'workspace: *'
+        version: link:../shared
+      '@jest/types':
+        specifier: ^27.0.6
+        version: 27.5.1
+      '@playwright/test':
+        specifier: ^1.39.0
+        version: 1.40.1
+      '@storybook/addon-essentials':
+        specifier: ^7.5.2
+        version: 7.6.4(react-dom@17.0.2)(react@17.0.2)
+      '@storybook/cli':
+        specifier: ^7.5.2
+        version: 7.6.4
+      '@storybook/eslint-config-storybook':
+        specifier: ^3.1.2
+        version: 3.1.2(@typescript-eslint/parser@4.33.0)(eslint@7.32.0)(prettier@2.8.8)(remark@13.0.0)(typescript@4.9.5)
+      '@storybook/server-webpack5':
+        specifier: ^7.5.2
+        version: 7.6.4(esbuild@0.17.19)(typescript@4.9.5)
+      '@testing-library/dom':
+        specifier: ^8.1.0
+        version: 8.20.1
+      '@testing-library/react':
+        specifier: ^12.0.0
+        version: 12.1.5(react-dom@17.0.2)(react@17.0.2)
+      '@testing-library/user-event':
+        specifier: ^13.2.1
+        version: 13.5.0(@testing-library/dom@8.20.1)
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.21
+      '@types/fs-extra':
+        specifier: ^11.0.1
+        version: 11.0.4
+      '@types/jest':
+        specifier: ^27.0.3
+        version: 27.5.2
+      '@types/node':
+        specifier: ^16.4.1
+        version: 16.18.68
+      '@types/node-fetch':
+        specifier: ^2.6.6
+        version: 2.6.9
+      auto:
+        specifier: ^10.3.0
+        version: 10.46.0(@swc/core@1.3.100)(@types/node@16.18.68)(typescript@4.9.5)
+      babel-jest:
+        specifier: ^27.0.6
+        version: 27.5.1(@babel/core@7.23.6)
+      concurrently:
+        specifier: ^7.0.0
+        version: 7.6.0
+      cypress:
+        specifier: ^13.4.0
+        version: 13.6.1
+      eslint:
+        specifier: ^7.32.0
+        version: 7.32.0
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      husky:
+        specifier: '>=6'
+        version: 8.0.3
+      jest:
+        specifier: ^27.0.6
+        version: 27.5.1
+      jest-environment-jsdom:
+        specifier: ^27.0.6
+        version: 27.5.1
+      lint-staged:
+        specifier: '>=10'
+        version: 15.2.0
+      node-fetch:
+        specifier: '2'
+        version: 2.7.0
+      playwright:
+        specifier: ^1.32.2
+        version: 1.40.1
+      playwright-core:
+        specifier: ^1.32.2
+        version: 1.40.1
+      prettier:
+        specifier: ^2.3.1
+        version: 2.8.8
+      prompts:
+        specifier: ^2.4.2
+        version: 2.4.2
+      react:
+        specifier: ^17.0.1
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.1
+        version: 17.0.2(react@17.0.2)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^27.0.4
+        version: 27.1.5(@babel/core@7.23.6)(@types/jest@27.5.2)(babel-jest@27.5.1)(esbuild@0.17.19)(jest@27.5.1)(typescript@4.9.5)
+      tsup:
+        specifier: ^6.7.0
+        version: 6.7.0(@swc/core@1.3.100)(postcss@8.4.32)(typescript@4.9.5)
+      typescript:
+        specifier: ^4.2.4
+        version: 4.9.5
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:

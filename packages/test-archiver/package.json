@@ -1,6 +1,5 @@
 {
-  "name": "@chromaui/chromatic-e2e",
-  "private": true,
+  "name": "@chromaui/test-archiver",
   "version": "0.0.47",
   "description": "Archive end-to-end tests to be replayed in Storybook and Chromatic",
   "repository": {
@@ -28,22 +27,24 @@
     "*.d.ts"
   ],
   "scripts": {
-    "archive-storybook": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results archive-storybook",
-    "build-archive-storybook": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results build-archive-storybook",
-    "clean": "pnpm -r run clean",
+    "archive-storybook": "archive-storybook",
+    "build-archive-storybook": "build-archive-storybook",
+    "clean": "rimraf ./dist",
     "prebuild": "pnpm clean",
-    "build": "pnpm --stream -r run build",
+    "build": "tsup",
     "build:watch": "pnpm build --watch",
-    "test:unit": "pnpm -r run test:unit",
-    "test:playwright": "pnpm --filter @chromaui/playwright-e2e run test:playwright",
+    "test:unit": "jest --passWithNoTests",
+    "test:playwright": "playwright test",
     "test:server": "node __playwright-tests__/server",
     "start": "pnpm build:watch",
     "release": "pnpm build && auto shipit",
-    "lint": "pnpm build && pnpm -r run lint",
-    "prettier": "prettier",
-    "prepare": "husky install"
+    "lint": "eslint src/*",
+    "prettier": "prettier"
   },
   "devDependencies": {
+    "@chromaui/playwright-e2e": "workspace: *",
+    "@chromaui/cypress-e2e": "workspace: *",
+    "@chromaui/shared-e2e": "workspace: *",
     "@auto-it/released": "^10.32.6",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",

@@ -1,4 +1,5 @@
 packages:
+  - 'packages/test-archiver'
   - 'packages/playwright'
   - 'packages/cypress'
   - 'packages/shared'

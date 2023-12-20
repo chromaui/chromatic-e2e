@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Playwright
         run: |
-          yarn playwright install      
+          yarn playwright install
 
       - name: Run lint
         run: |

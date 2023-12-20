@@ -3,6 +3,4 @@ storybook-static/**/*.js
 
 tsup.config.ts
 playwright.config.ts
-__tests__
-cypress.config.ts
-cypress
+tests

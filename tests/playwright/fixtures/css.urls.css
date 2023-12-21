@@ -1,6 +1,11 @@
-body.page {
-  padding: 20px;
-  background-color: ghostwhite;
+body {
+  display: flex;
+  gap: 3px;
+}
+
+div {
+  height: 200px;
+  width: 200px;
 }
 
 .with-background-img {
@@ -13,11 +18,4 @@ body.page {
 
 .with-rewritten-background-img {
   background-image: url('/img?url=fixtures/purple.png');
-}
-
-.image-container > div {
-  height: 200px;
-  width: 200px;
-  margin: 5px;
-  border: 1px solid black;
 }

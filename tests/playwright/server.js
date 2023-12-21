@@ -9,15 +9,47 @@ const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
 
 // Pages
-
-app.get('/', (req, res) => {
-  res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);
-});
-
 app.get('/asset-paths', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/asset-paths.html'));
 });
 
+app.get('/asset-paths/query-params', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/query-params.html'));
+});
+
+app.get('/asset-paths/asset-at-directory-name', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/asset-at-directory-name.html'));
+});
+
+app.get('/asset-paths/relative-path', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/relative-path.html'));
+});
+
+app.get('/asset-paths/long-file-name', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/long-file-name.html'));
+});
+
+app.get('/asset-paths/external-asset-archived', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/external-asset-archived.html'));
+});
+
+app.get('/asset-paths/external-asset-not-archived', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/external-asset-not-archived.html'));
+});
+
+app.get('/asset-paths/css-urls', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/css-urls.html'));
+});
+
+app.get('/asset-paths/percents', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/percents.html'));
+});
+
+app.get('/asset-paths/srcset', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/srcset.html'));
+});
+
+// ignored content
 app.get('/ignore', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/dynamic-content.html'));
 });
@@ -42,6 +74,10 @@ app.get('/form-success', (req, res) => {
 
 app.get('/styles.css', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/styles.css'));
+});
+
+app.get('/css.urls.css', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/css.urls.css'));
 });
 
 app.get(

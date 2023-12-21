@@ -17,42 +17,6 @@ app.get('/asset-paths', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/asset-paths.html'));
 });
 
-app.get('/asset-paths/query-params', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/query-params.html'));
-});
-
-app.get('/asset-paths/asset-at-directory-name', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/asset-at-directory-name.html'));
-});
-
-app.get('/asset-paths/relative-path', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/relative-path.html'));
-});
-
-app.get('/asset-paths/long-file-name', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/long-file-name.html'));
-});
-
-app.get('/asset-paths/external-asset-archived', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/external-asset-archived.html'));
-});
-
-app.get('/asset-paths/external-asset-not-archived', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/external-asset-not-archived.html'));
-});
-
-app.get('/asset-paths/css-urls', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/css-urls.html'));
-});
-
-app.get('/asset-paths/percents', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/percents.html'));
-});
-
-app.get('/asset-paths/srcset', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths/srcset.html'));
-});
-
 app.get('/ignore', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/dynamic-content.html'));
 });
@@ -108,6 +72,11 @@ app.get('/asset-paths/relative/purple.png', (req, res) => {
 
 app.get('/background-img.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+});
+
+// Asset path pages
+app.get('/asset-paths/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/asset-paths/${req.params.page}.html`));
 });
 
 app.listen(port, () => {

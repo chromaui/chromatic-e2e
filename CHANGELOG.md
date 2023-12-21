@@ -1,3 +1,15 @@
+# v0.0.49 (Thu Dec 21 2023)
+
+#### 🐛 Bug Fix
+
+- Upgrade to yarn4 [#47](https://github.com/chromaui/test-archiver/pull/47) ([@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 1
+
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.48 (Thu Dec 21 2023)
 
 #### 🐛 Bug Fix

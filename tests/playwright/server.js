@@ -53,7 +53,6 @@ app.get('/asset-paths/srcset', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/asset-paths/srcset.html'));
 });
 
-// ignored content
 app.get('/ignore', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/dynamic-content.html'));
 });
@@ -75,10 +74,6 @@ app.get('/form-success', (req, res) => {
 });
 
 // Assets
-
-app.get('/styles.css', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/styles.css'));
-});
 
 app.get('/css.urls.css', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/css.urls.css'));

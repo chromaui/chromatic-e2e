@@ -9,7 +9,6 @@ const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
 
 // Pages
-
 app.get('/', (req, res) => {
   res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);
 });
@@ -40,8 +39,8 @@ app.get('/form-success', (req, res) => {
 
 // Assets
 
-app.get('/styles.css', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/styles.css'));
+app.get('/css.urls.css', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/css.urls.css'));
 });
 
 app.get(
@@ -73,6 +72,11 @@ app.get('/asset-paths/relative/purple.png', (req, res) => {
 
 app.get('/background-img.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+});
+
+// Asset path pages
+app.get('/asset-paths/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/asset-paths/${req.params.page}.html`));
 });
 
 app.listen(port, () => {

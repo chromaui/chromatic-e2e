@@ -1,3 +1,15 @@
+# v0.0.48 (Thu Dec 21 2023)
+
+#### 🐛 Bug Fix
+
+- Cypress e2e testing added [#48](https://github.com/chromaui/test-archiver/pull/48) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.47 (Fri Dec 15 2023)
 
 #### 🐛 Bug Fix

@@ -48,3 +48,7 @@ test('Assets / percents in URLs are handled', async ({ page }) => {
 test('Assets / srcset is used to determine image asset URL', async ({ page }) => {
   await page.goto('/asset-paths/srcset');
 });
+
+test('Assets / external CSS files are inlined', async ({ page }) => {
+  await page.goto('/asset-paths/external-css-files');
+});

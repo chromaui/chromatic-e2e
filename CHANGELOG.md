@@ -1,3 +1,16 @@
+# v0.0.50 (Thu Dec 21 2023)
+
+#### 🐛 Bug Fix
+
+- Playwright tests split out by intent [#49](https://github.com/chromaui/test-archiver/pull/49) ([@skitterm](https://github.com/skitterm) [@tevanoff](https://github.com/tevanoff))
+
+#### Authors: 2
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+- Todd Evanoff ([@tevanoff](https://github.com/tevanoff))
+
+---
+
 # v0.0.49 (Thu Dec 21 2023)
 
 #### 🐛 Bug Fix

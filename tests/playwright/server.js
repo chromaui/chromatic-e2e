@@ -9,6 +9,10 @@ const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
 
 // Pages
+app.get('/', (req, res) => {
+  res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);
+});
+
 app.get('/asset-paths', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/asset-paths.html'));
 });

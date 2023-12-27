@@ -29,6 +29,8 @@
   "scripts": {
     "archive-storybook": "archive-storybook",
     "build-archive-storybook": "build-archive-storybook",
+    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads archive-storybook",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads build-archive-storybook",
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
     "build": "tsup",

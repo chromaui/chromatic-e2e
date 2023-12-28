@@ -1,5 +1,15 @@
-describe('template spec', () => {
-  it('uses query params to determine which asset is served', () => {
-    cy.visit('http://localhost:3000/asset-paths/query-params');
+import { testCases } from './../../test-cases';
+
+describe('assets', () => {
+  // add more tests
+  testCases.forEach(({ title, path: urlPath }) => {
+    it(title, () => {
+      if (title === 'external asset is archived') {
+        // mock the external image (which we'll archive)
+        cy.intercept('https://some.external/domain/image.png', { fixture: 'pink.png' });
+      }
+
+      cy.visit(`http://localhost:3000/${urlPath}`);
+    });
   });
 });

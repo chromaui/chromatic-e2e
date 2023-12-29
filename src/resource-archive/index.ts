@@ -19,7 +19,7 @@ export type ArchiveResponse =
 
 export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
-class Watcher {
+export class Watcher {
   public archive: ResourceArchive = {};
 
   private client: CDPSession;
@@ -212,29 +212,4 @@ class Watcher {
       interceptResponse: true,
     });
   }
-}
-
-export async function createResourceArchive({
-  page,
-  networkTimeout,
-  allowedArchiveDomains,
-}: {
-  page: Page;
-  networkTimeout?: number;
-  allowedArchiveDomains?: string[];
-}): Promise<() => Promise<ResourceArchive>> {
-  const cdpClient = await page.context().newCDPSession(page);
-
-  const watcher = new Watcher(
-    cdpClient,
-    networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-    allowedArchiveDomains
-  );
-  await watcher.watch();
-
-  return async () => {
-    await watcher.idle(page);
-
-    return watcher.archive;
-  };
 }

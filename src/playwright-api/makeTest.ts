@@ -6,11 +6,11 @@ import type {
   PlaywrightWorkerOptions,
 } from '@playwright/test';
 import type { ChromaticConfig } from '../types';
-import { createResourceArchive } from '../resource-archive';
 import { writeTestResult } from '../write-archive';
 import { contentType, takeArchive } from './takeArchive';
 import { trackComplete, trackRun } from '../utils/analytics';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
+import { createResourceArchive } from './createResourceArchive';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:

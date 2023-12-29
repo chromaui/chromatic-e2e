@@ -46,7 +46,6 @@ class Watcher {
   private globalNetworkResolver: () => void;
 
   constructor(
-    private page: Page,
     cdpClient: CDPSession,
     networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     allowedDomains?: string[]
@@ -65,7 +64,7 @@ class Watcher {
     await this.client.send('Fetch.enable');
   }
 
-  async idle() {
+  async idle(page: Page) {
     // XXX_jwir3: The way this works is as follows:
     // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
 
@@ -83,7 +82,7 @@ class Watcher {
 
     // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
     // is idle.
-    const networkIdlePromise = this.page.waitForLoadState('networkidle').finally(() => {
+    const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
       clearTimeout(this.globalNetworkTimerId);
     });
 
@@ -227,7 +226,6 @@ export async function createResourceArchive({
   const cdpClient = await page.context().newCDPSession(page);
 
   const watcher = new Watcher(
-    page,
     cdpClient,
     networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     allowedArchiveDomains
@@ -235,7 +233,7 @@ export async function createResourceArchive({
   await watcher.watch();
 
   return async () => {
-    await watcher.idle();
+    await watcher.idle(page);
 
     return watcher.archive;
   };

@@ -47,17 +47,17 @@ class Watcher {
 
   constructor(
     private page: Page,
+    cdpClient: CDPSession,
     networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     allowedDomains?: string[]
   ) {
+    this.client = cdpClient;
     this.globalNetworkTimeoutMs = networkTimeoutMs;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.allowedArchiveOrigins = (allowedDomains || []).map((domain) => `https://${domain}`);
   }
 
   async watch() {
-    this.client = await this.page.context().newCDPSession(this.page);
-
     this.client.on('Network.requestWillBeSent', this.requestWillBeSent.bind(this));
     this.client.on('Network.responseReceived', this.responseReceived.bind(this));
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
@@ -224,8 +224,11 @@ export async function createResourceArchive({
   networkTimeout?: number;
   allowedArchiveDomains?: string[];
 }): Promise<() => Promise<ResourceArchive>> {
+  const cdpClient = await page.context().newCDPSession(page);
+
   const watcher = new Watcher(
     page,
+    cdpClient,
     networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     allowedArchiveDomains
   );

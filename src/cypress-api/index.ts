@@ -90,14 +90,13 @@ export const doCDP = async () => {
 
 export const finishCDP = () => {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      // @ts-expect-error asdf
-      watcher.idle();
+    // @ts-expect-error TODO: typing for Watcher
+    watcher.idle().then(() => {
       // write archive to disk
       console.log('ARCHIVE OF POC', watcher.archive);
       // write archive to disk
       resolve(null);
-    }, 2000);
+    });
   });
 };
 

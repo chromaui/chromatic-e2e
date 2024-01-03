@@ -32,8 +32,14 @@ jobs:
           yarn test:playwright
           yarn test:cypress
 
-      - name: Publish to Chromatic
+      - name: Publish to Chromatic (Playwright)
         uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
           buildScriptName: build-archive-storybook:playwright
+
+      - name: Publish to Chromatic (Cypress)
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_CYPRESS_PROJECT_TOKEN }}
+          buildScriptName: build-archive-storybook:cypress

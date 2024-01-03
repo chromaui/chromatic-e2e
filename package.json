@@ -27,8 +27,8 @@
     "*.d.ts"
   ],
   "scripts": {
-    "archive-storybook": "archive-storybook",
-    "build-archive-storybook": "build-archive-storybook",
+    "archive-storybook:playwright": "archive-storybook",
+    "build-archive-storybook:playwright": "build-archive-storybook",
     "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads archive-storybook",
     "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads build-archive-storybook",
     "clean": "rimraf ./dist",

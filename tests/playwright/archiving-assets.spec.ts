@@ -8,7 +8,7 @@ test.use({ allowedArchiveDomains: ['some.external'] });
 
 testCases.forEach(({ title, path: urlPath }) => {
   test(title, async ({ page }) => {
-    if (title === 'external asset is archived') {
+    if (title === 'Asset Paths / external asset is archived') {
       // mock the external image (which we'll archive)
       await page.route('https://some.external/domain/image.png', async (route) => {
         const file = await fs.readFile(path.join(__dirname, '../fixtures/pink.png'), {

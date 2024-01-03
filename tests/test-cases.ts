@@ -1,6 +1,6 @@
 // these are used by both Playwright and Cypress.
 // They're stored here to make sure we test the same things with both frameworks
-// and don't get out of alignment on what we support.
+// and don't get out of alignment on what we support
 export const testCases = [
   {
     title: 'query params determine which asset is served',

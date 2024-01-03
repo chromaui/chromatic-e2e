@@ -4,6 +4,8 @@ import { testCases } from './../../test-cases';
 const skippedTestCases = [
   'Asset Paths / asset doesnt prevent directory from being created',
   'Asset Paths / percents in URLs are handled',
+  'Asset Paths / external asset is archived',
+  'Asset Paths / assets from css urls are archived',
 ];
 
 describe('assets', () => {

@@ -39,7 +39,7 @@
     "test:playwright": "playwright test",
     "test:cypress": "start-server-and-test test:server 3000 test:do-cypress",
     "test:do-cypress": "cypress run --project tests",
-    "test:server": "node tests/server",    
+    "test:server": "node tests/server",
     "start": "yarn build:watch",
     "release": "yarn build && auto shipit",
     "lint": "eslint src/*",

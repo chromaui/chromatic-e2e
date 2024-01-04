@@ -20,7 +20,7 @@ describe('assets', () => {
           cy.intercept('https://some.external/domain/image.png', { fixture: 'pink.png' });
         }
 
-        cy.visit(`http://localhost:3000/${urlPath}`);
+        cy.visit(`/${urlPath}`);
       });
     }
   });

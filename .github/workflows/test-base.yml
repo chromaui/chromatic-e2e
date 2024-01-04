@@ -18,6 +18,10 @@ jobs:
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
 
+      - name: Install Playwright
+        run: |
+          yarn playwright install    
+
       - name: Run lint
         run: |
           yarn lint

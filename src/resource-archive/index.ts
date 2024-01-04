@@ -19,7 +19,7 @@ export type ArchiveResponse =
 
 export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
-class Watcher {
+export class Watcher {
   public archive: ResourceArchive = {};
 
   private client: CDPSession;
@@ -46,18 +46,17 @@ class Watcher {
   private globalNetworkResolver: () => void;
 
   constructor(
-    private page: Page,
+    cdpClient: CDPSession,
     networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     allowedDomains?: string[]
   ) {
+    this.client = cdpClient;
     this.globalNetworkTimeoutMs = networkTimeoutMs;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.allowedArchiveOrigins = (allowedDomains || []).map((domain) => `https://${domain}`);
   }
 
   async watch() {
-    this.client = await this.page.context().newCDPSession(this.page);
-
     this.client.on('Network.requestWillBeSent', this.requestWillBeSent.bind(this));
     this.client.on('Network.responseReceived', this.responseReceived.bind(this));
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
@@ -65,7 +64,7 @@ class Watcher {
     await this.client.send('Fetch.enable');
   }
 
-  async idle() {
+  async idle(page: Page) {
     // XXX_jwir3: The way this works is as follows:
     // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
 
@@ -83,7 +82,7 @@ class Watcher {
 
     // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
     // is idle.
-    const networkIdlePromise = this.page.waitForLoadState('networkidle').finally(() => {
+    const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
       clearTimeout(this.globalNetworkTimerId);
     });
 
@@ -213,27 +212,4 @@ class Watcher {
       interceptResponse: true,
     });
   }
-}
-
-export async function createResourceArchive({
-  page,
-  networkTimeout,
-  allowedArchiveDomains,
-}: {
-  page: Page;
-  networkTimeout?: number;
-  allowedArchiveDomains?: string[];
-}): Promise<() => Promise<ResourceArchive>> {
-  const watcher = new Watcher(
-    page,
-    networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-    allowedArchiveDomains
-  );
-  await watcher.watch();
-
-  return async () => {
-    await watcher.idle();
-
-    return watcher.archive;
-  };
 }

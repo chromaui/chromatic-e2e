@@ -3,7 +3,7 @@ import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
-import { createResourceArchive } from './index';
+import { createResourceArchive } from './createResourceArchive';
 import { logger } from '../utils/logger';
 
 const TEST_PORT = 13337;

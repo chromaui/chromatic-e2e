@@ -1,3 +1,15 @@
+# v0.0.51 (Wed Jan 03 2024)
+
+#### 🐛 Bug Fix
+
+- Project secret rename [#52](https://github.com/chromaui/test-archiver/pull/52) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.50 (Thu Dec 21 2023)
 
 #### 🐛 Bug Fix

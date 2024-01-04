@@ -27,7 +27,7 @@ Run the following commands for the following types of tests:
 - Playwright: `yarn test:playwright`, then `yarn archive-storybook:playwright` to see the archived UI
 - Cypress: `yarn test:cypress`, then `yarn archive-storybook:cypress` to see the archived UI
 
-If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or use Cypress interactive mode), run `yarn test:server` and visit `http://localhost:3000`.
+If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `yarn test:server` and visit `http://localhost:3000`.
 
 ## License
 

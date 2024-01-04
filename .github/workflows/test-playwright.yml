@@ -2,7 +2,7 @@ name: Test (Playwright)
 
 on:
   workflow_run:
-    workflows: [Test (base)]
+    workflows: ["Test (base)"]
     types: 
       - completed
 
@@ -25,6 +25,10 @@ jobs:
       - name: Install Playwright
         run: |
           yarn playwright install     
+
+      - name: Run tests
+        run: |
+          yarn test:playwright
 
       - name: Publish to Chromatic
         uses: chromaui/action@v1

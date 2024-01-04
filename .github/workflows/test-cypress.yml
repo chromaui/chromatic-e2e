@@ -2,7 +2,7 @@ name: Test (Cypress)
 
 on:
   workflow_run:
-    workflows: [Test (base)]
+    workflows: ["Test (base)"]
     types: 
       - completed
 

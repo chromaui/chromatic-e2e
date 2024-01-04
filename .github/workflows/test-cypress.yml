@@ -1,6 +1,10 @@
 name: Test (Cypress)
 
-on: [push]
+on:
+  workflow_run:
+    workflows: [Test (base)]
+    types: 
+      - completed
 
 jobs:
   test:

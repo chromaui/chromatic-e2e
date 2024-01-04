@@ -1,3 +1,15 @@
+# v0.0.53 (Thu Jan 04 2024)
+
+#### 🐛 Bug Fix
+
+- Common test fixtures, Cypress now has tests [#51](https://github.com/chromaui/test-archiver/pull/51) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.52 (Thu Jan 04 2024)
 
 #### 🐛 Bug Fix

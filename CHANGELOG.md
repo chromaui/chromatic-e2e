@@ -1,3 +1,15 @@
+# v0.0.52 (Thu Jan 04 2024)
+
+#### 🐛 Bug Fix
+
+- Chrome Devtools Protocol code is framework-agnostic [#50](https://github.com/chromaui/test-archiver/pull/50) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.51 (Wed Jan 03 2024)
 
 #### 🐛 Bug Fix

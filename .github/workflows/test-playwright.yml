@@ -1,4 +1,4 @@
-name: Test
+name: Test (Playwright)
 
 on: [push]
 
@@ -20,26 +20,10 @@ jobs:
 
       - name: Install Playwright
         run: |
-          yarn playwright install
+          yarn playwright install     
 
-      - name: Run lint
-        run: |
-          yarn lint
-
-      - name: Run tests
-        run: |
-          yarn test:unit
-          yarn test:playwright
-          yarn test:cypress
-
-      - name: Publish to Chromatic (Playwright)
+      - name: Publish to Chromatic
         uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
           buildScriptName: build-archive-storybook:playwright
-
-      - name: Publish to Chromatic (Cypress)
-        uses: chromaui/action@v1
-        with:
-          projectToken: ${{ secrets.CHROMATIC_CYPRESS_PROJECT_TOKEN }}
-          buildScriptName: build-archive-storybook:cypress

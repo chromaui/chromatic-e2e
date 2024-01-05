@@ -52,14 +52,14 @@ describe('writeTestResult', () => {
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
     expect(fs.outputJson).toHaveBeenCalledTimes(1);
     expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/test-story.stories.json'),
+      resolve('./test-results/chromatic-archives/test-story.800x800.stories.json'),
       {
         stories: [
           {
             name: 'home',
             parameters: {
               chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true, viewports: [720] },
-              server: { id: 'test-story-home.snapshot.json' },
+              server: { id: 'test-story-home.800x800.snapshot.json' },
             },
           },
         ],
@@ -116,18 +116,18 @@ describe('writeTestResult', () => {
     expect(fs.outputJson).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(3);
     expect(fs.outputFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/archive/toy-story-home.snapshot.json'),
+      resolve('./test-results/chromatic-archives/archive/toy-story-home.800x800.snapshot.json'),
       JSON.stringify(expectedMappedJson)
     );
     expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/toy-story.stories.json'),
+      resolve('./test-results/chromatic-archives/toy-story.800x800.stories.json'),
       {
         stories: [
           {
             name: 'home',
             parameters: {
               chromatic: { viewports: [720] },
-              server: { id: 'toy-story-home.snapshot.json' },
+              server: { id: 'toy-story-home.800x800.snapshot.json' },
             },
           },
         ],
@@ -155,14 +155,16 @@ describe('writeTestResult', () => {
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
     expect(fs.outputJson).toHaveBeenCalledTimes(1);
     expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./some-custom-directory/directory/chromatic-archives/test-story.stories.json'),
+      resolve(
+        './some-custom-directory/directory/chromatic-archives/test-story.800x800.stories.json'
+      ),
       {
         stories: [
           {
             name: 'home',
             parameters: {
               chromatic: { viewports: [720] },
-              server: { id: 'test-story-home.snapshot.json' },
+              server: { id: 'test-story-home.800x800.snapshot.json' },
             },
           },
         ],

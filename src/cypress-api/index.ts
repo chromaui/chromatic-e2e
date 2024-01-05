@@ -2,6 +2,7 @@ import type { elementNode } from 'rrweb-snapshot';
 import { writeTestResult } from '../write-archive';
 import type { ChromaticStorybookParameters } from '../types';
 import type { ResourceArchive } from '../resource-archive';
+import { Viewport } from 'src/utils/viewport';
 
 interface ArchiveParams {
   testTitle: string;
@@ -9,7 +10,7 @@ interface ArchiveParams {
   resourceArchive: ResourceArchive;
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
-  viewport: { height: number; width: number };
+  viewport: Viewport;
 }
 
 const doArchive = async ({

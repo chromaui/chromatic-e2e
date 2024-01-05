@@ -1,27 +1,6 @@
 import { snapshot } from 'rrweb-snapshot';
 import './commands';
 
-const completeArchive = () => {
-  // can we be sure this always fires after all the requests are back?
-  cy.document().then((doc) => {
-    const snap = snapshot(doc);
-    // @ts-expect-error will fix when Cypress has its own package
-    cy.get('@manualSnapshots').then((manualSnapshots = []) => {
-      cy.url().then((url) => {
-        // pass the snapshot to the server to write to disk
-        cy.task('archiveCypress', {
-          testTitle: Cypress.currentTest.title,
-          domSnapshots: [...manualSnapshots, snap],
-          chromaticStorybookParams: {
-            diffThreshold: Cypress.env('diffThreshold'),
-          },
-          pageUrl: url,
-        });
-      });
-    });
-  });
-};
-
 // these lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
   // this "manualSnapshots" variable will be available before, during, and after the test,
@@ -32,6 +11,22 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  completeArchive();
-  cy.task('finishCDP');
+  // can we be sure this always fires after all the requests are back?
+  cy.document().then((doc) => {
+    const snap = snapshot(doc);
+    // @ts-expect-error will fix when Cypress has its own package
+    cy.get('@manualSnapshots').then((manualSnapshots = []) => {
+      cy.url().then((url) => {
+        // pass the snapshot to the server to write to disk
+        cy.task('finishCDP', {
+          testTitle: Cypress.currentTest.title,
+          domSnapshots: [...manualSnapshots, snap],
+          chromaticStorybookParams: {
+            diffThreshold: Cypress.env('diffThreshold'),
+          },
+          pageUrl: url,
+        });
+      });
+    });
+  });
 });

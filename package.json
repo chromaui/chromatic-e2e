@@ -38,7 +38,7 @@
     "test:unit": "jest",
     "test:playwright": "playwright test",
     "test:cypress": "start-server-and-test test:server 3000 test:do-cypress",
-    "test:do-cypress": "cypress run --project tests",
+    "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
     "test:server": "node tests/server",
     "start": "yarn build:watch",
     "release": "yarn build && auto shipit",

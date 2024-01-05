@@ -88,21 +88,20 @@ export const doCDP = async () => {
   return null;
 };
 
-export const finishCDP = () => {
+export const finishCDP = (archiveInfo: ArchiveParams) => {
   return new Promise((resolve) => {
     // @ts-expect-error TODO: typing for Watcher
     watcher.idle().then(() => {
       // write archive to disk
-      console.log('ARCHIVE OF POC', watcher.archive);
-      // write archive to disk
-      resolve(null);
+      return doArchive({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
+        resolve(null);
+      });
     });
   });
 };
 
 // @ts-expect-error type launchOptions
 export const onBeforeBrowserLaunch = (browser = {}, launchOptions) => {
-  console.log('BEFORE LAUNCH');
   // @ts-expect-error type launchOptions
   const hostArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-address='));
   host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';

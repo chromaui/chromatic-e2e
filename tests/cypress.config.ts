@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-import { archiveCypress, doCDP, onBeforeBrowserLaunch, finishCDP } from '../src/cypress-api';
+import { setupNetworkListener, onBeforeBrowserLaunch, saveArchives } from '../src/cypress-api';
 
 export default defineConfig({
   // needed since we use common mock images between Cypress and Playwright
@@ -10,9 +10,8 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
       on('task', {
-        archiveCypress,
-        doCDP,
-        finishCDP,
+        setupNetworkListener,
+        saveArchives,
       });
       on('before:browser:launch', async (browser, launchOptions) => {
         await onBeforeBrowserLaunch(browser, launchOptions);

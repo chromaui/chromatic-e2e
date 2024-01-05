@@ -7,7 +7,7 @@ beforeEach(() => {
   // then cleaned up before the next test is run
   // (see https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
   cy.wrap([]).as('manualSnapshots');
-  cy.task('doCDP');
+  cy.task('setupNetworkListener');
 });
 
 afterEach(() => {
@@ -18,7 +18,7 @@ afterEach(() => {
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {
       cy.url().then((url) => {
         // pass the snapshot to the server to write to disk
-        cy.task('finishCDP', {
+        cy.task('saveArchives', {
           testTitle: Cypress.currentTest.title,
           domSnapshots: [...manualSnapshots, snap],
           chromaticStorybookParams: {

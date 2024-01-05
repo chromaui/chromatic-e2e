@@ -61,7 +61,7 @@ let host = '';
 let port = '';
 
 // @ts-expect-error fix when reuse code
-export const doCDP = async () => {
+export const setupNetworkListener = async () => {
   try {
     // @ts-expect-error asdf
     const { webSocketDebuggerUrl } = await Version({
@@ -85,7 +85,7 @@ export const doCDP = async () => {
   return null;
 };
 
-export const finishCDP = (archiveInfo: WriteParams) => {
+export const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
     // @ts-expect-error TODO: typing for Watcher
     watcher.idle().then(() => {

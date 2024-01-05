@@ -83,7 +83,7 @@ export const setupNetworkListener = async (): Promise<null> => {
 
 export const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
-    watcher.idle().then(() => {
+    return watcher.idle().then(() => {
       // write archive to disk
       return writeArchives({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
         resolve(null);

@@ -8,7 +8,7 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      // these events are run on the server (in Node)
       on('task', {
         setupNetworkListener,
         saveArchives,

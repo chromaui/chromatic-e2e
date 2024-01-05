@@ -1,7 +1,7 @@
 import { snapshot } from 'rrweb-snapshot';
 import './commands';
 
-// these lifecycle hooks will be added to the user's Cypress suite
+// these client-side lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
   // this "manualSnapshots" variable will be available before, during, and after the test,
   // then cleaned up before the next test is run

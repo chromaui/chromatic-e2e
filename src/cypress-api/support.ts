@@ -68,6 +68,10 @@ const completeArchive = () => {
               diffThreshold: Cypress.env('diffThreshold'),
             },
             pageUrl: url,
+            viewport: {
+              height: Cypress.config('viewportHeight'),
+              width: Cypress.config('viewportWidth'),
+            },
           });
         });
       });

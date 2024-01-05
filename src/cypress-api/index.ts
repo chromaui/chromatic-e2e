@@ -9,6 +9,7 @@ interface ArchiveParams {
   resourceArchive: ResourceArchive;
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
+  viewport: { height: number; width: number };
 }
 
 const doArchive = async ({
@@ -17,6 +18,7 @@ const doArchive = async ({
   resourceArchive,
   chromaticStorybookParams,
   pageUrl,
+  viewport,
 }: ArchiveParams) => {
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -42,6 +44,7 @@ const doArchive = async ({
       // TODO: change so we don't have to do this trickery
       outputDir: './cypress/downloads/some',
       pageUrl,
+      viewport,
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),

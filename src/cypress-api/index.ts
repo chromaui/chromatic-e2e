@@ -60,8 +60,7 @@ let watcher: Watcher = null;
 let host = '';
 let port = '';
 
-// @ts-expect-error fix when reuse code
-export const setupNetworkListener = async () => {
+export const setupNetworkListener = async (): Promise<null> => {
   try {
     // @ts-expect-error asdf
     const { webSocketDebuggerUrl } = await Version({
@@ -87,7 +86,6 @@ export const setupNetworkListener = async () => {
 
 export const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
-    // @ts-expect-error TODO: typing for Watcher
     watcher.idle().then(() => {
       // write archive to disk
       return writeArchives({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
@@ -97,13 +95,13 @@ export const saveArchives = (archiveInfo: WriteParams) => {
   });
 };
 
-// @ts-expect-error type launchOptions
-export const onBeforeBrowserLaunch = (browser = {}, launchOptions) => {
-  // @ts-expect-error type launchOptions
+export const onBeforeBrowserLaunch = (
+  browser: Cypress.Browser,
+  launchOptions: Cypress.BeforeBrowserLaunchOptions
+) => {
   const hostArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-address='));
   host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';
 
-  // @ts-expect-error type launchOptions
   const portArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-port='));
 
   if (portArg) {

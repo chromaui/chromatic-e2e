@@ -1,15 +1,46 @@
-import { testCases } from './../../test-cases';
+it('Assets / query params determine which asset is served', () => {
+  cy.visit('/asset-paths/query-params');
+});
 
-describe('assets', () => {
-  // add more tests
-  testCases.forEach(({ title, path: urlPath }) => {
-    it(title, () => {
-      if (title === 'external asset is archived') {
-        // mock the external image (which we'll archive)
-        cy.intercept('https://some.external/domain/image.png', { fixture: 'pink.png' });
-      }
+// TODO: Unskip when Cypress support achieves parity with Playwright
+it.skip('Assets / asset doesnt prevent directory from being created', () => {
+  cy.visit('/asset-paths/asset-at-directory-name');
+});
 
-      cy.visit(`http://localhost:3000/${urlPath}`);
-    });
-  });
+it('Assets / asset is found at relative path', () => {
+  cy.visit('/asset-paths/relative-path');
+});
+
+it('Assets / long file names are allowed', () => {
+  cy.visit('/asset-paths/long-file-name');
+});
+
+it('Assets / external asset is not archived (but still renders)', () => {
+  cy.visit('/asset-paths/external-asset-not-archived');
+});
+
+// TODO: Unskip when Cypress support achieves parity with Playwright
+it.skip('Assets / external asset is archived', () => {
+  // mock the external image (which we'll archive)
+  cy.intercept('https://some.external/domain/image.png', { fixture: 'pink.png' });
+
+  cy.visit('/asset-paths/external-asset-archived');
+});
+
+// TODO: Unskip when Cypress support achieves parity with Playwright
+it.skip('Assets / assets from css urls are archived', () => {
+  cy.visit('/asset-paths/css-urls');
+});
+
+// TODO: Unskip when Cypress support achieves parity with Playwright
+it.skip('Assets / percents in URLs are handled', () => {
+  cy.visit('/asset-paths/percents');
+});
+
+it('Assets / srcset is used to determine image asset URL', () => {
+  cy.visit('/asset-paths/srcset');
+});
+
+it('Assets / external CSS files are inlined', () => {
+  cy.visit('/asset-paths/external-css-files');
 });

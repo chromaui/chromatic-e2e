@@ -50,19 +50,17 @@ const writeArchives = async ({
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),
-    // @ts-expect-error will fix when Cypress has its own package
-    { ...chromaticStorybookParams, viewport: { width: 500, height: 500 } }
+    chromaticStorybookParams
   );
 };
 
 let watcher: Watcher = null;
 
 let host = '';
-let port = '';
+let port = 0;
 
 export const setupNetworkListener = async (): Promise<null> => {
   try {
-    // @ts-expect-error asdf
     const { webSocketDebuggerUrl } = await Version({
       host,
       port,
@@ -73,7 +71,6 @@ export const setupNetworkListener = async (): Promise<null> => {
     });
 
     if (!watcher) {
-      // @ts-expect-error asdf
       watcher = new Watcher(cdp);
       await watcher.watch();
     }
@@ -96,6 +93,8 @@ export const saveArchives = (archiveInfo: WriteParams) => {
 };
 
 export const onBeforeBrowserLaunch = (
+  // we don't use the browser parameter but we're keeping it here in case we'd ever need to read from it
+  // (this way users wouldn't have to change their cypress.config file as it's already passed to us)
   browser: Cypress.Browser,
   launchOptions: Cypress.BeforeBrowserLaunchOptions
 ) => {
@@ -103,15 +102,18 @@ export const onBeforeBrowserLaunch = (
   host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';
 
   const portArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-port='));
+  let portString = '';
 
   if (portArg) {
-    [, port] = portArg.split('=');
+    [, portString] = portArg.split('=');
   } else {
     const entry = process.env.ELECTRON_EXTRA_LAUNCH_ARGS.split(' ').find((item) =>
       item.startsWith('--remote-debugging-port')
     );
-    [, port] = entry.split('=');
+    [, portString] = entry.split('=');
   }
+
+  port = parseInt(portString, 10);
 
   return launchOptions;
 };

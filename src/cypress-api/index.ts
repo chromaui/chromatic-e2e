@@ -54,6 +54,10 @@ const writeArchives = async ({
   );
 };
 
+// using a single Watcher instance across all tests (for the test run)
+// each time a test completes, we'll save to disk whatever archives are there at that point.
+// This should be safe since the same resource from the same URL should be the same during the entire test run.
+// Cypress doesn't give us a way to share variables between the "before test" and "after test" lifecycle events on the server.
 let watcher: Watcher = null;
 
 let host = '';
@@ -84,7 +88,7 @@ export const setupNetworkListener = async (): Promise<null> => {
 export const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
     return watcher.idle().then(() => {
-      // write archive to disk
+      // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
       return writeArchives({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
         resolve(null);
       });
@@ -92,6 +96,7 @@ export const saveArchives = (archiveInfo: WriteParams) => {
   });
 };
 
+// We use this lifecycle hook because we need to know what host and port Chrome Devtools Protocol is listening at.
 export const onBeforeBrowserLaunch = (
   // we don't use the browser parameter but we're keeping it here in case we'd ever need to read from it
   // (this way users wouldn't have to change their cypress.config file as it's already passed to us)
@@ -107,6 +112,8 @@ export const onBeforeBrowserLaunch = (
   if (portArg) {
     [, portString] = portArg.split('=');
   } else {
+    // Electron doesn't pass along the address and port in the launch options, so we need to read it from the
+    // environment variable that we'll require the user to use.
     const entry = process.env.ELECTRON_EXTRA_LAUNCH_ARGS.split(' ').find((item) =>
       item.startsWith('--remote-debugging-port')
     );

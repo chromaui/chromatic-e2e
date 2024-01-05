@@ -1,4 +1,4 @@
-import type { CDPSession, Page } from 'playwright';
+import type { Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
 
@@ -19,10 +19,20 @@ export type ArchiveResponse =
 
 export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
+// TODO: explain why used my own instead of a union... and makre sure they actually both satisfy this
+interface CDPClient {
+  // TODO: Make sure void is correct, and see if eventName can be more specific, and see if handler function params can be better
+  on: (
+    eventName: keyof Protocol.Events,
+    handlerFunction: (params?: any) => Promise<any> | any
+  ) => void;
+  send: (eventName: keyof Protocol.CommandParameters, params?: any) => Promise<any>;
+}
+
 export class Watcher {
   public archive: ResourceArchive = {};
 
-  private client: CDPSession;
+  private client: CDPClient;
 
   private globalNetworkTimeoutMs;
 
@@ -46,7 +56,7 @@ export class Watcher {
   private globalNetworkResolver: () => void;
 
   constructor(
-    cdpClient: CDPSession,
+    cdpClient: CDPClient,
     networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     allowedDomains?: string[]
   ) {

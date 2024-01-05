@@ -5,21 +5,24 @@ import type { ChromaticStorybookParameters } from '../types';
 import type { ResourceArchive } from '../resource-archive';
 import { Watcher } from '../resource-archive';
 
-interface ArchiveParams {
+interface WriteParams {
   testTitle: string;
   domSnapshots: elementNode[];
-  resourceArchive: ResourceArchive;
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
 }
 
-const doArchive = async ({
+interface WriteArchivesParams extends WriteParams {
+  resourceArchive: ResourceArchive;
+}
+
+const writeArchives = async ({
   testTitle,
   domSnapshots,
   resourceArchive,
   chromaticStorybookParams,
   pageUrl,
-}: ArchiveParams) => {
+}: WriteArchivesParams) => {
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
       key,
@@ -52,12 +55,6 @@ const doArchive = async ({
   );
 };
 
-export const archiveCypress = async (params: ArchiveParams): Promise<null> => {
-  await doArchive({ ...params, resourceArchive: watcher.archive });
-
-  return null;
-};
-
 let watcher: Watcher = null;
 
 let host = '';
@@ -88,12 +85,12 @@ export const doCDP = async () => {
   return null;
 };
 
-export const finishCDP = (archiveInfo: ArchiveParams) => {
+export const finishCDP = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
     // @ts-expect-error TODO: typing for Watcher
     watcher.idle().then(() => {
       // write archive to disk
-      return doArchive({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
+      return writeArchives({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
         resolve(null);
       });
     });
@@ -108,14 +105,15 @@ export const onBeforeBrowserLaunch = (browser = {}, launchOptions) => {
 
   // @ts-expect-error type launchOptions
   const portArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-port='));
-  const entry = process.env.ELECTRON_EXTRA_LAUNCH_ARGS.split(' ').find((item) =>
-    item.startsWith('--remote-debugging-port')
-  );
-  const altPort = entry.split('=')[1];
-  port = portArg ? portArg.split('=')[1] : altPort;
 
-  // some backup but it doesn't seem very good...
-  // url = `ws://${host}:${port}/devtools/browser`
+  if (portArg) {
+    [, port] = portArg.split('=');
+  } else {
+    const entry = process.env.ELECTRON_EXTRA_LAUNCH_ARGS.split(' ').find((item) =>
+      item.startsWith('--remote-debugging-port')
+    );
+    [, port] = entry.split('=');
+  }
 
   return launchOptions;
 };

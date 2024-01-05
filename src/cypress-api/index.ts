@@ -112,8 +112,8 @@ export const onBeforeBrowserLaunch = (
   if (portArg) {
     [, portString] = portArg.split('=');
   } else {
-    // Electron doesn't pass along the address and port in the launch options, so we need to read it from the
-    // environment variable that we'll require the user to use.
+    // Electron doesn't pass along the address and port in the launch options, so we need to read the port from the
+    // environment variable that we'll require the user to use (this assumes the host will be 127.0.0.1).
     const entry = process.env.ELECTRON_EXTRA_LAUNCH_ARGS.split(' ').find((item) =>
       item.startsWith('--remote-debugging-port')
     );

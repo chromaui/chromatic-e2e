@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="p-8">
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+      <div class="md:flex">
+        <div class="md:shrink-0">
+          <img class="h-48 w-full object-cover md:h-full md:w-48 md:hidden" src="/img" alt="blue image">
+          <img class="h-48 w-full object-cover md:h-full md:w-48 hidden md:inline" src="/img/another" alt="pink image">
+        </div>
+        <div class="p-4">
+          <p>width <= 640px: Vertical + blue</p>
+          <p>width > 640px: Horizontal + pink</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

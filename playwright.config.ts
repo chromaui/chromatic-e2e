@@ -1,8 +1,24 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/playwright',
-  use: { baseURL: 'http://localhost:3000' },
+  use: {
+    baseURL: 'http://localhost:3000',
+  },
+  projects: [
+    {
+      name: 'Desktop',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
+    {
+      name: 'Mobile',
+      use: {
+        ...devices['Pixel 5'],
+      },
+    },
+  ],
 
   webServer: {
     command: 'yarn test:server',

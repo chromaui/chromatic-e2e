@@ -1,3 +1,15 @@
+# v0.0.55 (Tue Jan 09 2024)
+
+#### 🐛 Bug Fix
+
+- Cypress doesn't wait for idle timeout [#54](https://github.com/chromaui/test-archiver/pull/54) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.54 (Tue Jan 09 2024)
 
 #### 🐛 Bug Fix

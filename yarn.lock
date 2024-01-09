@@ -2840,6 +2840,93 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@chromaui/cypress-e2e@workspace:packages/cypress":
+  version: 0.0.0-use.local
+  resolution: "@chromaui/cypress-e2e@workspace:packages/cypress"
+  dependencies:
+    "@chromaui/shared-e2e": "workspace:*"
+    "@segment/analytics-node": "npm:^1.1.0"
+    cypress: "npm:^13.4.0"
+    fs-extra: "npm:^11.1.1"
+    mime: "npm:^3.0.0"
+    rrweb-snapshot: "npm:^2.0.0-alpha.4"
+    srcset: "npm:^4.0.0"
+    ts-dedent: "npm:^2.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@chromaui/playwright-e2e@workspace:packages/playwright":
+  version: 0.0.0-use.local
+  resolution: "@chromaui/playwright-e2e@workspace:packages/playwright"
+  dependencies:
+    "@chromaui/shared-e2e": "workspace:*"
+    "@playwright/test": "npm:^1.39.0"
+    "@segment/analytics-node": "npm:^1.1.0"
+    fs-extra: "npm:^11.1.1"
+    mime: "npm:^3.0.0"
+    playwright: "npm:^1.32.2"
+    playwright-core: "npm:^1.32.2"
+    rrweb-snapshot: "npm:^2.0.0-alpha.4"
+    srcset: "npm:^4.0.0"
+    ts-dedent: "npm:^2.2.0"
+  peerDependencies:
+    "@playwright/test": ^1.0.0
+  languageName: unknown
+  linkType: soft
+
+"@chromaui/shared-e2e@workspace:*, @chromaui/shared-e2e@workspace:packages/shared":
+  version: 0.0.0-use.local
+  resolution: "@chromaui/shared-e2e@workspace:packages/shared"
+  dependencies:
+    "@auto-it/released": "npm:^10.32.6"
+    "@babel/preset-env": "npm:^7.21.4"
+    "@babel/preset-react": "npm:^7.18.6"
+    "@babel/preset-typescript": "npm:^7.21.4"
+    "@chromaui/archive-storybook": "npm:~0.0.15"
+    "@jest/types": "npm:^27.0.6"
+    "@playwright/test": "npm:^1.39.0"
+    "@segment/analytics-node": "npm:^1.1.0"
+    "@storybook/addon-essentials": "npm:^7.5.2"
+    "@storybook/cli": "npm:^7.5.2"
+    "@storybook/eslint-config-storybook": "npm:^3.1.2"
+    "@storybook/server-webpack5": "npm:^7.5.2"
+    "@testing-library/dom": "npm:^8.1.0"
+    "@testing-library/react": "npm:^12.0.0"
+    "@testing-library/user-event": "npm:^13.2.1"
+    "@types/express": "npm:^4.17.17"
+    "@types/fs-extra": "npm:^11.0.1"
+    "@types/jest": "npm:^27.0.3"
+    "@types/node": "npm:^16.4.1"
+    "@types/node-fetch": "npm:^2.6.6"
+    auto: "npm:^10.3.0"
+    babel-jest: "npm:^27.0.6"
+    concurrently: "npm:^7.0.0"
+    cypress: "npm:^13.4.0"
+    eslint: "npm:^7.32.0"
+    express: "npm:^4.18.2"
+    fs-extra: "npm:^11.1.1"
+    husky: "npm:>=6"
+    jest: "npm:^27.0.6"
+    jest-environment-jsdom: "npm:^27.0.6"
+    lint-staged: "npm:>=10"
+    mime: "npm:^3.0.0"
+    node-fetch: "npm:2"
+    playwright: "npm:^1.32.2"
+    playwright-core: "npm:^1.32.2"
+    prettier: "npm:^2.3.1"
+    prompts: "npm:^2.4.2"
+    react: "npm:^17.0.1"
+    react-dom: "npm:^17.0.1"
+    rimraf: "npm:^3.0.2"
+    rrweb-snapshot: "npm:^2.0.0-alpha.4"
+    srcset: "npm:^4.0.0"
+    ts-dedent: "npm:^2.2.0"
+    ts-jest: "npm:^27.0.4"
+    tsup: "npm:^6.7.0"
+    typescript: "npm:^4.2.4"
+  languageName: unknown
+  linkType: soft
+
 "@chromaui/test-archiver@workspace:.":
   version: 0.0.0-use.local
   resolution: "@chromaui/test-archiver@workspace:."
@@ -8573,6 +8660,59 @@ __metadata:
   version: 3.1.2
   resolution: "csstype@npm:3.1.2"
   checksum: 32c038af259897c807ac738d9eab16b3d86747c72b09d5c740978e06f067f9b7b1737e1b75e407c7ab1fe1543dc95f20e202b4786aeb1b8d3bdf5d5ce655e6c6
+  languageName: node
+  linkType: hard
+
+"cypress@npm:^13.4.0":
+  version: 13.6.2
+  resolution: "cypress@npm:13.6.2"
+  dependencies:
+    "@cypress/request": "npm:^3.0.0"
+    "@cypress/xvfb": "npm:^1.2.4"
+    "@types/node": "npm:^18.17.5"
+    "@types/sinonjs__fake-timers": "npm:8.1.1"
+    "@types/sizzle": "npm:^2.3.2"
+    arch: "npm:^2.2.0"
+    blob-util: "npm:^2.0.2"
+    bluebird: "npm:^3.7.2"
+    buffer: "npm:^5.6.0"
+    cachedir: "npm:^2.3.0"
+    chalk: "npm:^4.1.0"
+    check-more-types: "npm:^2.24.0"
+    cli-cursor: "npm:^3.1.0"
+    cli-table3: "npm:~0.6.1"
+    commander: "npm:^6.2.1"
+    common-tags: "npm:^1.8.0"
+    dayjs: "npm:^1.10.4"
+    debug: "npm:^4.3.4"
+    enquirer: "npm:^2.3.6"
+    eventemitter2: "npm:6.4.7"
+    execa: "npm:4.1.0"
+    executable: "npm:^4.1.1"
+    extract-zip: "npm:2.0.1"
+    figures: "npm:^3.2.0"
+    fs-extra: "npm:^9.1.0"
+    getos: "npm:^3.2.1"
+    is-ci: "npm:^3.0.0"
+    is-installed-globally: "npm:~0.4.0"
+    lazy-ass: "npm:^1.6.0"
+    listr2: "npm:^3.8.3"
+    lodash: "npm:^4.17.21"
+    log-symbols: "npm:^4.0.0"
+    minimist: "npm:^1.2.8"
+    ospath: "npm:^1.2.2"
+    pretty-bytes: "npm:^5.6.0"
+    process: "npm:^0.11.10"
+    proxy-from-env: "npm:1.0.0"
+    request-progress: "npm:^3.0.0"
+    semver: "npm:^7.5.3"
+    supports-color: "npm:^8.1.1"
+    tmp: "npm:~0.2.1"
+    untildify: "npm:^4.0.0"
+    yauzl: "npm:^2.10.0"
+  bin:
+    cypress: bin/cypress
+  checksum: deee1d7c876db5b6078ea80c0a3fbdefac399c68ee71ab461944d3f091c6ba8409bb36ca759ee25559b069bae2cd01214f87dea62527da2afb71219e17921d58
   languageName: node
   linkType: hard
 
@@ -14836,6 +14976,15 @@ __metadata:
   bin:
     playwright-core: cli.js
   checksum: dbd719ae77ae84a43f831beb89514ca5cca62840a2f0cce445645002ac045c256c19b5f4f3cf9a7aa205428a1571e9e8d946ff1937cc316033ea58090c549a76
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:^1.32.2":
+  version: 1.40.1
+  resolution: "playwright-core@npm:1.40.1"
+  bin:
+    playwright-core: cli.js
+  checksum: 56c283012974982313a6ae583b975ee4af76d52059fb9a25d9cc616a11224685ec64682b391910c795d2b12d2ab5c7eec31124722c75c0b1703a76ac9b6fd1c2
   languageName: node
   linkType: hard
 

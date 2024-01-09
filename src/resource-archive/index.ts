@@ -30,8 +30,6 @@ export class Watcher {
 
   private client: CDPClient;
 
-  private globalNetworkTimeoutMs;
-
   /** 
    Specifies which domains (origins) we should archive resources for (by default we only archive same-origin resources).
    Useful in situations where the environment running the archived storybook (e.g. in CI) may be restricted to an intranet or other domain restrictions
@@ -49,13 +47,8 @@ export class Watcher {
 
   private globalNetworkResolver: () => void;
 
-  constructor(
-    cdpClient: CDPClient,
-    networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-    allowedDomains?: string[]
-  ) {
+  constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
     this.client = cdpClient;
-    this.globalNetworkTimeoutMs = networkTimeoutMs;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.allowedArchiveOrigins = (allowedDomains || []).map((domain) => `https://${domain}`);
   }
@@ -68,7 +61,7 @@ export class Watcher {
     await this.client.send('Fetch.enable');
   }
 
-  async idle(page?: Page) {
+  async idle(page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) {
     // XXX_jwir3: The way this works is as follows:
     // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
 
@@ -79,9 +72,9 @@ export class Watcher {
       this.globalNetworkResolver = resolve;
 
       this.globalNetworkTimerId = setTimeout(() => {
-        logger.warn(`Global timeout of ${this.globalNetworkTimeoutMs}ms reached`);
+        logger.warn(`Global timeout of ${networkTimeoutMs}ms reached`);
         this.globalNetworkResolver();
-      }, this.globalNetworkTimeoutMs);
+      }, networkTimeoutMs);
     });
 
     const promises = [globalNetworkTimeout];

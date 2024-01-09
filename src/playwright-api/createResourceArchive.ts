@@ -13,15 +13,11 @@ export const createResourceArchive = async ({
 }): Promise<() => Promise<ResourceArchive>> => {
   const cdpClient = await page.context().newCDPSession(page);
 
-  const watcher = new Watcher(
-    cdpClient,
-    networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-    allowedArchiveDomains
-  );
+  const watcher = new Watcher(cdpClient, allowedArchiveDomains);
   await watcher.watch();
 
   return async () => {
-    await watcher.idle(page);
+    await watcher.idle(page, networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS);
 
     return watcher.archive;
   };

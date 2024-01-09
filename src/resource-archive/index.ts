@@ -43,8 +43,6 @@ export class Watcher {
    */
   private firstUrl: URL;
 
-  private globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
-
   private globalNetworkResolver: () => void;
 
   constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
@@ -62,15 +60,16 @@ export class Watcher {
   }
 
   async idle(page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) {
+    let globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
     // XXX_jwir3: The way this works is as follows:
     // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
 
     // The first promise wraps a global timeout, where all requests MUST complete before that timeout has passed.
     // If the timeout passes, an error is thrown. This promise can only throw errors, it cannot resolve successfully.
-    const globalNetworkTimeout = new Promise<void>((resolve, reject) => {
+    const globalNetworkTimeout = new Promise<void>((resolve) => {
       this.globalNetworkResolver = resolve;
 
-      this.globalNetworkTimerId = setTimeout(() => {
+      globalNetworkTimerId = setTimeout(() => {
         logger.warn(`Global timeout of ${networkTimeoutMs}ms reached`);
         this.globalNetworkResolver();
       }, networkTimeoutMs);
@@ -79,7 +78,7 @@ export class Watcher {
     // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
     // is idle.
     const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
-      clearTimeout(this.globalNetworkTimerId);
+      clearTimeout(globalNetworkTimerId);
     });
 
     await Promise.race([globalNetworkTimeout, networkIdlePromise]);

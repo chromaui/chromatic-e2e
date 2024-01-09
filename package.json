@@ -34,7 +34,7 @@
     "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads build-archive-storybook",
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
-    "build": "tsup",
+    "build": "yarn workspaces foreach --all --topological-dev --parallel run build",
     "build:watch": "yarn build --watch",
     "test:unit": "jest",
     "test:playwright": "playwright test",

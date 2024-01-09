@@ -1,7 +1,7 @@
 import type { Page } from 'playwright';
-import { Watcher, ResourceArchive } from '../resource-archive';
-import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
-import { logger } from '../utils/logger';
+import { Watcher, ResourceArchive } from '@chromaui/shared-e2e';
+import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromaui/shared-e2e';
+import { logger } from '@chromaui/shared-e2e';
 
 const idle = async (page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) => {
   let globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;

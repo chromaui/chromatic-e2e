@@ -4,7 +4,7 @@ import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
 import { createResourceArchive } from './createResourceArchive';
-import { logger } from '../utils/logger';
+import { logger } from '@chromaui/shared-e2e';
 
 const TEST_PORT = 13337;
 

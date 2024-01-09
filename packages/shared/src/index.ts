@@ -1,9 +1,7 @@
-import { test as base, expect } from '@playwright/test';
+export * from './resource-archive';
+export * from './write-archive';
+export * from './utils/analytics';
+export * from './utils/logger';
+export * from './constants';
 
-import { makeTest } from './playwright-api/makeTest';
-
-export const test = makeTest(base);
-export { expect };
-
-export { takeArchive } from './playwright-api/takeArchive';
-export type { ChromaticConfig } from './types';
+export type { ChromaticConfig, ChromaticStorybookParameters } from './types';

@@ -88,7 +88,7 @@ export const setupNetworkListener = async (): Promise<null> => {
 export const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
     // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
-    // notice we're not awaiting watcher.idle() here...
+    // notice we're not calling + awaiting watcher.idle() here...
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
     return writeArchives({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {

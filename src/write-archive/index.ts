@@ -90,12 +90,7 @@ export async function writeTestResult(
     })
   );
 
-  const storiesFileNameParts = [
-    `${sanitize(title)}`,
-    viewportToString(viewport),
-    'stories',
-    'json',
-  ];
+  const storiesFileNameParts = [`${sanitize(title)}`, 'stories2', 'json'];
   await writeStoriesFile(
     join(finalOutputDir, storiesFileNameParts.join('.')),
     title,
@@ -122,7 +117,7 @@ async function writeStoriesFile(
 ) {
   logger.log(`Writing ${storiesFilename}`);
   await outputJson(storiesFilename, {
-    title: `${title}-${viewportToString(viewport)}`,
+    title,
     stories: Object.keys(domSnapshots).map((name) => ({
       name,
       parameters: {

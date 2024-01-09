@@ -52,8 +52,6 @@ export class Watcher {
   }
 
   async watch() {
-    this.client.on('Network.requestWillBeSent', this.requestWillBeSent.bind(this));
-    this.client.on('Network.responseReceived', this.responseReceived.bind(this));
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
 
     await this.client.send('Fetch.enable');
@@ -86,16 +84,6 @@ export class Watcher {
 
   setResponse(url: UrlString, response: ArchiveResponse) {
     this.archive[url] = response;
-  }
-
-  requestWillBeSent(event: Protocol.Network.requestWillBeSentPayload) {
-    logger.log('requestWillBeSent');
-    logger.log(event);
-  }
-
-  responseReceived(event: Protocol.Network.responseReceivedPayload) {
-    logger.log('responseReceived');
-    logger.log(event);
   }
 
   async clientSend<T extends keyof Protocol.CommandParameters>(

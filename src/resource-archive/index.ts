@@ -1,4 +1,4 @@
-import type { CDPSession, Page } from 'playwright';
+import type { Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
 
@@ -19,10 +19,16 @@ export type ArchiveResponse =
 
 export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
+// a custom interface that satisfies both playwright's CDPSession and chrome-remote-interface's CDP.Client types.
+interface CDPClient {
+  on: (eventName: keyof Protocol.Events, handlerFunction: (params?: any) => void) => void;
+  send: (eventName: keyof Protocol.CommandParameters, payload?: any) => Promise<any>;
+}
+
 export class Watcher {
   public archive: ResourceArchive = {};
 
-  private client: CDPSession;
+  private client: CDPClient;
 
   private globalNetworkTimeoutMs;
 
@@ -46,7 +52,7 @@ export class Watcher {
   private globalNetworkResolver: () => void;
 
   constructor(
-    cdpClient: CDPSession,
+    cdpClient: CDPClient,
     networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     allowedDomains?: string[]
   ) {
@@ -64,7 +70,7 @@ export class Watcher {
     await this.client.send('Fetch.enable');
   }
 
-  async idle(page: Page) {
+  async idle(page?: Page) {
     // XXX_jwir3: The way this works is as follows:
     // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
 
@@ -80,13 +86,19 @@ export class Watcher {
       }, this.globalNetworkTimeoutMs);
     });
 
-    // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
-    // is idle.
-    const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
-      clearTimeout(this.globalNetworkTimerId);
-    });
+    const promises = [globalNetworkTimeout];
 
-    await Promise.race([globalNetworkTimeout, networkIdlePromise]);
+    if (page) {
+      // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
+      // is idle.
+      const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
+        clearTimeout(this.globalNetworkTimerId);
+      });
+
+      promises.push(networkIdlePromise);
+    }
+
+    await Promise.race(promises);
 
     logger.log('Watcher closing');
     this.closed = true;

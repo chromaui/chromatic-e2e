@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/chromaui/test-archiver.git"
   },
-  "author": "me <todd@chromatic.com>",
+  "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

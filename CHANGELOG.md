@@ -1,3 +1,15 @@
+# v0.0.54 (Tue Jan 09 2024)
+
+#### 🐛 Bug Fix
+
+- Cypress uses Chrome Devtools Protocol [#53](https://github.com/chromaui/test-archiver/pull/53) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.53 (Thu Jan 04 2024)
 
 #### 🐛 Bug Fix

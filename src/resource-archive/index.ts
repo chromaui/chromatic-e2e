@@ -1,8 +1,5 @@
-import type { Page } from 'playwright';
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
-
-import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 
 export type UrlString = string;
 
@@ -30,8 +27,6 @@ export class Watcher {
 
   private client: CDPClient;
 
-  private globalNetworkTimeoutMs;
-
   /** 
    Specifies which domains (origins) we should archive resources for (by default we only archive same-origin resources).
    Useful in situations where the environment running the archived storybook (e.g. in CI) may be restricted to an intranet or other domain restrictions
@@ -45,77 +40,15 @@ export class Watcher {
    */
   private firstUrl: URL;
 
-  private closed = false;
-
-  private globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
-
-  private globalNetworkResolver: () => void;
-
-  constructor(
-    cdpClient: CDPClient,
-    networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-    allowedDomains?: string[]
-  ) {
+  constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
     this.client = cdpClient;
-    this.globalNetworkTimeoutMs = networkTimeoutMs;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.allowedArchiveOrigins = (allowedDomains || []).map((domain) => `https://${domain}`);
   }
 
   async watch() {
-    this.client.on('Network.requestWillBeSent', this.requestWillBeSent.bind(this));
-    this.client.on('Network.responseReceived', this.responseReceived.bind(this));
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
-
     await this.client.send('Fetch.enable');
-  }
-
-  async idle(page?: Page) {
-    // XXX_jwir3: The way this works is as follows:
-    // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
-
-    // The first promise wraps a global timeout, where all requests MUST complete before that timeout has passed.
-    // If the timeout passes, an error is thrown. This promise can only throw errors, it cannot resolve successfully.
-    const globalNetworkTimeout = new Promise<void>((resolve, reject) => {
-      // this.globalNetworkRejector = reject;
-      this.globalNetworkResolver = resolve;
-
-      this.globalNetworkTimerId = setTimeout(() => {
-        logger.warn(`Global timeout of ${this.globalNetworkTimeoutMs}ms reached`);
-        this.globalNetworkResolver();
-      }, this.globalNetworkTimeoutMs);
-    });
-
-    const promises = [globalNetworkTimeout];
-
-    if (page) {
-      // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
-      // is idle.
-      const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
-        clearTimeout(this.globalNetworkTimerId);
-      });
-
-      promises.push(networkIdlePromise);
-    }
-
-    await Promise.race(promises);
-
-    logger.log('Watcher closing');
-    this.closed = true;
-  }
-
-  setResponse(url: UrlString, response: ArchiveResponse) {
-    this.archive[url] = response;
-  }
-
-  requestWillBeSent(event: Protocol.Network.requestWillBeSentPayload) {
-    logger.log('requestWillBeSent');
-    logger.log(event);
-  }
-
-  responseReceived(event: Protocol.Network.responseReceivedPayload) {
-    logger.log('responseReceived');
-    logger.log(event);
   }
 
   async clientSend<T extends keyof Protocol.CommandParameters>(
@@ -168,10 +101,6 @@ export class Watcher {
       this.firstUrl.toString(),
       isRequestFromAllowedDomain
     );
-
-    if (this.closed) {
-      logger.log('Watcher closed, ignoring');
-    }
 
     // Pausing at response stage with an error, simply ignore
     if (responseErrorReason) {

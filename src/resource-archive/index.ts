@@ -68,7 +68,6 @@ export class Watcher {
     // The first promise wraps a global timeout, where all requests MUST complete before that timeout has passed.
     // If the timeout passes, an error is thrown. This promise can only throw errors, it cannot resolve successfully.
     const globalNetworkTimeout = new Promise<void>((resolve, reject) => {
-      // this.globalNetworkRejector = reject;
       this.globalNetworkResolver = resolve;
 
       this.globalNetworkTimerId = setTimeout(() => {
@@ -77,19 +76,13 @@ export class Watcher {
       }, networkTimeoutMs);
     });
 
-    const promises = [globalNetworkTimeout];
+    // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
+    // is idle.
+    const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
+      clearTimeout(this.globalNetworkTimerId);
+    });
 
-    if (page) {
-      // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
-      // is idle.
-      const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
-        clearTimeout(this.globalNetworkTimerId);
-      });
-
-      promises.push(networkIdlePromise);
-    }
-
-    await Promise.race(promises);
+    await Promise.race([globalNetworkTimeout, networkIdlePromise]);
   }
 
   setResponse(url: UrlString, response: ArchiveResponse) {

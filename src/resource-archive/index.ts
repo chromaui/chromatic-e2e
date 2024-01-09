@@ -45,8 +45,6 @@ export class Watcher {
    */
   private firstUrl: URL;
 
-  private closed = false;
-
   private globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
 
   private globalNetworkResolver: () => void;
@@ -99,9 +97,6 @@ export class Watcher {
     }
 
     await Promise.race(promises);
-
-    logger.log('Watcher closing');
-    this.closed = true;
   }
 
   setResponse(url: UrlString, response: ArchiveResponse) {
@@ -168,10 +163,6 @@ export class Watcher {
       this.firstUrl.toString(),
       isRequestFromAllowedDomain
     );
-
-    if (this.closed) {
-      logger.log('Watcher closed, ignoring');
-    }
 
     // Pausing at response stage with an error, simply ignore
     if (responseErrorReason) {

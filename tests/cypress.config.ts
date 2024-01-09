@@ -13,11 +13,7 @@ export default defineConfig({
         setupNetworkListener,
         saveArchives,
       });
-      on('before:browser:launch', async (browser, launchOptions) => {
-        await onBeforeBrowserLaunch(browser, launchOptions);
-
-        return launchOptions;
-      });
+      on('before:browser:launch', onBeforeBrowserLaunch);
     },
   },
 });

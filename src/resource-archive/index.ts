@@ -43,8 +43,6 @@ export class Watcher {
    */
   private firstUrl: URL;
 
-  private globalNetworkResolver: () => void;
-
   constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
@@ -59,17 +57,18 @@ export class Watcher {
 
   async idle(page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) {
     let globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
+    let globalNetworkResolver: null | (() => void) = null;
     // XXX_jwir3: The way this works is as follows:
     // There are two promises created here. They wrap two separate timers, and we await on a race of both Promises.
 
     // The first promise wraps a global timeout, where all requests MUST complete before that timeout has passed.
     // If the timeout passes, an error is thrown. This promise can only throw errors, it cannot resolve successfully.
     const globalNetworkTimeout = new Promise<void>((resolve) => {
-      this.globalNetworkResolver = resolve;
+      globalNetworkResolver = resolve;
 
       globalNetworkTimerId = setTimeout(() => {
         logger.warn(`Global timeout of ${networkTimeoutMs}ms reached`);
-        this.globalNetworkResolver();
+        globalNetworkResolver();
       }, networkTimeoutMs);
     });
 

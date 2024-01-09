@@ -1,0 +1,72 @@
+{
+  "name": "@chromaui/playwright-e2e",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Chromatic E2E Playwright integration",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chromaui/test-archiver.git"
+  },
+  "author": "me <todd@chromatic.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "*.js",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "archive-storybook": "archive-storybook",
+    "build-archive-storybook": "build-archive-storybook",
+    "clean": "rimraf ./dist",
+    "prebuild": "pnpm clean",
+    "build": "tsup",
+    "build:watch": "pnpm build --watch",
+    "test:unit": "jest --passWithNoTests",
+    "test:playwright": "playwright test",
+    "test:server": "node __playwright-tests__/server",
+    "start": "pnpm build:watch",
+    "release": "pnpm build && auto shipit",
+    "lint": "eslint src/*",
+    "prettier": "prettier"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.39.0",
+    "playwright": "^1.32.2",
+    "playwright-core": "^1.32.2"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
+  },
+  "auto": {
+    "plugins": [
+      "npm",
+      "released"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@chromaui/shared-e2e": "workspace:*",
+    "@segment/analytics-node": "^1.1.0",
+    "fs-extra": "^11.1.1",
+    "mime": "^3.0.0",
+    "rrweb-snapshot": "^2.0.0-alpha.4",
+    "srcset": "^4.0.0",
+    "ts-dedent": "^2.2.0"
+  },
+  "peerDependencies": {
+    "@playwright/test": "^1.0.0"
+  }
+}

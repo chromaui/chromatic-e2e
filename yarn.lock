@@ -8008,6 +8008,7 @@ __metadata:
     mime: "npm:^3.0.0"
     rrweb-snapshot: "npm:^2.0.0-alpha.4"
     srcset: "npm:^4.0.0"
+    start-server-and-test: "npm:^2.0.3"
     ts-dedent: "npm:^2.2.0"
   languageName: unknown
   linkType: soft

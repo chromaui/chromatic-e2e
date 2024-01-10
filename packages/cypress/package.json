@@ -31,12 +31,12 @@
     "*.d.ts"
   ],
   "scripts": {
-    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads archive-storybook",
-    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads build-archive-storybook",
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
     "build": "tsup",
     "build:watch": "yarn build --watch",
+    "test:cypress": "start-server-and-test 'yarn run test:server' 3000 'yarn run test:do-cypress'",
+    "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
     "test:unit": "jest --passWithNoTests",
     "start": "yarn build:watch",
     "lint": "eslint src/*",
@@ -44,7 +44,8 @@
   },
   "devDependencies": {
     "@chromaui/shared-e2e": "workspace:*",
-    "cypress": "^13.4.0"
+    "cypress": "^13.4.0",
+    "start-server-and-test": "^2.0.3"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"

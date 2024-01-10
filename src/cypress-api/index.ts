@@ -63,7 +63,7 @@ let watcher: Watcher = null;
 let host = '';
 let port = 0;
 
-export const setupNetworkListener = async (): Promise<null> => {
+const setupNetworkListener = async (): Promise<null> => {
   try {
     const { webSocketDebuggerUrl } = await Version({
       host,
@@ -85,7 +85,7 @@ export const setupNetworkListener = async (): Promise<null> => {
   return null;
 };
 
-export const saveArchives = (archiveInfo: WriteParams) => {
+const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
     // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
     // notice we're not calling + awaiting watcher.idle() here...
@@ -124,4 +124,13 @@ export const onBeforeBrowserLaunch = (
   port = parseInt(portString, 10);
 
   return launchOptions;
+};
+
+export const installPlugin = (on: any) => {
+  // these events are run on the server (in Node)
+  on('task', {
+    setupNetworkListener,
+    saveArchives,
+  });
+  on('before:browser:launch', onBeforeBrowserLaunch);
 };

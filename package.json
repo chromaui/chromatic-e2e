@@ -1,5 +1,5 @@
 {
-  "name": "@chromaui/test-archiver",
+  "name": "@chromaui/chromatic-e2e",
   "version": "0.0.56",
   "private": true,
   "description": "Archive end-to-end tests to be replayed in Storybook and Chromatic",
@@ -9,24 +9,6 @@
   },
   "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    },
-    "./cypress": "./dist/cypress-api/index.js",
-    "./cypress/support": "./dist/cypress-api/support.js"
-  },
-  "files": [
-    "dist/**/*",
-    "README.md",
-    "*.js",
-    "*.d.ts"
-  ],
   "scripts": {
     "archive-storybook:playwright": "archive-storybook",
     "build-archive-storybook:playwright": "build-archive-storybook",
@@ -92,27 +74,6 @@
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
-  },
-  "auto": {
-    "plugins": [
-      "npm",
-      "released"
-    ]
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "@segment/analytics-node": "^1.1.0",
-    "chrome-remote-interface": "^0.33.0",
-    "fs-extra": "^11.1.1",
-    "mime": "^3.0.0",
-    "rrweb-snapshot": "^2.0.0-alpha.4",
-    "srcset": "^4.0.0",
-    "ts-dedent": "^2.2.0"
-  },
-  "peerDependencies": {
-    "@playwright/test": "^1.0.0"
   },
   "packageManager": "yarn@4.0.2",
   "workspaces": [

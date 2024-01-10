@@ -1,9 +1,11 @@
 import type { elementNode } from 'rrweb-snapshot';
 import CDP, { Version } from 'chrome-remote-interface';
-import { writeTestResult } from '../write-archive';
-import type { ChromaticStorybookParameters } from '../types';
-import type { ResourceArchive } from '../resource-archive';
-import { Watcher } from '../resource-archive';
+import {
+  Watcher,
+  writeTestResult,
+  ChromaticStorybookParameters,
+  ResourceArchive,
+} from '@chromaui/shared-e2e';
 
 interface WriteParams {
   testTitle: string;

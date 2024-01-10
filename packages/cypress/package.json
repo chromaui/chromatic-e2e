@@ -1,0 +1,60 @@
+{
+  "name": "chromatic-cypress",
+  "version": "0.1.0",
+  "description": "Chromatic Visual Regression Testing for Cypress",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chromaui/test-archiver.git",
+    "directory": "packages/cypress"
+  },
+  "author": "Chromatic <tom@chromatic.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./support": {
+      "require": "./dist/support.js",
+      "import": "./dist/support.mjs",
+      "types": "./dist/support.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "*.js",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "prebuild": "yarn clean",
+    "build": "tsup",
+    "build:watch": "yarn build --watch",
+    "test:cypress": "start-server-and-test 'yarn run test:server' 3000 'yarn run test:do-cypress'",
+    "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
+    "test:unit": "jest --passWithNoTests",
+    "start": "yarn build:watch",
+    "lint": "eslint src/*",
+    "prettier": "prettier"
+  },
+  "devDependencies": {
+    "@chromaui/shared-e2e": "workspace:*",
+    "cypress": "^13.4.0",
+    "start-server-and-test": "^2.0.3"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "chrome-remote-interface": "^0.33.0",
+    "rrweb-snapshot": "^2.0.0-alpha.4"
+  }
+}

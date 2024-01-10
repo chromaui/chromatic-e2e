@@ -1,3 +1,15 @@
+# v0.0.56 (Wed Jan 10 2024)
+
+#### 🐛 Bug Fix
+
+- Cypress: User-facing API [#55](https://github.com/chromaui/test-archiver/pull/55) ([@skitterm](https://github.com/skitterm))
+
+#### Authors: 1
+
+- Steven Kitterman ([@skitterm](https://github.com/skitterm))
+
+---
+
 # v0.0.55 (Tue Jan 09 2024)
 
 #### 🐛 Bug Fix

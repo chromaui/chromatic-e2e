@@ -29,25 +29,19 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) 
   const response = await fetch(`${url}/${id}`);
   const snapshot = await response.json();
 
-  const iframe = document.createElement('iframe');
-  iframe.setAttribute('style', iframeStyle);
-  element.appendChild(iframe);
+  const htmlNode = snapshot.childNodes[1];
 
   // @ts-expect-error rebuild is typed incorreclty, cache and mirror are optional
-  await rebuild(snapshot, { doc: iframe.contentDocument });
+  const html = (await rebuild(htmlNode, { doc: document })) as HTMLElement;
 
-  // Wait a moment, then set the dimensions of the iframe
-  setTimeout(() => updateDimensions(iframe), 100);
+  document.children[0].innerHTML = html.innerHTML;
 
-  // Also update the dimension every time the window changes size
-  window.addEventListener(
-    'resize',
-    debounce(() => updateDimensions(iframe), 100)
-  );
+  // insert a couple of elements to fool SB
+  document.body.innerHTML += '<div id="storybook-root"></div><div id="storybook-docs"></div>';
 
   context.showMain();
   return () => {
-    element.removeChild(iframe);
+    // element.removeChild(iframe);
   };
 };
 

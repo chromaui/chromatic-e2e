@@ -63,7 +63,7 @@ let watcher: Watcher = null;
 let host = '';
 let port = 0;
 
-export const setupNetworkListener = async (): Promise<null> => {
+const setupNetworkListener = async (): Promise<null> => {
   try {
     const { webSocketDebuggerUrl } = await Version({
       host,
@@ -85,7 +85,7 @@ export const setupNetworkListener = async (): Promise<null> => {
   return null;
 };
 
-export const saveArchives = (archiveInfo: WriteParams) => {
+const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
     // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
     // notice we're not calling + awaiting watcher.idle() here...
@@ -95,6 +95,25 @@ export const saveArchives = (archiveInfo: WriteParams) => {
       resolve(null);
     });
   });
+};
+
+interface TaskParams {
+  action: 'setup-network-listener' | 'save-archives';
+  payload?: any;
+}
+
+// Handles all server-side tasks, dispatching each to its proper handler.
+// Why? So users don't have to register all these individual tasks
+// (they can just import and register prepareArchives)
+export const prepareArchives = async ({ action, payload }: TaskParams) => {
+  switch (action) {
+    case 'setup-network-listener':
+      return setupNetworkListener();
+    case 'save-archives':
+      return saveArchives(payload);
+    default:
+      return null;
+  }
 };
 
 // We use this lifecycle hook because we need to know what host and port Chrome Devtools Protocol is listening at.
@@ -124,4 +143,12 @@ export const onBeforeBrowserLaunch = (
   port = parseInt(portString, 10);
 
   return launchOptions;
+};
+
+export const installPlugin = (on: any) => {
+  // these events are run on the server (in Node)
+  on('task', {
+    prepareArchives,
+  });
+  on('before:browser:launch', onBeforeBrowserLaunch);
 };

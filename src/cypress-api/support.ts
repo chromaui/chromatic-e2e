@@ -7,7 +7,7 @@ beforeEach(() => {
   // then cleaned up before the next test is run
   // (see https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
   cy.wrap([]).as('manualSnapshots');
-  cy.task('setupNetworkListener');
+  cy.task('prepareArchives', { action: 'setup-network-listener' });
 });
 
 afterEach(() => {
@@ -18,13 +18,16 @@ afterEach(() => {
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {
       cy.url().then((url) => {
         // pass the snapshot to the server to write to disk
-        cy.task('saveArchives', {
-          testTitle: Cypress.currentTest.title,
-          domSnapshots: [...manualSnapshots, snap],
-          chromaticStorybookParams: {
-            diffThreshold: Cypress.env('diffThreshold'),
+        cy.task('prepareArchives', {
+          action: 'save-archives',
+          payload: {
+            testTitle: Cypress.currentTest.title,
+            domSnapshots: [...manualSnapshots, snap],
+            chromaticStorybookParams: {
+              diffThreshold: Cypress.env('diffThreshold'),
+            },
+            pageUrl: url,
           },
-          pageUrl: url,
         });
       });
     });

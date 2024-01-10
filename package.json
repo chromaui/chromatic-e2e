@@ -20,8 +20,7 @@
     "test:unit": "yarn workspaces foreach --all run test:unit",
     "test:server": "node dev-server/server",
     "start": "yarn build:watch",
-    "release": "yarn build && auto shipit",
-    "lint": "eslint src/*",
+    "lint": "yarn workspaces foreach --all --parallel run lint",
     "prettier": "prettier",
     "prepare": "husky install"
   },

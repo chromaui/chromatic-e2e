@@ -8020,6 +8020,7 @@ __metadata:
     "@chromaui/shared-e2e": "workspace:*"
     "@playwright/test": "npm:^1.39.0"
     "@segment/analytics-node": "npm:^1.1.0"
+    express: "npm:^4.18.2"
     fs-extra: "npm:^11.1.1"
     mime: "npm:^3.0.0"
     playwright: "npm:^1.32.2"

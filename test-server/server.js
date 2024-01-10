@@ -13,8 +13,9 @@ app.get('/', (req, res) => {
   res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);
 });
 
-app.get('/asset-paths', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/asset-paths.html'));
+// Asset path pages
+app.get('/asset-paths/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/asset-paths/${req.params.page}.html`));
 });
 
 app.get('/ignore', (req, res) => {
@@ -72,11 +73,6 @@ app.get('/asset-paths/relative/purple.png', (req, res) => {
 
 app.get('/background-img.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
-});
-
-// Asset path pages
-app.get('/asset-paths/:page', (req, res) => {
-  res.sendFile(path.join(__dirname, `fixtures/asset-paths/${req.params.page}.html`));
 });
 
 app.listen(port, () => {

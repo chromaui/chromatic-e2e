@@ -65,7 +65,11 @@ let watcher: Watcher = null;
 let host = '';
 let port = 0;
 
-const setupNetworkListener = async (): Promise<null> => {
+const setupNetworkListener = async ({
+  allowedDomains,
+}: {
+  allowedDomains?: string[];
+}): Promise<null> => {
   try {
     const { webSocketDebuggerUrl } = await Version({
       host,
@@ -77,7 +81,7 @@ const setupNetworkListener = async (): Promise<null> => {
     });
 
     if (!watcher) {
-      watcher = new Watcher(cdp);
+      watcher = new Watcher(cdp, allowedDomains);
       await watcher.watch();
     }
   } catch (err) {
@@ -110,7 +114,7 @@ interface TaskParams {
 export const prepareArchives = async ({ action, payload }: TaskParams) => {
   switch (action) {
     case 'setup-network-listener':
-      return setupNetworkListener();
+      return setupNetworkListener(payload);
     case 'save-archives':
       return saveArchives(payload);
     default:

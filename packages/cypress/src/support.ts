@@ -7,7 +7,10 @@ beforeEach(() => {
   // then cleaned up before the next test is run
   // (see https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
   cy.wrap([]).as('manualSnapshots');
-  cy.task('prepareArchives', { action: 'setup-network-listener' });
+  cy.task('prepareArchives', {
+    action: 'setup-network-listener',
+    payload: { allowedDomains: Cypress.env('allowedArchiveDomains') },
+  });
 });
 
 afterEach(() => {

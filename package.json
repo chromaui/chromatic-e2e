@@ -12,8 +12,8 @@
   "scripts": {
     "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results archive-storybook",
     "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results build-archive-storybook",
-    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads archive-storybook",
-    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads build-archive-storybook",
+    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/downloads archive-storybook",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/downloads build-archive-storybook",
     "clean": "yarn workspaces foreach --all --parallel run clean",
     "prebuild": "yarn clean",
     "build": "yarn workspaces foreach --all --topological-dev --parallel run build",

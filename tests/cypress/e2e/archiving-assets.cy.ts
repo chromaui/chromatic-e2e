@@ -2,8 +2,7 @@ it('Assets / query params determine which asset is served', () => {
   cy.visit('/asset-paths/query-params');
 });
 
-// TODO: Unskip when Cypress support achieves parity with Playwright
-it.skip('Assets / asset doesnt prevent directory from being created', () => {
+it('Assets / asset doesnt prevent directory from being created', () => {
   cy.visit('/asset-paths/asset-at-directory-name');
 });
 
@@ -27,8 +26,7 @@ it.skip('Assets / external asset is archived', () => {
   cy.visit('/asset-paths/external-asset-archived');
 });
 
-// TODO: Unskip when Cypress support achieves parity with Playwright
-it.skip('Assets / assets from css urls are archived', () => {
+it('Assets / assets from css urls are archived', () => {
   cy.visit('/asset-paths/css-urls');
 });
 

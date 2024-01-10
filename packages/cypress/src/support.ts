@@ -11,6 +11,9 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  if (Cypress.env('disableAutoCapture')) {
+    return;
+  }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
     const snap = snapshot(doc);

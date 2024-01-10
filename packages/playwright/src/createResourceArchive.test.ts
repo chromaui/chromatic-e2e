@@ -3,8 +3,8 @@ import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
+import { logger } from '@chromaui/shared-e2e';
 import { createResourceArchive } from './createResourceArchive';
-import { logger } from '../utils/logger';
 
 const TEST_PORT = 13337;
 

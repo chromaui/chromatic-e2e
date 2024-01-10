@@ -22,10 +22,14 @@ jobs:
         run: |
           yarn playwright install    
 
+      - name: Build
+        run: |
+          yarn run build
+
       - name: Run lint
         run: |
-          yarn lint
+          yarn run lint
 
       - name: Run tests
         run: |
-          yarn test:unit
+          yarn run test:unit

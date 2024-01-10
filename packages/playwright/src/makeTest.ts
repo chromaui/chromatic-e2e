@@ -5,11 +5,14 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
-import type { ChromaticConfig } from '../types';
-import { writeTestResult } from '../write-archive';
+import type { ChromaticConfig } from '@chromaui/shared-e2e';
+import {
+  writeTestResult,
+  trackComplete,
+  trackRun,
+  DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
+} from '@chromaui/shared-e2e';
 import { contentType, takeArchive } from './takeArchive';
-import { trackComplete, trackRun } from '../utils/analytics';
-import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '../constants';
 import { createResourceArchive } from './createResourceArchive';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when

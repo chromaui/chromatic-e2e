@@ -1,0 +1,59 @@
+{
+  "name": "chromatic-playwright",
+  "version": "0.1.0",
+  "description": "Chromatic Visual Regression Testing for Playwright",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chromaui/test-archiver.git",
+    "directory": "packages/playwright"
+  },
+  "author": "Chromatic <tom@chromatic.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "*.js",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "prebuild": "yarn clean",
+    "build": "tsup",
+    "build:watch": "yarn build --watch",
+    "test:unit": "jest --passWithNoTests",
+    "test:playwright": "playwright test",
+    "start": "yarn build:watch",
+    "lint": "eslint src/*",
+    "prettier": "prettier"
+  },
+  "devDependencies": {
+    "@chromaui/shared-e2e": "workspace:*",
+    "@playwright/test": "^1.39.0",
+    "express": "^4.18.2",
+    "playwright": "^1.32.2",
+    "playwright-core": "^1.32.2"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "rrweb-snapshot": "^2.0.0-alpha.4",
+    "ts-dedent": "^2.2.0"
+  },
+  "peerDependencies": {
+    "@playwright/test": "^1.0.0"
+  }
+}

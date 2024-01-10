@@ -1,6 +1,7 @@
 {
-  "name": "@chromaui/test-archiver",
+  "name": "@chromaui/chromatic-e2e",
   "version": "0.0.56",
+  "private": true,
   "description": "Archive end-to-end tests to be replayed in Storybook and Chromatic",
   "repository": {
     "type": "git",
@@ -8,41 +9,18 @@
   },
   "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    },
-    "./cypress": "./dist/cypress-api/index.js",
-    "./cypress/support": "./dist/cypress-api/support.js"
-  },
-  "files": [
-    "dist/**/*",
-    "README.md",
-    "*.js",
-    "*.d.ts"
-  ],
   "scripts": {
-    "archive-storybook:playwright": "archive-storybook",
-    "build-archive-storybook:playwright": "build-archive-storybook",
-    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads archive-storybook",
-    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads build-archive-storybook",
-    "clean": "rimraf ./dist",
+    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results archive-storybook",
+    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results build-archive-storybook",
+    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/downloads archive-storybook",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/downloads build-archive-storybook",
+    "clean": "yarn workspaces foreach --all --parallel run clean",
     "prebuild": "yarn clean",
-    "build": "tsup",
-    "build:watch": "yarn build --watch",
-    "test:unit": "jest",
-    "test:playwright": "playwright test",
-    "test:cypress": "start-server-and-test test:server 3000 test:do-cypress",
-    "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
-    "test:server": "node tests/server",
+    "build": "yarn workspaces foreach --all --topological-dev --parallel run build",
+    "test:unit": "yarn workspaces foreach --all run test:unit",
+    "test:server": "node test-server/server",
     "start": "yarn build:watch",
-    "release": "yarn build && auto shipit",
-    "lint": "eslint src/*",
+    "lint": "yarn workspaces foreach --all --parallel run lint",
     "prettier": "prettier",
     "prepare": "husky install"
   },
@@ -92,26 +70,8 @@
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
   },
-  "auto": {
-    "plugins": [
-      "npm",
-      "released"
-    ]
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "@segment/analytics-node": "^1.1.0",
-    "chrome-remote-interface": "^0.33.0",
-    "fs-extra": "^11.1.1",
-    "mime": "^3.0.0",
-    "rrweb-snapshot": "^2.0.0-alpha.4",
-    "srcset": "^4.0.0",
-    "ts-dedent": "^2.2.0"
-  },
-  "peerDependencies": {
-    "@playwright/test": "^1.0.0"
-  },
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "yarn@4.0.2",
+  "workspaces": [
+    "packages/*"
+  ]
 }

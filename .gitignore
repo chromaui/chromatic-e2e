@@ -18,7 +18,7 @@ chromatic.log
 !.yarn/versions
 
 test-archives
-/test-results/
-/playwright-report/
-/playwright/.cache/
-/tests/cypress/downloads/
+**/playwright-report/
+**/playwright/.cache/
+packages/playwright/test-results/
+packages/cypress/tests/cypress/downloads/

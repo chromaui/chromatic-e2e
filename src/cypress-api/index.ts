@@ -97,6 +97,25 @@ const saveArchives = (archiveInfo: WriteParams) => {
   });
 };
 
+interface TaskParams {
+  action: 'setup-network-listener' | 'save-archives';
+  payload?: any;
+}
+
+// Handles all server-side tasks, dispatching each to its proper handler.
+// Why? So users don't have to register all these individual tasks
+// (they can just import and register prepareArchives)
+export const prepareArchives = async ({ action, payload }: TaskParams) => {
+  switch (action) {
+    case 'setup-network-listener':
+      return setupNetworkListener();
+    case 'save-archives':
+      return saveArchives(payload);
+    default:
+      return null;
+  }
+};
+
 // We use this lifecycle hook because we need to know what host and port Chrome Devtools Protocol is listening at.
 export const onBeforeBrowserLaunch = (
   // we don't use the browser parameter but we're keeping it here in case we'd ever need to read from it
@@ -129,8 +148,7 @@ export const onBeforeBrowserLaunch = (
 export const installPlugin = (on: any) => {
   // these events are run on the server (in Node)
   on('task', {
-    setupNetworkListener,
-    saveArchives,
+    prepareArchives,
   });
   on('before:browser:launch', onBeforeBrowserLaunch);
 };

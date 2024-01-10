@@ -2822,9 +2822,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chromaui/archive-storybook@npm:~0.0.15":
-  version: 0.0.18
-  resolution: "@chromaui/archive-storybook@npm:0.0.18"
+"@chromaui/archive-storybook@npm:0.0.19--canary.b1765e2.0":
+  version: 0.0.19--canary.b1765e2.0
+  resolution: "@chromaui/archive-storybook@npm:0.0.19--canary.b1765e2.0"
   dependencies:
     "@storybook/csf": "npm:^0.1.0"
     lodash.debounce: "npm:^4.0.8"
@@ -2836,7 +2836,7 @@ __metadata:
   bin:
     archive-storybook: dist/bin/archive-storybook.js
     build-archive-storybook: dist/bin/build-archive-storybook.js
-  checksum: 38b000da938adf532b4a281f5d5be63daec220b7e68a9341f6424ef3c347518cffecd663fd52eb79ca01e46ba71306a90472ff4e3d205b3673bf3d68eddc1164
+  checksum: eefc63b515ff914b86ace1c7b22ac3ea7029ac3f237ceae4e45984fd24a3fd8771228910c43d3bb07b6ae3714b4204616fe71c3267f7874c2895e0cfea774c02
   languageName: node
   linkType: hard
 
@@ -2848,7 +2848,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.21.4"
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.4"
-    "@chromaui/archive-storybook": "npm:~0.0.15"
+    "@chromaui/archive-storybook": "npm:0.0.19--canary.b1765e2.0"
     "@jest/types": "npm:^27.0.6"
     "@playwright/test": "npm:^1.39.0"
     "@segment/analytics-node": "npm:^1.1.0"

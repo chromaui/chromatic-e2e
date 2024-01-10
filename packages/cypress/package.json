@@ -1,11 +1,11 @@
 {
-  "name": "@chromaui/cypress-e2e",
-  "private": true,
+  "name": "chromatic-cypress",
   "version": "0.1.0",
-  "description": "Chromatic E2E Cypress integration",
+  "description": "Chromatic Visual Regression Testing for Cypress",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/test-archiver.git"
+    "url": "https://github.com/chromaui/test-archiver.git",
+    "directory": "packages/cypress"
   },
   "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
@@ -31,15 +31,14 @@
     "*.d.ts"
   ],
   "scripts": {
-    "archive-storybook": "archive-storybook",
-    "build-archive-storybook": "build-archive-storybook",
+    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads archive-storybook",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=./tests/cypress/downloads build-archive-storybook",
     "clean": "rimraf ./dist",
-    "prebuild": "pnpm clean",
+    "prebuild": "yarn clean",
     "build": "tsup",
-    "build:watch": "pnpm build --watch",
+    "build:watch": "yarn build --watch",
     "test:unit": "jest --passWithNoTests",
-    "start": "pnpm build:watch",
-    "release": "pnpm build && auto shipit",
+    "start": "yarn build:watch",
     "lint": "eslint src/*",
     "prettier": "prettier"
   },
@@ -49,12 +48,6 @@
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
-  },
-  "auto": {
-    "plugins": [
-      "npm",
-      "released"
-    ]
   },
   "publishConfig": {
     "access": "public"

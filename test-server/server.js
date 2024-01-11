@@ -18,6 +18,11 @@ app.get('/asset-paths/:page', (req, res) => {
   res.sendFile(path.join(__dirname, `fixtures/asset-paths/${req.params.page}.html`));
 });
 
+// Options pages
+app.get('/options/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/options/${req.params.page}.html`));
+});
+
 app.get('/ignore', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/dynamic-content.html'));
 });

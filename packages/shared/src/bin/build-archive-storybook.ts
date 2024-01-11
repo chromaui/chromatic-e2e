@@ -2,7 +2,7 @@
 
 import { execFileSync } from 'child_process';
 import { resolve, dirname } from 'path';
-import { checkArchivesDirExists } from '../filePaths';
+import { checkArchivesDirExists } from '../archive-storybook/filePaths';
 
 checkArchivesDirExists();
 
@@ -11,4 +11,4 @@ const args = process.argv.slice(2);
 
 const configDir = 'node_modules/@chromaui/archive-storybook/config';
 const binPath = resolve(dirname(require.resolve('@storybook/cli/package.json')), './bin/index.js');
-execFileSync('node', [binPath, 'dev', ...args, '-c', configDir], { stdio: 'inherit' });
+execFileSync('node', [binPath, 'build', ...args, '-c', configDir], { stdio: 'inherit' });

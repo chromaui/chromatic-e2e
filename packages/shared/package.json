@@ -75,7 +75,9 @@
   },
   "dependencies": {
     "@segment/analytics-node": "^1.1.0",
+    "@storybook/csf": "^0.1.0",
     "fs-extra": "^11.1.1",
+    "lodash.debounce": "^4.0.8",
     "mime": "^3.0.0",
     "rrweb-snapshot": "^2.0.0-alpha.4",
     "srcset": "^4.0.0",

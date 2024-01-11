@@ -31,12 +31,12 @@ export const makeTest = (
     delay: [undefined, { option: true }],
     diffIncludeAntiAliasing: [undefined, { option: true }],
     diffThreshold: [undefined, { option: true }],
-    disableAutoCapture: [false, { option: true }],
+    disableAutoSnapshot: [false, { option: true }],
     forcedColors: [undefined, { option: true }],
     pauseAnimationAtEnd: [undefined, { option: true }],
     prefersReducedMotion: [undefined, { option: true }],
     resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
-    allowedArchiveDomains: [[], { option: true }],
+    assetDomains: [[], { option: true }],
 
     save: [
       async (
@@ -45,12 +45,12 @@ export const makeTest = (
           delay,
           diffIncludeAntiAliasing,
           diffThreshold,
-          disableAutoCapture,
+          disableAutoSnapshot,
           forcedColors,
           pauseAnimationAtEnd,
           prefersReducedMotion,
           resourceArchiveTimeout,
-          allowedArchiveDomains,
+          assetDomains,
         },
         use,
         testInfo
@@ -69,11 +69,11 @@ export const makeTest = (
         const completeArchive = await createResourceArchive({
           page,
           networkTimeout: resourceArchiveTimeout,
-          allowedArchiveDomains,
+          assetDomains,
         });
         await use();
 
-        if (!disableAutoCapture) {
+        if (!disableAutoSnapshot) {
           await takeSnapshot(page, testInfo);
         }
 

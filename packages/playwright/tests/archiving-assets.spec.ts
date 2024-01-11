@@ -3,7 +3,7 @@ import path from 'path';
 import { test } from '../src';
 
 // domain of external image in test (to archive)
-test.use({ allowedArchiveDomains: ['some.external'] });
+test.use({ assetDomains: ['some.external'] });
 
 test('Assets / query params determine which asset is served', async ({ page }) => {
   await page.goto('/asset-paths/query-params');

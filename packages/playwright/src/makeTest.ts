@@ -12,7 +12,7 @@ import {
   trackRun,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
 } from '@chromaui/shared-e2e';
-import { contentType, takeArchive } from './takeArchive';
+import { contentType, takeSnapshot } from './takeSnapshot';
 import { createResourceArchive } from './createResourceArchive';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
@@ -74,7 +74,7 @@ export const makeTest = (
         await use();
 
         if (!disableAutoCapture) {
-          await takeArchive(page, testInfo);
+          await takeSnapshot(page, testInfo);
         }
 
         const resourceArchive = await completeArchive();

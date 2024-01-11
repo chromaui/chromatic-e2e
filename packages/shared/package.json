@@ -15,9 +15,14 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
+    },
+    "./archive-storybook/scripts": {
+      "types": "./dist/archive-storybook/scripts.d.ts",
+      "import": "./dist/archive-storybook/scripts.mjs",
+      "require": "./dist/archive-storybook/scripts.js"
     }
   },
   "files": [
@@ -26,6 +31,16 @@
     "*.js",
     "*.d.ts"
   ],
+  "typesVersions": {
+    "*": {
+      ".": [
+        "index.d.ts"
+      ],
+      "archive-storybook/scripts": [
+        "dist/archive-storybook/scripts.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",

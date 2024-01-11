@@ -30,7 +30,19 @@ afterEach(() => {
             testTitle: Cypress.currentTest.title,
             domSnapshots: [...manualSnapshots, snap],
             chromaticStorybookParams: {
-              diffThreshold: Cypress.env('diffThreshold'),
+              ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
+              ...(Cypress.env('delay') && { delay: Cypress.env('delay') }),
+              ...(Cypress.env('diffIncludeAntiAliasing') && {
+                diffIncludeAntiAliasing: Cypress.env('diffIncludeAntiAliasing'),
+              }),
+              ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
+              ...(Cypress.env('forcedColors') && { forcedColors: Cypress.env('forcedColors') }),
+              ...(Cypress.env('pauseAnimationAtEnd') && {
+                pauseAnimationAtEnd: Cypress.env('pauseAnimationAtEnd'),
+              }),
+              ...(Cypress.env('prefersReducedMotion') && {
+                prefersReducedMotion: Cypress.env('prefersReducedMotion'),
+              }),
             },
             pageUrl: url,
           },

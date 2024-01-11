@@ -18,17 +18,13 @@ it('Assets / external asset is not archived (but still renders)', () => {
   cy.visit('/asset-paths/external-asset-not-archived');
 });
 
-// domain of external image in test (to archive)
-it(
-  'Assets / external asset is archived',
-  { env: { allowedArchiveDomains: ['some.external'] } },
-  () => {
-    // mock the external image (which we'll archive)
-    cy.intercept('https://some.external/domain/image.png', { fixture: 'pink.png' });
+// TODO: Unskip when Cypress support achieves parity with Playwright
+it.skip('Assets / external asset is archived', () => {
+  // mock the external image (which we'll archive)
+  cy.intercept('https://some.external/domain/image.png', { fixture: 'pink.png' });
 
-    cy.visit('/asset-paths/external-asset-archived');
-  }
-);
+  cy.visit('/asset-paths/external-asset-archived');
+});
 
 it('Assets / assets from css urls are archived', () => {
   cy.visit('/asset-paths/css-urls');

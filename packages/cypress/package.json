@@ -14,15 +14,19 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./support": {
-      "require": "./dist/support.js",
+      "types": "./dist/support.d.ts",
       "import": "./dist/support.mjs",
-      "types": "./dist/support.d.ts"
+      "require": "./dist/support.js"
     }
+  },
+  "bin": {
+    "archive-storybook": "dist/bin/archive-storybook.js",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.js"
   },
   "files": [
     "dist/**/*",

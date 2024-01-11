@@ -8000,6 +8000,9 @@ __metadata:
     cypress: "npm:^13.4.0"
     rrweb-snapshot: "npm:^2.0.0-alpha.4"
     start-server-and-test: "npm:^2.0.3"
+  bin:
+    archive-storybook: dist/bin/archive-storybook.js
+    build-archive-storybook: dist/bin/build-archive-storybook.js
   languageName: unknown
   linkType: soft
 
@@ -8016,6 +8019,9 @@ __metadata:
     ts-dedent: "npm:^2.2.0"
   peerDependencies:
     "@playwright/test": ^1.0.0
+  bin:
+    archive-storybook: dist/bin/archive-storybook.js
+    build-archive-storybook: dist/bin/build-archive-storybook.js
   languageName: unknown
   linkType: soft
 

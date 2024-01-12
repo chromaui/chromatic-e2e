@@ -17,7 +17,6 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: true,
   platform: 'node',
-  bundle: false,
   esbuildOptions(options) {
     options.conditions = ['module'];
   },

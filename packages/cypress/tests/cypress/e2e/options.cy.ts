@@ -9,3 +9,7 @@ it('Options / diff threshold', { env: { diffThreshold: 1 } }, () => {
 it('Options / pause animation at end', /*{ env: { pauseAnimationAtEnd: true } },*/ () => {
   cy.visit('/options/pause-animation-at-end');
 });
+
+it('Options / force high-contrast' /*, { env: { forcedColors: true } }*/, () => {
+  cy.visit('/options/forced-colors');
+});

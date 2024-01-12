@@ -23,3 +23,11 @@ test.describe(() => {
     await page.goto('/options/pause-animation-at-end');
   });
 });
+
+test.describe(() => {
+  // test.use({ forcedColors: true });
+
+  test('Options / force high-contrast', async ({ page }) => {
+    await page.goto('/options/forced-colors');
+  });
+});

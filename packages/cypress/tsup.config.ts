@@ -1,3 +1,4 @@
+import { copy } from 'fs-extra';
 import { defineConfig } from 'tsup';
 
 export default defineConfig((options) => ({
@@ -14,5 +15,8 @@ export default defineConfig((options) => ({
   platform: 'node',
   esbuildOptions(options) {
     options.conditions = ['module'];
+  },
+  async onSuccess() {
+    await copy('../shared/storybook-config', 'dist/.storybook');
   },
 }));

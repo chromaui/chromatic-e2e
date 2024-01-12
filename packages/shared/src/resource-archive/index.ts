@@ -91,8 +91,7 @@ export class Watcher {
     this.firstUrl ??= requestUrl;
 
     const isRequestFromAllowedDomain =
-      requestUrl.origin === this.firstUrl.origin ||
-      this.assetDomains.includes(requestUrl.origin);
+      requestUrl.origin === this.firstUrl.origin || this.assetDomains.includes(requestUrl.origin);
 
     logger.log(
       'requestPaused',

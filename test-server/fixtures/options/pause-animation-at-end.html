@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <style>  
+      img {
+        opacity: 0;
+        animation-name: make-shown;
+        /* image takes forever to fade in */
+        animation-duration: 20s;        
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes make-shown {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/img?url=fixtures/blue.png"/>
+  </body>
+</html>

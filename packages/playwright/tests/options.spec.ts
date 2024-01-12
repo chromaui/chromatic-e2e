@@ -9,9 +9,17 @@ test.describe(() => {
 });
 
 test.describe(() => {
-  // test.use({ diffThreshold: 1 });
+  test.use({ diffThreshold: 1 });
 
   test('Options / diff threshold', async ({ page }) => {
     await page.goto('/options/diff-threshold');
+  });
+});
+
+test.describe(() => {
+  // test.use({ pauseAnimationAtEnd: true });
+
+  test('Options / pause animation at end', async ({ page }) => {
+    await page.goto('/options/pause-animation-at-end');
   });
 });

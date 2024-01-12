@@ -1,8 +1,8 @@
-const path = require('path');
-const { archivesDir } = require('../dist/filePaths');
+import path from 'path';
+import { archivesDir } from '@chromaui/shared-e2e';
 
 /** @type { import('@storybook/server-webpack5').StorybookConfig } */
-const config = {
+export default {
   stories: [path.resolve(archivesDir(), '*.stories.json')],
   addons: ['@storybook/addon-essentials', '../dist'],
   framework: {
@@ -11,4 +11,3 @@ const config = {
   },
   staticDirs: [path.resolve(archivesDir(), 'archive')],
 };
-module.exports = config;

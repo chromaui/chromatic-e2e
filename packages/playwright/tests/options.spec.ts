@@ -25,7 +25,7 @@ test.describe(() => {
 });
 
 test.describe(() => {
-  // test.use({ forcedColors: true });
+  test.use({ forcedColors: true });
 
   test('Options / force high-contrast', async ({ page }) => {
     await page.goto('/options/forced-colors');

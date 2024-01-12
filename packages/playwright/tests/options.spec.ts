@@ -31,3 +31,11 @@ test.describe(() => {
     await page.goto('/options/forced-colors');
   });
 });
+
+test.describe(() => {
+  test.use({ prefersReducedMotion: 'reduce' });
+
+  test('Options / prefers reduced motion', async ({ page }) => {
+    await page.goto('/options/prefers-reduced-motion');
+  });
+});

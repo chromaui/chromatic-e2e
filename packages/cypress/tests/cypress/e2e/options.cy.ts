@@ -13,3 +13,7 @@ it('Options / pause animation at end', /*{ env: { pauseAnimationAtEnd: true } },
 it('Options / force high-contrast', { env: { forcedColors: 'active' } }, () => {
   cy.visit('/options/forced-colors');
 });
+
+it('Options / prefers reduced motion', /*{ env: { prefersReducedMotion: 'reduce' } },*/ () => {
+  cy.visit('/options/prefers-reduced-motion');
+});

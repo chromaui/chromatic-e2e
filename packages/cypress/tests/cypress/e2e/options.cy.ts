@@ -6,7 +6,7 @@ it('Options / diff threshold', { env: { diffThreshold: 1 } }, () => {
   cy.visit('/options/diff-threshold');
 });
 
-it('Options / pause animation at end', /*{ env: { pauseAnimationAtEnd: true } },*/ () => {
+it('Options / pause animation at end', { env: { pauseAnimationAtEnd: true } }, () => {
   cy.visit('/options/pause-animation-at-end');
 });
 

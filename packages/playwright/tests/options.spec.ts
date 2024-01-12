@@ -17,7 +17,7 @@ test.describe(() => {
 });
 
 test.describe(() => {
-  // test.use({ pauseAnimationAtEnd: true });
+  test.use({ pauseAnimationAtEnd: true });
 
   test('Options / pause animation at end', async ({ page }) => {
     await page.goto('/options/pause-animation-at-end');

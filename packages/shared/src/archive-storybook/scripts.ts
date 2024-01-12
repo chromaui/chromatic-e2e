@@ -1,6 +1,6 @@
 import { execFileSync } from 'child_process';
 import { resolve, dirname } from 'path';
-import { checkArchivesDirExists } from './filePaths';
+import { checkArchivesDirExists } from '../utils/filePaths';
 
 export function archiveStorybook(processArgs: string[], configDir: string) {
   checkArchivesDirExists();

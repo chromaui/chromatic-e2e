@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { archiveStorybook } from '@chromaui/shared-e2e/archive-storybook/scripts';
+import { archiveStorybook } from '@chromaui/shared-e2e/archive-storybook';
 import path from 'path';
 
 // Discard first two entries (exec path and file path)

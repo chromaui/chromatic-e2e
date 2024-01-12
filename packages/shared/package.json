@@ -19,10 +19,10 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./archive-storybook/scripts": {
-      "types": "./dist/archive-storybook/scripts.d.ts",
-      "import": "./dist/archive-storybook/scripts.mjs",
-      "require": "./dist/archive-storybook/scripts.js"
+    "./archive-storybook": {
+      "types": "./dist/archive-storybook/index.d.ts",
+      "import": "./dist/archive-storybook/index.mjs",
+      "require": "./dist/archive-storybook/index.js"
     }
   },
   "files": [
@@ -36,8 +36,8 @@
       ".": [
         "index.d.ts"
       ],
-      "archive-storybook/scripts": [
-        "dist/archive-storybook/scripts.d.ts"
+      "archive-storybook": [
+        "dist/archive-storybook/index.d.ts"
       ]
     }
   },

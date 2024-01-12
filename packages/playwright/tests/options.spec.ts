@@ -7,3 +7,11 @@ test.describe(() => {
     await page.goto('/options/delay');
   });
 });
+
+test.describe(() => {
+  // test.use({ diffThreshold: 1 });
+
+  test('Options / diff threshold', async ({ page }) => {
+    await page.goto('/options/diff-threshold');
+  });
+});

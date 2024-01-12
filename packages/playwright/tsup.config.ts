@@ -1,8 +1,12 @@
-import { copy } from 'fs-extra';
 import { defineConfig } from 'tsup';
 
 export default defineConfig((options) => ({
-  entry: ['src/index.ts', 'src/bin/archive-storybook.ts', 'src/bin/build-archive-storybook.ts'],
+  entry: [
+    'src/index.ts',
+    'src/bin/archive-storybook.ts',
+    'src/bin/build-archive-storybook.ts',
+    'src/storybook-config/*.ts',
+  ],
   splitting: false,
   minify: !options.watch,
   format: ['cjs', 'esm'],
@@ -16,8 +20,5 @@ export default defineConfig((options) => ({
   bundle: false,
   esbuildOptions(options) {
     options.conditions = ['module'];
-  },
-  async onSuccess() {
-    await copy('../shared/storybook-config', 'dist/.storybook');
   },
 }));

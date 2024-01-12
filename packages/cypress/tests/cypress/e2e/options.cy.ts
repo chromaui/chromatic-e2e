@@ -1,3 +1,3 @@
-it('Options / delay', /*{ env: { delay: 200 } },*/ () => {
+it('Options / delay', { env: { delay: 1200 } }, () => {
   cy.visit('/options/delay');
 });

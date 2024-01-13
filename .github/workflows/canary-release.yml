@@ -26,10 +26,14 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
+      - name: Set the current commit hash
+        run: |
+          echo "GIT_HASH=$(git rev-parse --short $GITHUB_SHA)" >> "$GITHUB_ENV"
+
       - name: Publish Canary Version
         run: |
           yarn run build
-          yarn run changeset version --snapshot
+          yarn run changeset version --snapshot $GIT_HASH
           yarn run changeset publish --tag canary
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

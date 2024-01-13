@@ -41,5 +41,8 @@ export default defineConfig((options) => [
     outDir: 'dist/storybook-config',
     format: ['esm'],
     platform: 'browser',
+    // We need to be careful how we minimize `preview.ts` because the
+    // SB indexer is quite particular about the format of `parameters`.
+    minify: false,
   },
 ]);

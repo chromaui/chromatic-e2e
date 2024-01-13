@@ -8,8 +8,6 @@ pageUrl.pathname = '';
 pageUrl.search = '';
 const strippedUrl = pageUrl.toString().replace(/\/$/, '');
 
-export const parameters = { server: { url: strippedUrl } };
-
 export interface RRWebFramework extends WebRenderer {
   component: undefined;
   storyResult: Record<string, never>;
@@ -53,4 +51,7 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) 
   };
 };
 
-export { renderToCanvas };
+export default {
+  renderToCanvas,
+  parameters: { server: { url: strippedUrl } },
+};

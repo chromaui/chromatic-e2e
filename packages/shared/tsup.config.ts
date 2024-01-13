@@ -1,10 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig((options) => ({
-  entry: ['src/index.ts', 'src/archive-storybook/index.ts', 'src/util/filePaths.ts'],
+  entry: ['src/index.ts', 'src/archive-storybook/index.ts', 'src/utils/filePaths.ts'],
   splitting: false,
   minify: !options.watch,
-  format: ['cjs', 'esm'],
+  format: ['esm', 'cjs'],
   dts: {
     resolve: true,
   },

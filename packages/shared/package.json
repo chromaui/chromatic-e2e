@@ -23,6 +23,11 @@
       "types": "./dist/archive-storybook/index.d.ts",
       "import": "./dist/archive-storybook/index.mjs",
       "require": "./dist/archive-storybook/index.js"
+    },
+    "./utils/filePaths": {
+      "types": "./dist/utils/filePaths.d.ts",
+      "import": "./dist/utils/filePaths.mjs",
+      "require": "./dist/utils/filePaths.js"
     }
   },
   "files": [
@@ -38,6 +43,9 @@
       ],
       "archive-storybook": [
         "dist/archive-storybook/index.d.ts"
+      ],
+      "utils/filePaths": [
+        "dist/utils/filePaths.d.ts"
       ]
     }
   },

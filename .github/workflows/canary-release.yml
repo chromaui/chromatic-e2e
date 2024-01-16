@@ -1,16 +1,18 @@
-name: Auto Canary Release
+name: Canary Release
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Test (base)"]
+    types:
+      - completed
     branches-ignore:
       - main
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
     name: Canary Release
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -26,13 +28,15 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
+      - name: Build
+        run: yarn run build
+
       - name: Set the current commit hash
         run: |
           echo "GIT_HASH=$(git rev-parse --short $GITHUB_SHA)" >> "$GITHUB_ENV"
 
       - name: Publish Canary Version
         run: |
-          yarn run build
           yarn run changeset version --snapshot $GIT_HASH
           yarn run changeset publish --no-git-tag --tag canary
         env:

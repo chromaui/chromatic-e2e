@@ -9,12 +9,12 @@ beforeEach(() => {
   cy.wrap([]).as('manualSnapshots');
   cy.task('prepareArchives', {
     action: 'setup-network-listener',
-    payload: { allowedDomains: Cypress.env('allowedArchiveDomains') },
+    payload: { allowedDomains: Cypress.env('assetDomains') },
   });
 });
 
 afterEach(() => {
-  if (Cypress.env('disableAutoCapture')) {
+  if (Cypress.env('disableAutoSnapshot')) {
     return;
   }
   // can we be sure this always fires after all the requests are back?

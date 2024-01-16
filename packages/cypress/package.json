@@ -50,7 +50,6 @@
   "devDependencies": {
     "@chromaui/shared-e2e": "workspace:*",
     "@storybook/types": "^7.0.2",
-    "@types/lodash.debounce": "^4.0.7",
     "cypress": "^13.4.0",
     "start-server-and-test": "^2.0.3"
   },
@@ -64,7 +63,6 @@
     "@segment/analytics-node": "^1.1.0",
     "@storybook/csf": "^0.1.0",
     "chrome-remote-interface": "^0.33.0",
-    "lodash.debounce": "^4.0.8",
     "rrweb-snapshot": "^2.0.0-alpha.4"
   },
   "peerDependencies": {

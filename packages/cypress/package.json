@@ -66,5 +66,10 @@
     "chrome-remote-interface": "^0.33.0",
     "lodash.debounce": "^4.0.8",
     "rrweb-snapshot": "^2.0.0-alpha.4"
+  },
+  "peerDependencies": {
+    "@storybook/addon-essentials": "^7.0.0 || ^8.0.x",
+    "@storybook/server-webpack5": "^7.0.0 || ^8.0.x",
+    "storybook": "^7.0.0 || ^8.0.x"
   }
 }

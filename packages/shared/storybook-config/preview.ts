@@ -53,5 +53,8 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) 
 
 export default {
   renderToCanvas,
-  parameters: { server: { url: strippedUrl } },
+  parameters: {
+    server: { url: strippedUrl },
+    layout: 'fullscreen',
+  },
 };

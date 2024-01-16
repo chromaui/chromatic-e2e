@@ -8035,6 +8035,7 @@ __metadata:
   resolution: "chromatic-cypress@workspace:packages/cypress"
   dependencies:
     "@chromaui/shared-e2e": "workspace:*"
+    "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/csf": "npm:^0.1.0"
     "@storybook/types": "npm:^7.0.2"
     "@types/lodash.debounce": "npm:^4.0.7"
@@ -8055,6 +8056,7 @@ __metadata:
   dependencies:
     "@chromaui/shared-e2e": "workspace:*"
     "@playwright/test": "npm:^1.39.0"
+    "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/csf": "npm:^0.1.0"
     "@storybook/types": "npm:^7.0.2"
     "@types/lodash.debounce": "npm:^4.0.7"

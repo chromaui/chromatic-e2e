@@ -1,10 +1,15 @@
 name: Test (Playwright)
 
-on: [push]
+on:
+  workflow_run:
+    workflows: ["Test (base)"]
+    types:
+      - completed
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
         with:

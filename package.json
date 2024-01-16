@@ -22,7 +22,8 @@
     "start": "yarn build:watch",
     "lint": "yarn workspaces foreach --all --parallel run lint",
     "prettier": "prettier",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "publish-all": "yarn workspaces foreach --all --topological-dev npm publish"
   },
   "devDependencies": {
     "@auto-it/released": "^10.32.6",

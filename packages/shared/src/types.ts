@@ -9,7 +9,7 @@ export interface ChromaticConfig {
   diffThreshold?: number;
 
   // Disable the capture that happens automatically at the end of a test when using the Chromatic test fixture
-  disableAutoCapture?: boolean;
+  disableAutoSnapshot?: boolean;
 
   // https://www.chromatic.com/docs/media-features/#test-high-contrast-color-schemes
   forcedColors?: string;
@@ -27,9 +27,9 @@ export interface ChromaticConfig {
   // domains (besides where the test is being run from) that assets should be archived from
   // (needed when, for example, CI environment can't access the archives later on)
   // ex: www.some-domain.com
-  allowedArchiveDomains?: string[];
+  assetDomains?: string[];
 }
 
-export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoCapture'> {
+export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoSnapshot'> {
   viewports: number[];
 }

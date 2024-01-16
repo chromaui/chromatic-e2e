@@ -173,7 +173,7 @@ describe('new', () => {
 
     const complete = await createResourceArchive({
       page,
-      allowedArchiveDomains: [
+      assetDomains: [
         // external domains we allow-list
         'i-ama.fake',
         'another-domain.com',

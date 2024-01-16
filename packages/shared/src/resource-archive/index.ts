@@ -31,7 +31,7 @@ export class Watcher {
    Specifies which domains (origins) we should archive resources for (by default we only archive same-origin resources).
    Useful in situations where the environment running the archived storybook (e.g. in CI) may be restricted to an intranet or other domain restrictions
   */
-  private allowedArchiveOrigins: string[];
+  private assetDomains: string[];
 
   /**
    * We assume the first URL loaded after @watch is called is the base URL of the
@@ -43,7 +43,7 @@ export class Watcher {
   constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
-    this.allowedArchiveOrigins = (allowedDomains || []).map((domain) => `https://${domain}`);
+    this.assetDomains = (allowedDomains || []).map((domain) => `https://${domain}`);
   }
 
   async watch() {
@@ -91,8 +91,7 @@ export class Watcher {
     this.firstUrl ??= requestUrl;
 
     const isRequestFromAllowedDomain =
-      requestUrl.origin === this.firstUrl.origin ||
-      this.allowedArchiveOrigins.includes(requestUrl.origin);
+      requestUrl.origin === this.firstUrl.origin || this.assetDomains.includes(requestUrl.origin);
 
     logger.log(
       'requestPaused',

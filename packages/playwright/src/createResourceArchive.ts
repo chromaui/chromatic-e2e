@@ -35,15 +35,15 @@ const idle = async (page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHI
 export const createResourceArchive = async ({
   page,
   networkTimeout,
-  allowedArchiveDomains,
+  assetDomains,
 }: {
   page: Page;
   networkTimeout?: number;
-  allowedArchiveDomains?: string[];
+  assetDomains?: string[];
 }): Promise<() => Promise<ResourceArchive>> => {
   const cdpClient = await page.context().newCDPSession(page);
 
-  const watcher = new Watcher(cdpClient, allowedArchiveDomains);
+  const watcher = new Watcher(cdpClient, assetDomains);
   await watcher.watch();
 
   return async () => {

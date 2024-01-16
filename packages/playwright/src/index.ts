@@ -5,5 +5,5 @@ import { makeTest } from './makeTest';
 export const test = makeTest(base);
 export { expect };
 
-export { takeArchive } from './takeArchive';
+export { takeSnapshot } from './takeSnapshot';
 export type { ChromaticConfig } from '@chromaui/shared-e2e';

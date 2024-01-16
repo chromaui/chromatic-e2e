@@ -61,6 +61,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@segment/analytics-node": "^1.1.0",
     "@storybook/csf": "^0.1.0",
     "chrome-remote-interface": "^0.33.0",
     "lodash.debounce": "^4.0.8",

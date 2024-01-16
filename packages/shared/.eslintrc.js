@@ -2,11 +2,9 @@ module.exports = {
   extends: ['@storybook/eslint-config-storybook'],
   overrides: [
     {
-      files: ['**/*.tsx'],
+      files: ['**/*.ts'],
       rules: {
-        'react/prop-types': 'off',
-        'react/require-default-props': 'off',
-        'react/default-props-match-prop-types': 'off',
+        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       },
     },
     {

@@ -5,6 +5,7 @@ module.exports = {
       files: ['**/*.ts'],
       rules: {
         'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+        'import/no-unresolved': ['warn'],
       },
     },
     {

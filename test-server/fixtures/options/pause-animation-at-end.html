@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <style>  
+      img {
+        opacity: 0;
+        animation-name: make-shown;
+        /* image takes awhile to fade in */
+        animation-duration: 2s;        
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes make-shown {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/img?url=fixtures/blue.png"/>
+    <h4>The image should be snapshotted since we're forcing animations to the end (when the image is fully opaque).</h4>
+  </body>
+</html>

@@ -7,10 +7,16 @@ beforeEach(() => {
   // then cleaned up before the next test is run
   // (see https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
   cy.wrap([]).as('manualSnapshots');
-  cy.task('prepareArchives', { action: 'setup-network-listener' });
+  cy.task('prepareArchives', {
+    action: 'setup-network-listener',
+    payload: { allowedDomains: Cypress.env('assetDomains') },
+  });
 });
 
 afterEach(() => {
+  if (Cypress.env('disableAutoSnapshot')) {
+    return;
+  }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
     const snap = snapshot(doc);
@@ -24,7 +30,19 @@ afterEach(() => {
             testTitle: Cypress.currentTest.title,
             domSnapshots: [...manualSnapshots, snap],
             chromaticStorybookParams: {
-              diffThreshold: Cypress.env('diffThreshold'),
+              ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
+              ...(Cypress.env('delay') && { delay: Cypress.env('delay') }),
+              ...(Cypress.env('diffIncludeAntiAliasing') && {
+                diffIncludeAntiAliasing: Cypress.env('diffIncludeAntiAliasing'),
+              }),
+              ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
+              ...(Cypress.env('forcedColors') && { forcedColors: Cypress.env('forcedColors') }),
+              ...(Cypress.env('pauseAnimationAtEnd') && {
+                pauseAnimationAtEnd: Cypress.env('pauseAnimationAtEnd'),
+              }),
+              ...(Cypress.env('prefersReducedMotion') && {
+                prefersReducedMotion: Cypress.env('prefersReducedMotion'),
+              }),
             },
             pageUrl: url,
           },

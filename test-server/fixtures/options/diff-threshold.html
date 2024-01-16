@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      h1 {
+        font-family: monospace;
+      }
+    </style>    
+  </head>
+  <body>
+    <h1></h1>
+    <h4>Number above should have no diff, even though it switches between 6 and 8, since the diff threshold is so high</h4>
+
+  <script>      
+      const randomInteger = Math.ceil(Math.random() * 10);
+      const isEven = randomInteger % 2 === 0;
+      // number is either 6 or 8... should always have no diff since diff threshold is so high
+      // and those 2 numbers are very similar in look
+      document.querySelector('h1').innerText = isEven ? 8 : 6;
+  </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      /* don't show the image at the beginning */
+      img {
+        visibility: hidden;
+        animation-name: make-shown;
+        animation-duration: 2ms;
+        animation-delay: 1000ms;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes make-shown {
+        0% {
+          visibility: hidden;
+        }
+        100% {
+          visibility: visible;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/img?url=fixtures/blue.png"/>
+    <h4>The image should be snapshotted since we're waiting until the delayed-revealed image is visible.</h4>
+  </body>
+</html>

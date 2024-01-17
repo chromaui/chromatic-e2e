@@ -80,6 +80,10 @@ app.get('/form-success', (req, res) => {
   res.send(`${htmlIntro}<body><p>OK!</p></body>${htmlOutro}`);
 });
 
+app.get('/manual-snapshots', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/manual-snapshots.html'));
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

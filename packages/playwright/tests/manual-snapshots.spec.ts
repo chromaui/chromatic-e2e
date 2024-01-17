@@ -1,4 +1,4 @@
-import { test } from '../src';
+import { test, expect } from '../src';
 
 test('Manual snapshots / multiple snapshots are taken', async ({ page }) => {
   await page.goto('/manual-snapshots');

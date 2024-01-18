@@ -26,7 +26,7 @@ afterEach(() => {
   }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
-    const snap = snapshot(doc);
+    const automaticSnapshot = snapshot(doc);
     // @ts-expect-error will fix when Cypress has its own package
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {
       cy.url().then((url) => {
@@ -35,7 +35,7 @@ afterEach(() => {
           action: 'save-archives',
           payload: {
             testTitle: Cypress.currentTest.title,
-            domSnapshots: [...manualSnapshots, snap],
+            domSnapshots: [...manualSnapshots, { snapshot: automaticSnapshot }],
             chromaticStorybookParams: {
               ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
               ...(Cypress.env('delay') && { delay: Cypress.env('delay') }),

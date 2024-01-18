@@ -7,9 +7,16 @@ import {
   ResourceArchive,
 } from '@chromaui/shared-e2e';
 
+interface CypressSnapshot {
+  // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)
+  name?: string;
+  // the DOM snapshot
+  snapshot: elementNode;
+}
+
 interface WriteParams {
   testTitle: string;
-  domSnapshots: elementNode[];
+  domSnapshots: CypressSnapshot[];
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
 }
@@ -39,7 +46,11 @@ const writeArchives = async ({
   });
 
   const allSnapshots = Object.fromEntries(
-    domSnapshots.map((item, index) => [`Snapshot #${index + 1}`, Buffer.from(JSON.stringify(item))])
+    // manual snapshots can be given a name; otherwise, just use the snapshot's place in line as the name
+    domSnapshots.map(({ name, snapshot }, index) => [
+      name ?? `Snapshot #${index + 1}`,
+      Buffer.from(JSON.stringify(snapshot)),
+    ])
   );
 
   await writeTestResult(

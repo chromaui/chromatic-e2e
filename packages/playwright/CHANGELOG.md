@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.3.0
+
+### Minor Changes
+
+- 21b691d: depend on storybook instead of @storybook/cli
+
 ## 0.2.0
 
 ### Minor Changes

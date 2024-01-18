@@ -127,8 +127,13 @@ export const onBeforeBrowserLaunch = (
   // we don't use the browser parameter but we're keeping it here in case we'd ever need to read from it
   // (this way users wouldn't have to change their cypress.config file as it's already passed to us)
   browser: Cypress.Browser,
-  launchOptions: Cypress.BeforeBrowserLaunchOptions
+  launchOptions: Cypress.BeforeBrowserLaunchOptions,
+  config: any
 ) => {
+  if (config.isInteractive) {
+    return;
+  }
+
   const hostArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-address='));
   host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';
 
@@ -155,10 +160,13 @@ export const onBeforeBrowserLaunch = (
   return launchOptions;
 };
 
-export const installPlugin = (on: any) => {
+export const installPlugin = (on: any, config: any) => {
   // these events are run on the server (in Node)
   on('task', {
     prepareArchives,
   });
-  on('before:browser:launch', onBeforeBrowserLaunch);
+
+  on('before:browser:launch', (browser: any, launchOptions: any) => {
+    onBeforeBrowserLaunch(browser, launchOptions, config);
+  });
 };

@@ -60,15 +60,17 @@ const writeArchives = async ({
 // each time a test completes, we'll save to disk whatever archives are there at that point.
 // This should be safe since the same resource from the same URL should be the same during the entire test run.
 // Cypress doesn't give us a way to share variables between the "before test" and "after test" lifecycle events on the server.
-let watcher: Watcher = null;
+const watchers: Record<string, Watcher> = {};
 
 let host = '';
 let port = 0;
 
 const setupNetworkListener = async ({
   allowedDomains,
+  testId,
 }: {
   allowedDomains?: string[];
+  testId: string;
 }): Promise<null> => {
   try {
     const { webSocketDebuggerUrl } = await Version({
@@ -80,10 +82,8 @@ const setupNetworkListener = async ({
       target: webSocketDebuggerUrl,
     });
 
-    if (!watcher) {
-      watcher = new Watcher(cdp, allowedDomains);
-      await watcher.watch();
-    }
+    watchers[testId] = new Watcher(cdp, allowedDomains);
+    await watchers[testId].watch();
   } catch (err) {
     console.log('err', err);
   }
@@ -91,13 +91,14 @@ const setupNetworkListener = async ({
   return null;
 };
 
-const saveArchives = (archiveInfo: WriteParams) => {
+const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
   return new Promise((resolve) => {
+    const { testId, ...rest } = archiveInfo;
     // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
     // notice we're not calling + awaiting watcher.idle() here...
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
-    return writeArchives({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
+    return writeArchives({ ...rest, resourceArchive: watchers[testId].archive }).then(() => {
       resolve(null);
     });
   });

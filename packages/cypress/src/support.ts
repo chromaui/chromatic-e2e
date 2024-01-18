@@ -1,6 +1,10 @@
 import { snapshot } from 'rrweb-snapshot';
 import './commands';
 
+const generateTestId = () => {
+  return Cypress.currentTest.title;
+};
+
 // these client-side lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
   // this "manualSnapshots" variable will be available before, during, and after the test,
@@ -9,7 +13,7 @@ beforeEach(() => {
   cy.wrap([]).as('manualSnapshots');
   cy.task('prepareArchives', {
     action: 'setup-network-listener',
-    payload: { allowedDomains: Cypress.env('assetDomains') },
+    payload: { allowedDomains: Cypress.env('assetDomains'), testId: generateTestId() },
   });
 });
 
@@ -28,6 +32,7 @@ afterEach(() => {
           action: 'save-archives',
           payload: {
             testTitle: Cypress.currentTest.title,
+            testId: generateTestId(),
             domSnapshots: [...manualSnapshots, snap],
             chromaticStorybookParams: {
               ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),

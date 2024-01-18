@@ -128,8 +128,11 @@ export const onBeforeBrowserLaunch = (
   // (this way users wouldn't have to change their cypress.config file as it's already passed to us)
   browser: Cypress.Browser,
   launchOptions: Cypress.BeforeBrowserLaunchOptions,
-  config: any
+  config: Cypress.PluginConfigOptions
 ) => {
+  // when Cypress is in interactive mode, we won't be snapshotting.
+  // Thus we don't need them to pass the ELECTRON_EXTRA_LAUNCH_ARGS for this command,
+  // or set up CDP or anything like that
   if (config.isInteractive) {
     return;
   }
@@ -160,13 +163,16 @@ export const onBeforeBrowserLaunch = (
   return launchOptions;
 };
 
-export const installPlugin = (on: any, config: any) => {
+export const installPlugin = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
   // these events are run on the server (in Node)
   on('task', {
     prepareArchives,
   });
 
-  on('before:browser:launch', (browser: any, launchOptions: any) => {
-    onBeforeBrowserLaunch(browser, launchOptions, config);
-  });
+  on(
+    'before:browser:launch',
+    (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
+      onBeforeBrowserLaunch(browser, launchOptions, config);
+    }
+  );
 };

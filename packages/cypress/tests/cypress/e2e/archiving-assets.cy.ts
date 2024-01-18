@@ -42,3 +42,7 @@ it('Assets / srcset is used to determine image asset URL', () => {
 it('Assets / external CSS files are inlined', () => {
   cy.visit('/asset-paths/external-css-files');
 });
+
+it('Assets / video poster image is rendered', () => {
+  cy.visit('/asset-paths/video-poster');
+});

@@ -52,3 +52,7 @@ test('Assets / srcset is used to determine image asset URL', async ({ page }) =>
 test('Assets / external CSS files are inlined', async ({ page }) => {
   await page.goto('/asset-paths/external-css-files');
 });
+
+test('Assets / video poster image is rendered', async ({ page }) => {
+  await page.goto('/asset-paths/video-poster');
+});

@@ -134,7 +134,7 @@ export const onBeforeBrowserLaunch = (
   // Thus we don't need them to pass the ELECTRON_EXTRA_LAUNCH_ARGS for this command,
   // or set up CDP or anything like that
   if (config.isInteractive) {
-    return;
+    return launchOptions;
   }
 
   const hostArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-address='));

@@ -18,7 +18,7 @@ export default defineConfig((options) => [
   // We want the cypress functions to be importable from both CJS or ESM files
   {
     ...common(options),
-    entry: ['src/index.ts'],
+    entry: ['src/index.ts', 'src/support.ts'],
     format: ['cjs', 'esm'],
     platform: 'node',
   },

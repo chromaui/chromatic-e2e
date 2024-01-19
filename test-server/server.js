@@ -45,6 +45,8 @@ app.get('/background-img.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
 });
 
+app.use(express.static(path.join(__dirname, 'fixtures/assets')));
+
 // Pages
 app.get('/', (req, res) => {
   res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);

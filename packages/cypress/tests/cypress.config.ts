@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-import { installPlugin } from '../src';
+import { installPlugin } from '../dist';
 
 export default defineConfig({
   // needed since we use common mock images between Cypress and Playwright

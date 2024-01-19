@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.3.2
+
+### Patch Changes
+
+- 4b408a7: Support file included in dist
+
 ## 0.3.1
 
 ### Patch Changes

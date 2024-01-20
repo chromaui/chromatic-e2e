@@ -7,9 +7,16 @@ import {
   ResourceArchive,
 } from '@chromaui/shared-e2e';
 
+interface CypressSnapshot {
+  // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)
+  name?: string;
+  // the DOM snapshot
+  snapshot: elementNode;
+}
+
 interface WriteParams {
   testTitle: string;
-  domSnapshots: elementNode[];
+  domSnapshots: CypressSnapshot[];
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
 }
@@ -39,7 +46,11 @@ const writeArchives = async ({
   });
 
   const allSnapshots = Object.fromEntries(
-    domSnapshots.map((item, index) => [`Snapshot #${index + 1}`, Buffer.from(JSON.stringify(item))])
+    // manual snapshots can be given a name; otherwise, just use the snapshot's place in line as the name
+    domSnapshots.map(({ name, snapshot }, index) => [
+      name ?? `Snapshot #${index + 1}`,
+      Buffer.from(JSON.stringify(snapshot)),
+    ])
   );
 
   await writeTestResult(
@@ -131,8 +142,16 @@ export const onBeforeBrowserLaunch = (
   // we don't use the browser parameter but we're keeping it here in case we'd ever need to read from it
   // (this way users wouldn't have to change their cypress.config file as it's already passed to us)
   browser: Cypress.Browser,
-  launchOptions: Cypress.BeforeBrowserLaunchOptions
+  launchOptions: Cypress.BeforeBrowserLaunchOptions,
+  config: Cypress.PluginConfigOptions
 ) => {
+  // when Cypress is in interactive mode, we won't be snapshotting.
+  // Thus we don't need them to pass the ELECTRON_EXTRA_LAUNCH_ARGS for this command,
+  // or set up CDP or anything like that
+  if (config.isInteractive) {
+    return launchOptions;
+  }
+
   const hostArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-address='));
   host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';
 
@@ -159,10 +178,16 @@ export const onBeforeBrowserLaunch = (
   return launchOptions;
 };
 
-export const installPlugin = (on: any) => {
+export const installPlugin = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
   // these events are run on the server (in Node)
   on('task', {
     prepareArchives,
   });
-  on('before:browser:launch', onBeforeBrowserLaunch);
+
+  on(
+    'before:browser:launch',
+    (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
+      onBeforeBrowserLaunch(browser, launchOptions, config);
+    }
+  );
 };

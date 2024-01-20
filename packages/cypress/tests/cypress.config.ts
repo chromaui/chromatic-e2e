@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-import { installPlugin } from '../src';
+import { installPlugin } from '../dist';
 
 export default defineConfig({
   // needed since we use common mock images between Cypress and Playwright
@@ -8,7 +8,7 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     setupNodeEvents(on, config) {
-      installPlugin(on);
+      installPlugin(on, config);
     },
   },
 });

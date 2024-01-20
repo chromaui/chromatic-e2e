@@ -45,6 +45,8 @@ app.get('/background-img.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
 });
 
+app.use(express.static(path.join(__dirname, 'fixtures/assets')));
+
 // Pages
 app.get('/', (req, res) => {
   res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);
@@ -78,6 +80,10 @@ app.post('/form-success', (req, res) => {
 
 app.get('/form-success', (req, res) => {
   res.send(`${htmlIntro}<body><p>OK!</p></body>${htmlOutro}`);
+});
+
+app.get('/manual-snapshots', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/manual-snapshots.html'));
 });
 
 app.listen(port, () => {

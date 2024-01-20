@@ -7648,22 +7648,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.debounce@npm:^4.0.7":
-  version: 4.0.9
-  resolution: "@types/lodash.debounce@npm:4.0.9"
-  dependencies:
-    "@types/lodash": "npm:*"
-  checksum: 9fbb24e5e52616faf60ba5c82d8c6517f4b86fc6e9ab353b4c56c0760f63d9bf53af3f2d8f6c37efa48090359fb96dba1087d497758511f6c40677002191d042
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:*":
-  version: 4.14.202
-  resolution: "@types/lodash@npm:4.14.202"
-  checksum: 6064d43c8f454170841bd67c8266cc9069d9e570a72ca63f06bceb484cb4a3ee60c9c1f305c1b9e3a87826049fd41124b8ef265c4dd08b00f6766609c7fe9973
-  languageName: node
-  linkType: hard
-
 "@types/lodash@npm:^4.14.167":
   version: 4.14.200
   resolution: "@types/lodash@npm:4.14.200"
@@ -9702,10 +9686,8 @@ __metadata:
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/csf": "npm:^0.1.0"
     "@storybook/types": "npm:^7.0.2"
-    "@types/lodash.debounce": "npm:^4.0.7"
     chrome-remote-interface: "npm:^0.33.0"
     cypress: "npm:^13.4.0"
-    lodash.debounce: "npm:^4.0.8"
     rrweb-snapshot: "npm:^2.0.0-alpha.4"
     start-server-and-test: "npm:^2.0.3"
   peerDependencies:
@@ -9727,9 +9709,7 @@ __metadata:
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/csf": "npm:^0.1.0"
     "@storybook/types": "npm:^7.0.2"
-    "@types/lodash.debounce": "npm:^4.0.7"
     express: "npm:^4.18.2"
-    lodash.debounce: "npm:^4.0.8"
     playwright: "npm:^1.32.2"
     playwright-core: "npm:^1.32.2"
     rrweb-snapshot: "npm:^2.0.0-alpha.4"

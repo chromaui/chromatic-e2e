@@ -1,6 +1,6 @@
 {
   "name": "chromatic-playwright",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Chromatic Visual Regression Testing for Playwright",
   "repository": {
     "type": "git",
@@ -45,7 +45,6 @@
     "@chromaui/shared-e2e": "workspace:*",
     "@playwright/test": "^1.39.0",
     "@storybook/types": "^7.0.2",
-    "@types/lodash.debounce": "^4.0.7",
     "express": "^4.18.2",
     "playwright": "^1.32.2",
     "playwright-core": "^1.32.2"
@@ -59,7 +58,6 @@
   "dependencies": {
     "@segment/analytics-node": "^1.1.0",
     "@storybook/csf": "^0.1.0",
-    "lodash.debounce": "^4.0.8",
     "rrweb-snapshot": "^2.0.0-alpha.4",
     "ts-dedent": "^2.2.0"
   },

@@ -139,7 +139,7 @@ export const onBeforeBrowserLaunch = (
   // (this way users wouldn't have to change their cypress.config file as it's already passed to us)
   browser: Cypress.Browser,
   launchOptions: Cypress.BeforeBrowserLaunchOptions,
-  config: any
+  config: Cypress.PluginConfigOptions
 ) => {
   // don't take snapshots when running `cypress open`
   if (!config.isTextTerminal) {
@@ -172,12 +172,15 @@ export const onBeforeBrowserLaunch = (
   return launchOptions;
 };
 
-export const installPlugin = (on: any, config: any) => {
+export const installPlugin = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
   // these events are run on the server (in Node)
   on('task', {
     prepareArchives,
   });
-  on('before:browser:launch', (browser: any, launchOptions: any) => {
-    onBeforeBrowserLaunch(browser, launchOptions, config);
-  });
+  on(
+    'before:browser:launch',
+    (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
+      onBeforeBrowserLaunch(browser, launchOptions, config);
+    }
+  );
 };

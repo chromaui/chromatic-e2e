@@ -3,7 +3,7 @@ import type { elementNode } from 'rrweb-snapshot';
 // @ts-expect-error will fix when Cypress has its own package
 Cypress.Commands.add('takeSnapshot', (name?: string) => {
   // don't take snapshots when running `cypress open`
-  if (Cypress.config('isTextTerminal')) {
+  if (!Cypress.config('isTextTerminal')) {
     return;
   }
 

@@ -26,6 +26,7 @@ export const sanitize = (string: string) => {
 
 interface E2ETestInfo {
   title: string;
+  titlePath: string[];
   outputDir: string;
   pageUrl: string;
 }
@@ -36,7 +37,9 @@ export async function writeTestResult(
   archive: ResourceArchive,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { title, outputDir, pageUrl } = e2eTestInfo;
+  const { titlePath, outputDir, pageUrl } = e2eTestInfo;
+  const titlePathWithoutFileExtensions = titlePath.map((aTitle) => aTitle.split('.')[0]);
+  const title = titlePathWithoutFileExtensions.join(' / ');
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');

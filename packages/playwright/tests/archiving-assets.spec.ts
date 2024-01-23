@@ -55,10 +55,8 @@ test.describe(() => {
   });
 });
 
-test.describe('Videos', () => {
-  test('video poster image is rendered', async ({ page }, testInfo) => {
-    console.log('title', testInfo.title);
-    console.log('title path', testInfo.titlePath);
-    await page.goto('/asset-paths/video-poster');
-  });
+test('video poster image is rendered', async ({ page }, testInfo) => {
+  console.log('title', testInfo.title);
+  console.log('title path', testInfo.titlePath);
+  await page.goto('/asset-paths/video-poster');
 });

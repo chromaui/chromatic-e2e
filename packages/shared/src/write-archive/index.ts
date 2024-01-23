@@ -37,8 +37,9 @@ export async function writeTestResult(
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   const { titlePath, outputDir, pageUrl } = e2eTestInfo;
-  const titlePathWithoutFileExtensions = titlePath.map((aTitle) => aTitle.split('.')[0]);
-  const title = titlePathWithoutFileExtensions.join(' / ');
+  // const titlePathWithoutFileExtensions = titlePath.map((aTitle) => aTitle.split('.')[0]);
+  // const title = titlePathWithoutFileExtensions.join(' / ');
+  const title = titlePath[titlePath.length - 1];
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');

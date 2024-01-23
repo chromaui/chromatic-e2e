@@ -35,7 +35,7 @@ describe('writeTestResult', () => {
     await writeTestResult(
       // the default output directory in playwright
       {
-        title: 'Test Story',
+        titlePath: ['Test Story'],
         outputDir: resolve('test-results/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',
       },
@@ -67,6 +67,40 @@ describe('writeTestResult', () => {
     );
   });
 
+  it('derives story title from test info', async () => {
+    // @ts-expect-error Jest mock
+    fs.ensureDir.mockReturnValue(true);
+    await writeTestResult(
+      {
+        titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
+        outputDir: resolve('test-results/test-story-chromium'),
+        pageUrl: 'http://localhost:3000/',
+      },
+      { home: Buffer.from(JSON.stringify(snapshotJson)) },
+      { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+      {
+        diffThreshold: 5,
+        pauseAnimationAtEnd: true,
+        viewports: [720],
+      }
+    );
+    expect(fs.outputJson).toHaveBeenCalledWith(
+      resolve('./test-results/chromatic-archives/test-story.stories.json'),
+      {
+        stories: [
+          {
+            name: 'home',
+            parameters: {
+              chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true, viewports: [720] },
+              server: { id: 'test-story-home.snapshot.json' },
+            },
+          },
+        ],
+        title: 'file / A grouping / Test Story',
+      }
+    );
+  });
+
   it('successfully generates test results with mapped source entries', async () => {
     // @ts-expect-error Jest mock
     fs.ensureDir.mockReturnValue(true);
@@ -91,7 +125,7 @@ describe('writeTestResult', () => {
     await writeTestResult(
       // the default output directory in playwright
       {
-        title: 'Toy Story',
+        titlePath: ['Toy Story'],
         outputDir: resolve('test-results/toy-story-chromium'),
         pageUrl: 'http://localhost:3000/',
       },
@@ -139,7 +173,7 @@ describe('writeTestResult', () => {
     fs.ensureDir.mockReturnValue(true);
     await writeTestResult(
       {
-        title: 'Test Story',
+        titlePath: ['Test Story'],
         // simulates setting a custom output directory in Playwright
         outputDir: resolve('some-custom-directory/directory/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',

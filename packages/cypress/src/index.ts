@@ -15,7 +15,7 @@ interface CypressSnapshot {
 }
 
 interface WriteParams {
-  testTitle: string;
+  testTitlePath: string[];
   domSnapshots: CypressSnapshot[];
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
@@ -26,7 +26,7 @@ interface WriteArchivesParams extends WriteParams {
 }
 
 const writeArchives = async ({
-  testTitle,
+  testTitlePath,
   domSnapshots,
   resourceArchive,
   chromaticStorybookParams,
@@ -55,7 +55,7 @@ const writeArchives = async ({
 
   await writeTestResult(
     {
-      title: testTitle,
+      titlePath: testTitlePath,
       // this will store it at ./cypress/downloads (the last directory doesn't matter)
       // TODO: change so we don't have to do this trickery
       outputDir: './cypress/downloads/some',

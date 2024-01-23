@@ -25,7 +25,6 @@ export const sanitize = (string: string) => {
 // archive/<file>.<ext>
 
 interface E2ETestInfo {
-  title: string;
   titlePath: string[];
   outputDir: string;
   pageUrl: string;

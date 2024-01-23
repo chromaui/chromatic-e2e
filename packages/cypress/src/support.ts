@@ -32,7 +32,7 @@ afterEach(() => {
         cy.task('prepareArchives', {
           action: 'save-archives',
           payload: {
-            testTitle: Cypress.currentTest.title,
+            testTitlePath: [Cypress.spec.name, ...Cypress.currentTest.titlePath],
             domSnapshots: [...manualSnapshots, { snapshot: automaticSnapshot }],
             chromaticStorybookParams: {
               ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),

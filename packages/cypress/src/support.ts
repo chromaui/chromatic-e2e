@@ -3,6 +3,10 @@ import './commands';
 
 // these client-side lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
+  // don't take snapshots when running `cypress open`
+  if (!Cypress.config('isTextTerminal')) {
+    return;
+  }
   // this "manualSnapshots" variable will be available before, during, and after the test,
   // then cleaned up before the next test is run
   // (see https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
@@ -14,7 +18,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  if (Cypress.env('disableAutoSnapshot')) {
+  // don't take snapshots when running `cypress open`
+  if (Cypress.env('disableAutoSnapshot') || !Cypress.config('isTextTerminal')) {
     return;
   }
   // can we be sure this always fires after all the requests are back?

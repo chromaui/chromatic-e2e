@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.3.3
+
+### Patch Changes
+
+- 0e4f2c1: Cypress users must pass `config` to `installPlugin` so we can detect if they are running tests in CI or interactive mode.
+
 ## 0.3.2
 
 ### Patch Changes

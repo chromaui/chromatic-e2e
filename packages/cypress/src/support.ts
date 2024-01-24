@@ -51,6 +51,10 @@ afterEach(() => {
               }),
             },
             pageUrl: url,
+            viewport: {
+              height: Cypress.config('viewportHeight'),
+              width: Cypress.config('viewportWidth'),
+            },
           },
         });
       });

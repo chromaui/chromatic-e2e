@@ -96,7 +96,7 @@ export const makeTest = (
         };
 
         await writeTestResult(
-          { ...testInfo, pageUrl: page.url() },
+          { ...testInfo, pageUrl: page.url(), viewport: page.viewportSize() },
           snapshots,
           resourceArchive,
           chromaticStorybookParams

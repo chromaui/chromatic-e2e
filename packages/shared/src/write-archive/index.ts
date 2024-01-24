@@ -28,6 +28,7 @@ interface E2ETestInfo {
   titlePath: string[];
   outputDir: string;
   pageUrl: string;
+  viewport: { height: number; width: number };
 }
 
 export async function writeTestResult(

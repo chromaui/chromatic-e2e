@@ -38,6 +38,7 @@ describe('writeTestResult', () => {
         titlePath: ['file.spec.ts', 'Test Story'],
         outputDir: resolve('test-results/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',
+        viewport: { height: 800, width: 800 },
       },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
@@ -94,6 +95,7 @@ describe('writeTestResult', () => {
         titlePath: ['file.spec.ts', 'Toy Story'],
         outputDir: resolve('test-results/toy-story-chromium'),
         pageUrl: 'http://localhost:3000/',
+        viewport: { height: 800, width: 800 },
       },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       {
@@ -128,6 +130,7 @@ describe('writeTestResult', () => {
         // simulates setting a custom output directory in Playwright
         outputDir: resolve('some-custom-directory/directory/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',
+        viewport: { height: 800, width: 800 },
       },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },

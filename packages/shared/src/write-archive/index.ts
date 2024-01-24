@@ -5,6 +5,7 @@ import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';
 import type { ResourceArchive } from '../resource-archive';
 import type { ChromaticStorybookParameters } from '../types';
+import { Viewport, viewportToString } from '../utils/viewport';
 
 // @storybook/csf's sanitize function, we could import this
 export const sanitize = (string: string) => {
@@ -28,7 +29,17 @@ interface E2ETestInfo {
   titlePath: string[];
   outputDir: string;
   pageUrl: string;
-  viewport: { height: number; width: number };
+  viewport: Viewport;
+}
+
+function snapshotFileName(title: string, name: string, viewport: Viewport) {
+  const fileNameParts = [
+    `${sanitize(title)}-${sanitize(name)}`,
+    viewportToString(viewport),
+    'snapshot',
+    'json',
+  ];
+  return fileNameParts.join('.');
 }
 
 export async function writeTestResult(
@@ -37,7 +48,7 @@ export async function writeTestResult(
   archive: ResourceArchive,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { titlePath, outputDir, pageUrl } = e2eTestInfo;
+  const { titlePath, outputDir, pageUrl, viewport } = e2eTestInfo;
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
   const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
     // make sure we remove file extensions, even if the file name doesn't have .spec or .test or.cy
@@ -85,16 +96,15 @@ export async function writeTestResult(
       const snapshot = new DOMSnapshot(domSnapshot);
       const mappedSnapshot = await snapshot.mapAssetPaths(sourceMap);
 
-      await outputFile(
-        join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
-        mappedSnapshot
-      );
+      await outputFile(join(archiveDir, snapshotFileName(title, name, viewport)), mappedSnapshot);
     })
   );
 
+  const storiesFileNameParts = [`${sanitize(title)}`, 'stories', 'json'];
   await writeStoriesFile(
-    join(finalOutputDir, `${sanitize(title)}.stories.json`),
+    join(finalOutputDir, storiesFileNameParts.join('.')),
     title,
+    viewport,
     domSnapshots,
     chromaticStorybookParams
   );
@@ -111,6 +121,7 @@ export async function writeTestResult(
 async function writeStoriesFile(
   storiesFilename: string,
   title: string,
+  viewport: Viewport,
   domSnapshots: Record<string, Buffer>,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
@@ -120,7 +131,7 @@ async function writeStoriesFile(
     stories: Object.keys(domSnapshots).map((name) => ({
       name,
       parameters: {
-        server: { id: `${sanitize(title)}-${sanitize(name)}.snapshot.json` },
+        server: { id: snapshotFileName(title, name, viewport) },
         chromatic: {
           ...chromaticStorybookParams,
         },

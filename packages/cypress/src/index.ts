@@ -5,6 +5,7 @@ import {
   writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
+  Viewport,
 } from '@chromatic-com/shared-e2e';
 
 interface CypressSnapshot {
@@ -19,7 +20,7 @@ interface WriteParams {
   domSnapshots: CypressSnapshot[];
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
-  viewport: { height: number; width: number };
+  viewport: Viewport;
 }
 
 interface WriteArchivesParams extends WriteParams {

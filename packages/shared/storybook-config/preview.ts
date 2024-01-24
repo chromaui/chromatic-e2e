@@ -26,6 +26,7 @@ const findHtmlNode = (node: serializedNodeWithId): serializedNodeWithId | undefi
   return undefined;
 };
 
+const globals = { viewport: 'reset', viewportRotated: false };
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
   const { url, id } = context.storyContext.parameters.server;
   const response = await fetch(`${url}/${id}`);
@@ -59,6 +60,7 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) 
 
 export default {
   renderToCanvas,
+  globals,
   parameters: {
     server: { url: strippedUrl },
     layout: 'fullscreen',

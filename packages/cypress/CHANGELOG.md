@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.4.0
+
+### Minor Changes
+
+- 0f7e98f: add exports for the archive storybook scripts so that they can be invoked from the CLI
+
 ## 0.3.3
 
 ### Patch Changes

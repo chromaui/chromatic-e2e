@@ -23,6 +23,8 @@
       "import": "./dist/support.mjs",
       "require": "./dist/support.js"
     },
+    "./bin/archive-storybook": "./dist/bin/archive-storybook.js",
+    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js",
     "./package.json": "./package.json"
   },
   "bin": {

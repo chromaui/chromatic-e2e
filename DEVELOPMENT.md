@@ -1,0 +1,53 @@
+## Development
+
+This repository is a Yarn 4 monorepo containing the following packages:
+
+- [cypress](https://github.com/chromaui/test-archiver/tree/main/packages/cypress)
+  - Chromatic E2E Visual Test integration for Cypress
+- [playwright](https://github.com/chromaui/test-archiver/tree/main/packages/playwright)
+  - Chromatic E2E Visual Test integration for Playwright
+- [shared](https://github.com/chromaui/test-archiver/tree/main/packages/shared)
+  - Internal workspace package shared by the integrations above
+
+### Requirements
+
+- Node 18
+- Yarn 4
+
+### Getting Started
+
+- If you have `yarn 1` installed globally, it is recommended that you run `corepack enable` so that the version of yarn set in `packageManager` in `package.json` is used for this project
+- Run `yarn install`
+- Run `yarn build`
+
+### Testing
+
+Run the following commands for the following types of tests:
+
+- Unit tests: `yarn test:unit`
+- Playwright: `yarn test:playwright`, then `yarn archive-storybook:playwright` to see the archived UI
+- Cypress: `yarn test:cypress`, then `yarn archive-storybook:cypress` to see the archived UI
+
+If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `yarn test:server` and visit `http://localhost:3000`.
+
+### PR Workflow with Changesets
+
+Versioning and releasing is done using [changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
+
+If a change made in a PR requires any of the integration packages to be published, you must add a changeset to your branch specifying which packages should be published, what semver version they should be bumped to, and the reason for the change.
+
+This is done by running `yarn changeset`, which will guide you through all of the above.
+
+Commit the resulting changeset file with your other changes and push it up. This can happen at any time in the lifecycle of the branch.
+
+### Canary Releases
+
+The changeset file on a branch will be used to cut canary releases of the changed packages in the PR.
+
+At this time you'll need to look at the output of the `Canary Release` job to find the versioned name it was published under.
+
+### Final Releases
+
+When a branch with a changeset is merged to main, a new PR will be opened with the relevant `package.json` version bumps and changelog updates.
+
+This new PR needs to be merged to main before anything is published. Once merged, the main release job will kick off and publishe the changed packages to npm.

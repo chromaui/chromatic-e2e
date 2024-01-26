@@ -22,7 +22,15 @@ This repository is a Yarn 4 monorepo containing the following packages:
 
 ### Testing
 
-Run the following commands for the following types of tests:
+Unit tests reside with the code being tested in the `src` directories.
+
+Each E2E integration also has its own suite of E2E tests using the framework it is targeting. These tests import directly from the integration in question and the results are sent to Chromatic to visually test that all is well with archiving and all the various pieces.
+
+These test suites use a basic Express server that's defined in `test-server` and can be run on its own using `yarn test:server`, but that is not necessary to run the tests.
+
+The E2E test cases for each integration should match each other as much as possible. Changes or additions made to one should be matched in the others.
+
+#### Running the Tests
 
 - Unit tests: `yarn test:unit`
 - Playwright: `yarn test:playwright`, then `yarn archive-storybook:playwright` to see the archived UI

@@ -1,17 +1,7 @@
-## @storybook/test-archiver
+## chromatic-playwright
 
-Archive end-to-end tests to be replayed in Storybook and Chromatic
+Chromatic E2E Visual Tests for Playwright
 
 ## Getting Started
 
-See the [documentation](https://www.chromatic.com/docs/e2e-visual-tests/).
-
-## Contributing
-
-We welcome contributions!
-
-- 📥 Pull requests and 🌟 Stars are always welcome.
-
-## License
-
-[MIT](https://github.com/chromaui/test-archiver/blob/main/LICENSE)
+See the [documentation](https://www.chromatic.com/docs/playwright/).

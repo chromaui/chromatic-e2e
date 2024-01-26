@@ -59,14 +59,13 @@
   },
   "dependencies": {
     "@segment/analytics-node": "^1.1.0",
+    "@storybook/addon-essentials": "^7.0.0 || ^8.0.x",
     "@storybook/csf": "^0.1.0",
+    "@storybook/server-webpack5": "^7.0.0 || ^8.0.x",
     "rrweb-snapshot": "^2.0.0-alpha.4",
     "ts-dedent": "^2.2.0"
   },
   "peerDependencies": {
-    "@playwright/test": "^1.0.0",
-    "@storybook/addon-essentials": "^7.0.0 || ^8.0.x",
-    "@storybook/server-webpack5": "^7.0.0 || ^8.0.x",
-    "storybook": "^7.0.0 || ^8.0.x"
+    "@playwright/test": "^1.0.0"
   }
 }

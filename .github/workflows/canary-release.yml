@@ -1,24 +1,22 @@
 name: Canary Release
 
 on:
-  workflow_run:
-    workflows: ["Test (base)"]
-    types:
-      - completed
-    branches-ignore:
-      - main
+  workflow_call:
+    secrets:
+      githubToken:
+        required: true
+      npmToken:
+        required: true
 
 jobs:
   release:
     name: Canary Release
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Setup Node.js 18
         uses: actions/setup-node@v3
@@ -41,5 +39,5 @@ jobs:
           yarn run changeset version --snapshot $GIT_HASH
           yarn run changeset publish --no-git-tag --tag canary
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.githubToken }}
+          NODE_AUTH_TOKEN: ${{ secrets.npmToken }}

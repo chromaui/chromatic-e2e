@@ -1,6 +1,6 @@
-name: Test (base)
+name: Test Base
 
-on: [push]
+on: workflow_call
 
 jobs:
   test:

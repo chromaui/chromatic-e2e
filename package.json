@@ -34,7 +34,6 @@
     "@jest/types": "^27.0.6",
     "@playwright/test": "^1.39.0",
     "@storybook/addon-essentials": "^7.5.2",
-    "@storybook/cli": "^7.5.2",
     "@storybook/eslint-config-storybook": "^3.1.2",
     "@storybook/server-webpack5": "^7.5.2",
     "@testing-library/dom": "^8.1.0",
@@ -48,6 +47,7 @@
     "@types/node-fetch": "^2.6.6",
     "auto": "^10.3.0",
     "babel-jest": "^27.0.6",
+    "chromatic": "^10.5.1",
     "concurrently": "^7.0.0",
     "cypress": "^13.6.1",
     "eslint": "^7.32.0",
@@ -64,6 +64,7 @@
     "react-dom": "^17.0.1",
     "rimraf": "^3.0.2",
     "start-server-and-test": "^2.0.3",
+    "storybook": "^7.5.2",
     "ts-jest": "^27.0.4",
     "tsup": "^6.7.0",
     "typescript": "^4.2.4"

@@ -63,6 +63,7 @@
     "@storybook/csf": "^0.1.0",
     "@storybook/server-webpack5": "^7.0.0 || ^8.0.x",
     "rrweb-snapshot": "^2.0.0-alpha.4",
+    "storybook": "^7.0.0 || ^8.0.x",
     "ts-dedent": "^2.2.0"
   },
   "peerDependencies": {

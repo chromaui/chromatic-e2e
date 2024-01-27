@@ -1,7 +1,7 @@
 import path from 'path';
 import { archivesDir } from '@chromatic-com/shared-e2e/utils/filePaths';
 
-function getAbsolutePath(value) {
+function getAbsolutePath(value: string) {
   return path.dirname(require.resolve(path.join(value, 'package.json')));
 }
 

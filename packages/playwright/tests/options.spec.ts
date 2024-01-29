@@ -1,7 +1,7 @@
 import { test } from '../src';
 
 test.describe(() => {
-  test.use({ delay: 5000 });
+  test.use({ delay: 2500 });
 
   test('Options / delay', async ({ page }) => {
     await page.goto('/options/delay');

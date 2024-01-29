@@ -32,6 +32,10 @@ The E2E test cases for each integration should match each other as much as possi
 
 #### Running the Tests
 
+First, make sure your changes are built: `yarn build`
+
+Then, the test commands are as follows:
+
 - Unit tests: `yarn test:unit`
 - Playwright: `yarn test:playwright`, then `yarn archive-storybook:playwright` to see the archived UI
 - Cypress: `yarn test:cypress`, then `yarn archive-storybook:cypress` to see the archived UI

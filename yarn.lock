@@ -3320,7 +3320,6 @@ __metadata:
     "@types/node-fetch": "npm:^2.6.6"
     auto: "npm:^10.3.0"
     babel-jest: "npm:^27.0.6"
-    chromatic: "npm:^10.5.1"
     concurrently: "npm:^7.0.0"
     cypress: "npm:^13.6.1"
     eslint: "npm:^7.32.0"
@@ -8847,25 +8846,6 @@ __metadata:
     build-archive-storybook: dist/bin/build-archive-storybook.js
   languageName: unknown
   linkType: soft
-
-"chromatic@npm:^10.5.1":
-  version: 10.5.2
-  resolution: "chromatic@npm:10.5.2"
-  peerDependencies:
-    chromatic-cypress: ^0.4.0 || ^1.0.0
-    chromatic-playwright: ^0.4.0 || ^1.0.0
-  peerDependenciesMeta:
-    chromatic-cypress:
-      optional: true
-    chromatic-playwright:
-      optional: true
-  bin:
-    chroma: dist/bin.js
-    chromatic: dist/bin.js
-    chromatic-cli: dist/bin.js
-  checksum: 5966da6ce6cbed2e7ba133ef091942e7e6928a6870a2197cb49663bfc2d6aa6abb55b098aafad6c15008d62167425a2c38b6efad72fa4a54137aae06308c709f
-  languageName: node
-  linkType: hard
 
 "chrome-remote-interface@npm:^0.33.0":
   version: 0.33.0

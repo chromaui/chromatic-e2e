@@ -1,3 +1,9 @@
+# Runs the main changeset release process
+# This has two phases:
+# 1. When a PR is merged that contains changesets, a PR will
+#    be opened with package.json version bumps and changelog updates
+# 2. When the above PR with the package.json version bumps is merged,
+#    the changed packages will theb be published to npm
 name: Release
 
 on:

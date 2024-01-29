@@ -1,3 +1,5 @@
+# Workflow for PR branches
+# Runs the test workflows and the canary release workflow
 name: Test and Release PR
 
 on:

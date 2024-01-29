@@ -1,3 +1,4 @@
+# Runs Cypress E2E test and Chromatic publish
 name: Test Cypress
 
 on:

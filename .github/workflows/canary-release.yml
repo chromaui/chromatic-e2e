@@ -1,3 +1,5 @@
+# Runs the changeset canary release process which will publish
+# a canary version to npm if the branch contains a changeset
 name: Canary Release
 
 on:

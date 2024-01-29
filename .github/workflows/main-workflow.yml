@@ -1,3 +1,5 @@
+# Workflow for the main branch
+# Runs the test workflows and the release workflow
 name: Test and Release Main
 
 on:

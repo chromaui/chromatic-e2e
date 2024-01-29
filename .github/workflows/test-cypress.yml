@@ -32,7 +32,7 @@ jobs:
           yarn run test:cypress
 
       - name: Publish to Chromatic
-        uses: chromaui/action@v1
+        uses: chromaui/action@latest
         with:
           projectToken: ${{ secrets.chromaticProjectToken }}
           buildScriptName: build-archive-storybook:cypress

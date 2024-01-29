@@ -56,3 +56,7 @@ test('Assets / external CSS files are inlined', async ({ page }) => {
 test('Assets / video poster image is rendered', async ({ page }) => {
   await page.goto('/asset-paths/video-poster');
 });
+
+test('Assets / link tags for fonts preloads and other things are handled', async ({ page }) => {
+  await page.goto('/asset-paths/link-tags');
+});

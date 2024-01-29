@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      @font-face {
+        font-family: 'Silkscreen';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url(/fonts/cool-font.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+          U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+          U+FFFD;
+      }
+
+      .cool-font {
+        font-family: 'Silkscreen', sans-serif;
+        font-weight: 700;
+        font-size: 50px;
+      }
+    </style>
+
+    <link rel="preload" as="cool-font" href="/fonts/cool-font.woff2" type="font/woff2" crossorigin="anonymous">
+    <link rel="modulepreload" href="/scripts/chunk1.js">
+    <link rel="modulepreload" href="/scripts/chunk2.js">
+  </head>
+  <body>
+    <div>
+      <p class="cool-font">Here's a</p>
+      <p class="cool-font">COOL FONT</p>
+    </div>
+  </body>
+</html>

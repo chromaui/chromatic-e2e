@@ -46,3 +46,7 @@ it('Assets / external CSS files are inlined', () => {
 it('Assets / video poster image is rendered', () => {
   cy.visit('/asset-paths/video-poster');
 });
+
+it('Assets / link tags for fonts preloads and other things are handled', () => {
+  cy.visit('/asset-paths/link-tags');
+});

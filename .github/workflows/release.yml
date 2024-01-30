@@ -3,7 +3,7 @@
 # 1. When a PR is merged that contains changesets, a PR will
 #    be opened with package.json version bumps and changelog updates
 # 2. When the above PR with the package.json version bumps is merged,
-#    the changed packages will theb be published to npm
+#    the changed packages will then be published to npm
 name: Release
 
 on:

@@ -1,0 +1,29 @@
+# Workflow for the main branch
+# Runs the test workflows and the release workflow
+name: Test and Release Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    uses: ./.github/workflows/test-base.yml
+  test_cypress:
+    needs: test
+    uses: ./.github/workflows/test-cypress.yml
+    secrets:
+       chromaticProjectToken: ${{ secrets.CHROMATIC_CYPRESS_PROJECT_TOKEN }}
+  test_playwright:
+    needs: test
+    uses: ./.github/workflows/test-playwright.yml
+    secrets:
+       chromaticProjectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
+  release:
+    needs: test
+    uses: ./.github/workflows/release.yml
+    secrets:
+      githubToken: ${{ secrets.GITHUB_TOKEN }}
+      npmToken: ${{ secrets.NPM_PUBLISH_TOKEN }}
+    

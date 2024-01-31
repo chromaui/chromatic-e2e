@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.4.1
+
+### Patch Changes
+
+- 59c48db: fix asset mapping of link tags
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,5 @@
 {
-  "name": "chromatic-playwright",
+  "name": "@chromatic-com/playwright",
   "version": "0.4.1",
   "description": "Chromatic Visual Regression Testing for Playwright",
   "repository": {
@@ -44,7 +44,7 @@
     "prettier": "prettier"
   },
   "devDependencies": {
-    "@chromaui/shared-e2e": "workspace:*",
+    "@chromatic-com/shared-e2e": "workspace:*",
     "@playwright/test": "^1.39.0",
     "@storybook/types": "^7.0.2",
     "express": "^4.18.2",

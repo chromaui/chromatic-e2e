@@ -1,6 +1,6 @@
 ## Chromatic E2E Visual Tests
 
-Chromatic E2E monorepo containing the `chromatic-playwright` and `chromatic-cypress` packages.
+Chromatic E2E monorepo containing the `@chromatic-com/playwright` and `@chromatic-com/cypress` packages.
 
 ## Getting Started with Chromatic E2E Visual Tests
 

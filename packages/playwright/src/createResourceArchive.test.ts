@@ -3,7 +3,7 @@ import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
 
-import { logger } from '@chromaui/shared-e2e';
+import { logger } from '@chromatic-com/shared-e2e';
 import { createResourceArchive } from './createResourceArchive';
 
 const TEST_PORT = 13337;

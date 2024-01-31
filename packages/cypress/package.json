@@ -1,5 +1,5 @@
 {
-  "name": "chromatic-cypress",
+  "name": "@chromatic-com/cypress",
   "version": "0.4.1",
   "description": "Chromatic Visual Regression Testing for Cypress",
   "repository": {
@@ -50,7 +50,7 @@
     "prettier": "prettier"
   },
   "devDependencies": {
-    "@chromaui/shared-e2e": "workspace:*",
+    "@chromatic-com/shared-e2e": "workspace:*",
     "@storybook/types": "^7.0.2",
     "cypress": "^13.4.0",
     "start-server-and-test": "^2.0.3"

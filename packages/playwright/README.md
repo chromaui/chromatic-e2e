@@ -1,4 +1,4 @@
-## chromatic-playwright
+## @chromatic-com/playwright
 
 Chromatic E2E Visual Tests for Playwright
 

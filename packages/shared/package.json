@@ -1,5 +1,5 @@
 {
-  "name": "@chromaui/shared-e2e",
+  "name": "@chromatic-com/shared-e2e",
   "private": true,
   "version": "0.1.1",
   "description": "Shared Chromatic E2E",

@@ -1,4 +1,4 @@
-## chromatic-cypress
+## @chromatic-com/cypress
 
 Chromatic E2E Visual Tests for Cypress
 

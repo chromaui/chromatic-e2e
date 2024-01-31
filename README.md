@@ -17,4 +17,4 @@ Please see our [development guide](DEVELOPMENT.md)
 
 ## License
 
-[MIT](https://github.com/chromaui/test-archiver/blob/main/LICENSE)
+[MIT](https://github.com/chromaui/chromatic-e2e/blob/main/LICENSE)

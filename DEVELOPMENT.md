@@ -2,11 +2,11 @@
 
 This repository is a Yarn 4 monorepo containing the following packages:
 
-- [cypress](https://github.com/chromaui/test-archiver/tree/main/packages/cypress)
+- [cypress](https://github.com/chromaui/chromatic-e2e/tree/main/packages/cypress)
   - Chromatic E2E Visual Test integration for Cypress
-- [playwright](https://github.com/chromaui/test-archiver/tree/main/packages/playwright)
+- [playwright](https://github.com/chromaui/chromatic-e2e/tree/main/packages/playwright)
   - Chromatic E2E Visual Test integration for Playwright
-- [shared](https://github.com/chromaui/test-archiver/tree/main/packages/shared)
+- [shared](https://github.com/chromaui/chromatic-e2e/tree/main/packages/shared)
   - Internal workspace package shared by the integrations above
 
 ### Requirements

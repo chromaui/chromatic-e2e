@@ -2,7 +2,7 @@
 
 #### 🐛 Bug Fix
 
-- Cypress: User-facing API [#55](https://github.com/chromaui/test-archiver/pull/55) ([@skitterm](https://github.com/skitterm))
+- Cypress: User-facing API [#55](https://github.com/chromaui/chromatic-e2e/pull/55) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -14,7 +14,7 @@
 
 #### 🐛 Bug Fix
 
-- Cypress doesn't wait for idle timeout [#54](https://github.com/chromaui/test-archiver/pull/54) ([@skitterm](https://github.com/skitterm))
+- Cypress doesn't wait for idle timeout [#54](https://github.com/chromaui/chromatic-e2e/pull/54) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -26,7 +26,7 @@
 
 #### 🐛 Bug Fix
 
-- Cypress uses Chrome Devtools Protocol [#53](https://github.com/chromaui/test-archiver/pull/53) ([@skitterm](https://github.com/skitterm))
+- Cypress uses Chrome Devtools Protocol [#53](https://github.com/chromaui/chromatic-e2e/pull/53) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -38,7 +38,7 @@
 
 #### 🐛 Bug Fix
 
-- Common test fixtures, Cypress now has tests [#51](https://github.com/chromaui/test-archiver/pull/51) ([@skitterm](https://github.com/skitterm))
+- Common test fixtures, Cypress now has tests [#51](https://github.com/chromaui/chromatic-e2e/pull/51) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -50,7 +50,7 @@
 
 #### 🐛 Bug Fix
 
-- Chrome Devtools Protocol code is framework-agnostic [#50](https://github.com/chromaui/test-archiver/pull/50) ([@skitterm](https://github.com/skitterm))
+- Chrome Devtools Protocol code is framework-agnostic [#50](https://github.com/chromaui/chromatic-e2e/pull/50) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -62,7 +62,7 @@
 
 #### 🐛 Bug Fix
 
-- Project secret rename [#52](https://github.com/chromaui/test-archiver/pull/52) ([@skitterm](https://github.com/skitterm))
+- Project secret rename [#52](https://github.com/chromaui/chromatic-e2e/pull/52) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -74,7 +74,7 @@
 
 #### 🐛 Bug Fix
 
-- Playwright tests split out by intent [#49](https://github.com/chromaui/test-archiver/pull/49) ([@skitterm](https://github.com/skitterm) [@tevanoff](https://github.com/tevanoff))
+- Playwright tests split out by intent [#49](https://github.com/chromaui/chromatic-e2e/pull/49) ([@skitterm](https://github.com/skitterm) [@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 2
 
@@ -87,7 +87,7 @@
 
 #### 🐛 Bug Fix
 
-- Upgrade to yarn4 [#47](https://github.com/chromaui/test-archiver/pull/47) ([@tevanoff](https://github.com/tevanoff))
+- Upgrade to yarn4 [#47](https://github.com/chromaui/chromatic-e2e/pull/47) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -99,7 +99,7 @@
 
 #### 🐛 Bug Fix
 
-- Cypress e2e testing added [#48](https://github.com/chromaui/test-archiver/pull/48) ([@skitterm](https://github.com/skitterm))
+- Cypress e2e testing added [#48](https://github.com/chromaui/chromatic-e2e/pull/48) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -111,7 +111,7 @@
 
 #### 🐛 Bug Fix
 
-- Use case-insensitive match on header name [#45](https://github.com/chromaui/test-archiver/pull/45) ([@tevanoff](https://github.com/tevanoff))
+- Use case-insensitive match on header name [#45](https://github.com/chromaui/chromatic-e2e/pull/45) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -123,7 +123,7 @@
 
 #### 🐛 Bug Fix
 
-- Remove problematic chars from asset filenames [#44](https://github.com/chromaui/test-archiver/pull/44) ([@tevanoff](https://github.com/tevanoff))
+- Remove problematic chars from asset filenames [#44](https://github.com/chromaui/chromatic-e2e/pull/44) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -135,7 +135,7 @@
 
 #### 🐛 Bug Fix
 
-- Remove asset caching [#43](https://github.com/chromaui/test-archiver/pull/43) ([@tevanoff](https://github.com/tevanoff))
+- Remove asset caching [#43](https://github.com/chromaui/chromatic-e2e/pull/43) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -147,7 +147,7 @@
 
 #### 🐛 Bug Fix
 
-- Upgrade archive-storybook [#42](https://github.com/chromaui/test-archiver/pull/42) ([@tevanoff](https://github.com/tevanoff))
+- Upgrade archive-storybook [#42](https://github.com/chromaui/chromatic-e2e/pull/42) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -159,7 +159,7 @@
 
 #### 🐛 Bug Fix
 
-- :white_check_mark: Add tests for ignored regions in test archiver. [#41](https://github.com/chromaui/test-archiver/pull/41) ([@jwir3](https://github.com/jwir3))
+- :white_check_mark: Add tests for ignored regions in test archiver. [#41](https://github.com/chromaui/chromatic-e2e/pull/41) ([@jwir3](https://github.com/jwir3))
 
 #### Authors: 1
 
@@ -171,7 +171,7 @@
 
 #### 🐛 Bug Fix
 
-- Archive assets from img srcsets [#40](https://github.com/chromaui/test-archiver/pull/40) ([@tevanoff](https://github.com/tevanoff))
+- Archive assets from img srcsets [#40](https://github.com/chromaui/chromatic-e2e/pull/40) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -183,7 +183,7 @@
 
 #### 🐛 Bug Fix
 
-- Removing duplicate documentation [#39](https://github.com/chromaui/test-archiver/pull/39) ([@skitterm](https://github.com/skitterm))
+- Removing duplicate documentation [#39](https://github.com/chromaui/chromatic-e2e/pull/39) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -195,7 +195,7 @@
 
 #### 🐛 Bug Fix
 
-- Put Cypress archives in temp directory [#38](https://github.com/chromaui/test-archiver/pull/38) ([@skitterm](https://github.com/skitterm))
+- Put Cypress archives in temp directory [#38](https://github.com/chromaui/chromatic-e2e/pull/38) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -207,7 +207,7 @@
 
 #### 🐛 Bug Fix
 
-- Allow archiving from specified external domains [#37](https://github.com/chromaui/test-archiver/pull/37) ([@skitterm](https://github.com/skitterm))
+- Allow archiving from specified external domains [#37](https://github.com/chromaui/chromatic-e2e/pull/37) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -219,7 +219,7 @@
 
 #### 🐛 Bug Fix
 
-- Use non-forked rrweb [#34](https://github.com/chromaui/test-archiver/pull/34) ([@tevanoff](https://github.com/tevanoff))
+- Use non-forked rrweb [#34](https://github.com/chromaui/chromatic-e2e/pull/34) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -231,7 +231,7 @@
 
 #### 🐛 Bug Fix
 
-- Fix mapping of CSS URLs [#33](https://github.com/chromaui/test-archiver/pull/33) ([@tevanoff](https://github.com/tevanoff))
+- Fix mapping of CSS URLs [#33](https://github.com/chromaui/chromatic-e2e/pull/33) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -243,7 +243,7 @@
 
 #### 🐛 Bug Fix
 
-- Cypress support (basic) [#29](https://github.com/chromaui/test-archiver/pull/29) ([@skitterm](https://github.com/skitterm))
+- Cypress support (basic) [#29](https://github.com/chromaui/chromatic-e2e/pull/29) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -255,7 +255,7 @@
 
 #### 🐛 Bug Fix
 
-- Only archive assets fetched via GET [#32](https://github.com/chromaui/test-archiver/pull/32) ([@tevanoff](https://github.com/tevanoff))
+- Only archive assets fetched via GET [#32](https://github.com/chromaui/chromatic-e2e/pull/32) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -267,7 +267,7 @@
 
 #### 🐛 Bug Fix
 
-- Consolidate all asset path Playwright testing into one page [#31](https://github.com/chromaui/test-archiver/pull/31) ([@tevanoff](https://github.com/tevanoff))
+- Consolidate all asset path Playwright testing into one page [#31](https://github.com/chromaui/chromatic-e2e/pull/31) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -279,7 +279,7 @@
 
 #### 🐛 Bug Fix
 
-- Publish Archive Storybook to Chromatic [#30](https://github.com/chromaui/test-archiver/pull/30) ([@tevanoff](https://github.com/tevanoff))
+- Publish Archive Storybook to Chromatic [#30](https://github.com/chromaui/chromatic-e2e/pull/30) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -291,7 +291,7 @@
 
 #### 🐛 Bug Fix
 
-- Consolidate asset path modifications and mappings [#28](https://github.com/chromaui/test-archiver/pull/28) ([@tevanoff](https://github.com/tevanoff))
+- Consolidate asset path modifications and mappings [#28](https://github.com/chromaui/chromatic-e2e/pull/28) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -303,7 +303,7 @@
 
 #### 🐛 Bug Fix
 
-- Add a file extension based on Content-Type header for files that have it [#27](https://github.com/chromaui/test-archiver/pull/27) ([@jwir3](https://github.com/jwir3))
+- Add a file extension based on Content-Type header for files that have it [#27](https://github.com/chromaui/chromatic-e2e/pull/27) ([@jwir3](https://github.com/jwir3))
 
 #### Authors: 1
 
@@ -315,7 +315,7 @@
 
 #### 🐛 Bug Fix
 
-- :bug: Fix issue where the networkTimeout wasn't renamed everywhere. [#26](https://github.com/chromaui/test-archiver/pull/26) ([@jwir3](https://github.com/jwir3))
+- :bug: Fix issue where the networkTimeout wasn't renamed everywhere. [#26](https://github.com/chromaui/chromatic-e2e/pull/26) ([@jwir3](https://github.com/jwir3))
 
 #### Authors: 1
 
@@ -327,7 +327,7 @@
 
 #### 🐛 Bug Fix
 
-- :goal_net: Make Watcher not throw an exception if network idle times out [#25](https://github.com/chromaui/test-archiver/pull/25) ([@jwir3](https://github.com/jwir3))
+- :goal_net: Make Watcher not throw an exception if network idle times out [#25](https://github.com/chromaui/chromatic-e2e/pull/25) ([@jwir3](https://github.com/jwir3))
 
 #### Authors: 1
 
@@ -339,7 +339,7 @@
 
 #### 🐛 Bug Fix
 
-- Allow Chromatic configuration options [#22](https://github.com/chromaui/test-archiver/pull/22) ([@tevanoff](https://github.com/tevanoff))
+- Allow Chromatic configuration options [#22](https://github.com/chromaui/chromatic-e2e/pull/22) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -351,7 +351,7 @@
 
 #### 🐛 Bug Fix
 
-- Truncate and map filenames that are too long in test archiver [#24](https://github.com/chromaui/test-archiver/pull/24) ([@jwir3](https://github.com/jwir3))
+- Truncate and map filenames that are too long in test archiver [#24](https://github.com/chromaui/chromatic-e2e/pull/24) ([@jwir3](https://github.com/jwir3))
 
 #### Authors: 1
 
@@ -363,7 +363,7 @@
 
 #### 🐛 Bug Fix
 
-- Exported test function typed [#23](https://github.com/chromaui/test-archiver/pull/23) ([@skitterm](https://github.com/skitterm))
+- Exported test function typed [#23](https://github.com/chromaui/chromatic-e2e/pull/23) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -375,7 +375,7 @@
 
 #### 🐛 Bug Fix
 
-- Wait for all resources to load before indicating Watcher is idle [#16](https://github.com/chromaui/test-archiver/pull/16) ([@jwir3](https://github.com/jwir3))
+- Wait for all resources to load before indicating Watcher is idle [#16](https://github.com/chromaui/chromatic-e2e/pull/16) ([@jwir3](https://github.com/jwir3))
 
 #### Authors: 1
 
@@ -387,7 +387,7 @@
 
 #### 🐛 Bug Fix
 
-- Spelling fix [#18](https://github.com/chromaui/test-archiver/pull/18) ([@codykaup](https://github.com/codykaup))
+- Spelling fix [#18](https://github.com/chromaui/chromatic-e2e/pull/18) ([@codykaup](https://github.com/codykaup))
 
 #### Authors: 1
 
@@ -399,7 +399,7 @@
 
 #### 🐛 Bug Fix
 
-- Do not archive top level page requests [#19](https://github.com/chromaui/test-archiver/pull/19) ([@tevanoff](https://github.com/tevanoff))
+- Do not archive top level page requests [#19](https://github.com/chromaui/chromatic-e2e/pull/19) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -411,7 +411,7 @@
 
 #### 🐛 Bug Fix
 
-- Fix repository url [#20](https://github.com/chromaui/test-archiver/pull/20) ([@tevanoff](https://github.com/tevanoff))
+- Fix repository url [#20](https://github.com/chromaui/chromatic-e2e/pull/20) ([@tevanoff](https://github.com/tevanoff))
 
 #### Authors: 1
 
@@ -423,7 +423,7 @@
 
 #### 🐛 Bug Fix
 
-- Write archives to Playwright-created folder [#17](https://github.com/chromaui/test-archiver/pull/17) ([@skitterm](https://github.com/skitterm))
+- Write archives to Playwright-created folder [#17](https://github.com/chromaui/chromatic-e2e/pull/17) ([@skitterm](https://github.com/skitterm))
 
 #### Authors: 1
 
@@ -435,7 +435,7 @@
 
 #### 🐛 Bug Fix
 
-- Fix infinite loading for 307 and 308 response statuses [#15](https://github.com/chromaui/test-archiver/pull/15) ([@joshuajaco](https://github.com/joshuajaco))
+- Fix infinite loading for 307 and 308 response statuses [#15](https://github.com/chromaui/chromatic-e2e/pull/15) ([@joshuajaco](https://github.com/joshuajaco))
 
 #### Authors: 1
 
@@ -447,7 +447,7 @@
 
 #### 🐛 Bug Fix
 
-- Respect viewport set via Playwright [#10](https://github.com/chromaui/test-archiver/pull/10) ([@thafryer](https://github.com/thafryer))
+- Respect viewport set via Playwright [#10](https://github.com/chromaui/chromatic-e2e/pull/10) ([@thafryer](https://github.com/thafryer))
 
 #### Authors: 1
 
@@ -459,12 +459,12 @@
 
 #### 🐛 Bug Fix
 
-- Use GH token for releases [#9](https://github.com/chromaui/test-archiver/pull/9) ([@tmeasday](https://github.com/tmeasday))
-- Add very minimal analytics [#8](https://github.com/chromaui/test-archiver/pull/8) ([@tmeasday](https://github.com/tmeasday))
-- Document how to install archive storybook with peer deps [#6](https://github.com/chromaui/test-archiver/pull/6) ([@tmeasday](https://github.com/tmeasday))
-- Skip over CDP errors, but record to an error log [#7](https://github.com/chromaui/test-archiver/pull/7) ([@tmeasday](https://github.com/tmeasday))
-- Update docs [#4](https://github.com/chromaui/test-archiver/pull/4) ([@kylegach](https://github.com/kylegach))
-- Update Documentation.md [#3](https://github.com/chromaui/test-archiver/pull/3) ([@JonathanKolnik](https://github.com/JonathanKolnik))
+- Use GH token for releases [#9](https://github.com/chromaui/chromatic-e2e/pull/9) ([@tmeasday](https://github.com/tmeasday))
+- Add very minimal analytics [#8](https://github.com/chromaui/chromatic-e2e/pull/8) ([@tmeasday](https://github.com/tmeasday))
+- Document how to install archive storybook with peer deps [#6](https://github.com/chromaui/chromatic-e2e/pull/6) ([@tmeasday](https://github.com/tmeasday))
+- Skip over CDP errors, but record to an error log [#7](https://github.com/chromaui/chromatic-e2e/pull/7) ([@tmeasday](https://github.com/tmeasday))
+- Update docs [#4](https://github.com/chromaui/chromatic-e2e/pull/4) ([@kylegach](https://github.com/kylegach))
+- Update Documentation.md [#3](https://github.com/chromaui/chromatic-e2e/pull/3) ([@JonathanKolnik](https://github.com/JonathanKolnik))
 
 #### ⚠️ Pushed to `main`
 
@@ -483,7 +483,7 @@
 
 #### 🐛 Bug Fix
 
-- Continue failed requests too [#2](https://github.com/chromaui/test-archiver/pull/2) ([@tmeasday](https://github.com/tmeasday))
+- Continue failed requests too [#2](https://github.com/chromaui/chromatic-e2e/pull/2) ([@tmeasday](https://github.com/tmeasday))
 
 #### Authors: 1
 
@@ -495,7 +495,7 @@
 
 #### 🐛 Bug Fix
 
-- Don't cache resources from external URLs [#1](https://github.com/chromaui/test-archiver/pull/1) ([@tmeasday](https://github.com/tmeasday))
+- Don't cache resources from external URLs [#1](https://github.com/chromaui/chromatic-e2e/pull/1) ([@tmeasday](https://github.com/tmeasday))
 
 #### Authors: 1
 

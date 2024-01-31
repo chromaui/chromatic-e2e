@@ -5,7 +5,7 @@
   "description": "Shared Chromatic E2E",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/test-archiver.git",
+    "url": "https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/shared"
   },
   "author": "Chromatic <tom@chromatic.com>",

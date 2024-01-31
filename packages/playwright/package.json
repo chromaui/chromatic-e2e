@@ -62,8 +62,6 @@
     "@storybook/addon-essentials": "^8.0.0-alpha.16",
     "@storybook/csf": "^0.1.0",
     "@storybook/server-webpack5": "^8.0.0-alpha.16",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
     "rrweb-snapshot": "^2.0.0-alpha.4",
     "storybook": "^8.0.0-alpha.16",
     "ts-dedent": "^2.2.0"

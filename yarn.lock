@@ -3273,8 +3273,6 @@ __metadata:
     "@storybook/types": "npm:^8.0.0-alpha.16"
     chrome-remote-interface: "npm:^0.33.0"
     cypress: "npm:^13.4.0"
-    react: "npm:^17.0.1"
-    react-dom: "npm:^17.0.1"
     rrweb-snapshot: "npm:^2.0.0-alpha.4"
     start-server-and-test: "npm:^2.0.3"
     storybook: "npm:^8.0.0-alpha.16"
@@ -3298,8 +3296,6 @@ __metadata:
     express: "npm:^4.18.2"
     playwright: "npm:^1.32.2"
     playwright-core: "npm:^1.32.2"
-    react: "npm:^17.0.1"
-    react-dom: "npm:^17.0.1"
     rrweb-snapshot: "npm:^2.0.0-alpha.4"
     storybook: "npm:^8.0.0-alpha.16"
     ts-dedent: "npm:^2.2.0"
@@ -3390,8 +3386,6 @@ __metadata:
     playwright: "npm:^1.32.2"
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
-    react: "npm:^17.0.1"
-    react-dom: "npm:^17.0.1"
     rimraf: "npm:^3.0.2"
     start-server-and-test: "npm:^2.0.3"
     ts-jest: "npm:^27.0.4"
@@ -15356,19 +15350,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^17.0.1":
-  version: 17.0.2
-  resolution: "react-dom@npm:17.0.2"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-    object-assign: "npm:^4.1.1"
-    scheduler: "npm:^0.20.2"
-  peerDependencies:
-    react: 17.0.2
-  checksum: 51abbcb72450fe527ebf978c3bc989ba266630faaa53f47a2fae5392369729e8de62b2e4683598cbe651ea7873cd34ec7d5127e2f50bf4bfe6bd0c3ad9bddcb0
-  languageName: node
-  linkType: hard
-
 "react-dom@npm:^18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
@@ -15392,16 +15373,6 @@ __metadata:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 2bdb6b93fbb1820b024b496042cce405c57e2f85e777c9aabd55f9b26d145408f9f74f5934676ffdc46f3dcff656d78413a6e43968e7b3f92eea35b3052e9053
-  languageName: node
-  linkType: hard
-
-"react@npm:^17.0.1":
-  version: 17.0.2
-  resolution: "react@npm:17.0.2"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-    object-assign: "npm:^4.1.1"
-  checksum: 07ae8959acf1596f0550685102fd6097d461a54a4fd46a50f88a0cd7daaa97fdd6415de1dcb4bfe0da6aa43221a6746ce380410fa848acc60f8ac41f6649c148
   languageName: node
   linkType: hard
 
@@ -16308,16 +16279,6 @@ __metadata:
   dependencies:
     xmlchars: "npm:^2.2.0"
   checksum: b7476c41dbe1c3a89907d2546fecfba234de5e66743ef914cde2603f47b19bed09732ab51b528ad0f98b958369d8be72b6f5af5c9cfad69972a73d061f0b3952
-  languageName: node
-  linkType: hard
-
-"scheduler@npm:^0.20.2":
-  version: 0.20.2
-  resolution: "scheduler@npm:0.20.2"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-    object-assign: "npm:^4.1.1"
-  checksum: b0982e4b0f34f4ffa4f2f486161c0fd9ce9b88680b045dccbf250eb1aa4fd27413570645455187a83535e2370f5c667a251045547765408492bd883cbe95fcdb
   languageName: node
   linkType: hard
 

@@ -65,6 +65,13 @@ export class DOMSnapshot {
         node.attributes._cssText = mappedCssText;
       }
 
+      if (node.tagName === 'link' && node.attributes.href) {
+        const hrefVal = node.attributes.href as string;
+        if (sourceMap.has(hrefVal)) {
+          node.attributes.href = sourceMap.get(hrefVal);
+        }
+      }
+
       // When an image tag has the `srcset` attributes, the browser will choose one of the images
       // from the `srcset` list to load at render time based on the viewport size. To support this,
       // we parse the URLs in the `srcset` attribute and try to find a match in the asset map.

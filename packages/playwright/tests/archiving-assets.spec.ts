@@ -60,3 +60,7 @@ test('video poster image is rendered', async ({ page }, testInfo) => {
   console.log('title path', testInfo.titlePath);
   await page.goto('/asset-paths/video-poster');
 });
+
+test('Assets / link tags for fonts preloads and other things are handled', async ({ page }) => {
+  await page.goto('/asset-paths/link-tags');
+});

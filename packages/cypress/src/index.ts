@@ -5,7 +5,7 @@ import {
   writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
-} from '@chromaui/shared-e2e';
+} from '@chromatic-com/shared-e2e';
 
 interface CypressSnapshot {
   // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)

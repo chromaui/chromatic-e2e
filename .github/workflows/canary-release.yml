@@ -1,24 +1,24 @@
+# Runs the changeset canary release process which will publish
+# a canary version to npm if the branch contains a changeset
 name: Canary Release
 
 on:
-  workflow_run:
-    workflows: ["Test (base)"]
-    types:
-      - completed
-    branches-ignore:
-      - main
+  workflow_call:
+    secrets:
+      githubToken:
+        required: true
+      npmToken:
+        required: true
 
 jobs:
   release:
     name: Canary Release
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Setup Node.js 18
         uses: actions/setup-node@v3
@@ -34,12 +34,12 @@ jobs:
 
       - name: Set the current commit hash
         run: |
-          echo "GIT_HASH=$(git rev-parse --short $GITHUB_SHA)" >> "$GITHUB_ENV"
+          echo "GIT_HASH=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})" >> "$GITHUB_ENV"
 
       - name: Publish Canary Version
         run: |
           yarn run changeset version --snapshot $GIT_HASH
           yarn run changeset publish --no-git-tag --tag canary
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.githubToken }}
+          NODE_AUTH_TOKEN: ${{ secrets.npmToken }}

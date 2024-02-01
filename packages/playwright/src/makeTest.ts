@@ -5,13 +5,13 @@ import type {
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
 } from '@playwright/test';
-import type { ChromaticConfig } from '@chromaui/shared-e2e';
+import type { ChromaticConfig } from '@chromatic-com/shared-e2e';
 import {
   writeTestResult,
   trackComplete,
   trackRun,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-} from '@chromaui/shared-e2e';
+} from '@chromatic-com/shared-e2e';
 import { contentType, takeSnapshot } from './takeSnapshot';
 import { createResourceArchive } from './createResourceArchive';
 

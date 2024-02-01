@@ -1,6 +1,7 @@
-name: Test (base)
+# Runs linting and unit tests
+name: Test Base
 
-on: [push]
+on: workflow_call
 
 jobs:
   test:

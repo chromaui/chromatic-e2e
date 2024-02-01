@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.5.2
+
+### Patch Changes
+
+- aa7c02a: directly depend on storybook and related packages
+
 ## 0.5.1
 
 ### Patch Changes

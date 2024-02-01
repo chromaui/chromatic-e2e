@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.5.1
+
+### Patch Changes
+
+- ff70ca2: publish new packages
+
 ## 0.4.1
 
 ### Patch Changes

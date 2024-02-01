@@ -29,5 +29,5 @@
 ### Minor Changes
 
 - df06cbe: - introduce `chromatic-playwright` package
-  - update function and parameter names: https://github.com/chromaui/test-archiver/pull/58
-  - use fullscreen layout for Storybook: https://github.com/chromaui/test-archiver/pull/64
+  - update function and parameter names: https://github.com/chromaui/chromatic-e2e/pull/58
+  - use fullscreen layout for Storybook: https://github.com/chromaui/chromatic-e2e/pull/64

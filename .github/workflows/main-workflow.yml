@@ -25,5 +25,5 @@ jobs:
     uses: ./.github/workflows/release.yml
     secrets:
       githubToken: ${{ secrets.GITHUB_TOKEN }}
-      npmToken: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      npmToken: ${{ secrets.NPM_CHROMATIC_COM_PUBLISH_TOKEN }}
     

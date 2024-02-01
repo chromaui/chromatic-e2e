@@ -1,10 +1,10 @@
 {
-  "name": "chromatic-playwright",
-  "version": "0.4.1",
+  "name": "@chromatic-com/playwright",
+  "version": "0.5.0",
   "description": "Chromatic Visual Regression Testing for Playwright",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/test-archiver.git",
+    "url": "https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/playwright"
   },
   "author": "Chromatic <tom@chromatic.com>",
@@ -44,7 +44,7 @@
     "prettier": "prettier"
   },
   "devDependencies": {
-    "@chromaui/shared-e2e": "workspace:*",
+    "@chromatic-com/shared-e2e": "workspace:*",
     "@playwright/test": "^1.39.0",
     "@storybook/types": "^7.0.2",
     "express": "^4.18.2",

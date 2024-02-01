@@ -1,10 +1,10 @@
 {
-  "name": "chromatic-cypress",
-  "version": "0.4.1",
+  "name": "@chromatic-com/cypress",
+  "version": "0.5.0",
   "description": "Chromatic Visual Regression Testing for Cypress",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/test-archiver.git",
+    "url": "https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/cypress"
   },
   "author": "Chromatic <tom@chromatic.com>",
@@ -50,7 +50,7 @@
     "prettier": "prettier"
   },
   "devDependencies": {
-    "@chromaui/shared-e2e": "workspace:*",
+    "@chromatic-com/shared-e2e": "workspace:*",
     "@storybook/types": "^7.0.2",
     "cypress": "^13.4.0",
     "start-server-and-test": "^2.0.3"

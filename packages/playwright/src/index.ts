@@ -6,4 +6,4 @@ export const test = makeTest(base);
 export { expect };
 
 export { takeSnapshot } from './takeSnapshot';
-export type { ChromaticConfig } from '@chromaui/shared-e2e';
+export type { ChromaticConfig } from '@chromatic-com/shared-e2e';

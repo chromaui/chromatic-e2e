@@ -1,5 +1,5 @@
 import path from 'path';
-import { archivesDir } from '@chromaui/shared-e2e/utils/filePaths';
+import { archivesDir } from '@chromatic-com/shared-e2e/utils/filePaths';
 
 /** @type { import('@storybook/server-webpack5').StorybookConfig } */
 export default {

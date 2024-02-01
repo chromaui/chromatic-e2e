@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@chromatic-com/shared-e2e": "workspace:*",
-    "@storybook/types": "^7.0.2",
+    "@storybook/types": "^8.0.0-alpha.16",
     "cypress": "^13.4.0",
     "start-server-and-test": "^2.0.3"
   },
@@ -63,13 +63,11 @@
   },
   "dependencies": {
     "@segment/analytics-node": "^1.1.0",
+    "@storybook/addon-essentials": "^8.0.0-alpha.16",
     "@storybook/csf": "^0.1.0",
+    "@storybook/server-webpack5": "^8.0.0-alpha.16",
     "chrome-remote-interface": "^0.33.0",
-    "rrweb-snapshot": "^2.0.0-alpha.4"
-  },
-  "peerDependencies": {
-    "@storybook/addon-essentials": "^7.0.0 || ^8.0.x",
-    "@storybook/server-webpack5": "^7.0.0 || ^8.0.x",
-    "storybook": "^7.0.0 || ^8.0.x"
+    "rrweb-snapshot": "^2.0.0-alpha.4",
+    "storybook": "^8.0.0-alpha.16"
   }
 }

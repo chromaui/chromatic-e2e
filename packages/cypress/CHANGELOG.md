@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.5.3
+
+### Patch Changes
+
+- 1303e8c: upgrade rrweb
+
 ## 0.5.2
 
 ### Patch Changes

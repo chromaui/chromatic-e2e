@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-com/playwright",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Chromatic Visual Regression Testing for Playwright",
   "repository": {
     "type": "git",
@@ -62,7 +62,7 @@
     "@storybook/addon-essentials": "^8.0.0-alpha.16",
     "@storybook/csf": "^0.1.0",
     "@storybook/server-webpack5": "^8.0.0-alpha.16",
-    "rrweb-snapshot": "^2.0.0-alpha.4",
+    "rrweb-snapshot": "^2.0.0-alpha.11",
     "storybook": "^8.0.0-alpha.16",
     "ts-dedent": "^2.2.0"
   },

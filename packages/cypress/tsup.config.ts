@@ -30,6 +30,7 @@ export default defineConfig((options) => [
       'src/bin/archive-storybook.ts',
       'src/bin/build-archive-storybook.ts',
       'src/storybook-config/main.ts',
+      'src/storybook-config/manager.ts',
     ],
     format: ['cjs'],
     platform: 'node',

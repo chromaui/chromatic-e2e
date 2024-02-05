@@ -58,7 +58,7 @@ describe('writeTestResult', () => {
             name: 'home',
             parameters: {
               chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true, viewports: [720] },
-              server: { id: 'test-story-home.snapshot.json' },
+              server: { id: 'file-test-story-home.snapshot.json' },
             },
           },
         ],
@@ -160,7 +160,7 @@ describe('writeTestResult', () => {
             name: 'home',
             parameters: {
               chromatic: { viewports: [720] },
-              server: { id: 'toy-story-home.snapshot.json' },
+              server: { id: 'file-toy-story-home.snapshot.json' },
             },
           },
         ],
@@ -194,7 +194,7 @@ describe('writeTestResult', () => {
             name: 'home',
             parameters: {
               chromatic: { viewports: [720] },
-              server: { id: 'test-story-home.snapshot.json' },
+              server: { id: 'file-test-story-home.snapshot.json' },
             },
           },
         ],

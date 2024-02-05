@@ -32,7 +32,7 @@ afterEach(() => {
         cy.task('prepareArchives', {
           action: 'save-archives',
           payload: {
-            // @ts-ignore relativeToCommonRoot is on spec (but undocumented)
+            // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
             testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
             domSnapshots: [...manualSnapshots, { snapshot: automaticSnapshot }],
             chromaticStorybookParams: {

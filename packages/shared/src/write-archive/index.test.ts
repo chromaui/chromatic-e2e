@@ -35,7 +35,7 @@ describe('writeTestResult', () => {
     await writeTestResult(
       // the default output directory in playwright
       {
-        titlePath: ['Test Story'],
+        titlePath: ['file.spec.ts', 'Test Story'],
         outputDir: resolve('test-results/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',
       },
@@ -126,7 +126,7 @@ describe('writeTestResult', () => {
     await writeTestResult(
       // the default output directory in playwright
       {
-        titlePath: ['Toy Story'],
+        titlePath: ['file.spec.ts', 'Toy Story'],
         outputDir: resolve('test-results/toy-story-chromium'),
         pageUrl: 'http://localhost:3000/',
       },
@@ -174,7 +174,7 @@ describe('writeTestResult', () => {
     fs.ensureDir.mockReturnValue(true);
     await writeTestResult(
       {
-        titlePath: ['Test Story'],
+        titlePath: ['file.spec.ts', 'Test Story'],
         // simulates setting a custom output directory in Playwright
         outputDir: resolve('some-custom-directory/directory/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',

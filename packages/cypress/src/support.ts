@@ -32,7 +32,8 @@ afterEach(() => {
         cy.task('prepareArchives', {
           action: 'save-archives',
           payload: {
-            testTitlePath: [Cypress.spec.name, ...Cypress.currentTest.titlePath],
+            // @ts-ignore relativeToCommonRoot is on spec (but undocumented)
+            testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
             domSnapshots: [...manualSnapshots, { snapshot: automaticSnapshot }],
             chromaticStorybookParams: {
               ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),

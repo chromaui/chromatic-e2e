@@ -62,7 +62,7 @@ describe('writeTestResult', () => {
             },
           },
         ],
-        title: 'Test Story',
+        title: 'file / Test Story',
       }
     );
   });
@@ -153,7 +153,7 @@ describe('writeTestResult', () => {
       JSON.stringify(expectedMappedJson)
     );
     expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/toy-story.stories.json'),
+      resolve('./test-results/chromatic-archives/file-toy-story.stories.json'),
       {
         stories: [
           {
@@ -164,7 +164,7 @@ describe('writeTestResult', () => {
             },
           },
         ],
-        title: 'Toy Story',
+        title: 'file / Toy Story',
       }
     );
   });
@@ -198,7 +198,7 @@ describe('writeTestResult', () => {
             },
           },
         ],
-        title: 'Test Story',
+        title: 'file / Test Story',
       }
     );
   });

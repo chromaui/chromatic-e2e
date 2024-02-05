@@ -55,7 +55,7 @@ test.describe(() => {
   });
 });
 
-test('video poster image is rendered', async ({ page }, testInfo) => {
+test('video poster image is rendered', async ({ page }) => {
   await page.goto('/asset-paths/video-poster');
 });
 

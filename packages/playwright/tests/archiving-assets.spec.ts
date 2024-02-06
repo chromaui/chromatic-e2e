@@ -49,16 +49,14 @@ test('srcset is used to determine image asset URL', async ({ page }) => {
   await page.goto('/asset-paths/srcset');
 });
 
-test.describe(() => {
-  test('external CSS files are inlined', async ({ page }) => {
-    await page.goto('/asset-paths/external-css-files');
-  });
+test('external CSS files are inlined', async ({ page }) => {
+  await page.goto('/asset-paths/external-css-files');
 });
 
 test('video poster image is rendered', async ({ page }) => {
   await page.goto('/asset-paths/video-poster');
 });
 
-test('Assets / link tags for fonts preloads and other things are handled', async ({ page }) => {
+test('link tags for fonts preloads and other things are handled', async ({ page }) => {
   await page.goto('/asset-paths/link-tags');
 });

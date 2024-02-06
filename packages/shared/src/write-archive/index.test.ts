@@ -62,7 +62,7 @@ describe('writeTestResult', () => {
             },
           },
         ],
-        title: 'file / Test Story',
+        title: 'file/Test Story',
       }
     );
   });
@@ -97,7 +97,7 @@ describe('writeTestResult', () => {
             },
           },
         ],
-        title: 'file / A grouping / Test Story',
+        title: 'file/A grouping/Test Story',
       }
     );
   });
@@ -164,7 +164,7 @@ describe('writeTestResult', () => {
             },
           },
         ],
-        title: 'file / Toy Story',
+        title: 'file/Toy Story',
       }
     );
   });
@@ -198,7 +198,7 @@ describe('writeTestResult', () => {
             },
           },
         ],
-        title: 'file / Test Story',
+        title: 'file/Test Story',
       }
     );
   });

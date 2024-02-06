@@ -43,7 +43,7 @@ export async function writeTestResult(
     // possible extensions:
     // playwright: https://playwright.dev/docs/test-configuration#filtering-tests
     // cypress: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Spec-files
-    pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '').replace(/\.(spec|test|cy)\$/, '')
+    pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '').replace(/\.(spec|test|cy)$/, '')
   );
   // in Storybook, `/` splits the title out into hierarchies (folders)
   const title = titlePathWithoutFileExtensions.join('/');

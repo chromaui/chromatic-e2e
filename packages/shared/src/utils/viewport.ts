@@ -4,5 +4,5 @@ export interface Viewport {
 }
 
 export function viewportToString(viewport: Viewport) {
-  return `${viewport.width}x${viewport.height}`;
+  return `w${viewport.width}h${viewport.height}`;
 }

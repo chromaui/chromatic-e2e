@@ -5,20 +5,9 @@ import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';
 import type { ResourceArchive } from '../resource-archive';
 import type { ChromaticStorybookParameters } from '../types';
-import { Viewport, viewportToString } from '../utils/viewport';
-
-// @storybook/csf's sanitize function, we could import this
-export const sanitize = (string: string) => {
-  return (
-    string
-      .toLowerCase()
-      // eslint-disable-next-line no-useless-escape
-      .replace(/[ ’–—―′¿'`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-+/, '')
-      .replace(/-+$/, '')
-  );
-};
+import { Viewport } from '../utils/viewport';
+import { snapshotFileName, snapshotId } from './snapshot-files';
+import { createStories, storiesFileName } from './stories-files';
 
 // We write a collection of DOM snapshots and a resource archive in the following locations:
 // <test-title>.stories.json
@@ -30,16 +19,6 @@ interface E2ETestInfo {
   outputDir: string;
   pageUrl: string;
   viewport: Viewport;
-}
-
-function snapshotFileName(title: string, name: string, viewport: Viewport) {
-  const fileNameParts = [
-    `${sanitize(title)}-${sanitize(name)}`,
-    viewportToString(viewport),
-    'snapshot',
-    'json',
-  ];
-  return fileNameParts.join('.');
 }
 
 export async function writeTestResult(
@@ -96,18 +75,14 @@ export async function writeTestResult(
       const snapshot = new DOMSnapshot(domSnapshot);
       const mappedSnapshot = await snapshot.mapAssetPaths(sourceMap);
 
-      await outputFile(join(archiveDir, snapshotFileName(title, name, viewport)), mappedSnapshot);
+      const snapshotFile = snapshotFileName(snapshotId(title, name), viewport);
+      await outputFile(join(archiveDir, snapshotFile), mappedSnapshot);
     })
   );
 
-  const storiesFileNameParts = [`${sanitize(title)}`, 'stories', 'json'];
-  await writeStoriesFile(
-    join(finalOutputDir, storiesFileNameParts.join('.')),
-    title,
-    viewport,
-    domSnapshots,
-    chromaticStorybookParams
-  );
+  const storiesFile = storiesFileName(title);
+  const storiesJson = createStories(title, domSnapshots, chromaticStorybookParams);
+  await outputJson(join(finalOutputDir, storiesFile), storiesJson);
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
   if (errors.length > 0) {
@@ -116,26 +91,4 @@ export async function writeTestResult(
       errors: Object.fromEntries(errors),
     });
   }
-}
-
-async function writeStoriesFile(
-  storiesFilename: string,
-  title: string,
-  viewport: Viewport,
-  domSnapshots: Record<string, Buffer>,
-  chromaticStorybookParams: ChromaticStorybookParameters
-) {
-  logger.log(`Writing ${storiesFilename}`);
-  await outputJson(storiesFilename, {
-    title,
-    stories: Object.keys(domSnapshots).map((name) => ({
-      name,
-      parameters: {
-        server: { id: snapshotFileName(title, name, viewport) },
-        chromatic: {
-          ...chromaticStorybookParams,
-        },
-      },
-    })),
-  });
 }

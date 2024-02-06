@@ -26,12 +26,8 @@ it.skip('external asset is archived', () => {
   cy.visit('/asset-paths/external-asset-archived');
 });
 
-describe('something', () => {
-  describe('another', () => {
-    it('assets from css urls are archived', () => {
-      cy.visit('/asset-paths/css-urls');
-    });
-  });
+it('assets from css urls are archived', () => {
+  cy.visit('/asset-paths/css-urls');
 });
 
 // TODO: Unskip when Cypress support achieves parity with Playwright

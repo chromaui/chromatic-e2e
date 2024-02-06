@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.5.1
+
+### Patch Changes
+
+- 657c3c0: Story names now include the file name and other containing information, instead of just the test title
+
 ## 0.1.1
 
 ### Patch Changes

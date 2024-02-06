@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.5.4
+
+### Patch Changes
+
+- 657c3c0: Story names now include the file name and other containing information, instead of just the test title
+
 ## 0.5.3
 
 ### Patch Changes

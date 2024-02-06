@@ -39,7 +39,13 @@ export async function writeTestResult(
   const { titlePath, outputDir, pageUrl } = e2eTestInfo;
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
   const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
-    pathPart.replace(/\.(spec|cy)\..*/, '')
+    // make sure we remove file extensions, even if the file name doesn't have .spec or .test or.cy
+    // possible extensions:
+    // playwright: https://playwright.dev/docs/test-configuration#filtering-tests
+    // cypress: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Spec-files
+    pathPart
+      .replace(/\.(spec|test|cy)\..*/, '')
+      .replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '')
   );
   // in Storybook, `/` splits the title out into hierarchies (folders)
   const title = titlePathWithoutFileExtensions.join('/');

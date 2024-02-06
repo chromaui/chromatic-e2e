@@ -230,5 +230,26 @@ describe('writeTestResult', () => {
         })
       );
     });
+
+    it('removes file extension, even if .spec or .cy are not used', async () => {
+      // @ts-expect-error Jest mock
+      fs.ensureDir.mockReturnValue(true);
+      await writeTestResult(
+        {
+          titlePath: ['file.ts', 'Test Story'],
+          outputDir: resolve('test-results/test-story-chromium'),
+          pageUrl: 'http://localhost:3000/',
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+        { viewports: [720] }
+      );
+      expect(fs.outputJson).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          title: 'file/Test Story',
+        })
+      );
+    });
   });
 });

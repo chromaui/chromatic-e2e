@@ -143,7 +143,7 @@ describe('writeTestResult', () => {
   });
 
   describe('smart story naming', () => {
-    it('derives story title from test info', async () => {
+    it('derives story title from test info, using all of the title path', async () => {
       // @ts-expect-error Jest mock
       fs.ensureDir.mockReturnValue(true);
       await writeTestResult(
@@ -164,7 +164,32 @@ describe('writeTestResult', () => {
       );
     });
 
-    it('preserves dots in test title, besides file extension (Playwright)', async () => {
+    it('preserves dots in directories, describe blocks, and test titles', async () => {
+      // @ts-expect-error Jest mock
+      fs.ensureDir.mockReturnValue(true);
+      await writeTestResult(
+        {
+          titlePath: [
+            'a.directory/file.spec.ts',
+            '.someFunction',
+            '.someFunction() calls something',
+          ],
+          outputDir: resolve('test-results/test-story-chromium'),
+          pageUrl: 'http://localhost:3000/',
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+        { viewports: [720] }
+      );
+      expect(fs.outputJson).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          title: 'a.directory/file/.someFunction/.someFunction() calls something',
+        })
+      );
+    });
+
+    it('preserves dots in file name, besides file extension (Playwright)', async () => {
       // @ts-expect-error Jest mock
       fs.ensureDir.mockReturnValue(true);
       await writeTestResult(
@@ -185,7 +210,7 @@ describe('writeTestResult', () => {
       );
     });
 
-    it('preserves dots in test title, besides file extension (Cypress)', async () => {
+    it('preserves dots in file name, besides file extension (Cypress)', async () => {
       // @ts-expect-error Jest mock
       fs.ensureDir.mockReturnValue(true);
       await writeTestResult(

@@ -37,17 +37,10 @@ export async function writeTestResult(
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   const { titlePath, outputDir, pageUrl } = e2eTestInfo;
-  let titleHasTruncated = false;
-  const titlePathWithoutFileExtensions: string[] = [];
-  titlePath.forEach((aTitle) => {
-    // we only want to remove stuff after spaces for the file name
-    if (aTitle.includes('.') && !titleHasTruncated) {
-      titlePathWithoutFileExtensions.push(aTitle.split('.')[0]);
-      titleHasTruncated = true;
-    } else {
-      titlePathWithoutFileExtensions.push(aTitle);
-    }
-  });
+  // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
+  const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
+    pathPart.replace(/\.(spec|cy)\..*/, '')
+  );
   // in Storybook, `/` splits the title out into hierarchies (folders)
   const title = titlePathWithoutFileExtensions.join('/');
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);

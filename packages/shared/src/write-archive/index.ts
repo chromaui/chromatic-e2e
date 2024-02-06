@@ -25,7 +25,7 @@ export const sanitize = (string: string) => {
 // archive/<file>.<ext>
 
 interface E2ETestInfo {
-  title: string;
+  titlePath: string[];
   outputDir: string;
   pageUrl: string;
 }
@@ -36,7 +36,17 @@ export async function writeTestResult(
   archive: ResourceArchive,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { title, outputDir, pageUrl } = e2eTestInfo;
+  const { titlePath, outputDir, pageUrl } = e2eTestInfo;
+  // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
+  const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
+    // make sure we remove file extensions, even if the file name doesn't have .spec or .test or.cy
+    // possible extensions:
+    // playwright: https://playwright.dev/docs/test-configuration#filtering-tests
+    // cypress: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Spec-files
+    pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '').replace(/\.(spec|test|cy)$/, '')
+  );
+  // in Storybook, `/` splits the title out into hierarchies (folders)
+  const title = titlePathWithoutFileExtensions.join('/');
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');

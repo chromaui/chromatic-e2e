@@ -1,4 +1,4 @@
-it('Manual Snapshots / multiple snapshots are taken', () => {
+it('multiple snapshots are taken', () => {
   cy.visit('/manual-snapshots');
   // manual snapshot with name
   cy.takeSnapshot('accordion collapsed');

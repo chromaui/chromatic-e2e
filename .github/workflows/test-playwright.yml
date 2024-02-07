@@ -22,10 +22,6 @@ jobs:
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-      
-      - name: Install chromatic-playwright
-        run: |
-          yarn add @chromatic-com/playwright
 
       - name: Install Playwright
         run: |
@@ -39,9 +35,9 @@ jobs:
         run: |
           yarn run test:playwright
 
-
       - name: Publish to Chromatic
         uses: chromaui/action@latest
         with:
           projectToken: ${{ secrets.chromaticProjectToken }}
+          buildScriptName: build-archive-storybook:playwright
           playwright: true

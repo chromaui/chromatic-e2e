@@ -40,3 +40,4 @@ jobs:
         with:
           projectToken: ${{ secrets.chromaticProjectToken }}
           playwright: true
+      # a comment

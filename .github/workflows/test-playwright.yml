@@ -39,4 +39,4 @@ jobs:
         uses: chromaui/action@latest
         with:
           projectToken: ${{ secrets.chromaticProjectToken }}
-          buildScriptName: build-archive-storybook:playwright
+          playwright: true

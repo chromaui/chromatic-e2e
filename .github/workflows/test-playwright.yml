@@ -36,8 +36,7 @@ jobs:
           yarn run test:playwright
 
       - name: Publish to Chromatic
-        uses: chromaui/action@latest
+        uses: chromaui/action-canary@latest
         with:
           projectToken: ${{ secrets.chromaticProjectToken }}
-          buildScriptName: build-archive-storybook:playwright
           playwright: true

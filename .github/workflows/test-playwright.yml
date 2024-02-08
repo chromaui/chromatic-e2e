@@ -1,10 +1,6 @@
 name: Test (Playwright)
 
-on:
-  workflow_run:
-    workflows: ['Test (base)']
-    types:
-      - completed
+on: [push]
 
 jobs:
   test:

@@ -32,7 +32,7 @@ jobs:
           yarn run test:playwright
 
       - name: Publish to Chromatic
-        uses: chromaui/action-canary
+        uses: chromaui/action-canary@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
           playwright: true

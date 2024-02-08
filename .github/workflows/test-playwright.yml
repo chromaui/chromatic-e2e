@@ -2,7 +2,7 @@ name: Test (Playwright)
 
 on:
   workflow_run:
-    workflows: ["Test (base)"]
+    workflows: ['Test (base)']
     types:
       - completed
 
@@ -26,11 +26,11 @@ jobs:
 
       - name: Install Playwright
         run: |
-          yarn playwright install 
+          yarn playwright install
 
       - name: Build
         run: |
-          yarn run build    
+          yarn run build
 
       - name: Run tests
         run: |
@@ -40,4 +40,4 @@ jobs:
         uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
-          buildScriptName: build-archive-storybook:playwright
+          playwright: true

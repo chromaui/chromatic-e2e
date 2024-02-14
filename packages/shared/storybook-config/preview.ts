@@ -1,5 +1,6 @@
 import type { RenderToCanvas, WebRenderer } from '@storybook/types';
-import { rebuild } from 'rrweb-snapshot';
+import type { serializedNodeWithId } from 'rrweb-snapshot';
+import { NodeType, rebuild } from 'rrweb-snapshot';
 
 const pageUrl = new URL(window.location.href);
 pageUrl.pathname = '';
@@ -11,14 +12,27 @@ export interface RRWebFramework extends WebRenderer {
   storyResult: Record<string, never>;
 }
 
+const findHtmlNode = (node: serializedNodeWithId): serializedNodeWithId | undefined => {
+  if (node.type === NodeType.Element && node.tagName === 'html') {
+    return node;
+  }
+
+  if ('childNodes' in node) {
+    return node.childNodes.find((childNode) => {
+      return findHtmlNode(childNode);
+    });
+  }
+
+  return undefined;
+};
+
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
   const { url, id } = context.storyContext.parameters.server;
   const response = await fetch(`${url}/${id}`);
-  const snapshot = await response.json();
+  const snapshot = (await response.json()) as serializedNodeWithId;
 
-  // The snapshot is a representation of a complete HTML document. The first child is the
-  // doc type declaration and the second is the html element.
-  const htmlNode = snapshot.childNodes[1];
+  // The snapshot is a representation of a complete HTML document
+  const htmlNode = findHtmlNode(snapshot);
 
   // If you rebuild the full snapshot with rrweb (the document) it will replace the
   // current document and call `document.open()` in the process, which unbinds all event handlers

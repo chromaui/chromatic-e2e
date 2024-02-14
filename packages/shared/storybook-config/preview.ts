@@ -12,19 +12,18 @@ export interface RRWebFramework extends WebRenderer {
   storyResult: Record<string, never>;
 }
 
-const findHtmlNode = async (
-  node: serializedNodeWithId
-): Promise<serializedNodeWithId | undefined> => {
+const findHtmlNode = (node: serializedNodeWithId): serializedNodeWithId | undefined => {
   if (node.type === NodeType.Element && node.tagName === 'html') {
     return node;
   }
 
   if ('childNodes' in node) {
-    for (const childNode of node.childNodes) {
-      const htmlNode = await findHtmlNode(childNode);
-      if (htmlNode) return htmlNode;
-    }
+    return node.childNodes.find((childNode) => {
+      return findHtmlNode(childNode);
+    });
   }
+
+  return undefined;
 };
 
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
@@ -33,7 +32,7 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) 
   const snapshot = (await response.json()) as serializedNodeWithId;
 
   // The snapshot is a representation of a complete HTML document
-  const htmlNode = await findHtmlNode(snapshot);
+  const htmlNode = findHtmlNode(snapshot);
 
   // If you rebuild the full snapshot with rrweb (the document) it will replace the
   // current document and call `document.open()` in the process, which unbinds all event handlers

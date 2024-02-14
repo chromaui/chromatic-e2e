@@ -21,8 +21,8 @@ const findHtmlNode = async (
 
   if ('childNodes' in node) {
     for (const childNode of node.childNodes) {
-      const checkNode = await findHtmlNode(childNode);
-      if (checkNode) return checkNode;
+      const htmlNode = await findHtmlNode(childNode);
+      if (htmlNode) return htmlNode;
     }
   }
 };

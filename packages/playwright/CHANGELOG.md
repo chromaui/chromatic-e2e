@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.5.5
+
+### Patch Changes
+
+- cf0911d: fix to find the html element node on snapshots without a doctype node
+
 ## 0.5.4
 
 ### Patch Changes

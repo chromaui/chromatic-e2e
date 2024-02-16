@@ -30,6 +30,4 @@ export interface ChromaticConfig {
   assetDomains?: string[];
 }
 
-export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoSnapshot'> {
-  viewports: number[];
-}
+export type ChromaticStorybookParameters = Omit<ChromaticConfig, 'disableAutoSnapshot'>;

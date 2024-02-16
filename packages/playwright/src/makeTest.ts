@@ -92,7 +92,6 @@ export const makeTest = (
           ...(forcedColors && { forcedColors }),
           ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
           ...(prefersReducedMotion && { prefersReducedMotion }),
-          viewports: [page.viewportSize().width],
         };
 
         await writeTestResult(

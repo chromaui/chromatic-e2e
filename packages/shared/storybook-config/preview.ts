@@ -46,7 +46,6 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   return response.json();
 }
 
-const globals = { viewport: 'reset', viewportRotated: false };
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
   const snapshot = await fetchSnapshot(context);
 
@@ -78,7 +77,6 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) 
 
 export default {
   renderToCanvas,
-  globals,
   parameters: {
     server: { url: strippedUrl },
     layout: 'fullscreen',

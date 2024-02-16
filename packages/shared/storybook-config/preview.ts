@@ -1,4 +1,4 @@
-import type { RenderToCanvas, WebRenderer } from '@storybook/types';
+import type { RenderContext, RenderToCanvas, WebRenderer } from '@storybook/types';
 import type { serializedNodeWithId } from 'rrweb-snapshot';
 import { NodeType, rebuild } from 'rrweb-snapshot';
 
@@ -26,11 +26,29 @@ const findHtmlNode = (node: serializedNodeWithId): serializedNodeWithId | undefi
   return undefined;
 };
 
+function snapshotFileName(snapshotId: string, viewport: string) {
+  const fileNameParts = [snapshotId, viewport, 'snapshot.json'];
+  return fileNameParts.join('.');
+}
+
+async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
+  const { url, id } = context.storyContext.parameters.server;
+  const { viewport } = context.storyContext.globals;
+
+  let response = await fetch(`${url}/${snapshotFileName(id, viewport)}`);
+  if (!response.ok) {
+    // Possibly a viewport was specified that we haven't captured, or it's the addon's
+    // default of `reset`, so we'll load the default viewport snapshot instead.
+    const { defaultViewport } = context.storyContext.parameters.viewport;
+    response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
+  }
+
+  return response.json();
+}
+
 const globals = { viewport: 'reset', viewportRotated: false };
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
-  const { url, id } = context.storyContext.parameters.server;
-  const response = await fetch(`${url}/${id}`);
-  const snapshot = (await response.json()) as serializedNodeWithId;
+  const snapshot = await fetchSnapshot(context);
 
   // The snapshot is a representation of a complete HTML document
   const htmlNode = findHtmlNode(snapshot);

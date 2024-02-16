@@ -10,12 +10,14 @@ export default defineConfig({
       name: 'Desktop',
       use: {
         ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 },
       },
     },
     {
       name: 'Mobile',
       use: {
         ...devices['Pixel 5'],
+        viewport: { width: 400, height: 600 },
       },
     },
   ],

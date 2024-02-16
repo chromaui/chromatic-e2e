@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Viewports</title>
+    </head>
+    <body>
+      <p id="gt1100" style="display: none;">I'm rendered when the page width is &gt; 1100</p>
+      <p id="lt600" style="display: none;">I'm rendered when the page width is &lt; 600></p>
+      <p>I'm always rendered</p>
+    </body>
+
+    <script lang="javascript">
+      function updateSize() {
+        if (window.innerWidth > 1100) {
+          document.getElementById("gt1100").style.display = "inline";
+        } else if (window.innerWidth < 600) {
+          document.getElementById("lt600").style.display = "inline";
+        }
+      }
+
+      updateSize();
+      window.addEventListener("resize", updateSize);
+    </script>
+</html>

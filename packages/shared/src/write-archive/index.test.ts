@@ -45,7 +45,6 @@ describe('writeTestResult', () => {
       {
         diffThreshold: 5,
         pauseAnimationAtEnd: true,
-        viewports: [720],
       }
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
@@ -58,8 +57,8 @@ describe('writeTestResult', () => {
           {
             name: 'home',
             parameters: {
-              chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true, viewports: [720] },
-              server: { id: 'file-test-story-home.snapshot.json' },
+              chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true },
+              server: { id: 'file-test-story-home' },
             },
           },
         ],
@@ -109,14 +108,16 @@ describe('writeTestResult', () => {
           contentType: 'image/png',
         },
       },
-      { viewports: [720] }
+      {}
     );
 
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputJson).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(3);
     expect(fs.outputFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/archive/file-toy-story-home.snapshot.json'),
+      resolve(
+        './test-results/chromatic-archives/archive/file-toy-story-home.w800h800.snapshot.json'
+      ),
       JSON.stringify(expectedMappedJson)
     );
   });
@@ -134,7 +135,7 @@ describe('writeTestResult', () => {
       },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      { viewports: [720] }
+      {}
     );
     expect(fs.ensureDir).toHaveBeenCalledTimes(1);
     expect(fs.outputFile).toHaveBeenCalledTimes(2);
@@ -154,10 +155,11 @@ describe('writeTestResult', () => {
           titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
           outputDir: resolve('test-results/test-story-chromium'),
           pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
         },
         { home: Buffer.from(JSON.stringify(snapshotJson)) },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        { viewports: [720] }
+        {}
       );
       expect(fs.outputJson).toHaveBeenCalledWith(
         expect.anything(),
@@ -179,10 +181,11 @@ describe('writeTestResult', () => {
           ],
           outputDir: resolve('test-results/test-story-chromium'),
           pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
         },
         { home: Buffer.from(JSON.stringify(snapshotJson)) },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        { viewports: [720] }
+        {}
       );
       expect(fs.outputJson).toHaveBeenCalledWith(
         expect.anything(),
@@ -200,10 +203,11 @@ describe('writeTestResult', () => {
           titlePath: ['some.file.spec.ts', 'Test Story'],
           outputDir: resolve('test-results/test-story-chromium'),
           pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
         },
         { home: Buffer.from(JSON.stringify(snapshotJson)) },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        { viewports: [720] }
+        {}
       );
       expect(fs.outputJson).toHaveBeenCalledWith(
         expect.anything(),
@@ -221,10 +225,11 @@ describe('writeTestResult', () => {
           titlePath: ['some.file.cy.ts', 'Test Story'],
           outputDir: resolve('test-results/test-story-chromium'),
           pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
         },
         { home: Buffer.from(JSON.stringify(snapshotJson)) },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        { viewports: [720] }
+        {}
       );
       expect(fs.outputJson).toHaveBeenCalledWith(
         expect.anything(),
@@ -242,10 +247,11 @@ describe('writeTestResult', () => {
           titlePath: ['file.ts', 'Test Story'],
           outputDir: resolve('test-results/test-story-chromium'),
           pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
         },
         { home: Buffer.from(JSON.stringify(snapshotJson)) },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        { viewports: [720] }
+        {}
       );
       expect(fs.outputJson).toHaveBeenCalledWith(
         expect.anything(),

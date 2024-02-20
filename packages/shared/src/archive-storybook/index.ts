@@ -1,11 +1,11 @@
 import { execFileSync } from 'child_process';
 import { resolve, dirname } from 'path';
 import { checkArchivesDirExists } from '../utils/filePaths';
-import { addViewportsToStories } from '../viewports';
+import { addViewportsToStoriesFiles } from './viewports';
 
 export function archiveStorybook(processArgs: string[], configDir: string) {
   checkArchivesDirExists();
-  addViewportsToStories().then(() => {
+  addViewportsToStoriesFiles().then(() => {
     const binPath = resolve(dirname(require.resolve('storybook/package.json')), './index.js');
     execFileSync('node', [binPath, 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
   });
@@ -13,7 +13,7 @@ export function archiveStorybook(processArgs: string[], configDir: string) {
 
 export function buildArchiveStorybook(processArgs: string[], configDir: string) {
   checkArchivesDirExists();
-  addViewportsToStories().then(() => {
+  addViewportsToStoriesFiles().then(() => {
     const binPath = resolve(dirname(require.resolve('storybook/package.json')), './index.js');
     execFileSync('node', [binPath, 'build', ...processArgs, '-c', configDir], { stdio: 'inherit' });
   });

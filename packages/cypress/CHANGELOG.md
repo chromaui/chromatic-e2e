@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.0
+
+### Minor Changes
+
+- 2425e3a: add support for viewports
+
 ## 0.5.5
 
 ### Patch Changes

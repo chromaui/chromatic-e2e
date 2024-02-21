@@ -8,6 +8,7 @@ export function snapshotId(testTitle: string, snapshotName: string) {
   return `${sanitize(testTitle)}-${sanitize(snapshotName)}`;
 }
 
+// NOTE: This is duplicated in the shared storybook preview.ts
 // eslint-disable-next-line @typescript-eslint/no-shadow
 export function snapshotFileName(snapshotId: string, viewport: Viewport) {
   const fileNameParts = [snapshotId, viewportToString(viewport), SNAPSHOT_FILE_EXT];

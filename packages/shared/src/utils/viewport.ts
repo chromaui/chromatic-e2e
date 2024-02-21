@@ -3,6 +3,7 @@ export interface Viewport {
   width: number;
 }
 
+// NOTE: This is duplicated in the shared storybook preview.ts
 export function viewportToString(viewport: Viewport) {
   return `w${viewport.width}h${viewport.height}`;
 }

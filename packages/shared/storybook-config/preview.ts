@@ -26,6 +26,7 @@ const findHtmlNode = (node: serializedNodeWithId): serializedNodeWithId | undefi
   return undefined;
 };
 
+// NOTE: This is duplicated in the shared package due to bundling issues
 function snapshotFileName(snapshotId: string, viewport: string) {
   const fileNameParts = [snapshotId, viewport, 'snapshot.json'];
   return fileNameParts.join('.');
@@ -40,6 +41,7 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   if (typeof viewport === 'string') {
     viewportName = viewport;
   } else {
+    // NOTE: This is duplicated in the shared package due to bundling issues
     viewportName = `w${viewport.width}h${viewport.height}`;
   }
 

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Viewports</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+    <body>
+      <p id="gt1100" style="display: none;">I'm rendered when the page width is &gt; 1100</p>
+      <p id="lt600" style="display: none;">I'm rendered when the page width is &lt; 600></p>
+      <p>I'm always rendered</p>
+      <p>Window width: <span id="width"></span></p>
+      <p>Window height: <span id="height"></span></p>
+    </body>
+
+    <script lang="javascript">
+      function updateSize() {
+        document.getElementById("height").textContent = window.innerHeight;
+        document.getElementById("width").textContent = window.innerWidth;
+
+        if (window.innerWidth > 1100) {
+          document.getElementById("gt1100").style.display = "inline";
+        } else if (window.innerWidth < 600) {
+          document.getElementById("lt600").style.display = "inline";
+        }
+      }
+
+      updateSize();
+      window.addEventListener("resize", updateSize);
+    </script>
+</html>

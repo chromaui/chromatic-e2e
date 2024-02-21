@@ -11,6 +11,10 @@ export function archivesDir() {
   return path.resolve(rootDir(), CHROMATIC_ARCHIVE_LOCATION, 'chromatic-archives');
 }
 
+export function assetsDir() {
+  return path.resolve(archivesDir(), 'archive');
+}
+
 export function checkArchivesDirExists() {
   const dir = archivesDir();
   if (!fs.existsSync(dir)) {

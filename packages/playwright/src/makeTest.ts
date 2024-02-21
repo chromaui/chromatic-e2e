@@ -92,11 +92,10 @@ export const makeTest = (
           ...(forcedColors && { forcedColors }),
           ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
           ...(prefersReducedMotion && { prefersReducedMotion }),
-          viewports: [page.viewportSize().width],
         };
 
         await writeTestResult(
-          { ...testInfo, pageUrl: page.url() },
+          { ...testInfo, pageUrl: page.url(), viewport: page.viewportSize() },
           snapshots,
           resourceArchive,
           chromaticStorybookParams

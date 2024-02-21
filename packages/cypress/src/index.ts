@@ -5,6 +5,7 @@ import {
   writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
+  Viewport,
 } from '@chromatic-com/shared-e2e';
 
 interface CypressSnapshot {
@@ -19,6 +20,7 @@ interface WriteParams {
   domSnapshots: CypressSnapshot[];
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
+  viewport: Viewport;
 }
 
 interface WriteArchivesParams extends WriteParams {
@@ -31,6 +33,7 @@ const writeArchives = async ({
   resourceArchive,
   chromaticStorybookParams,
   pageUrl,
+  viewport,
 }: WriteArchivesParams) => {
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -60,6 +63,7 @@ const writeArchives = async ({
       // TODO: change so we don't have to do this trickery
       outputDir: './cypress/downloads/some',
       pageUrl,
+      viewport,
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),

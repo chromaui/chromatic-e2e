@@ -12,10 +12,21 @@ context('mobile', { viewportWidth: 500, viewportHeight: 500 }, () => {
 
 context('hardcoded viewport', () => {
   beforeEach(() => {
-    cy.viewport(800, 720);
+    Cypress.config('viewportWidth', 800);
+    Cypress.config('viewportHeight', 700);
   });
 
-  it('does not display the large or small viewport copy', () => {
+  it('snapshots capture the correct viewport size', () => {
+    cy.visit('/viewports');
+  });
+});
+
+context('using cy.viewport', () => {
+  beforeEach(() => {
+    cy.viewport(800, 700);
+  });
+
+  it('does not correctly set the viewport for Chromatic snapshots', () => {
     cy.visit('/viewports');
   });
 });

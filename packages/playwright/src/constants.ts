@@ -1,1 +1,1 @@
-export const DEFAULT_OUTPUT_DIR = 'test-archives';
+export const DEFAULT_OUTPUT_DIR = 'test-results';

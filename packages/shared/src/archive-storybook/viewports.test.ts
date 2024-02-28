@@ -37,7 +37,7 @@ describe('addViewportsToStoriesFiles', () => {
     jest.spyOn(stories, 'listStoriesFiles').mockResolvedValueOnce(mockStoriesFiles);
     (fs.readJSON as jest.Mock).mockResolvedValueOnce(mockStoriesFileJson);
 
-    await addViewportsToStoriesFiles();
+    await addViewportsToStoriesFiles('test-archives');
 
     expect(fs.outputJSON).toHaveBeenCalledWith(expect.stringContaining('some-test.stories.json'), {
       title: 'some test',

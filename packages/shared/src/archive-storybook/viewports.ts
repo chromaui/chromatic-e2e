@@ -10,12 +10,12 @@ import {
 import { addViewportsToStories, listStoriesFiles } from '../write-archive/stories-files';
 
 // Adds mode and viewport config parameters to all stories files
-export async function addViewportsToStoriesFiles() {
-  const snapshotsDir = assetsDir();
+export async function addViewportsToStoriesFiles(defaultOutputDir: string) {
+  const snapshotsDir = assetsDir(defaultOutputDir);
   const snapshotFileNames = await listSnapshotFiles(snapshotsDir);
   const viewportsLookup = buildSnapshotViewportsLookup(snapshotFileNames);
 
-  const storiesDir = archivesDir();
+  const storiesDir = archivesDir(defaultOutputDir);
   const storiesFilePaths = (await listStoriesFiles(storiesDir)).map((storiesFileName) =>
     path.resolve(storiesDir, storiesFileName)
   );

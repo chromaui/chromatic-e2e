@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.1
+
+### Patch Changes
+
+- ea4e596: set default output dir correctly for each test framework, which removes the need for setting the `CHROMATIC_ARCHIVE_LOCATION` env var for Cypress
+
 ## 0.6.0
 
 ### Minor Changes

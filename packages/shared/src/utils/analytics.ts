@@ -15,7 +15,7 @@ let hasTrackedRun = false;
 export function trackRun(properties: TrackParams['properties'] = {}) {
   if (hasTrackedRun) return;
   track('run', properties);
-  hasTrackedRun = true;
+  hasTrackedRun = true; //
 }
 
 let hasTrackedComplete = false;

@@ -1,7 +1,6 @@
-import { outputJSON, readJSON } from 'fs-extra';
 import path from 'path';
-import { archivesDir, assetsDir } from '../utils/filePaths';
-import { Viewport, viewportToString } from '../utils/viewport';
+import { archivesDir, assetsDir, outputJSONFile, readJSONFile } from '../utils/filePaths';
+import { Viewport } from '../utils/viewport';
 import {
   listSnapshotFiles,
   snapshotIdFromFileName,
@@ -22,9 +21,9 @@ export async function addViewportsToStoriesFiles(defaultOutputDir: string) {
 
   await Promise.all(
     storiesFilePaths.map(async (storiesFilePath) => {
-      const storiesFileJson = await readJSON(storiesFilePath);
+      const storiesFileJson = await readJSONFile(storiesFilePath);
       const storiesWithViewports = addViewportsToStories(storiesFileJson, viewportsLookup);
-      await outputJSON(storiesFilePath, storiesWithViewports);
+      await outputJSONFile(storiesFilePath, storiesWithViewports);
     })
   );
 }

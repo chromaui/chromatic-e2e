@@ -1,9 +1,13 @@
-import fs from 'fs-extra';
+import { readJSONFile, outputJSONFile } from '../utils/filePaths';
 import { addViewportsToStoriesFiles } from './viewports';
 import * as snapshots from '../write-archive/snapshot-files';
 import * as stories from '../write-archive/stories-files';
 
-jest.mock('fs-extra');
+jest.mock('../utils/filePaths', () => ({
+  ...jest.requireActual('../utils/filePaths'),
+  readJSONFile: jest.fn(),
+  outputJSONFile: jest.fn(),
+}));
 
 const mockSnapshotFiles = [
   'some-test-snapshot-1.w500h500.snapshot.json',
@@ -35,11 +39,11 @@ describe('addViewportsToStoriesFiles', () => {
   it('adds snapshot viewports to stories files', async () => {
     jest.spyOn(snapshots, 'listSnapshotFiles').mockResolvedValueOnce(mockSnapshotFiles);
     jest.spyOn(stories, 'listStoriesFiles').mockResolvedValueOnce(mockStoriesFiles);
-    (fs.readJSON as jest.Mock).mockResolvedValueOnce(mockStoriesFileJson);
+    (readJSONFile as jest.Mock).mockResolvedValueOnce(mockStoriesFileJson);
 
     await addViewportsToStoriesFiles('test-archives');
 
-    expect(fs.outputJSON).toHaveBeenCalledWith(expect.stringContaining('some-test.stories.json'), {
+    expect(outputJSONFile).toHaveBeenCalledWith(expect.stringContaining('some-test.stories.json'), {
       title: 'some test',
       stories: [
         {

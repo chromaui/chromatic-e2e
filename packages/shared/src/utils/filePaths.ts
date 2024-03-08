@@ -36,6 +36,7 @@ export function ensureDir(directory: string) {
 }
 
 export async function outputFile(filePath: string, data: string | Buffer) {
+  ensureDir(path.dirname(filePath));
   return writeFile(filePath, data, { mode: 0o777 });
 }
 

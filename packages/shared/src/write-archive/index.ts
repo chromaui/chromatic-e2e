@@ -44,7 +44,7 @@ export async function writeTestResult(
 
   const archiveDir = join(finalOutputDir, 'archive');
 
-  await ensureDir(finalOutputDir);
+  await ensureDir(archiveDir);
 
   logger.log(`Writing test results for "${title}"`);
 

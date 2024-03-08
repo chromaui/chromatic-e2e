@@ -52,7 +52,7 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
-    "build": "tsup",
+    "build": "yarn prebuild && tsup",
     "build:watch": "yarn build --watch",
     "test:unit": "jest",
     "lint": "eslint src/*",

@@ -40,7 +40,7 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
-    "build": "tsup",
+    "build": "yarn prebuild && tsup",
     "build:watch": "yarn build --watch",
     "test:cypress": "start-server-and-test 'yarn run test:server' 3000 'yarn run test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",

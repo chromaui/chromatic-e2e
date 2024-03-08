@@ -8,7 +8,7 @@ const common = (options) => ({
   },
   treeshake: true,
   sourcemap: true,
-  clean: true,
+  clean: false,
   esbuildOptions(options) {
     options.conditions = ['module'];
   },

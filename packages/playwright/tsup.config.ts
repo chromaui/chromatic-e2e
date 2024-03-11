@@ -8,7 +8,7 @@ const common = (options) => ({
   },
   treeshake: true,
   sourcemap: true,
-  clean: true,
+  clean: false, // This set to `true` caused a race condition since we're running multiple builds below
   esbuildOptions(options) {
     options.conditions = ['module'];
   },

@@ -11,6 +11,9 @@ const common = (options) => ({
   clean: false, // This set to `true` caused a race condition since we're running multiple builds below
   esbuildOptions(options) {
     options.conditions = ['module'];
+    options.banner = {
+      js: "import { createRequire as topLevelCreateRequire } from 'module';\n const require = topLevelCreateRequire(import.meta.url);",
+    };
   },
 });
 

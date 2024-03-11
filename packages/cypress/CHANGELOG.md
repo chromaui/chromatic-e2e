@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.2
+
+### Patch Changes
+
+- e23f703: fix DTS build to ensure type declarations exist
+
 ## 0.6.1
 
 ### Patch Changes

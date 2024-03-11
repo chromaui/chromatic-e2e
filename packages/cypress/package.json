@@ -14,14 +14,24 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./support": {
-      "types": "./dist/support.d.ts",
-      "import": "./dist/support.mjs",
-      "require": "./dist/support.js"
+      "import": {
+        "types": "./dist/support.d.mts",
+        "default": "./dist/support.mjs"
+      },
+      "require": {
+        "types": "./dist/support.d.ts",
+        "default": "./dist/support.js"
+      }
     },
     "./bin/archive-storybook": "./dist/bin/archive-storybook.js",
     "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js",

@@ -8,4 +8,11 @@ import { DEFAULT_OUTPUT_DIR } from '../constants';
 const args = process.argv.slice(2);
 const configDir = path.resolve(__dirname, '../storybook-config');
 
-archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);
+try {
+  archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);
+} catch (err) {
+  // Throwing the error results in a large output of minified code and a stacktrace that is
+  // likely not helpful to users, so this should hide the noise.
+  console.error(err.message);
+  process.exitCode = 1;
+}

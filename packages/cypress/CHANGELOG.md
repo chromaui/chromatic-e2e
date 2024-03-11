@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.3
+
+### Patch Changes
+
+- 72e0f0b: fix error handling within scripts to be less noisy
+
 ## 0.6.2
 
 ### Patch Changes

@@ -42,7 +42,7 @@
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
     "build:watch": "yarn build --watch",
-    "test:unit": "jest --passWithNoTests",
+    "test:unit": "jest --passWithNoTests --coverage",
     "test:playwright": "playwright test",
     "start": "yarn build:watch",
     "lint": "eslint src/*",

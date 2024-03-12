@@ -69,7 +69,7 @@
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
     "build:watch": "yarn build --watch",
-    "test:unit": "jest",
+    "test:unit": "jest --coverage",
     "lint": "eslint src/*",
     "prettier": "prettier"
   },

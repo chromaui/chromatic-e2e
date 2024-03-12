@@ -11,9 +11,6 @@ const common = (options) => ({
   clean: false, // This set to `true` caused a race condition since we're running multiple builds below
   esbuildOptions(options) {
     options.conditions = ['module'];
-    options.banner = {
-      js: "import { createRequire as topLevelCreateRequire } from 'module';\n const require = topLevelCreateRequire(import.meta.url);",
-    };
   },
 });
 
@@ -24,6 +21,12 @@ export default defineConfig((options) => [
     entry: ['src/index.ts'],
     format: ['cjs', 'esm'],
     platform: 'node',
+    esbuildOptions(options) {
+      options.conditions = ['module'];
+      options.banner = {
+        js: "import { createRequire as topLevelCreateRequire } from 'module';\n const require = topLevelCreateRequire(import.meta.url);",
+      };
+    },
   } as Options,
   // These are all node scripts so we keep it simple and only generate CJS.
   // In particular SB will warn if we generate both CJS+ESM main files

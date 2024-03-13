@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.4
+
+### Patch Changes
+
+- fdca8a3: fix ESM build
+
 ## 0.6.3
 
 ### Patch Changes

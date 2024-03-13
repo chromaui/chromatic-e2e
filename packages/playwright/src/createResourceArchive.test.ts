@@ -1,4 +1,4 @@
-import dedent from 'ts-dedent';
+import { dedent } from 'ts-dedent';
 import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';

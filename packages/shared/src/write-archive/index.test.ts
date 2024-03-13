@@ -1,9 +1,9 @@
-import fs from 'fs-extra';
 import { resolve } from 'path';
 import { NodeType } from 'rrweb-snapshot';
+import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
 
-jest.mock('fs-extra');
+jest.mock('../utils/filePaths');
 
 const snapshotJson = {
   childNodes: [
@@ -22,16 +22,14 @@ const snapshotJson = {
   ],
 };
 
-describe('writeTestResult', () => {
-  beforeEach(() => {
-    fs.ensureDir.mockClear();
-    fs.outputFile.mockClear();
-    fs.outputJson.mockClear();
-  });
+afterEach(() => {
+  jest.resetAllMocks();
+});
 
+describe('writeTestResult', () => {
   it('successfully generates test results', async () => {
     // @ts-expect-error Jest mock
-    fs.ensureDir.mockReturnValue(true);
+    filePaths.ensureDir.mockReturnValue(true);
     await writeTestResult(
       // the default output directory in playwright
       {
@@ -47,10 +45,10 @@ describe('writeTestResult', () => {
         pauseAnimationAtEnd: true,
       }
     );
-    expect(fs.ensureDir).toHaveBeenCalledTimes(1);
-    expect(fs.outputFile).toHaveBeenCalledTimes(2);
-    expect(fs.outputJson).toHaveBeenCalledTimes(1);
-    expect(fs.outputJson).toHaveBeenCalledWith(
+    expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
       resolve('./test-results/chromatic-archives/file-test-story.stories.json'),
       {
         stories: [
@@ -69,7 +67,7 @@ describe('writeTestResult', () => {
 
   it('successfully generates test results with mapped source entries', async () => {
     // @ts-expect-error Jest mock
-    fs.ensureDir.mockReturnValue(true);
+    filePaths.ensureDir.mockReturnValue(true);
 
     const expectedMappedJson = {
       childNodes: [
@@ -111,10 +109,10 @@ describe('writeTestResult', () => {
       {}
     );
 
-    expect(fs.ensureDir).toHaveBeenCalledTimes(1);
-    expect(fs.outputJson).toHaveBeenCalledTimes(1);
-    expect(fs.outputFile).toHaveBeenCalledTimes(3);
-    expect(fs.outputFile).toHaveBeenCalledWith(
+    expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputFile).toHaveBeenCalledTimes(3);
+    expect(filePaths.outputFile).toHaveBeenCalledWith(
       resolve(
         './test-results/chromatic-archives/archive/file-toy-story-home.w800h800.snapshot.json'
       ),
@@ -124,7 +122,7 @@ describe('writeTestResult', () => {
 
   it('stores archives in custom directory', async () => {
     // @ts-expect-error Jest mock
-    fs.ensureDir.mockReturnValue(true);
+    filePaths.ensureDir.mockReturnValue(true);
     await writeTestResult(
       {
         titlePath: ['file.spec.ts', 'Test Story'],
@@ -137,10 +135,10 @@ describe('writeTestResult', () => {
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
       {}
     );
-    expect(fs.ensureDir).toHaveBeenCalledTimes(1);
-    expect(fs.outputFile).toHaveBeenCalledTimes(2);
-    expect(fs.outputJson).toHaveBeenCalledTimes(1);
-    expect(fs.outputJson).toHaveBeenCalledWith(
+    expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
       resolve('./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json'),
       expect.anything()
     );
@@ -149,7 +147,7 @@ describe('writeTestResult', () => {
   describe('smart story naming', () => {
     it('derives story title from test info, using all of the title path', async () => {
       // @ts-expect-error Jest mock
-      fs.ensureDir.mockReturnValue(true);
+      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
@@ -161,7 +159,7 @@ describe('writeTestResult', () => {
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
-      expect(fs.outputJson).toHaveBeenCalledWith(
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           title: 'file/A grouping/Test Story',
@@ -171,7 +169,7 @@ describe('writeTestResult', () => {
 
     it('preserves dots in directories, describe blocks, and test titles', async () => {
       // @ts-expect-error Jest mock
-      fs.ensureDir.mockReturnValue(true);
+      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: [
@@ -187,7 +185,7 @@ describe('writeTestResult', () => {
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
-      expect(fs.outputJson).toHaveBeenCalledWith(
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           title: 'a.directory/file/.someFunction/.someFunction() calls something',
@@ -197,7 +195,7 @@ describe('writeTestResult', () => {
 
     it('preserves dots in file name, besides file extension (Playwright)', async () => {
       // @ts-expect-error Jest mock
-      fs.ensureDir.mockReturnValue(true);
+      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['some.file.spec.ts', 'Test Story'],
@@ -209,7 +207,7 @@ describe('writeTestResult', () => {
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
-      expect(fs.outputJson).toHaveBeenCalledWith(
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           title: 'some.file/Test Story',
@@ -219,7 +217,7 @@ describe('writeTestResult', () => {
 
     it('preserves dots in file name, besides file extension (Cypress)', async () => {
       // @ts-expect-error Jest mock
-      fs.ensureDir.mockReturnValue(true);
+      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['some.file.cy.ts', 'Test Story'],
@@ -231,7 +229,7 @@ describe('writeTestResult', () => {
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
-      expect(fs.outputJson).toHaveBeenCalledWith(
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           title: 'some.file/Test Story',
@@ -241,7 +239,7 @@ describe('writeTestResult', () => {
 
     it('removes file extension, even if .spec or .cy are not used', async () => {
       // @ts-expect-error Jest mock
-      fs.ensureDir.mockReturnValue(true);
+      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['file.ts', 'Test Story'],
@@ -253,7 +251,7 @@ describe('writeTestResult', () => {
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
-      expect(fs.outputJson).toHaveBeenCalledWith(
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
           title: 'file/Test Story',

@@ -1,5 +1,5 @@
-import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
+import { outputFile, ensureDir, outputJSONFile } from '../utils/filePaths';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';
@@ -44,7 +44,7 @@ export async function writeTestResult(
 
   const archiveDir = join(finalOutputDir, 'archive');
 
-  await ensureDir(finalOutputDir);
+  await ensureDir(archiveDir);
 
   logger.log(`Writing test results for "${title}"`);
 
@@ -82,12 +82,12 @@ export async function writeTestResult(
 
   const storiesFile = storiesFileName(title);
   const storiesJson = createStories(title, domSnapshots, chromaticStorybookParams);
-  await outputJson(join(finalOutputDir, storiesFile), storiesJson);
+  await outputJSONFile(join(finalOutputDir, storiesFile), storiesJson);
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
   if (errors.length > 0) {
     logger.log(`Encountered ${errors.length} errors archiving resources, writing to 'errors.json'`);
-    await outputJson(join(archiveDir, `errors.json`), {
+    await outputJSONFile(join(archiveDir, `errors.json`), {
       errors: Object.fromEntries(errors),
     });
   }

@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.6.1
+
+### Patch Changes
+
+- f7fbfc2: Bump on the Storybook Dependencies
+
 ## 0.6.0
 
 ### Minor Changes

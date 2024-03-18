@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.5
+
+### Patch Changes
+
+- f7fbfc2: Bump on the Storybook Dependencies
+
 ## 0.6.4
 
 ### Patch Changes

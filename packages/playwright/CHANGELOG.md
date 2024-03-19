@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.6
+
+### Patch Changes
+
+- 57adc20: expose `cropToViewport` Chromatic config option
+
 ## 0.6.5
 
 ### Patch Changes

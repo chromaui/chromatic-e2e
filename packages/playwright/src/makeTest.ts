@@ -37,6 +37,7 @@ export const makeTest = (
     prefersReducedMotion: [undefined, { option: true }],
     resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
     assetDomains: [[], { option: true }],
+    cropToViewport: [undefined, { option: true }],
 
     save: [
       async (
@@ -51,6 +52,7 @@ export const makeTest = (
           prefersReducedMotion,
           resourceArchiveTimeout,
           assetDomains,
+          cropToViewport,
         },
         use,
         testInfo
@@ -92,6 +94,7 @@ export const makeTest = (
           ...(forcedColors && { forcedColors }),
           ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
           ...(prefersReducedMotion && { prefersReducedMotion }),
+          ...(cropToViewport && { cropToViewport }),
         };
 
         await writeTestResult(

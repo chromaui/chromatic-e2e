@@ -49,6 +49,9 @@ afterEach(() => {
               ...(Cypress.env('prefersReducedMotion') && {
                 prefersReducedMotion: Cypress.env('prefersReducedMotion'),
               }),
+              ...(Cypress.env('cropToViewport') && {
+                cropToViewport: Cypress.env('cropToViewport'),
+              }),
             },
             pageUrl: url,
             viewport: {

@@ -39,3 +39,15 @@ test.describe(() => {
     await page.goto('/options/prefers-reduced-motion');
   });
 });
+
+test.describe(() => {
+  test.use({ cropToViewport: true });
+
+  test('crops to viewport', async ({ page }) => {
+    await page.goto('/options/crop-to-viewport');
+  });
+});
+
+test('does not crop to viewport by default', async ({ page }) => {
+  await page.goto('/options/crop-to-viewport');
+});

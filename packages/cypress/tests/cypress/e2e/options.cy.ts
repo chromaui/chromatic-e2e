@@ -21,3 +21,7 @@ it('prefers reduced motion', { env: { prefersReducedMotion: 'reduce' } }, () => 
 it('crops to viewport', { env: { cropToViewport: true } }, () => {
   cy.visit('/options/crop-to-viewport');
 });
+
+it('does not crop to viewport by default', () => {
+  cy.visit('/options/crop-to-viewport');
+});

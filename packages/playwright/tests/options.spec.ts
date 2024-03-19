@@ -47,3 +47,7 @@ test.describe(() => {
     await page.goto('/options/crop-to-viewport');
   });
 });
+
+test('does not crop to viewport by default', async ({ page }) => {
+  await page.goto('/options/crop-to-viewport');
+});

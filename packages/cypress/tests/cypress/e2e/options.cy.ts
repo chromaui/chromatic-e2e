@@ -17,3 +17,7 @@ it('force high-contrast', { env: { forcedColors: 'active' } }, () => {
 it('prefers reduced motion', { env: { prefersReducedMotion: 'reduce' } }, () => {
   cy.visit('/options/prefers-reduced-motion');
 });
+
+it('crops to viewport', { env: { cropToViewport: true } }, () => {
+  cy.visit('/options/crop-to-viewport');
+});

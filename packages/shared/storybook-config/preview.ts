@@ -1,5 +1,5 @@
 import type { RenderContext, RenderToCanvas, WebRenderer } from '@storybook/types';
-import type { serializedNodeWithId } from 'rrweb-snapshot';
+import type { elementNode, serializedNodeWithId } from 'rrweb-snapshot';
 import { NodeType, rebuild } from 'rrweb-snapshot';
 
 const pageUrl = new URL(window.location.href);
@@ -56,11 +56,26 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   return response.json();
 }
 
+// Mostly taken from rrweb-snapshot's `handleScroll` function.
+// Needed because the scroll that's applied on the top-level HTML
+// node is lost when we replace the document.
+function getElementScrollValues(htmlNode: serializedNodeWithId | undefined) {
+  if (htmlNode?.type !== NodeType.Element) {
+    return;
+  }
+
+  const scrollX = htmlNode.attributes['rr_scrollLeft'];
+  const scrollY = htmlNode.attributes['rr_scrollTop'];
+
+  return { scrollX, scrollY };
+}
+
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
   const snapshot = await fetchSnapshot(context);
 
   // The snapshot is a representation of a complete HTML document
   const htmlNode = findHtmlNode(snapshot);
+  const scrollValues = getElementScrollValues(htmlNode);
 
   // If you rebuild the full snapshot with rrweb (the document) it will replace the
   // current document and call `document.open()` in the process, which unbinds all event handlers

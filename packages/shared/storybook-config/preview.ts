@@ -97,6 +97,14 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) 
     '<script id="storybook-root"></script><script id="storybook-docs"></script>';
 
   context.showMain();
+  // We can get the scroll values, but none of these work for setting it :(
+  // element.scrollTop = 1900;
+  // html.scrollTop = 900;
+  // document.getElementsByTagName('html')[0].scrollTop = 900;
+  // if (document.activeElement?.parentElement)
+  //   document.activeElement.parentElement.scrollTop = 1200;
+  // if (document.body.parentElement) document.body.parentElement.scrollTop = 1200;
+  // window.scroll(1200, 1200);
   return () => {}; // We can't really cleanup
 };
 

@@ -19,6 +19,7 @@ This repository is a Yarn 4 monorepo containing the following packages:
 - If you have `yarn 1` installed globally, it is recommended that you run `corepack enable` so that the version of yarn set in `packageManager` in `package.json` is used for this project
 - Run `yarn install`
 - Run `yarn build`
+- If you will be working with Playwright, run `yarn playwright install`
 
 ### Testing
 
@@ -39,9 +40,6 @@ Then, the test commands are as follows:
 - Unit tests: `yarn test:unit`
 - Playwright: `yarn test:playwright`, then `yarn archive-storybook:playwright` to see the archived UI
 - Cypress: `yarn test:cypress`, then `yarn archive-storybook:cypress` to see the archived UI
-
-> [!IMPORTANT]
-> Playwright may require you to run `yarn playwright install` first before any of its e2e tests will pass.
 
 If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `yarn test:server` and visit `http://localhost:3000`.
 

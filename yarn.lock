@@ -3357,7 +3357,7 @@ __metadata:
     "@storybook/types": "npm:^8.0.0"
     chrome-remote-interface: "npm:^0.33.0"
     cypress: "npm:^13.4.0"
-    rrweb-snapshot: "npm:^2.0.0-alpha.11"
+    rrweb-snapshot: "npm:^2.0.0-alpha.13"
     start-server-and-test: "npm:^2.0.3"
     storybook: "npm:^8.0.0-alpha.16"
   bin:
@@ -3381,7 +3381,7 @@ __metadata:
     express: "npm:^4.18.2"
     playwright: "npm:^1.32.2"
     playwright-core: "npm:^1.32.2"
-    rrweb-snapshot: "npm:^2.0.0-alpha.11"
+    rrweb-snapshot: "npm:^2.0.0-alpha.13"
     storybook: "npm:^8.0.0"
     ts-dedent: "npm:^2.2.0"
   peerDependencies:
@@ -3424,7 +3424,7 @@ __metadata:
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
-    rrweb-snapshot: "npm:^2.0.0-alpha.11"
+    rrweb-snapshot: "npm:^2.0.0-alpha.13"
     srcset: "npm:^4.0.0"
     storybook: "npm:^8.0.0-alpha.16"
     ts-dedent: "npm:^2.2.0"
@@ -17173,10 +17173,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rrweb-snapshot@npm:^2.0.0-alpha.11":
-  version: 2.0.0-alpha.11
-  resolution: "rrweb-snapshot@npm:2.0.0-alpha.11"
-  checksum: 8b1c957877af546e89fb5428f5bcfda2a240d3cee9c770a63f897150dd5524e16048b6390a5d44e6d7ff4d1f7f3db63c816685e89ce4791e5645b6b5940378a7
+"rrweb-snapshot@npm:^2.0.0-alpha.13":
+  version: 2.0.0-alpha.13
+  resolution: "rrweb-snapshot@npm:2.0.0-alpha.13"
+  checksum: e5b25b843f769436432c44ffc45c718d0a5b17711d66a0ad0ec47a164339f01750b54e46f07aa23f3d5df41d7587327c67d46d8d0e5eaf72221c6461db7726cc
   languageName: node
   linkType: hard
 

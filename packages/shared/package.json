@@ -112,7 +112,7 @@
   },
   "dependencies": {
     "@segment/analytics-node": "^1.1.0",
-    "rrweb-snapshot": "^2.0.0-alpha.11",
+    "rrweb-snapshot": "^2.0.0-alpha.13",
     "storybook": "^8.0.0-alpha.16"
   }
 }

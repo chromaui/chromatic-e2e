@@ -26,7 +26,7 @@ export const makeTest = (
     PlaywrightWorkerArgs & PlaywrightWorkerOptions
   >
 ) =>
-  base.extend<ChromaticConfig & { save: void }>({
+  base.extend<ChromaticConfig & { chromaticSave: void }>({
     // ChromaticConfig defaults
     delay: [undefined, { option: true }],
     diffIncludeAntiAliasing: [undefined, { option: true }],
@@ -39,7 +39,7 @@ export const makeTest = (
     assetDomains: [[], { option: true }],
     cropToViewport: [undefined, { option: true }],
 
-    save: [
+    chromaticSave: [
       async (
         {
           page,

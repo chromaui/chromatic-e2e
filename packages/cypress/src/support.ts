@@ -19,7 +19,7 @@ beforeEach(() => {
 
 afterEach(() => {
   // don't take snapshots when running `cypress open`
-  if (Cypress.config('isTextTerminal')) {
+  if (!Cypress.config('isTextTerminal')) {
     return;
   }
   // can we be sure this always fires after all the requests are back?

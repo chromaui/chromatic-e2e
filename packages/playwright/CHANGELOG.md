@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.7
+
+### Patch Changes
+
+- b2ef21f: Renamed the `save` function to `chromaticSnapshot` in our Playwright test fixture to avoid accidental overrides from user fixtures
+
 ## 0.6.6
 
 ### Patch Changes

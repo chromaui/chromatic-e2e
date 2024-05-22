@@ -1,11 +1,16 @@
-import { test } from '../src';
+import { test, expect } from '../src';
 
-test('visits the tetra storybook footer inverse page', async ({ page }) => {
-  await page.goto('https://tetra.chromatic.com/iframe.html?args=&id=components-footer--inverse');
+test.use({ assetDomains: ['localhost:6006'] });
+test('visits the test storybook page logged in', async ({ page }) => {
+  await page.goto(
+    'http://localhost:6006/iframe.html?args=&id=example-page--logged-in&viewMode=story'
+  );
+  await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
 });
 
-test('visits the tetra storybook header desktop dark page', async ({ page }) => {
+test('visits the test storybook page logged out', async ({ page }) => {
   await page.goto(
-    'https://tetra.chromatic.com/iframe.html?args=&id=components-header--desktop-dark'
+    'http://localhost:6006/iframe.html?args=&id=example-page--logged-out&viewMode=story'
   );
+  await expect(page.getByRole('button', { name: 'Log in' })).toBeVisible();
 });

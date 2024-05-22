@@ -16,8 +16,6 @@ export type ArchiveResponse =
 
 export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
-const ARCHIVE_DENYLIST: RegExp[] = [/'http:\/\/localhost:[0-9]+\/index\.json'/i];
-
 // a custom interface that satisfies both playwright's CDPSession and chrome-remote-interface's CDP.Client types.
 interface CDPClient {
   on: (eventName: keyof Protocol.Events, handlerFunction: (params?: any) => void) => void;
@@ -136,11 +134,7 @@ export class Watcher {
 
       // No need to capture the response of the top level page request
       const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
-      if (
-        isRequestFromAllowedDomain &&
-        !isFirstRequest &&
-        !ARCHIVE_DENYLIST.some((regex) => regex.test(request.url))
-      ) {
+      if (isRequestFromAllowedDomain && !isFirstRequest) {
         this.archive[request.url] = {
           statusCode: responseStatusCode,
           statusText: responseStatusText,

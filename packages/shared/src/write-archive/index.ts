@@ -14,13 +14,6 @@ import { createStories, storiesFileName } from './stories-files';
 // archive/<test-title>.json
 // archive/<file>.<ext>
 
-const ARCHIVE_DENYLIST: RegExp[] = [
-  // We deny this file from the archive because it will overwrite
-  // the generated index.json file from Storybook needed to generate
-  // the list of archives.
-  /^(https?:\/\/)localhost:(\d+)\/index\.json/i,
-];
-
 interface E2ETestInfo {
   titlePath: string[];
   outputDir: string;
@@ -62,7 +55,6 @@ export async function writeTestResult(
   await Promise.all(
     Object.entries(archive).map(async ([url, response]) => {
       if ('error' in response) return;
-      if (ARCHIVE_DENYLIST.some((regex) => regex.test(url))) return;
 
       const archiveFile = new ArchiveFile(url, response, pageUrl);
       const origSrcPath = archiveFile.originalSrc();

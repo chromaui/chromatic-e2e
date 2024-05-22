@@ -4,6 +4,12 @@ import { createHash } from 'node:crypto';
 import { logger } from '../utils/logger';
 import type { ArchiveResponse, UrlString } from '../resource-archive';
 
+const RESERVED_PATHNAMES: string[] = [
+  // This is a list of filenames that are reserved for Storybook as a dev target.
+  '/index.json',
+  '/iframe.html',
+];
+
 /**
  * Handles converting the full URL of assets loaded during a test
  * captured in the resource archive into a file system friendly path so
@@ -18,12 +24,14 @@ import type { ArchiveResponse, UrlString } from '../resource-archive';
  * - ensuring the file name has an extension
  */
 export class ArchiveFile {
+  // The URL to the asset being archived.
   url: URL;
 
   response: ArchiveResponse;
 
   shortenedFileNameLength: number;
 
+  // The URL to page being tested.
   pageUrl: URL;
 
   constructor(url: UrlString, response: ArchiveResponse, pageUrl: UrlString) {
@@ -40,11 +48,12 @@ export class ArchiveFile {
   toFileSystemPath() {
     let sanitizedSrc = this.url.pathname;
 
-    sanitizedSrc = this.preserveExternalDomain(this.url);
+    sanitizedSrc = this.preserveExternalDomain();
     sanitizedSrc = this.ensureNonDirectory(sanitizedSrc);
     sanitizedSrc = this.encodeQueryString(sanitizedSrc);
     sanitizedSrc = this.truncateFileName(sanitizedSrc);
     sanitizedSrc = this.removeSpecialChars(sanitizedSrc);
+    sanitizedSrc = this.renameReservedPathnames(sanitizedSrc);
     sanitizedSrc = this.addExtension(sanitizedSrc);
 
     return sanitizedSrc;
@@ -102,18 +111,28 @@ export class ArchiveFile {
     return nameWithExtension;
   }
 
-  private preserveExternalDomain(fullUrl: URL) {
-    if (fullUrl.origin === this.pageUrl.origin) {
-      return fullUrl.pathname;
+  private preserveExternalDomain() {
+    if (this.url.origin === this.pageUrl.origin) {
+      return this.url.pathname;
     }
 
     // Windows doesn't support colons in file names
-    const encodedHost = encodeURIComponent(fullUrl.host);
+    const encodedHost = encodeURIComponent(this.url.host);
 
-    return `/${encodedHost}/${fullUrl.pathname}`;
+    return `/${encodedHost}/${this.url.pathname}`;
   }
 
   private hash(name: string) {
     return createHash('md5').update(name).digest('hex');
+  }
+
+  private renameReservedPathnames(pathname: string) {
+    if (this.url.origin === this.pageUrl.origin && RESERVED_PATHNAMES.includes(pathname)) {
+      const hash = this.hash(this.url.toString());
+      const basename = path.basename(pathname, path.extname(pathname));
+      return `${path.dirname(pathname)}/${basename}-${hash}${path.extname(pathname)}`;
+    }
+
+    return pathname;
   }
 }

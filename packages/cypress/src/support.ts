@@ -19,12 +19,12 @@ beforeEach(() => {
 
 afterEach(() => {
   // don't take snapshots when running `cypress open`
-  if (Cypress.env('disableAutoSnapshot') || !Cypress.config('isTextTerminal')) {
+  if (!Cypress.config('isTextTerminal')) {
     return;
   }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
-    const automaticSnapshot = snapshot(doc);
+    const automaticSnapshots = !Cypress.env('disableAutoSnapshot') ? [{ snapshot: snapshot(doc) }] : [];
     // @ts-expect-error will fix when Cypress has its own package
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {
       cy.url().then((url) => {
@@ -34,7 +34,7 @@ afterEach(() => {
           payload: {
             // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
             testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
-            domSnapshots: [...manualSnapshots, { snapshot: automaticSnapshot }],
+            domSnapshots: [...manualSnapshots, ...automaticSnapshots],
             chromaticStorybookParams: {
               ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
               ...(Cypress.env('delay') && { delay: Cypress.env('delay') }),

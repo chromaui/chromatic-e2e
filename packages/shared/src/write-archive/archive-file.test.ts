@@ -97,7 +97,6 @@ describe('ArchiveFile', () => {
 
       expect(filePath).toMatch(new RegExp('/index-[a-z0-9]+.json'));
     });
-    screenX;
   });
 
   describe('originalSrc', () => {

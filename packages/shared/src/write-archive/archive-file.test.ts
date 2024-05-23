@@ -89,6 +89,14 @@ describe('ArchiveFile', () => {
 
       expect(filePath).toEqual('/localhost3A9999/some/directory/hi.png');
     });
+
+    it('appends encoded string to reserved SB files', () => {
+      const archiveFile = createArchiveFile('http://localhost:333/index.json');
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toMatch(new RegExp('/index-[a-z0-9]+.json'));
+    });
   });
 
   describe('originalSrc', () => {

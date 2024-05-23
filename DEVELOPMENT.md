@@ -26,7 +26,7 @@ Unit tests reside with the code being tested in the `src` directories.
 
 Each E2E integration also has its own suite of E2E tests using the framework it is targeting. These tests import directly from the integration in question and the results are sent to Chromatic to visually test that all is well with archiving and all the various pieces.
 
-These test suites use a basic Express server that's defined in `test-server` and can be run on its own using `yarn dev:server`, but that is not necessary to run the tests. There is also a Storybook used as well. It can be run on it's own via `yarn dev:storybook` and is defined in `test-storybook`.
+These test suites use a basic Express server that's defined in `test-server` and can be run on its own using `yarn dev:server`, but that is not necessary to run the tests.
 
 The E2E test cases for each integration should match each other as much as possible. Changes or additions made to one should be matched in the others.
 

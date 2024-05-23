@@ -4,4 +4,4 @@
 '@chromatic-com/shared-e2e': patch
 ---
 
-Hashes Reserved Storybook files so they are not overwritten
+Support Storybook as target for E2E tests by renaming reserved Storybook filenames to avoid collisions during archival

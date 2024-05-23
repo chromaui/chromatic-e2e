@@ -1,16 +1,9 @@
 import { test, expect } from '../src';
 
 test.use({ assetDomains: ['localhost:6006'] });
-test('visits the test storybook page logged in', async ({ page }) => {
+test('visits hosted storybook page', async ({ page }) => {
   await page.goto(
-    'http://localhost:6006/iframe.html?args=&id=example-page--logged-in&viewMode=story'
+    'https://main--653fef099b8957739e7534a4.chromatic.com/iframe.html?globals=viewport:w1280h720&id=options-pause-animation-at-end--snapshot-1&viewMode=story'
   );
-  await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
-});
-
-test('visits the test storybook page logged out', async ({ page }) => {
-  await page.goto(
-    'http://localhost:6006/iframe.html?args=&id=example-page--logged-out&viewMode=story'
-  );
-  await expect(page.getByRole('button', { name: 'Log in' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /The image/i })).toBeVisible();
 });

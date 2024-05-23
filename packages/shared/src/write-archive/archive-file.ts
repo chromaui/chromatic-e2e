@@ -6,8 +6,12 @@ import type { ArchiveResponse, UrlString } from '../resource-archive';
 
 const RESERVED_PATHNAMES: string[] = [
   // This is a list of filenames that are reserved for Storybook as a dev target.
+  // If we encounter these filenames, we will rename them to avoid collisions.
+  // If we do not rename them, the build-archive-storybook will not be able to serve the correct archives
+  // and the tests will fail.
   '/index.json',
   '/iframe.html',
+  '/index.html',
 ];
 
 /**

@@ -1,9 +1,6 @@
-it('visits the test storybook page logged in', () => {
-  cy.visit('http://localhost:6006/iframe.html?args=&id=example-page--logged-in&viewMode=story');
-  cy.contains('Log out').should('be.visible');
-});
-
-it('visits the test storybook page logged out', () => {
-  cy.visit('http://localhost:6006/iframe.html?args=&id=example-page--logged-out&viewMode=story');
-  cy.contains('Log in').should('be.visible');
+it('visits hosted storybook page', () => {
+  cy.visit(
+    'https://main--653fef099b8957739e7534a4.chromatic.com/iframe.html?globals=viewport:w1280h720&id=options-pause-animation-at-end--snapshot-1&viewMode=story'
+  );
+  cy.contains('The image').should('be.visible');
 });

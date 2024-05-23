@@ -52,7 +52,7 @@
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
     "build:watch": "yarn build --watch",
-    "test:cypress": "start-server-and-test 'yarn run dev:server' 3000 'yarn run dev:storybook' 6006 'yarn run test:do-cypress'",
+    "test:cypress": "start-server-and-test 'yarn run dev:server' 3000 'yarn run test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
     "test:unit": "jest --passWithNoTests --coverage",
     "start": "yarn build:watch",

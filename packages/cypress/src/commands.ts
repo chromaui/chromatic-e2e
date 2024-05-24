@@ -1,6 +1,20 @@
 import { snapshot } from 'rrweb-snapshot';
 import type { elementNode } from 'rrweb-snapshot';
-// @ts-expect-error will fix when Cypress has its own package
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      /**
+       * Method for taking a manual snapshot with Chromatic
+       *
+       *
+       * @param {string} name - Use to apply a custom name to the snapshot  (optional)
+       */
+      takeSnapshot(name?: string, ...args: any[]): Chainable<any>;
+    }
+  }
+}
+
 Cypress.Commands.add('takeSnapshot', (name?: string) => {
   // don't take snapshots when running `cypress open`
   if (!Cypress.config('isTextTerminal')) {

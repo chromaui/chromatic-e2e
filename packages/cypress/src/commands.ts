@@ -10,7 +10,7 @@ declare global {
        *
        * @param {string} name - Use to apply a custom name to the snapshot  (optional)
        */
-      takeSnapshot(name?: string, ...args: any[]): Chainable<any>;
+      takeSnapshot(name?: string): Chainable<any>;
     }
   }
 }

@@ -2,6 +2,7 @@ import { snapshot } from 'rrweb-snapshot';
 import type { elementNode } from 'rrweb-snapshot';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       /**

@@ -22,7 +22,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'yarn run test:server',
+    command: 'yarn run dev:server',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
   },

@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.7
+
+### Patch Changes
+
+- 92ffd6b: Support Storybook as target for E2E tests by renaming reserved Storybook filenames to avoid collisions during archival
+
 ## 0.6.6
 
 ### Patch Changes

@@ -10,7 +10,7 @@ chromatic.log
 
 # yarn 4
 .pnp.*
-.yarn/*
+**/.yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases

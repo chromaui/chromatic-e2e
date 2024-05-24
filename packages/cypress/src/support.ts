@@ -29,12 +29,6 @@ afterEach(() => {
       : [];
     // @ts-expect-error will fix when Cypress has its own package
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {
-      if (manualSnapshots.length === 0 && automaticSnapshots.length === 0) {
-        console.error(
-          'No snapshots were taken. Did you forget to call `cy.takeSnapshot()` or set `disableAutoSnapshot` to `false`?'
-        );
-        return;
-      }
       cy.url().then((url) => {
         // pass the snapshot to the server to write to disk
         cy.task('prepareArchives', {

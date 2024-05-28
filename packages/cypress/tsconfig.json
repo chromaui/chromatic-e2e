@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": ".",
-    "types": ["jest", "node", "cypress"],
+    "types": ["jest", "node", "cypress"]
   },
   "include": ["src", "scripts", ".eslintrc.js", "jest.config.js"],
   "exclude": ["node_modules", "dist"]

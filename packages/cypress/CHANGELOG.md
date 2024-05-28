@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.8
+
+### Patch Changes
+
+- a3dd4c1: Add types for custom takeSnapshot command
+
 ## 0.6.7
 
 ### Patch Changes

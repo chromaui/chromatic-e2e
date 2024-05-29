@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.9
+
+### Patch Changes
+
+- a2632a6: Cypress: Manual snapshots can be taken when automatic snapshots are turned off
+
 ## 0.6.8
 
 ### Patch Changes

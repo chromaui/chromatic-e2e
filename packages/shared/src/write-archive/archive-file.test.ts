@@ -60,7 +60,7 @@ describe('ArchiveFile', () => {
       expect(filePath).toEqual('/some/directory/ok.png');
     });
 
-    it('does not add a file extension when response has no content type', () => {
+    it('adds a default tmp file extension when response has no content type', () => {
       const noContentType = { ...response };
       delete noContentType.contentType;
 
@@ -71,7 +71,7 @@ describe('ArchiveFile', () => {
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/some/directory/ok');
+      expect(filePath).toEqual('/some/directory/ok.tmp');
     });
 
     it('prepends domain name (if archiving additional domains)', () => {

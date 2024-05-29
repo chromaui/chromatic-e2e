@@ -1,0 +1,6 @@
+---
+engines:
+  duplication:
+    exclude_paths:
+      - 'packages/playwright/tests/**/*.spec.*'
+      - 'packages/cypress/tests/cypress/e2e/**/*.cy.*'

@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.10
+
+### Patch Changes
+
+- c43302c: Update for Storybook target
+
 ## 0.6.9
 
 ### Patch Changes

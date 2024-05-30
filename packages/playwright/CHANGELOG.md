@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.9
+
+### Patch Changes
+
+- c43302c: Update for Storybook target
+
 ## 0.6.8
 
 ### Patch Changes

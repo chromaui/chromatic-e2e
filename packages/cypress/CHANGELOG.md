@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.11
+
+### Patch Changes
+
+- 93157ec: Fix EISDIR errors caused by file and directory names colliding when writing archived assets to disk
+
 ## 0.6.10
 
 ### Patch Changes

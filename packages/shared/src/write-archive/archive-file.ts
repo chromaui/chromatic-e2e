@@ -103,15 +103,13 @@ export class ArchiveFile {
   }
 
   private addExtension(pathname: string) {
-    if ('error' in this.response || !this.response.contentType) return pathname;
+    if ('error' in this.response) return pathname;
 
     // Add an extension if needed
     let nameWithExtension = pathname;
     if (!path.extname(nameWithExtension)) {
-      const fileExtension = mime.getExtension(this.response.contentType);
-      if (fileExtension) {
-        nameWithExtension = `${pathname}.${fileExtension}`;
-      }
+      const fileExtension = mime.getExtension(this.response.contentType) || 'tmp';
+      nameWithExtension = `${pathname}.${fileExtension}`;
     }
 
     return nameWithExtension;

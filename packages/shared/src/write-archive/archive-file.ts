@@ -13,6 +13,7 @@ const RESERVED_PATHNAMES: string[] = [
   '/iframe.html',
   '/index.html',
   'runtime~main.iframe.bundle.js',
+  'main.iframe.bundle.js',
 ];
 
 /**

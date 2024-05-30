@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.6.3
+
+### Patch Changes
+
+- c43302c: Update for Storybook target
+
 ## 0.6.2
 
 ### Patch Changes

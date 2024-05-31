@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.6.4
+
+### Patch Changes
+
+- f7ca223: update storybook dependencies
+
 ## 0.6.3
 
 ### Patch Changes

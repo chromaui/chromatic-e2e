@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.11
+
+### Patch Changes
+
+- f7ca223: update storybook dependencies
+
 ## 0.6.10
 
 ### Patch Changes

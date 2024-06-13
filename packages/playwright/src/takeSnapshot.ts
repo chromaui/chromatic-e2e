@@ -17,15 +17,12 @@ async function takeSnapshot(
   maybeTestInfo?: TestInfo
 ): Promise<void> {
   let name: string;
-  let testInfo: TestInfo;
   let testId: string;
   if (typeof nameOrTestInfo === 'string') {
     if (!maybeTestInfo) throw new Error('Incorrect usage');
-    testInfo = maybeTestInfo;
     testId = maybeTestInfo.testId;
     name = nameOrTestInfo;
   } else {
-    testInfo = nameOrTestInfo;
     testId = nameOrTestInfo.testId;
     const number = chromaticSnapshots[testId]
       ? Object.keys(chromaticSnapshots[testId]).length + 1

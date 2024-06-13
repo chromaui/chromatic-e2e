@@ -19,16 +19,17 @@ async function takeSnapshot(
 ): Promise<void> {
   let name: string;
   let testInfo: TestInfo;
+  let testId: string;
   if (typeof nameOrTestInfo === 'string') {
     if (!maybeTestInfo) throw new Error('Incorrect usage');
     testInfo = maybeTestInfo;
+    testId = maybeTestInfo.testId;
     name = nameOrTestInfo;
   } else {
     testInfo = nameOrTestInfo;
+    testId = nameOrTestInfo.testId;
     // const number = testInfo.attachments.filter((a) => a.contentType === contentType).length + 1;
-    const number = chromaticSnapshots[testInfo.testId]
-      ? chromaticSnapshots[testInfo.testId].length + 1
-      : 1;
+    const number = chromaticSnapshots[testId] ? chromaticSnapshots[testId].length + 1 : 1;
     name = `Snapshot #${number}`;
   }
 
@@ -44,10 +45,10 @@ async function takeSnapshot(
 
   testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });
   const snapshotEntry = { name, snapshot: JSON.stringify(domSnapshot) };
-  if (!chromaticSnapshots[testInfo.testId]) {
-    chromaticSnapshots[testInfo.testId] = [snapshotEntry];
+  if (!chromaticSnapshots[testId]) {
+    chromaticSnapshots[testId] = [snapshotEntry];
   } else {
-    chromaticSnapshots[testInfo.testId].push(snapshotEntry);
+    chromaticSnapshots[testId].push(snapshotEntry);
   }
 }
 

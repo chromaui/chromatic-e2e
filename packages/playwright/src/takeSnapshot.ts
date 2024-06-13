@@ -8,6 +8,8 @@ const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.j
 
 export const contentType = 'application/rrweb.snapshot+json';
 
+export const chromaticSnapshots: Record<string, [{ name: string; snapshot: string }]> = {};
+
 async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
 async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
 async function takeSnapshot(
@@ -38,6 +40,12 @@ async function takeSnapshot(
   `);
 
   testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });
+  const snapshotEntry = { name, snapshot: JSON.stringify(domSnapshot) };
+  if (!chromaticSnapshots[testInfo.testId]) {
+    chromaticSnapshots[testInfo.testId] = [snapshotEntry];
+  } else {
+    chromaticSnapshots[testInfo.testId].push(snapshotEntry);
+  }
 }
 
 export { takeSnapshot };

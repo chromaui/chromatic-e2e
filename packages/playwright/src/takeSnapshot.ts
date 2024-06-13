@@ -8,7 +8,8 @@ const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.j
 
 export const contentType = 'application/rrweb.snapshot+json';
 
-export const chromaticSnapshots: Record<string, [{ name: string; snapshot: string }]> = {};
+// top-level key is the test ID, next level key is the name of the test (which we expect to be unique)
+export const chromaticSnapshots: Record<string, Record<string, Buffer>> = {};
 
 async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
 async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
@@ -28,7 +29,9 @@ async function takeSnapshot(
   } else {
     testInfo = nameOrTestInfo;
     testId = nameOrTestInfo.testId;
-    const number = chromaticSnapshots[testId] ? chromaticSnapshots[testId].length + 1 : 1;
+    const number = chromaticSnapshots[testId]
+      ? Object.keys(chromaticSnapshots[testId]).length + 1
+      : 1;
     name = `Snapshot #${number}`;
   }
 
@@ -43,12 +46,11 @@ async function takeSnapshot(
   `);
 
   testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });
-  const snapshotEntry = { name, snapshot: JSON.stringify(domSnapshot) };
+  const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
   if (!chromaticSnapshots[testId]) {
-    chromaticSnapshots[testId] = [snapshotEntry];
-  } else {
-    chromaticSnapshots[testId].push(snapshotEntry);
+    chromaticSnapshots[testId] = {};
   }
+  chromaticSnapshots[testId][name] = bufferedSnapshot;
 }
 
 export { takeSnapshot };

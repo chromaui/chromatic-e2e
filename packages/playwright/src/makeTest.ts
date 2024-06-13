@@ -12,7 +12,7 @@ import {
   trackRun,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
 } from '@chromatic-com/shared-e2e';
-import { contentType, takeSnapshot } from './takeSnapshot';
+import { contentType, chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 import { createResourceArchive } from './createResourceArchive';
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
@@ -81,11 +81,7 @@ export const makeTest = (
 
         const resourceArchive = await completeArchive();
 
-        const snapshots = Object.fromEntries(
-          testInfo.attachments
-            .filter((a) => a.contentType === contentType && !!a.body)
-            .map(({ name, body }) => [name, body])
-        ) as Record<string, Buffer>;
+        const snapshots = chromaticSnapshots[testInfo.testId];
 
         const chromaticStorybookParams = {
           ...(delay && { delay }),

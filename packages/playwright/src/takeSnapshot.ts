@@ -6,8 +6,6 @@ import { logger } from '@chromatic-com/shared-e2e';
 
 const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.js'), 'utf8');
 
-export const contentType = 'application/rrweb.snapshot+json';
-
 // top-level key is the test ID, next level key is the name of the test (which we expect to be unique)
 export const chromaticSnapshots: Record<string, Record<string, Buffer>> = {};
 
@@ -45,7 +43,6 @@ async function takeSnapshot(
     rrwebSnapshot.snapshot(document);
   `);
 
-  testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
   if (!chromaticSnapshots[testId]) {
     chromaticSnapshots[testId] = {};

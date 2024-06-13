@@ -25,7 +25,10 @@ async function takeSnapshot(
     name = nameOrTestInfo;
   } else {
     testInfo = nameOrTestInfo;
-    const number = testInfo.attachments.filter((a) => a.contentType === contentType).length + 1;
+    // const number = testInfo.attachments.filter((a) => a.contentType === contentType).length + 1;
+    const number = chromaticSnapshots[testInfo.testId]
+      ? chromaticSnapshots[testInfo.testId].length + 1
+      : 1;
     name = `Snapshot #${number}`;
   }
 

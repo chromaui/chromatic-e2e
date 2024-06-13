@@ -80,7 +80,7 @@ export const makeTest = (
         }
 
         const resourceArchive = await completeArchive();
-        const testId = testInfo.testId;
+        const { testId } = testInfo;
         const snapshots = chromaticSnapshots[testId] || {};
 
         const chromaticStorybookParams = {

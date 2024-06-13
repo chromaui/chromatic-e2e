@@ -80,8 +80,8 @@ export const makeTest = (
         }
 
         const resourceArchive = await completeArchive();
-
-        const snapshots = chromaticSnapshots[testInfo.testId] || {};
+        const testId = testInfo.testId;
+        const snapshots = chromaticSnapshots[testId] || {};
 
         const chromaticStorybookParams = {
           ...(delay && { delay }),
@@ -101,6 +101,8 @@ export const makeTest = (
         );
 
         trackComplete();
+
+        delete chromaticSnapshots[testId];
       },
       { auto: true },
     ],

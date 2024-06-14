@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.12
+
+### Patch Changes
+
+- 2550ec8: pin rrweb-snapshot version
+
 ## 0.6.11
 
 ### Patch Changes

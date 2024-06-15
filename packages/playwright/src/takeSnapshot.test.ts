@@ -92,7 +92,7 @@ describe('Snapshot storage', () => {
     await page.goto(baseUrl);
 
     const fakeTestInfo = { testId: 'a' };
-    // take multiple (manual) snapshots
+    // take multiple snapshots
     await takeSnapshot(page, fakeTestInfo as TestInfo);
     await takeSnapshot(page, fakeTestInfo as TestInfo);
 
@@ -102,5 +102,15 @@ describe('Snapshot storage', () => {
         ['Snapshot #2']: {},
       },
     });
+  });
+
+  it('preserves names of snapshots when provided', async () => {
+    expect(chromaticSnapshots).toEqual({});
+
+    const fakeTestInfo = { testId: 'a' };
+    await takeSnapshot(page, 'first snappy', fakeTestInfo as TestInfo);
+    await takeSnapshot(page, 'second snappy', fakeTestInfo as TestInfo);
+
+    expect(Object.keys(chromaticSnapshots['a'])).toEqual(['first snappy', 'second snappy']);
   });
 });

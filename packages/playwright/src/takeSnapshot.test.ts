@@ -63,6 +63,12 @@ describe('Snapshot storage', () => {
 
   afterEach(async () => {
     await browser.close();
+
+    // we have to manually clear out the chromaticSnapshots entries since that behavior only happens
+    // in our test fixture (one level up).
+    Object.keys(chromaticSnapshots).forEach((key) => {
+      delete chromaticSnapshots[key];
+    });
   });
 
   it('creates an entry (test name and snapshot buffer) when a snapshot is taken', async () => {
@@ -71,11 +77,30 @@ describe('Snapshot storage', () => {
     await page.goto(baseUrl);
 
     // not ideal to mock testInfo, but AFAIK we can't get testInfo when using Playwright library instead of Playwright test runner.
+    // and this way we can specify the test ID ourselves
     const fakeTestInfo = { testId: 'a' };
     await takeSnapshot(page, fakeTestInfo as TestInfo);
 
     expect(chromaticSnapshots['a']).toMatchObject({ ['Snapshot #1']: {} });
     // I guess we should test the buffer's value here...
     expect(Buffer.isBuffer(chromaticSnapshots['a']['Snapshot #1'])).toBe(true);
+  });
+
+  it('creates multiple entries when multiple snapshots are taken', async () => {
+    expect(chromaticSnapshots).toEqual({});
+
+    await page.goto(baseUrl);
+
+    const fakeTestInfo = { testId: 'a' };
+    // take multiple (manual) snapshots
+    await takeSnapshot(page, fakeTestInfo as TestInfo);
+    await takeSnapshot(page, fakeTestInfo as TestInfo);
+
+    expect(chromaticSnapshots).toMatchObject({
+      a: {
+        ['Snapshot #1']: {},
+        ['Snapshot #2']: {},
+      },
+    });
   });
 });

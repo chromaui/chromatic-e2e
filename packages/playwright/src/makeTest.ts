@@ -102,6 +102,7 @@ export const makeTest = (
 
         trackComplete();
 
+        // make sure we clear the field associated with this test ID, so the shared chromaticSnapshots object stays small
         delete chromaticSnapshots[testId];
       },
       { auto: true },

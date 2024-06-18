@@ -1,7 +1,6 @@
-import { Page } from 'playwright';
-
-import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 import { TestInfo } from 'playwright/test';
+import { Page } from 'playwright';
+import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 
 // @ts-expect-error fakePage isn't a proper page, but we just need to fake enough to run the test
 // (where page is probably too tied up into takeSnapshot anyway)

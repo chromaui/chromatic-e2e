@@ -7,7 +7,7 @@ import { logger } from '@chromatic-com/shared-e2e';
 const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.js'), 'utf8');
 
 // top-level key is the test ID, next level key is the name of the snapshot (which we expect to be unique)
-export const chromaticSnapshots: Record<string, Map<string, Buffer>> = {};
+export const chromaticSnapshots: Map<string, Map<string, Buffer>> = new Map();
 
 async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
 async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
@@ -24,9 +24,7 @@ async function takeSnapshot(
     name = nameOrTestInfo;
   } else {
     testId = nameOrTestInfo.testId;
-    const number = chromaticSnapshots[testId]
-      ? Object.keys(chromaticSnapshots[testId]).length + 1
-      : 1;
+    const number = chromaticSnapshots.has(testId) ? chromaticSnapshots.get(testId).size + 1 : 1;
     name = `Snapshot #${number}`;
   }
 
@@ -41,11 +39,11 @@ async function takeSnapshot(
   `);
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
-  if (!chromaticSnapshots[testId]) {
+  if (!chromaticSnapshots.has(testId)) {
     // map used so the snapshots are always in order
-    chromaticSnapshots[testId] = new Map();
+    chromaticSnapshots.set(testId, new Map());
   }
-  chromaticSnapshots[testId].set(name, bufferedSnapshot);
+  chromaticSnapshots.get(testId).set(name, bufferedSnapshot);
 }
 
 export { takeSnapshot };

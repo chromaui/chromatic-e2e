@@ -23,7 +23,7 @@ describe('makeTest', () => {
       outputDir: '',
     };
 
-    expect(chromaticSnapshots).toEqual({});
+    expect(chromaticSnapshots.size).toBe(0);
     await performChromaticSnapshot(
       { page, shouldTrack: false },
       async () => {
@@ -33,6 +33,6 @@ describe('makeTest', () => {
       // from the page/browser itself (typically that comes as part of the Playwright test runner, which we're outside of here)
       mockTestInfo
     );
-    expect(chromaticSnapshots).toEqual({});
+    expect(chromaticSnapshots.size).toBe(0);
   });
 });

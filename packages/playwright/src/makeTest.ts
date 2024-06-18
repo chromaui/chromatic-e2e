@@ -61,7 +61,7 @@ export const performChromaticSnapshot = async (
 
   const resourceArchive = await completeArchive();
   const { testId } = testInfo;
-  const snapshots = chromaticSnapshots[testId] || {};
+  const snapshots: Map<string, Buffer> = chromaticSnapshots.get(testId) || new Map();
 
   const chromaticStorybookParams = {
     ...(delay && { delay }),
@@ -75,7 +75,7 @@ export const performChromaticSnapshot = async (
 
   await writeTestResult(
     { ...testInfo, pageUrl: page.url(), viewport: page.viewportSize() },
-    snapshots,
+    Object.fromEntries(snapshots),
     resourceArchive,
     chromaticStorybookParams
   );
@@ -84,8 +84,8 @@ export const performChromaticSnapshot = async (
     trackComplete();
   }
 
-  // make sure we clear the field associated with this test ID, so the shared chromaticSnapshots object stays small
-  delete chromaticSnapshots[testId];
+  // make sure we clear the value associated with this test ID, so the shared chromaticSnapshots object stays small
+  chromaticSnapshots.delete(testId);
 };
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when

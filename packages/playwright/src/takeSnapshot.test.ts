@@ -66,13 +66,11 @@ describe('Snapshot storage', () => {
 
     // we have to manually clear out the chromaticSnapshots entries since that behavior only happens
     // in our test fixture (one level up).
-    Object.keys(chromaticSnapshots).forEach((key) => {
-      delete chromaticSnapshots[key];
-    });
+    chromaticSnapshots.clear();
   });
 
   it('creates an entry (test name and snapshot buffer) when a snapshot is taken', async () => {
-    expect(chromaticSnapshots).toEqual({});
+    expect(chromaticSnapshots.size).toBe(0);
 
     await page.goto(baseUrl);
 
@@ -81,12 +79,12 @@ describe('Snapshot storage', () => {
     const fakeTestInfo = { testId: 'a' };
     await takeSnapshot(page, fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots['a'].has('Snapshot #1'));
-    expect(Buffer.isBuffer(chromaticSnapshots['a'].get('Snapshot #1'))).toBe(true);
+    expect(chromaticSnapshots.get('a').has('Snapshot #1'));
+    expect(Buffer.isBuffer(chromaticSnapshots.get('a').get('Snapshot #1'))).toBe(true);
   });
 
   it('creates multiple entries when multiple snapshots are taken', async () => {
-    expect(chromaticSnapshots).toEqual({});
+    expect(chromaticSnapshots.size).toBe(0);
 
     await page.goto(baseUrl);
 
@@ -95,18 +93,18 @@ describe('Snapshot storage', () => {
     await takeSnapshot(page, fakeTestInfo as TestInfo);
     await takeSnapshot(page, fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots['a'].has('Snapshot #1'));
-    expect(chromaticSnapshots['a'].has('Snapshot #2'));
+    expect(chromaticSnapshots.get('a').has('Snapshot #1'));
+    expect(chromaticSnapshots.get('a').has('Snapshot #2'));
   });
 
   it('preserves names of snapshots when provided', async () => {
-    expect(chromaticSnapshots).toEqual({});
+    expect(chromaticSnapshots.size).toBe(0);
 
     const fakeTestInfo = { testId: 'a' };
     await takeSnapshot(page, 'first snappy', fakeTestInfo as TestInfo);
     await takeSnapshot(page, 'second snappy', fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots['a'].has('first snappy'));
-    expect(chromaticSnapshots['a'].has('second snappy'));
+    expect(chromaticSnapshots.get('a').has('first snappy'));
+    expect(chromaticSnapshots.get('a').has('second snappy'));
   });
 });

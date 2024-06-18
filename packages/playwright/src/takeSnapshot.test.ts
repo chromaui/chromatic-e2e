@@ -81,9 +81,8 @@ describe('Snapshot storage', () => {
     const fakeTestInfo = { testId: 'a' };
     await takeSnapshot(page, fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots['a']).toMatchObject({ ['Snapshot #1']: {} });
-    // I guess we should test the buffer's value here...
-    expect(Buffer.isBuffer(chromaticSnapshots['a']['Snapshot #1'])).toBe(true);
+    expect(chromaticSnapshots['a'].has('Snapshot #1'));
+    expect(Buffer.isBuffer(chromaticSnapshots['a'].get('Snapshot #1'))).toBe(true);
   });
 
   it('creates multiple entries when multiple snapshots are taken', async () => {
@@ -96,12 +95,8 @@ describe('Snapshot storage', () => {
     await takeSnapshot(page, fakeTestInfo as TestInfo);
     await takeSnapshot(page, fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots).toMatchObject({
-      a: {
-        ['Snapshot #1']: {},
-        ['Snapshot #2']: {},
-      },
-    });
+    expect(chromaticSnapshots['a'].has('Snapshot #1'));
+    expect(chromaticSnapshots['a'].has('Snapshot #2'));
   });
 
   it('preserves names of snapshots when provided', async () => {
@@ -111,6 +106,7 @@ describe('Snapshot storage', () => {
     await takeSnapshot(page, 'first snappy', fakeTestInfo as TestInfo);
     await takeSnapshot(page, 'second snappy', fakeTestInfo as TestInfo);
 
-    expect(Object.keys(chromaticSnapshots['a'])).toEqual(['first snappy', 'second snappy']);
+    expect(chromaticSnapshots['a'].has('first snappy'));
+    expect(chromaticSnapshots['a'].has('second snappy'));
   });
 });

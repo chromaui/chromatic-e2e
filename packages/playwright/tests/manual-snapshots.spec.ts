@@ -5,6 +5,7 @@ test('snapshot names increment for both manual and automatic', async ({ page }, 
   await takeSnapshot(page, testInfo);
   await page.locator('summary').click();
   await expect(page.getByText('I am hiding inside!')).toBeVisible();
+  await takeSnapshot(page, 'another test', testInfo);
   await takeSnapshot(page, testInfo);
 });
 

@@ -30,11 +30,14 @@ export const performChromaticSnapshot = async (
     resourceArchiveTimeout,
     assetDomains,
     cropToViewport,
-  }: ChromaticConfig & { page: Page },
-  use: () => void,
+    shouldTrack = true,
+  }: ChromaticConfig & { page: Page; shouldTrack?: boolean },
+  use: () => Promise<void>,
   testInfo: TestInfo
 ) => {
-  trackRun();
+  if (shouldTrack) {
+    trackRun();
+  }
 
   // CDP only works in Chromium, so we only capture archives in Chromium.
   // We can later snapshot them in different browsers in the cloud.
@@ -77,7 +80,9 @@ export const performChromaticSnapshot = async (
     chromaticStorybookParams
   );
 
-  trackComplete();
+  if (shouldTrack) {
+    trackComplete();
+  }
 
   // make sure we clear the field associated with this test ID, so the shared chromaticSnapshots object stays small
   delete chromaticSnapshots[testId];

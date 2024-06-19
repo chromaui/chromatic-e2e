@@ -26,7 +26,7 @@ describe('Snapshot storage', () => {
     const fakeTestInfo = { testId: 'a' };
     await takeSnapshot(fakePage, fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots.get('a').has('Snapshot #1'));
+    expect(chromaticSnapshots.get('a').has('Snapshot #1')).toBe(true);
     expect(Buffer.isBuffer(chromaticSnapshots.get('a').get('Snapshot #1'))).toBe(true);
   });
 
@@ -38,8 +38,8 @@ describe('Snapshot storage', () => {
     await takeSnapshot(fakePage, fakeTestInfo as TestInfo);
     await takeSnapshot(fakePage, fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots.get('a').has('Snapshot #1'));
-    expect(chromaticSnapshots.get('a').has('Snapshot #2'));
+    expect(chromaticSnapshots.get('a').has('Snapshot #1')).toBe(true);
+    expect(chromaticSnapshots.get('a').has('Snapshot #2')).toBe(true);
   });
 
   it('preserves names of snapshots when provided', async () => {
@@ -49,7 +49,7 @@ describe('Snapshot storage', () => {
     await takeSnapshot(fakePage, 'first snappy', fakeTestInfo as TestInfo);
     await takeSnapshot(fakePage, 'second snappy', fakeTestInfo as TestInfo);
 
-    expect(chromaticSnapshots.get('a').has('first snappy'));
-    expect(chromaticSnapshots.get('a').has('second snappy'));
+    expect(chromaticSnapshots.get('a').has('first snappy')).toBe(true);
+    expect(chromaticSnapshots.get('a').has('second snappy')).toBe(true);
   });
 });

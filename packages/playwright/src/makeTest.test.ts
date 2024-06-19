@@ -1,6 +1,6 @@
 import { TestInfo } from 'playwright/test';
-import { performChromaticSnapshot } from './makeTest';
 import { Browser, chromium, Page } from 'playwright';
+import { performChromaticSnapshot } from './makeTest';
 import { chromaticSnapshots } from './takeSnapshot';
 
 describe('makeTest', () => {

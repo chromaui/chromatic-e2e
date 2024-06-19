@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.13
+
+### Patch Changes
+
+- 721bc9e: Snapshots are stored in-memory to avoid overwhelming reporters
+
 ## 0.6.12
 
 ### Patch Changes

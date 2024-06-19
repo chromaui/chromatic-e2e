@@ -6,7 +6,8 @@ import { logger } from '@chromatic-com/shared-e2e';
 
 const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.js'), 'utf8');
 
-export const contentType = 'application/rrweb.snapshot+json';
+// top-level key is the test ID, next level key is the name of the snapshot (which we expect to be unique)
+export const chromaticSnapshots: Map<string, Map<string, Buffer>> = new Map();
 
 async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
 async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
@@ -16,14 +17,14 @@ async function takeSnapshot(
   maybeTestInfo?: TestInfo
 ): Promise<void> {
   let name: string;
-  let testInfo: TestInfo;
+  let testId: string;
   if (typeof nameOrTestInfo === 'string') {
     if (!maybeTestInfo) throw new Error('Incorrect usage');
-    testInfo = maybeTestInfo;
+    testId = maybeTestInfo.testId;
     name = nameOrTestInfo;
   } else {
-    testInfo = nameOrTestInfo;
-    const number = testInfo.attachments.filter((a) => a.contentType === contentType).length + 1;
+    testId = nameOrTestInfo.testId;
+    const number = chromaticSnapshots.has(testId) ? chromaticSnapshots.get(testId).size + 1 : 1;
     name = `Snapshot #${number}`;
   }
 
@@ -37,7 +38,12 @@ async function takeSnapshot(
     rrwebSnapshot.snapshot(document);
   `);
 
-  testInfo.attach(name, { contentType, body: JSON.stringify(domSnapshot) });
+  const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
+  if (!chromaticSnapshots.has(testId)) {
+    // map used so the snapshots are always in order
+    chromaticSnapshots.set(testId, new Map());
+  }
+  chromaticSnapshots.get(testId).set(name, bufferedSnapshot);
 }
 
 export { takeSnapshot };

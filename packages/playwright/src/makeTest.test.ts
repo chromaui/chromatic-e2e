@@ -22,6 +22,9 @@ describe('makeTest', () => {
 
   afterEach(async () => {
     await browser.close();
+
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('Removes the entry from the snapshots after test is done', async () => {

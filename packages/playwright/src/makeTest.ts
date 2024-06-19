@@ -34,53 +34,56 @@ export const performChromaticSnapshot = async (
   use: () => Promise<void>,
   testInfo: TestInfo
 ) => {
-  trackRun();
-
-  // CDP only works in Chromium, so we only capture archives in Chromium.
-  // We can later snapshot them in different browsers in the cloud.
-  // TODO: I'm not sure if this is the best way to detect the browser version, but
-  // it seems to work
-  if (page.context().browser().browserType().name() !== 'chromium') {
-    await use();
-    return;
-  }
-
-  const completeArchive = await createResourceArchive({
-    page,
-    networkTimeout: resourceArchiveTimeout,
-    assetDomains,
-  });
-  await use();
-
-  if (!disableAutoSnapshot) {
-    await takeSnapshot(page, testInfo);
-  }
-
-  const resourceArchive = await completeArchive();
   const { testId } = testInfo;
-  const snapshots: Map<string, Buffer> = chromaticSnapshots.get(testId) || new Map();
 
-  const chromaticStorybookParams = {
-    ...(delay && { delay }),
-    ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
-    ...(diffThreshold && { diffThreshold }),
-    ...(forcedColors && { forcedColors }),
-    ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
-    ...(prefersReducedMotion && { prefersReducedMotion }),
-    ...(cropToViewport && { cropToViewport }),
-  };
+  try {
+    trackRun();
 
-  await writeTestResult(
-    { ...testInfo, pageUrl: page.url(), viewport: page.viewportSize() },
-    Object.fromEntries(snapshots),
-    resourceArchive,
-    chromaticStorybookParams
-  );
+    // CDP only works in Chromium, so we only capture archives in Chromium.
+    // We can later snapshot them in different browsers in the cloud.
+    // TODO: I'm not sure if this is the best way to detect the browser version, but
+    // it seems to work
+    if (page.context().browser().browserType().name() !== 'chromium') {
+      await use();
+      return;
+    }
 
-  trackComplete();
+    const completeArchive = await createResourceArchive({
+      page,
+      networkTimeout: resourceArchiveTimeout,
+      assetDomains,
+    });
+    await use();
 
-  // make sure we clear the value associated with this test ID, so the shared chromaticSnapshots object stays small
-  chromaticSnapshots.delete(testId);
+    if (!disableAutoSnapshot) {
+      await takeSnapshot(page, testInfo);
+    }
+
+    const resourceArchive = await completeArchive();
+    const snapshots: Map<string, Buffer> = chromaticSnapshots.get(testId) || new Map();
+
+    const chromaticStorybookParams = {
+      ...(delay && { delay }),
+      ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
+      ...(diffThreshold && { diffThreshold }),
+      ...(forcedColors && { forcedColors }),
+      ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
+      ...(prefersReducedMotion && { prefersReducedMotion }),
+      ...(cropToViewport && { cropToViewport }),
+    };
+
+    await writeTestResult(
+      { ...testInfo, pageUrl: page.url(), viewport: page.viewportSize() },
+      Object.fromEntries(snapshots),
+      resourceArchive,
+      chromaticStorybookParams
+    );
+
+    trackComplete();
+  } finally {
+    // make sure we clear the value associated with this test ID, so the shared chromaticSnapshots object stays small
+    chromaticSnapshots.delete(testId);
+  }
 };
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when

@@ -3,6 +3,13 @@ import { Browser, chromium, Page } from 'playwright';
 import { performChromaticSnapshot } from './makeTest';
 import { chromaticSnapshots } from './takeSnapshot';
 
+// mock the tracking as it causes memory leak in test
+jest.mock('@chromatic-com/shared-e2e', () => ({
+  ...jest.requireActual('@chromatic-com/shared-e2e'),
+  trackComplete: () => {},
+  trackRun: () => {},
+}));
+
 describe('makeTest', () => {
   let browser: Browser;
   let page: Page;
@@ -25,7 +32,7 @@ describe('makeTest', () => {
 
     expect(chromaticSnapshots.size).toBe(0);
     await performChromaticSnapshot(
-      { page, shouldTrack: false },
+      { page },
       async () => {
         // do-nothing test() function
       },

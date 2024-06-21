@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.13
+
+### Patch Changes
+
+- baa7427: We have one additional file that needs to be excluded for E2E target storybooks to render correctly.
+
 ## 0.6.12
 
 ### Patch Changes

@@ -21,6 +21,7 @@ interface WriteParams {
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
   viewport: Viewport;
+  outputDir: string;
 }
 
 interface WriteArchivesParams extends WriteParams {
@@ -34,6 +35,7 @@ const writeArchives = async ({
   chromaticStorybookParams,
   pageUrl,
   viewport,
+  outputDir,
 }: WriteArchivesParams) => {
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -59,9 +61,7 @@ const writeArchives = async ({
   await writeTestResult(
     {
       titlePath: testTitlePath,
-      // this will store it at ./cypress/downloads (the last directory doesn't matter)
-      // TODO: change so we don't have to do this trickery
-      outputDir: './cypress/downloads/some',
+      outputDir,
       pageUrl,
       viewport,
     },

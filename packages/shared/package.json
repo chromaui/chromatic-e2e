@@ -1,7 +1,7 @@
 {
   "name": "@chromatic-com/shared-e2e",
   "private": true,
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Shared Chromatic E2E",
   "repository": {
     "type": "git",

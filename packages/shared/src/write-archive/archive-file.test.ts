@@ -113,6 +113,14 @@ describe('ArchiveFile', () => {
 
       expect(filePath).toMatch(new RegExp('/runtime~main.iframe.bundle-[a-z0-9]+.js'));
     });
+
+    it('appends encoded string to reserved SB files: sb-preview/runtime.js', () => {
+      const archiveFile = createArchiveFile('http://localhost:333/sb-preview/runtime.js');
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toMatch(new RegExp('/sb-preview/runtime-[a-z0-9]+.js'));
+    });
   });
 
   describe('originalSrc', () => {

@@ -104,6 +104,11 @@ app.get('/manual-snapshots', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/manual-snapshots.html'));
 });
 
+// Pages fallback
+app.get('/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/pages/${req.params.page}.html`));
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

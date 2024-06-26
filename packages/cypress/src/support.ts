@@ -11,7 +11,8 @@ const shouldTakeSnapshot = () => {
 
 // these client-side lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
-  if (!shouldTakeSnapshot()) {
+  // don't take snapshots when running `cypress open`
+  if (!Cypress.config('isTextTerminal')) {
     return;
   }
   // this "manualSnapshots" variable will be available before, during, and after the test,
@@ -25,12 +26,15 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  if (!shouldTakeSnapshot()) {
+  // don't take snapshots when running `cypress open`
+  if (!Cypress.config('isTextTerminal')) {
     return;
   }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
-    const automaticSnapshot = snapshot(doc);
+    const automaticSnapshots = !Cypress.env('disableAutoSnapshot')
+      ? [{ snapshot: snapshot(doc) }]
+      : [];
     // @ts-expect-error will fix when Cypress has its own package
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {
       cy.url().then((url) => {
@@ -38,9 +42,10 @@ afterEach(() => {
         cy.task('prepareArchives', {
           action: 'save-archives',
           payload: {
-            testTitle: Cypress.currentTest.title,
+            // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
+            testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
             testId: generateTestId(),
-            domSnapshots: [...manualSnapshots, { snapshot: automaticSnapshot }],
+            domSnapshots: [...manualSnapshots, ...automaticSnapshots],
             chromaticStorybookParams: {
               ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
               ...(Cypress.env('delay') && { delay: Cypress.env('delay') }),
@@ -55,8 +60,15 @@ afterEach(() => {
               ...(Cypress.env('prefersReducedMotion') && {
                 prefersReducedMotion: Cypress.env('prefersReducedMotion'),
               }),
+              ...(Cypress.env('cropToViewport') && {
+                cropToViewport: Cypress.env('cropToViewport'),
+              }),
             },
             pageUrl: url,
+            viewport: {
+              height: Cypress.config('viewportHeight'),
+              width: Cypress.config('viewportWidth'),
+            },
           },
         });
       });

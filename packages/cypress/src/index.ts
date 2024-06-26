@@ -5,7 +5,8 @@ import {
   writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
-} from '@chromaui/shared-e2e';
+  Viewport,
+} from '@chromatic-com/shared-e2e';
 
 interface CypressSnapshot {
   // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)
@@ -15,10 +16,11 @@ interface CypressSnapshot {
 }
 
 interface WriteParams {
-  testTitle: string;
+  testTitlePath: string[];
   domSnapshots: CypressSnapshot[];
   chromaticStorybookParams: ChromaticStorybookParameters;
   pageUrl: string;
+  viewport: Viewport;
 }
 
 interface WriteArchivesParams extends WriteParams {
@@ -26,11 +28,12 @@ interface WriteArchivesParams extends WriteParams {
 }
 
 const writeArchives = async ({
-  testTitle,
+  testTitlePath,
   domSnapshots,
   resourceArchive,
   chromaticStorybookParams,
   pageUrl,
+  viewport,
 }: WriteArchivesParams) => {
   const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
     return [
@@ -55,11 +58,12 @@ const writeArchives = async ({
 
   await writeTestResult(
     {
-      title: testTitle,
+      titlePath: testTitlePath,
       // this will store it at ./cypress/downloads (the last directory doesn't matter)
       // TODO: change so we don't have to do this trickery
       outputDir: './cypress/downloads/some',
       pageUrl,
+      viewport,
     },
     allSnapshots,
     Object.fromEntries(bufferedArchiveList),
@@ -145,10 +149,8 @@ export const onBeforeBrowserLaunch = (
   launchOptions: Cypress.BeforeBrowserLaunchOptions,
   config: Cypress.PluginConfigOptions
 ) => {
-  // when Cypress is in interactive mode, we won't be snapshotting.
-  // Thus we don't need them to pass the ELECTRON_EXTRA_LAUNCH_ARGS for this command,
-  // or set up CDP or anything like that
-  if (config.isInteractive) {
+  // don't take snapshots when running `cypress open`
+  if (!config.isTextTerminal) {
     return launchOptions;
   }
 
@@ -183,7 +185,6 @@ export const installPlugin = (on: Cypress.PluginEvents, config: Cypress.PluginCo
   on('task', {
     prepareArchives,
   });
-
   on(
     'before:browser:launch',
     (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {

@@ -1,20 +1,19 @@
-name: Test (Cypress)
+# Runs Cypress E2E test and Chromatic publish
+name: Test Cypress
 
 on:
-  workflow_run:
-    workflows: ["Test (base)"]
-    types:
-      - completed
+  workflow_call:
+    secrets:
+      chromaticProjectToken:
+        required: true
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Use Node.js 18.x
         uses: actions/setup-node@v1
@@ -33,7 +32,7 @@ jobs:
           yarn run test:cypress
 
       - name: Publish to Chromatic
-        uses: chromaui/action@v1
+        uses: chromaui/action@latest
         with:
-          projectToken: ${{ secrets.CHROMATIC_CYPRESS_PROJECT_TOKEN }}
+          projectToken: ${{ secrets.chromaticProjectToken }}
           buildScriptName: build-archive-storybook:cypress

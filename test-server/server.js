@@ -33,6 +33,16 @@ app.get('/img/another', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
 });
 
+app.get('/img/another/no-content-type', (req, res) => {
+  res.setHeader('content-type', 'fake/content'); // Simulate no matching file extension from mime lib
+  res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+});
+
+app.get('/img/another/no-content-type/first', (req, res) => {
+  res.setHeader('content-type', 'fake/content'); // Simulate no matching file extension from mime lib
+  res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
+});
+
 app.get('/img/another%Cwith%Cpercents', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
 });
@@ -68,6 +78,14 @@ app.get('/ignore', (req, res) => {
 
 app.get('/forms', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/forms.html'));
+});
+
+app.get('/no-doctype', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/no-doctype.html'));
+});
+
+app.get('/viewports', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/viewports.html'));
 });
 
 // Send a redirect to the GET handler with the same path to ensure we're not caching POST responses and serving

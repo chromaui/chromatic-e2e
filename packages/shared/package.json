@@ -1,11 +1,11 @@
 {
-  "name": "@chromaui/shared-e2e",
+  "name": "@chromatic-com/shared-e2e",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.6.5",
   "description": "Shared Chromatic E2E",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/test-archiver.git",
+    "url": "https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/shared"
   },
   "author": "Chromatic <tom@chromatic.com>",
@@ -15,19 +15,34 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./archive-storybook": {
-      "types": "./dist/archive-storybook/index.d.ts",
-      "import": "./dist/archive-storybook/index.mjs",
-      "require": "./dist/archive-storybook/index.js"
+      "import": {
+        "types": "./dist/archive-storybook/index.d.mts",
+        "default": "./dist/archive-storybook/index.mjs"
+      },
+      "require": {
+        "types": "./dist/archive-storybook/index.d.ts",
+        "default": "./dist/archive-storybook/index.js"
+      }
     },
     "./utils/filePaths": {
-      "types": "./dist/utils/filePaths.d.ts",
-      "import": "./dist/utils/filePaths.mjs",
-      "require": "./dist/utils/filePaths.js"
+      "import": {
+        "types": "./dist/utils/filePaths.d.mts",
+        "default": "./dist/utils/filePaths.mjs"
+      },
+      "require": {
+        "types": "./dist/utils/filePaths.d.ts",
+        "default": "./dist/utils/filePaths.js"
+      }
     }
   },
   "files": [
@@ -52,9 +67,9 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
-    "build": "tsup",
+    "build": "yarn prebuild && tsup",
     "build:watch": "yarn build --watch",
-    "test:unit": "jest",
+    "test:unit": "jest --coverage",
     "lint": "eslint src/*",
     "prettier": "prettier"
   },
@@ -64,20 +79,18 @@
     "@babel/preset-typescript": "^7.21.4",
     "@jest/types": "^27.0.6",
     "@playwright/test": "^1.39.0",
-    "@storybook/addon-essentials": "^7.5.2",
+    "@storybook/addon-essentials": "^8.1.5",
     "@storybook/eslint-config-storybook": "^3.1.2",
-    "@storybook/server-webpack5": "^7.5.2",
+    "@storybook/server-webpack5": "^8.1.5",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
-    "@types/fs-extra": "^11.0.1",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.4.1",
     "@types/node-fetch": "^2.6.6",
     "babel-jest": "^27.0.6",
     "concurrently": "^7.0.0",
     "eslint": "^7.32.0",
-    "fs-extra": "^11.1.1",
     "jest": "^27.0.6",
     "jest-environment-jsdom": "^27.0.6",
     "lint-staged": ">=10",
@@ -87,14 +100,11 @@
     "playwright-core": "^1.32.2",
     "prettier": "^2.3.1",
     "prompts": "^2.4.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
     "rimraf": "^3.0.2",
     "srcset": "^4.0.0",
-    "storybook": "^7.5.2",
+    "storybook": "^8.1.5",
     "ts-dedent": "^2.2.0",
     "ts-jest": "^27.0.4",
-    "tsup": "^6.7.0",
     "typescript": "^4.2.4"
   },
   "lint-staged": {
@@ -102,6 +112,7 @@
   },
   "dependencies": {
     "@segment/analytics-node": "^1.1.0",
-    "rrweb-snapshot": "^2.0.0-alpha.4"
+    "rrweb-snapshot": "^2.0.0-alpha.11",
+    "storybook": "^8.1.5"
   }
 }

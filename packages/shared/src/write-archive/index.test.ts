@@ -1,9 +1,9 @@
-import fs from 'fs-extra';
 import { resolve } from 'path';
 import { NodeType } from 'rrweb-snapshot';
+import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
 
-jest.mock('fs-extra');
+jest.mock('../utils/filePaths');
 
 const snapshotJson = {
   childNodes: [
@@ -22,54 +22,52 @@ const snapshotJson = {
   ],
 };
 
-describe('writeTestResult', () => {
-  beforeEach(() => {
-    fs.ensureDir.mockClear();
-    fs.outputFile.mockClear();
-    fs.outputJson.mockClear();
-  });
+afterEach(() => {
+  jest.resetAllMocks();
+});
 
+describe('writeTestResult', () => {
   it('successfully generates test results', async () => {
     // @ts-expect-error Jest mock
-    fs.ensureDir.mockReturnValue(true);
+    filePaths.ensureDir.mockReturnValue(true);
     await writeTestResult(
       // the default output directory in playwright
       {
-        title: 'Test Story',
+        titlePath: ['file.spec.ts', 'Test Story'],
         outputDir: resolve('test-results/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',
+        viewport: { height: 800, width: 800 },
       },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
       {
         diffThreshold: 5,
         pauseAnimationAtEnd: true,
-        viewports: [720],
       }
     );
-    expect(fs.ensureDir).toHaveBeenCalledTimes(1);
-    expect(fs.outputFile).toHaveBeenCalledTimes(2);
-    expect(fs.outputJson).toHaveBeenCalledTimes(1);
-    expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/test-story.stories.json'),
+    expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
+      resolve('./test-results/chromatic-archives/file-test-story.stories.json'),
       {
         stories: [
           {
             name: 'home',
             parameters: {
-              chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true, viewports: [720] },
-              server: { id: 'test-story-home.snapshot.json' },
+              chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true },
+              server: { id: 'file-test-story-home' },
             },
           },
         ],
-        title: 'Test Story',
+        title: 'file/Test Story',
       }
     );
   });
 
   it('successfully generates test results with mapped source entries', async () => {
     // @ts-expect-error Jest mock
-    fs.ensureDir.mockReturnValue(true);
+    filePaths.ensureDir.mockReturnValue(true);
 
     const expectedMappedJson = {
       childNodes: [
@@ -91,9 +89,10 @@ describe('writeTestResult', () => {
     await writeTestResult(
       // the default output directory in playwright
       {
-        title: 'Toy Story',
+        titlePath: ['file.spec.ts', 'Toy Story'],
         outputDir: resolve('test-results/toy-story-chromium'),
         pageUrl: 'http://localhost:3000/',
+        viewport: { height: 800, width: 800 },
       },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       {
@@ -107,64 +106,157 @@ describe('writeTestResult', () => {
           contentType: 'image/png',
         },
       },
-      { viewports: [720] }
+      {}
     );
 
-    expect(fs.ensureDir).toHaveBeenCalledTimes(1);
-    expect(fs.outputJson).toHaveBeenCalledTimes(1);
-    expect(fs.outputFile).toHaveBeenCalledTimes(3);
-    expect(fs.outputFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/archive/toy-story-home.snapshot.json'),
+    expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputFile).toHaveBeenCalledTimes(3);
+    expect(filePaths.outputFile).toHaveBeenCalledWith(
+      resolve(
+        './test-results/chromatic-archives/archive/file-toy-story-home.w800h800.snapshot.json'
+      ),
       JSON.stringify(expectedMappedJson)
-    );
-    expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/toy-story.stories.json'),
-      {
-        stories: [
-          {
-            name: 'home',
-            parameters: {
-              chromatic: { viewports: [720] },
-              server: { id: 'toy-story-home.snapshot.json' },
-            },
-          },
-        ],
-        title: 'Toy Story',
-      }
     );
   });
 
   it('stores archives in custom directory', async () => {
     // @ts-expect-error Jest mock
-    fs.ensureDir.mockReturnValue(true);
+    filePaths.ensureDir.mockReturnValue(true);
     await writeTestResult(
       {
-        title: 'Test Story',
+        titlePath: ['file.spec.ts', 'Test Story'],
         // simulates setting a custom output directory in Playwright
         outputDir: resolve('some-custom-directory/directory/test-story-chromium'),
         pageUrl: 'http://localhost:3000/',
+        viewport: { height: 800, width: 800 },
       },
       { home: Buffer.from(JSON.stringify(snapshotJson)) },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      { viewports: [720] }
+      {}
     );
-    expect(fs.ensureDir).toHaveBeenCalledTimes(1);
-    expect(fs.outputFile).toHaveBeenCalledTimes(2);
-    expect(fs.outputJson).toHaveBeenCalledTimes(1);
-    expect(fs.outputJson).toHaveBeenCalledWith(
-      resolve('./some-custom-directory/directory/chromatic-archives/test-story.stories.json'),
-      {
-        stories: [
-          {
-            name: 'home',
-            parameters: {
-              chromatic: { viewports: [720] },
-              server: { id: 'test-story-home.snapshot.json' },
-            },
-          },
-        ],
-        title: 'Test Story',
-      }
+    expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
+    expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
+      resolve('./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json'),
+      expect.anything()
     );
+  });
+
+  describe('smart story naming', () => {
+    it('derives story title from test info, using all of the title path', async () => {
+      // @ts-expect-error Jest mock
+      filePaths.ensureDir.mockReturnValue(true);
+      await writeTestResult(
+        {
+          titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
+          outputDir: resolve('test-results/test-story-chromium'),
+          pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+        {}
+      );
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          title: 'file/A grouping/Test Story',
+        })
+      );
+    });
+
+    it('preserves dots in directories, describe blocks, and test titles', async () => {
+      // @ts-expect-error Jest mock
+      filePaths.ensureDir.mockReturnValue(true);
+      await writeTestResult(
+        {
+          titlePath: [
+            'a.directory/file.spec.ts',
+            '.someFunction',
+            '.someFunction() calls something',
+          ],
+          outputDir: resolve('test-results/test-story-chromium'),
+          pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+        {}
+      );
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          title: 'a.directory/file/.someFunction/.someFunction() calls something',
+        })
+      );
+    });
+
+    it('preserves dots in file name, besides file extension (Playwright)', async () => {
+      // @ts-expect-error Jest mock
+      filePaths.ensureDir.mockReturnValue(true);
+      await writeTestResult(
+        {
+          titlePath: ['some.file.spec.ts', 'Test Story'],
+          outputDir: resolve('test-results/test-story-chromium'),
+          pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+        {}
+      );
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          title: 'some.file/Test Story',
+        })
+      );
+    });
+
+    it('preserves dots in file name, besides file extension (Cypress)', async () => {
+      // @ts-expect-error Jest mock
+      filePaths.ensureDir.mockReturnValue(true);
+      await writeTestResult(
+        {
+          titlePath: ['some.file.cy.ts', 'Test Story'],
+          outputDir: resolve('test-results/test-story-chromium'),
+          pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+        {}
+      );
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          title: 'some.file/Test Story',
+        })
+      );
+    });
+
+    it('removes file extension, even if .spec or .cy are not used', async () => {
+      // @ts-expect-error Jest mock
+      filePaths.ensureDir.mockReturnValue(true);
+      await writeTestResult(
+        {
+          titlePath: ['file.ts', 'Test Story'],
+          outputDir: resolve('test-results/test-story-chromium'),
+          pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+        {}
+      );
+      expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          title: 'file/Test Story',
+        })
+      );
+    });
   });
 });

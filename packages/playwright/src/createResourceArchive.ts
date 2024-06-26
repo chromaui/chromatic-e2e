@@ -4,7 +4,7 @@ import {
   ResourceArchive,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
   logger,
-} from '@chromaui/shared-e2e';
+} from '@chromatic-com/shared-e2e';
 
 const idle = async (page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) => {
   let globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;

@@ -10,7 +10,7 @@ export default defineConfig((options) => ({
   },
   treeshake: true,
   sourcemap: true,
-  clean: true,
+  clean: false,
   platform: 'node',
   esbuildOptions(options) {
     options.conditions = ['module'];

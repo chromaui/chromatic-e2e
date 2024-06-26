@@ -4,16 +4,87 @@ import type {
   PlaywrightTestOptions,
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
+  TestInfo,
+  Page,
 } from '@playwright/test';
-import type { ChromaticConfig } from '@chromaui/shared-e2e';
+import type { ChromaticConfig } from '@chromatic-com/shared-e2e';
 import {
   writeTestResult,
   trackComplete,
   trackRun,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-} from '@chromaui/shared-e2e';
-import { contentType, takeSnapshot } from './takeSnapshot';
+} from '@chromatic-com/shared-e2e';
+import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 import { createResourceArchive } from './createResourceArchive';
+
+export const performChromaticSnapshot = async (
+  {
+    page,
+    delay,
+    diffIncludeAntiAliasing,
+    diffThreshold,
+    disableAutoSnapshot,
+    forcedColors,
+    pauseAnimationAtEnd,
+    prefersReducedMotion,
+    resourceArchiveTimeout,
+    assetDomains,
+    cropToViewport,
+  }: ChromaticConfig & { page: Page },
+  use: () => Promise<void>,
+  testInfo: TestInfo
+) => {
+  const { testId } = testInfo;
+
+  try {
+    trackRun();
+
+    // CDP only works in Chromium, so we only capture archives in Chromium.
+    // We can later snapshot them in different browsers in the cloud.
+    // TODO: I'm not sure if this is the best way to detect the browser version, but
+    // it seems to work
+    if (page.context().browser().browserType().name() !== 'chromium') {
+      await use();
+      return;
+    }
+
+    const completeArchive = await createResourceArchive({
+      page,
+      networkTimeout: resourceArchiveTimeout,
+      assetDomains,
+    });
+    await use();
+
+    if (!disableAutoSnapshot) {
+      await takeSnapshot(page, testInfo);
+    }
+
+    const resourceArchive = await completeArchive();
+    const snapshots: Map<string, Buffer> = chromaticSnapshots.get(testId) || new Map();
+
+    const chromaticStorybookParams = {
+      ...(delay && { delay }),
+      ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
+      ...(diffThreshold && { diffThreshold }),
+      ...(forcedColors && { forcedColors }),
+      ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
+      ...(prefersReducedMotion && { prefersReducedMotion }),
+      ...(cropToViewport && { cropToViewport }),
+    };
+
+    await writeTestResult(
+      { ...testInfo, pageUrl: page.url(), viewport: page.viewportSize() },
+      Object.fromEntries(snapshots),
+      resourceArchive,
+      chromaticStorybookParams
+    );
+
+    trackComplete();
+  } finally {
+    // make sure we clear the value associated with this test ID, so the shared chromaticSnapshots object stays small
+    chromaticSnapshots.delete(testId);
+  }
+};
 
 // We do this slightly odd thing (makeTest) to avoid importing playwright multiple times when
 // linking this package. To avoid the main entry, you can:
@@ -26,7 +97,7 @@ export const makeTest = (
     PlaywrightWorkerArgs & PlaywrightWorkerOptions
   >
 ) =>
-  base.extend<ChromaticConfig & { save: void }>({
+  base.extend<ChromaticConfig & { chromaticSnapshot: void }>({
     // ChromaticConfig defaults
     delay: [undefined, { option: true }],
     diffIncludeAntiAliasing: [undefined, { option: true }],
@@ -37,73 +108,11 @@ export const makeTest = (
     prefersReducedMotion: [undefined, { option: true }],
     resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
     assetDomains: [[], { option: true }],
+    cropToViewport: [undefined, { option: true }],
 
-    save: [
-      async (
-        {
-          page,
-          delay,
-          diffIncludeAntiAliasing,
-          diffThreshold,
-          disableAutoSnapshot,
-          forcedColors,
-          pauseAnimationAtEnd,
-          prefersReducedMotion,
-          resourceArchiveTimeout,
-          assetDomains,
-        },
-        use,
-        testInfo
-      ) => {
-        trackRun();
-
-        // CDP only works in Chromium, so we only capture archives in Chromium.
-        // We can later snapshot them in different browsers in the cloud.
-        // TODO: I'm not sure if this is the best way to detect the browser version, but
-        // it seems to work
-        if (page.context().browser().browserType().name() !== 'chromium') {
-          await use();
-          return;
-        }
-
-        const completeArchive = await createResourceArchive({
-          page,
-          networkTimeout: resourceArchiveTimeout,
-          assetDomains,
-        });
-        await use();
-
-        if (!disableAutoSnapshot) {
-          await takeSnapshot(page, testInfo);
-        }
-
-        const resourceArchive = await completeArchive();
-
-        const snapshots = Object.fromEntries(
-          testInfo.attachments
-            .filter((a) => a.contentType === contentType && !!a.body)
-            .map(({ name, body }) => [name, body])
-        ) as Record<string, Buffer>;
-
-        const chromaticStorybookParams = {
-          ...(delay && { delay }),
-          ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
-          ...(diffThreshold && { diffThreshold }),
-          ...(forcedColors && { forcedColors }),
-          ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
-          ...(prefersReducedMotion && { prefersReducedMotion }),
-          viewports: [page.viewportSize().width],
-        };
-
-        await writeTestResult(
-          { ...testInfo, pageUrl: page.url() },
-          snapshots,
-          resourceArchive,
-          chromaticStorybookParams
-        );
-
-        trackComplete();
-      },
+    chromaticSnapshot: [
+      performChromaticSnapshot,
+      // ensures this fixture runs without having to be explicitly called (https://playwright.dev/docs/test-fixtures#automatic-fixtures)
       { auto: true },
     ],
   });

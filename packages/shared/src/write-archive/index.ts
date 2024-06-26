@@ -1,23 +1,13 @@
-import { outputFile, ensureDir, outputJson } from 'fs-extra';
 import { join } from 'path';
+import { outputFile, ensureDir, outputJSONFile } from '../utils/filePaths';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';
 import type { ResourceArchive } from '../resource-archive';
 import type { ChromaticStorybookParameters } from '../types';
-
-// @storybook/csf's sanitize function, we could import this
-export const sanitize = (string: string) => {
-  return (
-    string
-      .toLowerCase()
-      // eslint-disable-next-line no-useless-escape
-      .replace(/[ ’–—―′¿'`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-+/, '')
-      .replace(/-+$/, '')
-  );
-};
+import { Viewport } from '../utils/viewport';
+import { snapshotFileName, snapshotId } from './snapshot-files';
+import { createStories, storiesFileName } from './stories-files';
 
 // We write a collection of DOM snapshots and a resource archive in the following locations:
 // <test-title>.stories.json
@@ -25,9 +15,10 @@ export const sanitize = (string: string) => {
 // archive/<file>.<ext>
 
 interface E2ETestInfo {
-  title: string;
+  titlePath: string[];
   outputDir: string;
   pageUrl: string;
+  viewport: Viewport;
 }
 
 export async function writeTestResult(
@@ -36,14 +27,24 @@ export async function writeTestResult(
   archive: ResourceArchive,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { title, outputDir, pageUrl } = e2eTestInfo;
+  const { titlePath, outputDir, pageUrl, viewport } = e2eTestInfo;
+  // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
+  const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
+    // make sure we remove file extensions, even if the file name doesn't have .spec or .test or.cy
+    // possible extensions:
+    // playwright: https://playwright.dev/docs/test-configuration#filtering-tests
+    // cypress: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Spec-files
+    pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '').replace(/\.(spec|test|cy)$/, '')
+  );
+  // in Storybook, `/` splits the title out into hierarchies (folders)
+  const title = titlePathWithoutFileExtensions.join('/');
   // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
   // we want to write one level above that
   const finalOutputDir = join(outputDir, '..', 'chromatic-archives');
 
   const archiveDir = join(finalOutputDir, 'archive');
 
-  await ensureDir(finalOutputDir);
+  await ensureDir(archiveDir);
 
   logger.log(`Writing test results for "${title}"`);
 
@@ -74,46 +75,20 @@ export async function writeTestResult(
       const snapshot = new DOMSnapshot(domSnapshot);
       const mappedSnapshot = await snapshot.mapAssetPaths(sourceMap);
 
-      await outputFile(
-        join(archiveDir, `${sanitize(title)}-${sanitize(name)}.snapshot.json`),
-        mappedSnapshot
-      );
+      const snapshotFile = snapshotFileName(snapshotId(title, name), viewport);
+      await outputFile(join(archiveDir, snapshotFile), mappedSnapshot);
     })
   );
 
-  await writeStoriesFile(
-    join(finalOutputDir, `${sanitize(title)}.stories.json`),
-    title,
-    domSnapshots,
-    chromaticStorybookParams
-  );
+  const storiesFile = storiesFileName(title);
+  const storiesJson = createStories(title, domSnapshots, chromaticStorybookParams);
+  await outputJSONFile(join(finalOutputDir, storiesFile), storiesJson);
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
   if (errors.length > 0) {
     logger.log(`Encountered ${errors.length} errors archiving resources, writing to 'errors.json'`);
-    await outputJson(join(archiveDir, `errors.json`), {
+    await outputJSONFile(join(archiveDir, `errors.json`), {
       errors: Object.fromEntries(errors),
     });
   }
-}
-
-async function writeStoriesFile(
-  storiesFilename: string,
-  title: string,
-  domSnapshots: Record<string, Buffer>,
-  chromaticStorybookParams: ChromaticStorybookParameters
-) {
-  logger.log(`Writing ${storiesFilename}`);
-  await outputJson(storiesFilename, {
-    title,
-    stories: Object.keys(domSnapshots).map((name) => ({
-      name,
-      parameters: {
-        server: { id: `${sanitize(title)}-${sanitize(name)}.snapshot.json` },
-        chromatic: {
-          ...chromaticStorybookParams,
-        },
-      },
-    })),
-  });
 }

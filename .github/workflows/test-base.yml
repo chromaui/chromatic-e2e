@@ -1,6 +1,11 @@
-name: Test (base)
+# Runs linting and unit tests
+name: Test Base
 
-on: [push]
+on:
+  workflow_call:
+    secrets:
+      codacyProjectToken:
+        required: true
 
 jobs:
   test:
@@ -20,7 +25,7 @@ jobs:
 
       - name: Install Playwright
         run: |
-          yarn playwright install    
+          yarn playwright install
 
       - name: Build
         run: |
@@ -33,3 +38,9 @@ jobs:
       - name: Run tests
         run: |
           yarn run test:unit
+
+      - name: Report code coverage to Codacy
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r packages/cypress/coverage/lcov.info -r packages/playwright/coverage/lcov.info -r packages/shared/coverage/lcov.info
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.codacyProjectToken }}

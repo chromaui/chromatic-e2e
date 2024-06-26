@@ -28,8 +28,9 @@ export interface ChromaticConfig {
   // (needed when, for example, CI environment can't access the archives later on)
   // ex: www.some-domain.com
   assetDomains?: string[];
+
+  // Crop snapshots to the viewport size.
+  cropToViewport?: boolean;
 }
 
-export interface ChromaticStorybookParameters extends Omit<ChromaticConfig, 'disableAutoSnapshot'> {
-  viewports: number[];
-}
+export type ChromaticStorybookParameters = Omit<ChromaticConfig, 'disableAutoSnapshot'>;

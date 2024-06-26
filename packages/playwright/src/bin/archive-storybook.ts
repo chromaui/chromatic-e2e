@@ -1,10 +1,18 @@
 #!/usr/bin/env node
 
-import { archiveStorybook } from '@chromaui/shared-e2e/archive-storybook';
+import { archiveStorybook } from '@chromatic-com/shared-e2e/archive-storybook';
 import path from 'path';
+import { DEFAULT_OUTPUT_DIR } from '../constants';
 
 // Discard first two entries (exec path and file path)
 const args = process.argv.slice(2);
 const configDir = path.resolve(__dirname, '../storybook-config');
 
-archiveStorybook(args, configDir);
+try {
+  archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);
+} catch (err) {
+  // Throwing the error results in a large output of minified code and a stacktrace that is
+  // likely not helpful to users, so this should hide the noise.
+  console.error(err.message);
+  process.exitCode = 1;
+}

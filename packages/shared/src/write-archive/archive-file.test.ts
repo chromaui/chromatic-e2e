@@ -60,7 +60,7 @@ describe('ArchiveFile', () => {
       expect(filePath).toEqual('/some/directory/ok.png');
     });
 
-    it('does not add a file extension when response has no content type', () => {
+    it('adds a default tmp file extension when response has no content type', () => {
       const noContentType = { ...response };
       delete noContentType.contentType;
 
@@ -71,7 +71,7 @@ describe('ArchiveFile', () => {
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/some/directory/ok');
+      expect(filePath).toEqual('/some/directory/ok.tmp');
     });
 
     it('prepends domain name (if archiving additional domains)', () => {
@@ -88,6 +88,38 @@ describe('ArchiveFile', () => {
       const filePath = archiveFile.toFileSystemPath();
 
       expect(filePath).toEqual('/localhost3A9999/some/directory/hi.png');
+    });
+
+    it('appends encoded string to reserved SB files', () => {
+      const archiveFile = createArchiveFile('http://localhost:333/index.json');
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toMatch(new RegExp('/index-[a-z0-9]+.json'));
+    });
+
+    it('appends encoded string to reserved SB files: main.iframe', () => {
+      const archiveFile = createArchiveFile('http://localhost:333/main.iframe.bundle.js');
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toMatch(new RegExp('/main.iframe.bundle-[a-z0-9]+.js'));
+    });
+
+    it('appends encoded string to reserved SB files: runtime~main.iframe', () => {
+      const archiveFile = createArchiveFile('http://localhost:333/runtime~main.iframe.bundle.js');
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toMatch(new RegExp('/runtime~main.iframe.bundle-[a-z0-9]+.js'));
+    });
+
+    it('appends encoded string to reserved SB files: sb-preview/runtime.js', () => {
+      const archiveFile = createArchiveFile('http://localhost:333/sb-preview/runtime.js');
+
+      const filePath = archiveFile.toFileSystemPath();
+
+      expect(filePath).toMatch(new RegExp('/sb-preview/runtime-[a-z0-9]+.js'));
     });
   });
 

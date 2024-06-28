@@ -48,6 +48,7 @@ export const createResourceArchive = async ({
 
   return async () => {
     await idle(page, networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS);
+    await resourceArchiver.close();
 
     return resourceArchiver.archive;
   };

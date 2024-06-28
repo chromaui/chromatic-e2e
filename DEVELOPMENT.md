@@ -7,7 +7,7 @@ This repository is a Yarn 4 monorepo containing the following packages:
 - [playwright](https://github.com/chromaui/chromatic-e2e/tree/main/packages/playwright)
   - Chromatic E2E Visual Test integration for Playwright
 - [shared](https://github.com/chromaui/chromatic-e2e/tree/main/packages/shared)
-  - Internal workspace package shared by the integrations above
+  - Internal workspace package shared by the integrations above (does not get published individually)
 
 ### Requirements
 

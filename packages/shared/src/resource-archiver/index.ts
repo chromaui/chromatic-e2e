@@ -111,11 +111,13 @@ export class ResourceArchiver {
     // Pausing a response stage with a response
     if (responseStatusCode) {
       await this.handleSuccessfulResponse(
-        request,
-        requestId,
-        responseStatusCode,
-        responseStatusText,
-        responseHeaders,
+        {
+          request,
+          requestId,
+          responseStatusCode,
+          responseStatusText,
+          responseHeaders,
+        },
         requestUrl,
         isRequestFromAllowedDomain
       );
@@ -129,14 +131,16 @@ export class ResourceArchiver {
   }
 
   private async handleSuccessfulResponse(
-    request: Protocol.Fetch.requestPausedPayload['request'],
-    requestId: Protocol.Fetch.requestPausedPayload['requestId'],
-    responseStatusCode: Protocol.Fetch.requestPausedPayload['responseStatusCode'],
-    responseStatusText: Protocol.Fetch.requestPausedPayload['responseStatusText'],
-    responseHeaders: Protocol.Fetch.requestPausedPayload['responseHeaders'],
+    requestPausedPayload: Pick<
+      Protocol.Fetch.requestPausedPayload,
+      'request' | 'requestId' | 'responseStatusCode' | 'responseStatusText' | 'responseHeaders'
+    >,
     requestUrl: URL,
     isRequestFromAllowedDomain: boolean
   ) {
+    const { request, requestId, responseStatusCode, responseStatusText, responseHeaders } =
+      requestPausedPayload;
+
     if ([301, 302, 307, 308].includes(responseStatusCode)) {
       await this.clientSend(request, 'Fetch.continueRequest', {
         requestId,

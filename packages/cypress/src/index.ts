@@ -35,19 +35,6 @@ const writeArchives = async ({
   pageUrl,
   viewport,
 }: WriteArchivesParams) => {
-  const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
-    return [
-      key,
-      {
-        ...value,
-        // we can't use Buffer in the browser (when we collect the responses)
-        // so we go through one by one here and bufferize them
-        // @ts-expect-error will fix when Cypress has its own package
-        body: Buffer.from(value.body, 'utf8'),
-      },
-    ];
-  });
-
   const allSnapshots = Object.fromEntries(
     // manual snapshots can be given a name; otherwise, just use the snapshot's place in line as the name
     domSnapshots.map(({ name, snapshot }, index) => [
@@ -66,7 +53,7 @@ const writeArchives = async ({
       viewport,
     },
     allSnapshots,
-    Object.fromEntries(bufferedArchiveList),
+    resourceArchive,
     chromaticStorybookParams
   );
 };

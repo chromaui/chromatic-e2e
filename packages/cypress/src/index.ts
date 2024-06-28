@@ -1,7 +1,7 @@
 import type { elementNode } from 'rrweb-snapshot';
 import CDP, { Version } from 'chrome-remote-interface';
 import {
-  Watcher,
+  ResourceArchiver,
   writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
@@ -58,11 +58,11 @@ const writeArchives = async ({
   );
 };
 
-// using a single Watcher instance across all tests (for the test run)
+// using a single ResourceArchiver instance across all tests (for the test run)
 // each time a test completes, we'll save to disk whatever archives are there at that point.
 // This should be safe since the same resource from the same URL should be the same during the entire test run.
 // Cypress doesn't give us a way to share variables between the "before test" and "after test" lifecycle events on the server.
-let watcher: Watcher = null;
+let resourceArchiver: ResourceArchiver = null;
 
 let host = '';
 let port = 0;
@@ -82,9 +82,9 @@ const setupNetworkListener = async ({
       target: webSocketDebuggerUrl,
     });
 
-    if (!watcher) {
-      watcher = new Watcher(cdp, allowedDomains);
-      await watcher.watch();
+    if (!resourceArchiver) {
+      resourceArchiver = new ResourceArchiver(cdp, allowedDomains);
+      await resourceArchiver.watch();
     }
   } catch (err) {
     console.log('err', err);
@@ -95,11 +95,11 @@ const setupNetworkListener = async ({
 
 const saveArchives = (archiveInfo: WriteParams) => {
   return new Promise((resolve) => {
-    // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
-    // notice we're not calling + awaiting watcher.idle() here...
+    // the resourceArchiver's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
+    // notice we're not calling + awaiting resourceArchiver.idle() here...
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
-    return writeArchives({ ...archiveInfo, resourceArchive: watcher.archive }).then(() => {
+    return writeArchives({ ...archiveInfo, resourceArchive: resourceArchiver.archive }).then(() => {
       resolve(null);
     });
   });

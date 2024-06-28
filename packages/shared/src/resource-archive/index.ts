@@ -22,7 +22,7 @@ interface CDPClient {
   send: (eventName: keyof Protocol.CommandParameters, payload?: any) => Promise<any>;
 }
 
-export class Watcher {
+export class ResourceArchiver {
   public archive: ResourceArchive = {};
 
   private client: CDPClient;

@@ -1,6 +1,6 @@
 import type { Page } from 'playwright';
 import {
-  Watcher,
+  ResourceArchiver,
   ResourceArchive,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
   logger,
@@ -43,12 +43,12 @@ export const createResourceArchive = async ({
 }): Promise<() => Promise<ResourceArchive>> => {
   const cdpClient = await page.context().newCDPSession(page);
 
-  const watcher = new Watcher(cdpClient, assetDomains);
-  await watcher.watch();
+  const resourceArchiver = new ResourceArchiver(cdpClient, assetDomains);
+  await resourceArchiver.watch();
 
   return async () => {
     await idle(page, networkTimeout ?? DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS);
 
-    return watcher.archive;
+    return resourceArchiver.archive;
   };
 };

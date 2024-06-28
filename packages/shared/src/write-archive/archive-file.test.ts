@@ -1,5 +1,5 @@
 import { ArchiveFile } from './archive-file';
-import type { ArchiveResponse, UrlString } from '../resource-archive';
+import type { ArchiveResponse, UrlString } from '../resource-archiver';
 
 const imgPng =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';

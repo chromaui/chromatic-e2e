@@ -1,4 +1,4 @@
-export * from './resource-archive';
+export * from './resource-archiver';
 export * from './write-archive';
 export * from './utils/analytics';
 export * from './utils/logger';

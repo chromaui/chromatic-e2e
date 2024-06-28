@@ -1,7 +1,7 @@
 import type { elementNode } from 'rrweb-snapshot';
 import CDP, { Version } from 'chrome-remote-interface';
 import {
-  Watcher,
+  ResourceArchiver,
   writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
@@ -35,19 +35,6 @@ const writeArchives = async ({
   pageUrl,
   viewport,
 }: WriteArchivesParams) => {
-  const bufferedArchiveList = Object.entries(resourceArchive).map(([key, value]) => {
-    return [
-      key,
-      {
-        ...value,
-        // we can't use Buffer in the browser (when we collect the responses)
-        // so we go through one by one here and bufferize them
-        // @ts-expect-error will fix when Cypress has its own package
-        body: Buffer.from(value.body, 'utf8'),
-      },
-    ];
-  });
-
   const allSnapshots = Object.fromEntries(
     // manual snapshots can be given a name; otherwise, just use the snapshot's place in line as the name
     domSnapshots.map(({ name, snapshot }, index) => [
@@ -66,15 +53,15 @@ const writeArchives = async ({
       viewport,
     },
     allSnapshots,
-    Object.fromEntries(bufferedArchiveList),
+    resourceArchive,
     chromaticStorybookParams
   );
 };
 
 // Cypress doesn't have a way (on the server) of scoping things per-test.
-// Thus we'll make a lookup table of watchers (one per test, with testId as the key)
-// So we can still have test-specific watcher configuration (like which domains to archive)
-const watchers: Record<string, Watcher> = {};
+// Thus we'll make a lookup table of ResourceArchivers (one per test, with testId as the key)
+// So we can still have test-specific archiving configuration (like which domains to archive)
+const resourceArchivers: Record<string, ResourceArchiver> = {};
 
 let host = '';
 let port = 0;
@@ -96,8 +83,8 @@ const setupNetworkListener = async ({
       target: webSocketDebuggerUrl,
     });
 
-    watchers[testId] = new Watcher(cdp, allowedDomains);
-    await watchers[testId].watch();
+    resourceArchivers[testId] = new ResourceArchiver(cdp, allowedDomains);
+    await resourceArchivers[testId].watch();
   } catch (err) {
     console.log('err', err);
   }
@@ -108,7 +95,7 @@ const setupNetworkListener = async ({
 const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
   return new Promise((resolve) => {
     const { testId, ...rest } = archiveInfo;
-    if (!watchers[testId]) {
+    if (!resourceArchivers[testId]) {
       console.error('Unable to archive results for test');
       resolve(null);
     }
@@ -116,9 +103,11 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
     // notice we're not calling + awaiting watcher.idle() here...
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
-    return writeArchives({ ...rest, resourceArchive: watchers[testId].archive }).then(() => {
-      resolve(null);
-    });
+    return writeArchives({ ...rest, resourceArchive: resourceArchivers[testId].archive }).then(
+      () => {
+        resolve(null);
+      }
+    );
   });
 };
 

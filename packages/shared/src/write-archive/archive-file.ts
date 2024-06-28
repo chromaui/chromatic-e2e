@@ -2,7 +2,7 @@ import mime from 'mime';
 import path from 'path';
 import { createHash } from 'node:crypto';
 import { logger } from '../utils/logger';
-import type { ArchiveResponse, UrlString } from '../resource-archive';
+import type { ArchiveResponse, UrlString } from '../resource-archiver';
 
 const RESERVED_PATHNAMES: string[] = [
   // This is a list of filenames that are reserved for Storybook as a dev target.

@@ -22,7 +22,7 @@ interface CDPClient {
   send: (eventName: keyof Protocol.CommandParameters, payload?: any) => Promise<any>;
 }
 
-export class Watcher {
+export class ResourceArchiver {
   public archive: ResourceArchive = {};
 
   private client: CDPClient;
@@ -110,40 +110,17 @@ export class Watcher {
 
     // Pausing a response stage with a response
     if (responseStatusCode) {
-      if ([301, 302, 307, 308].includes(responseStatusCode)) {
-        await this.clientSend(request, 'Fetch.continueRequest', {
+      await this.handleSuccessfulResponse(
+        {
+          request,
           requestId,
-          interceptResponse: true,
-        });
-        return;
-      }
-
-      const result = await this.clientSend(request, 'Fetch.getResponseBody', {
-        requestId,
-      });
-      // Something has gone wrong and will be logged above
-      if (result === null) {
-        return;
-      }
-      const { body, base64Encoded } = result;
-
-      // If the Content-Type header is present, let's capture it.
-      const contentTypeHeader: Protocol.Fetch.HeaderEntry = responseHeaders.find(
-        ({ name }) => name.toLowerCase() === 'content-type'
+          responseStatusCode,
+          responseStatusText,
+          responseHeaders,
+        },
+        requestUrl,
+        isRequestFromAllowedDomain
       );
-
-      // No need to capture the response of the top level page request
-      const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
-      if (isRequestFromAllowedDomain && !isFirstRequest) {
-        this.archive[request.url] = {
-          statusCode: responseStatusCode,
-          statusText: responseStatusText,
-          body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
-          contentType: contentTypeHeader?.value,
-        };
-      }
-
-      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
       return;
     }
 
@@ -151,5 +128,52 @@ export class Watcher {
       requestId,
       interceptResponse: true,
     });
+  }
+
+  private async handleSuccessfulResponse(
+    requestPausedPayload: Pick<
+      Protocol.Fetch.requestPausedPayload,
+      'request' | 'requestId' | 'responseStatusCode' | 'responseStatusText' | 'responseHeaders'
+    >,
+    requestUrl: URL,
+    isRequestFromAllowedDomain: boolean
+  ) {
+    const { request, requestId, responseStatusCode, responseStatusText, responseHeaders } =
+      requestPausedPayload;
+
+    if ([301, 302, 307, 308].includes(responseStatusCode)) {
+      await this.clientSend(request, 'Fetch.continueRequest', {
+        requestId,
+        interceptResponse: true,
+      });
+      return;
+    }
+
+    const result = await this.clientSend(request, 'Fetch.getResponseBody', {
+      requestId,
+    });
+    // Something has gone wrong and will be logged above
+    if (result === null) {
+      return;
+    }
+    const { body, base64Encoded } = result;
+
+    // If the Content-Type header is present, let's capture it.
+    const contentTypeHeader: Protocol.Fetch.HeaderEntry = responseHeaders.find(
+      ({ name }) => name.toLowerCase() === 'content-type'
+    );
+
+    // No need to capture the response of the top level page request
+    const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
+    if (isRequestFromAllowedDomain && !isFirstRequest) {
+      this.archive[request.url] = {
+        statusCode: responseStatusCode,
+        statusText: responseStatusText,
+        body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
+        contentType: contentTypeHeader?.value,
+      };
+    }
+
+    await this.clientSend(request, 'Fetch.continueRequest', { requestId });
   }
 }

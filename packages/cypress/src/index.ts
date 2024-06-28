@@ -65,6 +65,7 @@ const resourceArchivers: Record<string, ResourceArchiver> = {};
 
 let host = '';
 let port = 0;
+let debuggerUrl = '';
 
 const setupNetworkListener = async ({
   allowedDomains,
@@ -74,13 +75,16 @@ const setupNetworkListener = async ({
   testId: string;
 }): Promise<null> => {
   try {
-    const { webSocketDebuggerUrl } = await Version({
-      host,
-      port,
-    });
+    if (!debuggerUrl) {
+      const { webSocketDebuggerUrl } = await Version({
+        host,
+        port,
+      });
+      debuggerUrl = webSocketDebuggerUrl;
+    }
 
     const cdp = await CDP({
-      target: webSocketDebuggerUrl,
+      target: debuggerUrl,
     });
 
     resourceArchivers[testId] = new ResourceArchiver(cdp, allowedDomains);
@@ -93,7 +97,7 @@ const setupNetworkListener = async ({
 };
 
 const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     const { testId, ...rest } = archiveInfo;
     if (!resourceArchivers[testId]) {
       console.error('Unable to archive results for test');
@@ -103,11 +107,15 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
     // notice we're not calling + awaiting watcher.idle() here...
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
-    return writeArchives({ ...rest, resourceArchive: resourceArchivers[testId].archive }).then(
-      () => {
-        resolve(null);
-      }
-    );
+
+    const archive = resourceArchivers[testId].archive;
+    // clean up the CDP instance
+    await resourceArchivers[testId].close();
+    // remove archives off of object after write them
+    delete resourceArchivers[testId];
+    return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
+      resolve(null);
+    });
   });
 };
 

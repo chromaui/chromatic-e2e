@@ -3,7 +3,7 @@ import { outputFile, ensureDir, outputJSONFile } from '../utils/filePaths';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';
-import type { ResourceArchive } from '../resource-archive';
+import type { ResourceArchive } from '../resource-archiver';
 import type { ChromaticStorybookParameters } from '../types';
 import { Viewport } from '../utils/viewport';
 import { snapshotFileName, snapshotId } from './snapshot-files';

@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.6.6
+
+### Patch Changes
+
+- 13b56be: Pass Cypress archive along instead of re-bufferizing; refactored resource-archiving code slightly
+
 ## 0.6.5
 
 ### Patch Changes

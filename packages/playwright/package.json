@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-com/playwright",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "description": "Chromatic Visual Regression Testing for Playwright",
   "repository": {
     "type": "git",

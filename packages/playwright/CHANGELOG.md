@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.15
+
+### Patch Changes
+
+- 13b56be: Pass Cypress archive along instead of re-bufferizing; refactored resource-archiving code slightly
+
 ## 0.6.14
 
 ### Patch Changes

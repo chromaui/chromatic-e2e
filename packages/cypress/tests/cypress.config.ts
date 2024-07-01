@@ -9,6 +9,11 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
     setupNodeEvents(on, config) {
       installPlugin(on, config);
+      on('task', {
+        directoryExists(directoryName) {
+          return true;
+        },
+      });
     },
   },
 });

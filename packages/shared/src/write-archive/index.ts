@@ -38,9 +38,7 @@ export async function writeTestResult(
   );
   // in Storybook, `/` splits the title out into hierarchies (folders)
   const title = titlePathWithoutFileExtensions.join('/');
-  // outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
-  // we want to write one level above that
-  const finalOutputDir = join(outputDir, '..', 'chromatic-archives');
+  const finalOutputDir = join(outputDir, 'chromatic-archives');
 
   const archiveDir = join(finalOutputDir, 'archive');
 

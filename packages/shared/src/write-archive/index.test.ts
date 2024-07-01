@@ -34,7 +34,7 @@ describe('writeTestResult', () => {
       // the default output directory in playwright
       {
         titlePath: ['file.spec.ts', 'Test Story'],
-        outputDir: resolve('test-results/test-story-chromium'),
+        outputDir: resolve('test-results'),
         pageUrl: 'http://localhost:3000/',
         viewport: { height: 800, width: 800 },
       },
@@ -90,7 +90,7 @@ describe('writeTestResult', () => {
       // the default output directory in playwright
       {
         titlePath: ['file.spec.ts', 'Toy Story'],
-        outputDir: resolve('test-results/toy-story-chromium'),
+        outputDir: resolve('test-results'),
         pageUrl: 'http://localhost:3000/',
         viewport: { height: 800, width: 800 },
       },
@@ -127,7 +127,7 @@ describe('writeTestResult', () => {
       {
         titlePath: ['file.spec.ts', 'Test Story'],
         // simulates setting a custom output directory in Playwright
-        outputDir: resolve('some-custom-directory/directory/test-story-chromium'),
+        outputDir: resolve('some-custom-directory/directory'),
         pageUrl: 'http://localhost:3000/',
         viewport: { height: 800, width: 800 },
       },
@@ -151,7 +151,7 @@ describe('writeTestResult', () => {
       await writeTestResult(
         {
           titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
-          outputDir: resolve('test-results/test-story-chromium'),
+          outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
           viewport: { height: 800, width: 800 },
         },
@@ -177,7 +177,7 @@ describe('writeTestResult', () => {
             '.someFunction',
             '.someFunction() calls something',
           ],
-          outputDir: resolve('test-results/test-story-chromium'),
+          outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
           viewport: { height: 800, width: 800 },
         },
@@ -199,7 +199,7 @@ describe('writeTestResult', () => {
       await writeTestResult(
         {
           titlePath: ['some.file.spec.ts', 'Test Story'],
-          outputDir: resolve('test-results/test-story-chromium'),
+          outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
           viewport: { height: 800, width: 800 },
         },
@@ -221,7 +221,7 @@ describe('writeTestResult', () => {
       await writeTestResult(
         {
           titlePath: ['some.file.cy.ts', 'Test Story'],
-          outputDir: resolve('test-results/test-story-chromium'),
+          outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
           viewport: { height: 800, width: 800 },
         },
@@ -243,7 +243,7 @@ describe('writeTestResult', () => {
       await writeTestResult(
         {
           titlePath: ['file.ts', 'Test Story'],
-          outputDir: resolve('test-results/test-story-chromium'),
+          outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
           viewport: { height: 800, width: 800 },
         },

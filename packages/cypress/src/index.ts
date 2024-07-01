@@ -58,34 +58,37 @@ const writeArchives = async ({
   );
 };
 
-// using a single ResourceArchiver instance across all tests (for the test run)
-// each time a test completes, we'll save to disk whatever archives are there at that point.
-// This should be safe since the same resource from the same URL should be the same during the entire test run.
-// Cypress doesn't give us a way to share variables between the "before test" and "after test" lifecycle events on the server.
-let resourceArchiver: ResourceArchiver = null;
+// Cypress doesn't have a way (on the server) of scoping things per-test.
+// Thus we'll make a lookup table of ResourceArchivers (one per test, with testId as the key)
+// So we can still have test-specific archiving configuration (like which domains to archive)
+const resourceArchivers: Record<string, ResourceArchiver> = {};
 
 let host = '';
 let port = 0;
+let debuggerUrl = '';
 
 const setupNetworkListener = async ({
   allowedDomains,
+  testId,
 }: {
   allowedDomains?: string[];
+  testId: string;
 }): Promise<null> => {
   try {
-    const { webSocketDebuggerUrl } = await Version({
-      host,
-      port,
-    });
+    if (!debuggerUrl) {
+      const { webSocketDebuggerUrl } = await Version({
+        host,
+        port,
+      });
+      debuggerUrl = webSocketDebuggerUrl;
+    }
 
     const cdp = await CDP({
-      target: webSocketDebuggerUrl,
+      target: debuggerUrl,
     });
 
-    if (!resourceArchiver) {
-      resourceArchiver = new ResourceArchiver(cdp, allowedDomains);
-      await resourceArchiver.watch();
-    }
+    resourceArchivers[testId] = new ResourceArchiver(cdp, allowedDomains);
+    await resourceArchivers[testId].watch();
   } catch (err) {
     console.log('err', err);
   }
@@ -93,13 +96,24 @@ const setupNetworkListener = async ({
   return null;
 };
 
-const saveArchives = (archiveInfo: WriteParams) => {
-  return new Promise((resolve) => {
-    // the resourceArchiver's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
-    // notice we're not calling + awaiting resourceArchiver.idle() here...
+const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
+  return new Promise(async (resolve) => {
+    const { testId, ...rest } = archiveInfo;
+    if (!resourceArchivers[testId]) {
+      console.error('Unable to archive results for test');
+      resolve(null);
+    }
+    // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
+    // notice we're not calling + awaiting watcher.idle() here...
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
-    return writeArchives({ ...archiveInfo, resourceArchive: resourceArchiver.archive }).then(() => {
+
+    const archive = resourceArchivers[testId].archive;
+    // clean up the CDP instance
+    await resourceArchivers[testId].close();
+    // remove archives off of object after write them
+    delete resourceArchivers[testId];
+    return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
       resolve(null);
     });
   });

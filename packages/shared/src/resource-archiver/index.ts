@@ -20,6 +20,10 @@ export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 interface CDPClient {
   on: (eventName: keyof Protocol.Events, handlerFunction: (params?: any) => void) => void;
   send: (eventName: keyof Protocol.CommandParameters, payload?: any) => Promise<any>;
+  // Playwright's way of closing the client
+  detach?: () => void;
+  // Cypress' way of closing the client
+  close?: () => void;
 }
 
 export class ResourceArchiver {
@@ -49,6 +53,15 @@ export class ResourceArchiver {
   async watch() {
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
     await this.client.send('Fetch.enable');
+  }
+
+  async close() {
+    // Playwright's client uses detach(), Cypress' uses close()
+    if (this.client.close) {
+      await this.client.close();
+    } else if (this.client.detach) {
+      await this.client.detach();
+    }
   }
 
   async clientSend<T extends keyof Protocol.CommandParameters>(

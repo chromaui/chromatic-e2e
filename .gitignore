@@ -22,4 +22,5 @@ test-archives
 **/playwright/.cache/
 packages/playwright/test-results/
 packages/cypress/tests/cypress/downloads/
+packages/cypress/tests/cypress/new-downloads/
 packages/*/coverage/

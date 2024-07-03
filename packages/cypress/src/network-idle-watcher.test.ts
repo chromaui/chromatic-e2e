@@ -11,6 +11,8 @@ import { NetworkIdleWatcher } from './network-idle-watcher';
 
 */
 
+jest.useFakeTimers();
+
 it('Resolves when there is no network activity', async () => {
   const watcher = new NetworkIdleWatcher();
   await expect(watcher.idle()).resolves.toBeDefined();
@@ -47,11 +49,13 @@ it("Rejects if response didn't happen for request", async () => {
   const watcher = new NetworkIdleWatcher();
   // fire off request
   watcher.onRequest();
+  const promise = watcher.idle();
+  jest.runAllTimers();
   // no response fired off
-  await expect(watcher.idle()).rejects.toBeDefined();
+  await expect(promise).rejects.toBeDefined();
 });
 
-it.only("Resolves if response hasn't happened at time of idle(), but comes back before timeout", async () => {
+it("Resolves if response hasn't happened at time of idle(), but comes back before timeout", async () => {
   const watcher = new NetworkIdleWatcher();
   // fire off request
   watcher.onRequest();
@@ -59,10 +63,24 @@ it.only("Resolves if response hasn't happened at time of idle(), but comes back 
   const promise = watcher.idle();
 
   // response returns after idle() has been called
-  await waitForResponse(watcher, 2000);
+  waitForResponse(watcher, 2000);
+  jest.runAllTimers();
 
-  // no response fired off
   await expect(promise).resolves.toBeDefined();
+});
+
+it("Rejects if response hasn't happened at time of idle(), and doesn't come back before timeout", async () => {
+  const watcher = new NetworkIdleWatcher();
+  // fire off request
+  watcher.onRequest();
+
+  const promise = watcher.idle();
+
+  // response returns after idle() has been called, will take too long
+  waitForResponse(watcher, 10000);
+  jest.runAllTimers();
+
+  await expect(promise).rejects.toBeDefined();
 });
 
 const waitForResponse = async (watcher, timeInMs) => {

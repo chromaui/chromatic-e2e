@@ -2,12 +2,12 @@ export class NetworkIdleWatcher {
   private numInFlightRequests = 0;
 
   async idle() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       if (this.numInFlightRequests === 0) {
         resolve('cool');
       } else {
         setTimeout(() => {
-          resolve('done');
+          reject('done');
         }, 3000);
       }
     });

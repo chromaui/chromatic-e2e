@@ -16,10 +16,10 @@ it('Resolves when there is no network activity', async () => {
   await expect(watcher.idle()).resolves.toBeDefined();
 });
 
-it('Resolves when timeout is hit, if request never returns', async () => {
+it('Rejects when timeout is hit, if request never returns', async () => {
   const watcher = new NetworkIdleWatcher();
   // fire off request
   watcher.onRequest();
   // no response fired off
-  await expect(watcher.idle()).resolves.toBeDefined();
+  await expect(watcher.idle()).rejects.toBeDefined();
 });

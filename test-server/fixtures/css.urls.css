@@ -9,7 +9,7 @@ div {
 }
 
 .with-background-img {
-  background-image: url('/background-img.png');
+  background-image: url('/delayed-background-img.png');
 }
 
 .with-external-background-img {

@@ -51,7 +51,7 @@ app.get('/asset-paths/relative/purple.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
 });
 
-app.get('/background-img.png', (req, res) => {
+app.get('/delayed-background-img.png', (req, res) => {
   setTimeout(() => {
     res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
   }, 1000);

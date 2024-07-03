@@ -52,7 +52,9 @@ app.get('/asset-paths/relative/purple.png', (req, res) => {
 });
 
 app.get('/background-img.png', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+  setTimeout(() => {
+    res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+  }, 1000);
 });
 
 app.use(express.static(path.join(__dirname, 'fixtures/assets')));

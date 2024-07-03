@@ -16,14 +16,6 @@ it('Resolves when there is no network activity', async () => {
   await expect(watcher.idle()).resolves.toBeDefined();
 });
 
-it.skip('Rejects when timeout is hit, if request never returns', async () => {
-  const watcher = new NetworkIdleWatcher();
-  // fire off request
-  watcher.onRequest();
-  // no response fired off
-  await expect(watcher.idle()).rejects.toBeDefined();
-});
-
 it('Resolves when there is a single request and response', async () => {
   const watcher = new NetworkIdleWatcher();
 
@@ -35,7 +27,7 @@ it('Resolves when there is a single request and response', async () => {
 
 it('Resolves when there are an equal amount of requests and responses', async () => {
   const watcher = new NetworkIdleWatcher();
-
+  // in total 4 requests, and 4 responses
   watcher.onRequest();
   watcher.onResponse();
 
@@ -49,6 +41,28 @@ it('Resolves when there are an equal amount of requests and responses', async ()
   watcher.onResponse();
 
   await expect(watcher.idle()).resolves.toBeDefined();
+});
+
+it("Rejects if response didn't happen for request", async () => {
+  const watcher = new NetworkIdleWatcher();
+  // fire off request
+  watcher.onRequest();
+  // no response fired off
+  await expect(watcher.idle()).rejects.toBeDefined();
+});
+
+it.only("Resolves if response hasn't happened at time of idle(), but comes back before timeout", async () => {
+  const watcher = new NetworkIdleWatcher();
+  // fire off request
+  watcher.onRequest();
+
+  const promise = watcher.idle();
+
+  // response returns after idle() has been called
+  await waitForResponse(watcher, 2000);
+
+  // no response fired off
+  await expect(promise).resolves.toBeDefined();
 });
 
 const waitForResponse = async (watcher, timeInMs) => {

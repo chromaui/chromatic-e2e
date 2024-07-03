@@ -1,13 +1,19 @@
 export class NetworkIdleWatcher {
   private numInFlightRequests = 0;
-  // private idleTimer = null;
+  private idleTimer = null;
 
   async idle() {
     return new Promise((resolve, reject) => {
       if (this.numInFlightRequests === 0) {
         resolve('cool');
       } else {
-        reject('done');
+        this.idleTimer = setTimeout(() => {
+          if (this.numInFlightRequests !== 0) {
+            reject('done');
+          } else {
+            resolve('cool');
+          }
+        }, 3000);
       }
     });
   }

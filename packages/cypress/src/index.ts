@@ -97,7 +97,7 @@ const setupNetworkListener = async ({
 };
 
 const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     const { testId, ...rest } = archiveInfo;
     if (!resourceArchivers[testId]) {
       console.error('Unable to archive results for test');
@@ -110,11 +110,12 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
 
     const archive = resourceArchivers[testId].archive;
     // clean up the CDP instance
-    await resourceArchivers[testId].close();
-    // remove archives off of object after write them
-    delete resourceArchivers[testId];
-    return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
-      resolve(null);
+    return resourceArchivers[testId].close().then(() => {
+      // remove archives off of object after write them
+      delete resourceArchivers[testId];
+      return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
+        resolve(null);
+      });
     });
   });
 };

@@ -52,7 +52,8 @@ it("Resolves if response hasn't happened at time of idle(), but comes back befor
   const promise = watcher.idle();
 
   watcher.onResponse();
-  jest.runAllTimers();
+  // makes sure we finish the idle watcher as soon as the reponse comes back, and not waiting the full timeout duration
+  jest.advanceTimersByTime(1);
 
   await expect(promise).resolves.toBeDefined();
 });

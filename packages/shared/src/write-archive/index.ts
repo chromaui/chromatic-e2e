@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { outputFile, ensureDir, outputJSONFile } from '../utils/filePaths';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';

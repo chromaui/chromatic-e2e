@@ -1,24 +1,22 @@
+const TOTAL_TIMEOUT_DURATION = 3000;
+
 export class NetworkIdleWatcher {
   private numInFlightRequests = 0;
-  private idleTimer = null;
-  private bailIdleOnResponse = null;
+  private idleTimer: NodeJS.Timeout | null = null;
+  private exitIdleOnResponse: () => void | null = null;
 
   async idle() {
     return new Promise((resolve, reject) => {
       if (this.numInFlightRequests === 0) {
-        resolve('cool');
+        resolve(true);
       } else {
         this.idleTimer = setTimeout(() => {
-          if (this.numInFlightRequests !== 0) {
-            reject('done');
-          } else {
-            resolve('cool');
-          }
-        }, 3000);
+          reject('some responses not returned');
+        }, TOTAL_TIMEOUT_DURATION);
 
         // assign a function that resolves... and it can be used...
-        this.bailIdleOnResponse = () => {
-          resolve('cool');
+        this.exitIdleOnResponse = () => {
+          resolve(true);
         };
       }
     });
@@ -30,10 +28,10 @@ export class NetworkIdleWatcher {
 
   onResponse() {
     this.numInFlightRequests -= 1;
-    // if we get back down to 0 in meantime... would be nice to not wait 3s to resolve...
-    // anything we can do about that here?
+    // resolve if the in-flight request amount is now zero
     if (this.numInFlightRequests === 0) {
-      this.bailIdleOnResponse?.();
+      clearTimeout(this.idleTimer);
+      this.exitIdleOnResponse?.();
     }
   }
 }

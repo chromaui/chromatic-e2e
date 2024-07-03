@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 export default defineConfig({
   // `downloadsFolder` cannot be overridden in tests, so we're setting
   // this to a non-default value for asserting in the tests
-  downloadsFolder: 'cypress/new-downloads',
+  downloadsFolder: 'cypress/test-downloads',
   // needed since we use common mock images between Cypress and Playwright
   fixturesFolder: '../../../test-server/fixtures',
   screenshotOnRunFailure: false,

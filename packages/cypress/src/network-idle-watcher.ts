@@ -27,14 +27,14 @@ export class NetworkIdleWatcher {
     });
   }
 
-  onRequest() {
+  onRequest(url: string) {
     this.numInFlightRequests += 1;
-    console.log('REQUEST');
+    console.log('REQUEST', url);
   }
 
-  onResponse() {
+  onResponse(url: string) {
     this.numInFlightRequests -= 1;
-    console.log('RESPONSE');
+    console.log('RESPONSE', url);
     // resolve immediately if the in-flight request amount is now zero
     if (this.numInFlightRequests === 0) {
       clearTimeout(this.idleTimer);

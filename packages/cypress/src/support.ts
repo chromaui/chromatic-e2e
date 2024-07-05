@@ -5,10 +5,6 @@ const generateTestId = () => {
   return Cypress.currentTest.title;
 };
 
-const shouldTakeSnapshot = () => {
-  return !Cypress.env('disableAutoSnapshot') && !Cypress.config('isInteractive');
-};
-
 // these client-side lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
   // don't take snapshots when running `cypress open`
@@ -69,6 +65,7 @@ afterEach(() => {
               height: Cypress.config('viewportHeight'),
               width: Cypress.config('viewportWidth'),
             },
+            outputDir: Cypress.config('downloadsFolder'),
           },
         });
       });

@@ -56,6 +56,7 @@ export class ResourceArchiver {
   }
 
   async close() {
+    // Playwright's client uses detach(), Cypress' uses close()
     if (this.client.close) {
       await this.client.close();
     } else if (this.client.detach) {

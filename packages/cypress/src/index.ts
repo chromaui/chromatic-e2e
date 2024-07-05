@@ -97,7 +97,7 @@ const setupNetworkListener = async ({
 };
 
 const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     const { testId, ...rest } = archiveInfo;
     if (!resourceArchivers[testId]) {
       console.error('Unable to archive results for test');
@@ -108,13 +108,14 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
 
-    const archive = resourceArchivers[testId].archive;
+    const { archive } = resourceArchivers[testId];
     // clean up the CDP instance
-    await resourceArchivers[testId].close();
-    // remove archives off of object after write them
-    delete resourceArchivers[testId];
-    return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
-      resolve(null);
+    return resourceArchivers[testId].close().then(() => {
+      // remove archives off of object after write them
+      delete resourceArchivers[testId];
+      return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
+        resolve(null);
+      });
     });
   });
 };

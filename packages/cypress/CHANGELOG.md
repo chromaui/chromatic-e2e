@@ -1,5 +1,12 @@
 # chromatic-cypress
 
+## 0.6.15
+
+### Patch Changes
+
+- 6144340: - Use the configured `downloadsFolder` in Cypress as the output dir for archives
+  - Move Playwright-related path logic out of the shared package into the Playwright package
+
 ## 0.6.14
 
 ### Patch Changes

@@ -1,6 +1,10 @@
 import { snapshot } from 'rrweb-snapshot';
 import './commands';
 
+const generateTestId = () => {
+  return Cypress.currentTest.title;
+};
+
 // these client-side lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
   // don't take snapshots when running `cypress open`
@@ -13,7 +17,7 @@ beforeEach(() => {
   cy.wrap([]).as('manualSnapshots');
   cy.task('prepareArchives', {
     action: 'setup-network-listener',
-    payload: { allowedDomains: Cypress.env('assetDomains') },
+    payload: { allowedDomains: Cypress.env('assetDomains'), testId: generateTestId() },
   });
 });
 
@@ -36,6 +40,7 @@ afterEach(() => {
           payload: {
             // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
             testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
+            testId: generateTestId(),
             domSnapshots: [...manualSnapshots, ...automaticSnapshots],
             chromaticStorybookParams: {
               ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),

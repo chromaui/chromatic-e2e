@@ -44,15 +44,15 @@ export class ResourceArchiver {
    */
   private firstUrl: URL;
 
-  private onRequestCallback?: () => void;
+  private onRequestCallback?: (url: string) => void;
 
-  private onResponseCallback?: () => void;
+  private onResponseCallback?: (url: string) => void;
 
   constructor(
     cdpClient: CDPClient,
     allowedDomains?: string[],
-    onRequest?: () => void,
-    onResponse?: () => void
+    onRequest?: (url: string) => void,
+    onResponse?: (url: string) => void
   ) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
@@ -112,18 +112,18 @@ export class ResourceArchiver {
       return;
     }
 
+    const requestUrl = new URL(request.url);
+
     // "The stage of the request can be determined by presence of responseErrorReason and responseStatusCode --
     // the request is at the response stage if either of these fields is present and in the request stage otherwise"
     // -- from https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#event-requestPaused
     const isResponse = !!(responseErrorReason || responseStatusCode);
 
     if (isResponse) {
-      this.onResponseCallback();
+      this.onResponseCallback(requestUrl.toString());
     } else {
-      this.onRequestCallback();
+      this.onRequestCallback(requestUrl.toString());
     }
-
-    const requestUrl = new URL(request.url);
 
     this.firstUrl ??= requestUrl;
 

@@ -2,7 +2,9 @@ const TOTAL_TIMEOUT_DURATION = 3000;
 
 export class NetworkIdleWatcher {
   private numInFlightRequests = 0;
+
   private idleTimer: NodeJS.Timeout | null = null;
+
   private exitIdleOnResponse: () => void | null = null;
 
   async idle() {
@@ -11,7 +13,7 @@ export class NetworkIdleWatcher {
         resolve(true);
       } else {
         this.idleTimer = setTimeout(() => {
-          reject('some responses not returned');
+          reject(new Error('some responses have not returned'));
         }, TOTAL_TIMEOUT_DURATION);
 
         // assign a function that resolves... and it can be used...

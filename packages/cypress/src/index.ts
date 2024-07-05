@@ -7,6 +7,7 @@ import {
   ResourceArchive,
   Viewport,
 } from '@chromatic-com/shared-e2e';
+import { NetworkIdleWatcher } from './network-idle-watcher';
 
 interface CypressSnapshot {
   // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)
@@ -62,6 +63,8 @@ const writeArchives = async ({
 // Thus we'll make a lookup table of ResourceArchivers (one per test, with testId as the key)
 // So we can still have test-specific archiving configuration (like which domains to archive)
 const resourceArchivers: Record<string, ResourceArchiver> = {};
+// same for network idle watchers
+const networkIdleWatchers: Record<string, NetworkIdleWatcher> = {};
 
 let host = '';
 let port = 0;
@@ -87,7 +90,14 @@ const setupNetworkListener = async ({
       target: debuggerUrl,
     });
 
-    resourceArchivers[testId] = new ResourceArchiver(cdp, allowedDomains);
+    const networkIdleWatcher = new NetworkIdleWatcher();
+    networkIdleWatchers[testId] = networkIdleWatcher;
+    resourceArchivers[testId] = new ResourceArchiver(
+      cdp,
+      allowedDomains,
+      networkIdleWatcher.onRequest,
+      networkIdleWatcher.onResponse
+    );
     await resourceArchivers[testId].watch();
   } catch (err) {
     console.log('err', err);

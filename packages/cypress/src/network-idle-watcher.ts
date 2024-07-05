@@ -29,10 +29,12 @@ export class NetworkIdleWatcher {
 
   onRequest() {
     this.numInFlightRequests += 1;
+    console.log('REQUEST');
   }
 
   onResponse() {
     this.numInFlightRequests -= 1;
+    console.log('RESPONSE');
     // resolve immediately if the in-flight request amount is now zero
     if (this.numInFlightRequests === 0) {
       clearTimeout(this.idleTimer);

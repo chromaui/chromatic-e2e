@@ -14,6 +14,7 @@ import {
   trackRun,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
 } from '@chromatic-com/shared-e2e';
+import { join } from 'node:path';
 import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 import { createResourceArchive } from './createResourceArchive';
 
@@ -72,8 +73,11 @@ export const performChromaticSnapshot = async (
       ...(cropToViewport && { cropToViewport }),
     };
 
+    // TestInfo.outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
+    // we want to write one level above that
+    const outputDir = join(testInfo.outputDir, '..');
     await writeTestResult(
-      { ...testInfo, pageUrl: page.url(), viewport: page.viewportSize() },
+      { ...testInfo, outputDir, pageUrl: page.url(), viewport: page.viewportSize() },
       Object.fromEntries(snapshots),
       resourceArchive,
       chromaticStorybookParams

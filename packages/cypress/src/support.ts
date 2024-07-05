@@ -69,6 +69,7 @@ afterEach(() => {
               height: Cypress.config('viewportHeight'),
               width: Cypress.config('viewportWidth'),
             },
+            outputDir: Cypress.config('downloadsFolder'),
           },
         });
       });

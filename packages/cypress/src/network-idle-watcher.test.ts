@@ -1,4 +1,4 @@
-import { NetworkIdleWatcher } from './network-idle-watcher';
+import { NetworkIdleWatcher, WATERFALL_BETWEEN_STEPS_DURATION } from './network-idle-watcher';
 
 const A_PAGE_URL = 'https://some-url.com';
 const A_RESOURCE_URL = 'https://some-url.com/images/cool.jpg';
@@ -59,8 +59,8 @@ it("Resolves if response hasn't happened at time of idle(), but comes back befor
   const promise = watcher.idle();
 
   watcher.onResponse(A_RESOURCE_URL);
-  // makes sure we finish the idle watcher as soon as the reponse comes back, and not waiting the full timeout duration
-  jest.advanceTimersByTime(1);
+  // makes sure we finish the idle watcher as soon as we can, and not waiting the full timeout duration
+  jest.advanceTimersByTime(WATERFALL_BETWEEN_STEPS_DURATION);
 
   await expect(promise).resolves.toBeDefined();
 });

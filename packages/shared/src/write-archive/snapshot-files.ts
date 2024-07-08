@@ -1,11 +1,15 @@
 import { readdir } from 'fs/promises';
 import { Viewport, parseViewport, viewportToString } from '../utils/viewport';
 import { sanitize } from './storybook-sanitize';
+import { MAX_FILE_NAME_LENGTH, truncateFileName } from '../utils/filePaths';
 
 const SNAPSHOT_FILE_EXT = 'snapshot.json';
 
 export function snapshotId(testTitle: string, snapshotName: string) {
-  return `${sanitize(testTitle)}-${sanitize(snapshotName)}`;
+  const fullSnapshotId = `${sanitize(testTitle)}-${sanitize(snapshotName)}`;
+  // Leave room for the viewport and extension that will be added when using this
+  // to create a full file path
+  return truncateFileName(fullSnapshotId, MAX_FILE_NAME_LENGTH - 25);
 }
 
 // NOTE: This is duplicated in the shared storybook preview.ts

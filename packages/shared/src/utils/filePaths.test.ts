@@ -7,6 +7,7 @@ import {
   readJSONFile,
   outputFile,
   outputJSONFile,
+  truncateFileName,
 } from './filePaths';
 
 jest.mock('fs');
@@ -115,5 +116,75 @@ describe('readJSONFile', () => {
     });
     const json = await readJSONFile('/some/path');
     expect(json).toEqual({ filePath: '/some/path' });
+  });
+});
+
+describe('truncateFileName', () => {
+  it('does nothing if file name is within valid length', () => {
+    const filePath = 'this/is/a/valid.file.length';
+
+    const truncated = truncateFileName(filePath);
+
+    expect(truncated).toEqual(filePath);
+    expect(truncated.split('/').at(-1)).toEqual('valid.file.length');
+  });
+
+  it('ignores length of path parts before the file name', () => {
+    const filePath =
+      '/a/bunch/of/paths/that/donot/affect-size/this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js';
+    expect(filePath.length).toBeGreaterThan(255);
+
+    const truncated = truncateFileName(filePath);
+
+    expect(truncated.split('/').at(-1).length).toEqual(255);
+    expect(truncated).toMatch(
+      new RegExp(
+        '^/a/bunch/of/paths/that/donot/affect-size/this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$'
+      )
+    );
+  });
+
+  it('truncates long file names without changing extension', () => {
+    const fileName =
+      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js';
+    expect(fileName.length).toBeGreaterThan(255);
+
+    const truncated = truncateFileName(fileName);
+
+    expect(truncated.length).toEqual(255);
+    expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$'));
+  });
+
+  it('truncates long file names without changing multiple extensions', () => {
+    const fileName =
+      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.one.js';
+    expect(fileName.length).toBeGreaterThan(255);
+
+    const truncated = truncateFileName(fileName);
+
+    expect(truncated.length).toEqual(255);
+    expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-th[a-z0-9]{4}.one.js$'));
+  });
+
+  it('truncates long names without an extension', () => {
+    const fileName =
+      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
+    expect(fileName.length).toBeGreaterThan(255);
+
+    const truncated = truncateFileName(fileName);
+
+    expect(truncated.length).toEqual(255);
+    expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-this-is-t[a-z0-9]{4}$'));
+  });
+
+  it('truncates long names to given size', () => {
+    const fileName =
+      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
+    expect(fileName.length).toBeGreaterThan(255);
+
+    const truncated = truncateFileName(fileName, 100);
+
+    expect(truncated.length).toEqual(100);
+    expect(truncated).toMatch(new RegExp('^this-title-.*-a-file-system-[a-z0-9]{4}$'));
   });
 });

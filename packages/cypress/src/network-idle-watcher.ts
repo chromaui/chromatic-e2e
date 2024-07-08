@@ -1,4 +1,4 @@
-const TOTAL_TIMEOUT_DURATION = 3000;
+export const TOTAL_TIMEOUT_DURATION = 3000;
 export const WATERFALL_BETWEEN_STEPS_DURATION = 200;
 
 // A Cypress equivalent of Playwright's `page.waitForLoadState()` (https://playwright.dev/docs/api/class-page#page-wait-for-load-state).
@@ -25,9 +25,11 @@ export class NetworkIdleWatcher {
         // assign a function that'll be called as soon as responses are all back
         this.exitIdleOnResponse = () => {
           this.waterfallBetweenStepsTimer = setTimeout(() => {
-            clearTimeout(this.idleTimer);
-            clearTimeout(this.waterfallBetweenStepsTimer);
-            resolve(true);
+            // only resolve if there STILL aren't any incoming requests (after waiting the timeout)
+            if (this.numInFlightRequests === 0) {
+              clearTimeout(this.idleTimer);
+              resolve(true);
+            }
           }, WATERFALL_BETWEEN_STEPS_DURATION);
         };
       }

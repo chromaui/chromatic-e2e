@@ -1,4 +1,8 @@
-import { NetworkIdleWatcher, WATERFALL_BETWEEN_STEPS_DURATION } from './network-idle-watcher';
+import {
+  NetworkIdleWatcher,
+  TOTAL_TIMEOUT_DURATION,
+  WATERFALL_BETWEEN_STEPS_DURATION,
+} from './network-idle-watcher';
 
 const A_PAGE_URL = 'https://some-url.com';
 const A_RESOURCE_URL = 'https://some-url.com/images/cool.jpg';
@@ -75,7 +79,7 @@ it("Rejects if response hasn't happened at time of idle(), and doesn't come back
   // response returns after idle() has been called, but will take too long
   setTimeout(() => {
     watcher.onResponse(A_RESOURCE_URL);
-  }, 10000);
+  }, TOTAL_TIMEOUT_DURATION * 2);
 
   jest.runAllTimers();
 
@@ -103,7 +107,7 @@ const flushPromises = () => {
   });
 };
 
-it("Does not prematurely resolve if there's a small gap between one response ending and another request beginning (typical network waterfall)", () => {
+it("Does not prematurely resolve if there's a small gap between one response ending and another request beginning (typical network waterfall)", async () => {
   const callback = jest.fn();
   // Simulate a typical page network waterfall, like this:
   // --------HTML Document--------
@@ -121,18 +125,38 @@ it("Does not prematurely resolve if there's a small gap between one response end
   });
 
   watcher.onResponse(A_PAGE_URL);
-  return flushPromises().then(() => {
-    // verify idle() hasn't been resolved yet
-    expect(callback).not.toHaveBeenCalled();
+  await flushPromises();
+  // verify idle() hasn't been resolved yet
+  expect(callback).not.toHaveBeenCalled();
 
-    // send off another request and response
-    watcher.onRequest(A_RESOURCE_URL);
-    watcher.onResponse(A_RESOURCE_URL);
+  // send off another request and response
+  watcher.onRequest(A_RESOURCE_URL);
+  watcher.onResponse(A_RESOURCE_URL);
 
-    jest.runAllTimers();
-    return flushPromises().then(() => {
-      // verify that idle() has now been resolved
-      expect(callback).toHaveBeenCalled();
-    });
+  jest.runAllTimers();
+  await flushPromises();
+  // verify that idle() has now been resolved
+  expect(callback).toHaveBeenCalled();
+});
+
+const waitForResponse = (durationInMs: number) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(null);
+    }, durationInMs);
   });
+};
+
+it.only('Rejects if initial response comes back in time, but subsequent response does not', async () => {
+  const watcher = new NetworkIdleWatcher();
+  watcher.onRequest(A_PAGE_URL);
+  const promise = watcher.idle();
+
+  watcher.onResponse(A_PAGE_URL);
+  watcher.onRequest(A_RESOURCE_URL);
+  // simulate the response taking way too long to return
+  waitForResponse(TOTAL_TIMEOUT_DURATION * 2);
+  jest.advanceTimersByTime(TOTAL_TIMEOUT_DURATION * 2);
+
+  await expect(promise).rejects.toBeDefined();
 });

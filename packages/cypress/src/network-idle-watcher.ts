@@ -1,5 +1,5 @@
 const TOTAL_TIMEOUT_DURATION = 3000;
-export const WATERFALL_BETWEEN_STEPS_DURATION = 1000;
+export const WATERFALL_BETWEEN_STEPS_DURATION = 200;
 
 // A Cypress equivalent of Playwright's `page.waitForLoadState()` (https://playwright.dev/docs/api/class-page#page-wait-for-load-state).
 // Intentionally simplistic since in Cypress this is just used to make sure there aren't any pending requests hanging around

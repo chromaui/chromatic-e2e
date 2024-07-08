@@ -103,9 +103,11 @@ const flushPromises = () => {
   });
 };
 
-it.only('Waits until all resources are returned, as long as each individual resource takes less time than the timeout (waterfall)', () => {
+it("Does not prematurely resolve if there's a small gap between one response ending and another request beginning (typical network waterfall)", () => {
   const callback = jest.fn();
-  // Do a couple requests and responses, making sure we DON'T resolve before we want to...
+  // Simulate a typical page network waterfall, like this:
+  // --------HTML Document--------
+  //                                -------Resource HTML Document requests-------
   const watcher = new NetworkIdleWatcher();
   // fire off an initial request
   watcher.onRequest(A_PAGE_URL);

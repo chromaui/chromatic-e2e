@@ -1,11 +1,13 @@
 import { NetworkIdleWatcher } from './network-idle-watcher';
 
-jest.useFakeTimers();
-
 const A_PAGE_URL = 'https://some-url.com';
 const A_RESOURCE_URL = 'https://some-url.com/images/cool.jpg';
 const ANOTHER_RESOURCE_URL = 'https://some-url.com/images/nice.jpg';
 const YET_ANOTHER_RESOURCE_URL = 'https://some-url.com/images/awesome.jpg';
+
+beforeEach(() => {
+  jest.useFakeTimers();
+});
 
 it('Resolves when there is no network activity', async () => {
   const watcher = new NetworkIdleWatcher();
@@ -78,4 +80,57 @@ it("Rejects if response hasn't happened at time of idle(), and doesn't come back
   jest.runAllTimers();
 
   await expect(promise).rejects.toBeDefined();
+});
+
+/*
+  Waits until the next event loop, so that promise resolutions happen before code that comes after it
+  This is needed because promises otherwise resolve after their assertions, like so:
+    promise.then(() => {
+      callback();
+    });
+
+    // some code that should cause `promise` to resolve
+
+    // this will fail because the promise resolution happens on the next event loop
+    expect(callback).toHaveBeenCalled();
+
+  `flushPromises` ensures that we wait for the (next event loop) promise resolutions before asserting.
+*/
+const flushPromises = () => {
+  // props to https://github.com/jestjs/jest/issues/2157#issuecomment-897935688
+  return new Promise((resolve) => {
+    jest.requireActual('timers').setImmediate(() => resolve(null));
+  });
+};
+
+it.only('Waits until all resources are returned, as long as each individual resource takes less time than the timeout (waterfall)', () => {
+  const callback = jest.fn();
+  // Do a couple requests and responses, making sure we DON'T resolve before we want to...
+  const watcher = new NetworkIdleWatcher();
+  // fire off an initial request
+  watcher.onRequest(A_PAGE_URL);
+  const promise = watcher.idle();
+
+  // For some reason, trying to assert on promise.resolves didn't work for the first assertion --
+  // The eventual resolution of the promise (later on) would retroactively fail the first assertion.
+  // Hence we're using a callback instead.
+  promise.then(() => {
+    callback();
+  });
+
+  watcher.onResponse(A_PAGE_URL);
+  return flushPromises().then(() => {
+    // verify idle() hasn't been resolved yet
+    expect(callback).not.toHaveBeenCalled();
+
+    // send off another request and response
+    watcher.onRequest(A_RESOURCE_URL);
+    watcher.onResponse(A_RESOURCE_URL);
+
+    jest.runAllTimers();
+    return flushPromises().then(() => {
+      // verify that idle() has now been resolved
+      expect(callback).toHaveBeenCalled();
+    });
+  });
 });

@@ -8,6 +8,8 @@ export class NetworkIdleWatcher {
 
   private idleTimer: NodeJS.Timeout | null = null;
 
+  private waterfallStepBetweenTimer: NodeJS.Timeout | null = null;
+
   private exitIdleOnResponse: () => void | null = null;
 
   async idle() {
@@ -21,7 +23,11 @@ export class NetworkIdleWatcher {
 
         // assign a function that'll be called as soon as responses are all back
         this.exitIdleOnResponse = () => {
-          resolve(true);
+          this.waterfallStepBetweenTimer = setTimeout(() => {
+            clearTimeout(this.idleTimer);
+            clearTimeout(this.waterfallStepBetweenTimer);
+            resolve(true);
+          }, 1000);
         };
       }
     });
@@ -37,7 +43,6 @@ export class NetworkIdleWatcher {
     console.log('RESPONSE', url);
     // resolve immediately if the in-flight request amount is now zero
     if (this.numInFlightRequests === 0) {
-      clearTimeout(this.idleTimer);
       this.exitIdleOnResponse?.();
     }
   }

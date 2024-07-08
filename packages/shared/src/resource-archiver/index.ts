@@ -120,9 +120,9 @@ export class ResourceArchiver {
     const isResponse = !!(responseErrorReason || responseStatusCode);
 
     if (isResponse) {
-      this.onResponseCallback(requestUrl.toString());
+      this.onResponseCallback?.(requestUrl.toString());
     } else {
-      this.onRequestCallback(requestUrl.toString());
+      this.onRequestCallback?.(requestUrl.toString());
     }
 
     this.firstUrl ??= requestUrl;

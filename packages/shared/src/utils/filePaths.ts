@@ -60,8 +60,10 @@ function hash(data: string) {
 export const MAX_FILE_NAME_LENGTH = 255;
 
 // Ensures that the file name part on the given `filePath` is not longer
-// than the given `maxLength`. If truncation is necessary, a hash is added
-// to avoid collisions on the file system.
+// than the given `maxLength`.
+// If truncation is necessary, a hash is added to avoid collisions on the
+// file system in cases where names match up until a differentiating part
+// at the end that is truncated.
 export function truncateFileName(filePath: string, maxLength: number = MAX_FILE_NAME_LENGTH) {
   const filePathParts = filePath.split('/');
   const fileName = filePathParts.pop();

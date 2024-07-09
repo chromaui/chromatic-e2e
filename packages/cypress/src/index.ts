@@ -136,16 +136,25 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
     const { archive } = resourceArchiver;
 
     // `finally` instead of `then` because we need to know idleness however it happened
-    return networkIdleWatcher.idle().finally(() => {
-      // clean up the CDP instance
-      return resourceArchivers[testId].close().then(() => {
-        // remove archives off of object after write them
-        delete resourceArchivers[testId];
-        return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
-          resolve(null);
-        });
-      });
-    });
+    return (
+      networkIdleWatcher
+        .idle()
+        // errors that happened when detecting network idleness should be logged,
+        // but shouldn't error out the entire Cypress test run
+        .catch((err: Error) => {
+          console.error(`Error when archiving resources for test "${testId}": ${err.message}`);
+        })
+        .finally(() => {
+          // clean up the CDP instance
+          return resourceArchivers[testId].close().then(() => {
+            // remove archives off of object after write them
+            delete resourceArchivers[testId];
+            return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
+              resolve(null);
+            });
+          });
+        })
+    );
   });
 };
 

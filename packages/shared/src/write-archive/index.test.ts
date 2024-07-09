@@ -3,7 +3,12 @@ import { NodeType } from 'rrweb-snapshot';
 import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
 
-jest.mock('../utils/filePaths');
+jest.mock('../utils/filePaths', () => ({
+  ...jest.requireActual('../utils/filePaths'),
+  ensureDir: jest.fn(),
+  outputFile: jest.fn(),
+  outputJSONFile: jest.fn(),
+}));
 
 const snapshotJson = {
   childNodes: [

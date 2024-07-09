@@ -15,6 +15,23 @@ beforeEach(() => {
   jest.resetAllMocks();
 });
 
+describe('storiesFileName', () => {
+  it('sanitizes the file name', () => {
+    const fileName = storiesFiles.storiesFileName('a title *() with $%& chars');
+    expect(fileName).toEqual('a-title-with-chars.stories.json');
+  });
+
+  it('truncates long file names', () => {
+    const title =
+      'this title has 260 chars exactly i know because i counted and that is too big for a file system blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah ok this right here this is the end';
+    expect(title.length).toBeGreaterThan(255);
+
+    const fileName = storiesFiles.storiesFileName(title);
+    expect(fileName.length).toEqual(230);
+    expect(fileName).toMatch(new RegExp('^this-title-has-.*blah-bl[a-z0-9]{4}.stories.json$'));
+  });
+});
+
 describe('createStories', () => {
   it('creates stories file JSON from DOM snapshots', () => {
     const title = 'some test title';

@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
+import { createHash } from 'node:crypto';
 import path from 'path';
 
 function rootDir() {
@@ -47,4 +48,39 @@ export async function outputJSONFile(filePath: string, data: any) {
 export async function readJSONFile(filePath: string) {
   const data = await readFile(filePath);
   return JSON.parse(data.toString());
+}
+
+// Generates a fixed length hash for the given `data`
+function hash(data: string) {
+  // `outputLength` of 2 bytes is 4 chars
+  return createHash('shake256', { outputLength: 2 }).update(data).digest('hex');
+}
+
+// 255 is a good upper bound on file name size to work on most platforms
+export const MAX_FILE_NAME_LENGTH = 255;
+
+// Ensures that the file name part on the given `filePath` is not longer
+// than the given `maxLength`.
+// If truncation is necessary, a hash is added to avoid collisions on the
+// file system in cases where names match up until a differentiating part
+// at the end that is truncated.
+export function truncateFileName(filePath: string, maxLength: number = MAX_FILE_NAME_LENGTH) {
+  const filePathParts = filePath.split('/');
+  const fileName = filePathParts.pop();
+  if (fileName.length <= maxLength) {
+    return filePath;
+  }
+
+  const hashedFileName = hash(fileName);
+  const [baseName, ...extensions] = fileName.split('.');
+  const ext = extensions.join('.');
+  const extLength = ext.length === 0 ? 0 : ext.length + 1; // +1 for leading `.` if needed
+
+  const lengthHashAndExt = hashedFileName.length + extLength;
+  const truncatedBaseName = baseName.slice(0, maxLength - lengthHashAndExt);
+  const truncatedFileName = [`${truncatedBaseName}${hashedFileName}`, ext]
+    .filter(Boolean)
+    .join('.');
+
+  return [...filePathParts, truncatedFileName].join('/');
 }

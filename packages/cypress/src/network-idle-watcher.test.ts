@@ -147,7 +147,7 @@ const waitForResponse = (durationInMs: number) => {
   });
 };
 
-it.only('Rejects if initial response comes back in time, but subsequent response does not', async () => {
+it('Rejects if initial response comes back in time, but subsequent response does not', async () => {
   const watcher = new NetworkIdleWatcher();
   watcher.onRequest(A_PAGE_URL);
   const promise = watcher.idle();
@@ -159,4 +159,49 @@ it.only('Rejects if initial response comes back in time, but subsequent response
   jest.advanceTimersByTime(TOTAL_TIMEOUT_DURATION * 2);
 
   await expect(promise).rejects.toBeDefined();
+});
+
+it('Does not prematurely resolve if subsequent waterfall step requests take some time (but stay within the timeout time)', async () => {
+  const callback = jest.fn();
+  // Simulate a network waterfall with multiple steps
+  // ---HTML Document---
+  //                     ---Resource HTML Document requests---
+  //                                                           ---Resource Resource requests---
+  const watcher = new NetworkIdleWatcher();
+  // fire off an initial request
+  watcher.onRequest(A_PAGE_URL);
+  const promise = watcher.idle();
+
+  // For some reason, trying to assert on promise.resolves didn't work for the first assertion --
+  // The eventual resolution of the promise (later on) would retroactively fail the first assertion.
+  // Hence we're using a callback instead.
+  promise.then(() => {
+    callback();
+  });
+
+  watcher.onResponse(A_PAGE_URL);
+
+  await flushPromises();
+  // verify idle() hasn't been resolved yet
+  expect(callback).not.toHaveBeenCalled();
+
+  // send off another request and response
+  watcher.onRequest(A_RESOURCE_URL);
+
+  waitForResponse(WATERFALL_BETWEEN_STEPS_DURATION * 2);
+  jest.advanceTimersByTime(WATERFALL_BETWEEN_STEPS_DURATION * 2);
+  watcher.onResponse(A_RESOURCE_URL);
+  await flushPromises();
+  // we still shouldn't call the network idle yet
+  expect(callback).not.toHaveBeenCalled();
+
+  watcher.onRequest(ANOTHER_RESOURCE_URL);
+  waitForResponse(WATERFALL_BETWEEN_STEPS_DURATION * 2);
+  jest.advanceTimersByTime(WATERFALL_BETWEEN_STEPS_DURATION * 2);
+  watcher.onResponse(ANOTHER_RESOURCE_URL);
+
+  jest.runAllTimers();
+  await flushPromises();
+  // verify that idle() has now been resolved
+  expect(callback).toHaveBeenCalled();
 });

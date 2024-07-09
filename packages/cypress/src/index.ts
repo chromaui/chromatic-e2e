@@ -95,8 +95,16 @@ const setupNetworkListener = async ({
     resourceArchivers[testId] = new ResourceArchiver(
       cdp,
       allowedDomains,
-      networkIdleWatcher.onRequest,
-      networkIdleWatcher.onResponse
+      // important that we don't directly pass networkIdleWatcher.onRequest here,
+      // as that'd bind `this` in that method to the ResourceArchiver
+      (url) => {
+        networkIdleWatcher.onRequest(url);
+      },
+      // important that we don't directly pass networkIdleWatcher.onResponse here,
+      // as that'd bind `this` in that method to the ResourceArchiver
+      (url) => {
+        networkIdleWatcher.onResponse(url);
+      }
     );
     await resourceArchivers[testId].watch();
   } catch (err) {
@@ -109,8 +117,15 @@ const setupNetworkListener = async ({
 const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
   return new Promise((resolve) => {
     const { testId, ...rest } = archiveInfo;
-    if (!resourceArchivers[testId]) {
+    const resourceArchiver = resourceArchivers[testId];
+    if (!resourceArchiver) {
       console.error('Unable to archive results for test');
+      resolve(null);
+    }
+
+    const networkIdleWatcher = networkIdleWatchers[testId];
+    if (!networkIdleWatcher) {
+      console.error('No idle watcher found for test');
       resolve(null);
     }
     // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
@@ -118,13 +133,17 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
     // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
     // so at this point (after the test) we're confident that the resources are all there already without having to wait more
 
-    const { archive } = resourceArchivers[testId];
-    // clean up the CDP instance
-    return resourceArchivers[testId].close().then(() => {
-      // remove archives off of object after write them
-      delete resourceArchivers[testId];
-      return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
-        resolve(null);
+    const { archive } = resourceArchiver;
+
+    // `finally` instead of `then` because we need to know idleness however it happened
+    return networkIdleWatcher.idle().finally(() => {
+      // clean up the CDP instance
+      return resourceArchivers[testId].close().then(() => {
+        // remove archives off of object after write them
+        delete resourceArchivers[testId];
+        return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
+          resolve(null);
+        });
       });
     });
   });

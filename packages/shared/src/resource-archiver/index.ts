@@ -106,6 +106,19 @@ export class ResourceArchiver {
       return;
     }
 
+    // "The stage of the request can be determined by presence of responseErrorReason and responseStatusCode --
+    // the request is at the response stage if either of these fields is present and in the request stage otherwise"
+    // -- from https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#event-requestPaused
+    const isResponse = !!(responseErrorReason || responseStatusCode);
+
+    // we are INTENTIONALLY calling these BEFORE the 304 status code check -- if an image were to be cached,
+    // we'd still want to note it here so our request/response ratio stays correct
+    if (isResponse) {
+      this.onResponseCallback?.(request.url);
+    } else {
+      this.onRequestCallback?.(request.url);
+    }
+
     // There's no reponse body for us to archive on 304s
     if (responseStatusCode === 304) {
       await this.clientSend(request, 'Fetch.continueRequest', { requestId });
@@ -113,17 +126,6 @@ export class ResourceArchiver {
     }
 
     const requestUrl = new URL(request.url);
-
-    // "The stage of the request can be determined by presence of responseErrorReason and responseStatusCode --
-    // the request is at the response stage if either of these fields is present and in the request stage otherwise"
-    // -- from https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#event-requestPaused
-    const isResponse = !!(responseErrorReason || responseStatusCode);
-
-    if (isResponse) {
-      this.onResponseCallback?.(requestUrl.toString());
-    } else {
-      this.onRequestCallback?.(requestUrl.toString());
-    }
 
     this.firstUrl ??= requestUrl;
 

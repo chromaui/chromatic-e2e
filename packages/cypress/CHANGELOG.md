@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.16
+
+### Patch Changes
+
+- 65e4d14: Fix ENAMETOOLONG errors by truncating snapshot and stories file names to ensure they are not too long to be written to the file system
+
 ## 0.6.15
 
 ### Patch Changes

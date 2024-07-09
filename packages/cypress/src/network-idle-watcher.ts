@@ -19,6 +19,7 @@ export class NetworkIdleWatcher {
         resolve(true);
       } else {
         this.idleTimer = setTimeout(() => {
+          clearTimeout(this.waterfallBetweenStepsTimer);
           reject(new Error('some responses have not returned'));
         }, TOTAL_TIMEOUT_DURATION);
 
@@ -38,12 +39,10 @@ export class NetworkIdleWatcher {
 
   onRequest(url: string) {
     this.numInFlightRequests += 1;
-    console.log('REQUEST', url);
   }
 
   onResponse(url: string) {
     this.numInFlightRequests -= 1;
-    console.log('RESPONSE', url);
     // resolve immediately if the in-flight request amount is now zero
     if (this.numInFlightRequests === 0) {
       this.exitIdleOnResponse?.();

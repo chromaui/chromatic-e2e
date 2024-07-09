@@ -10,8 +10,9 @@ const STORIES_FILE_EXT = 'stories.json';
 // Generates a file-system-safe file name from a story title
 export function storiesFileName(testTitle: string) {
   const fileName = [sanitize(testTitle), STORIES_FILE_EXT].join('.');
-  // Leave some room for built storybook extensions that may be added (like `-stories.iframe.bundle.js`)
-  return truncateFileName(fileName, MAX_FILE_NAME_LENGTH - 25);
+  // Leave room for built storybook extensions that may be added (like `-stories.iframe.bundle.js`)
+  const maxLength = MAX_FILE_NAME_LENGTH - 25;
+  return truncateFileName(fileName, maxLength);
 }
 
 // Converts the DOM snapshots into a JSON stories file.

@@ -9,7 +9,8 @@ export function snapshotId(testTitle: string, snapshotName: string) {
   const fullSnapshotId = `${sanitize(testTitle)}-${sanitize(snapshotName)}`;
   // Leave room for the viewport and extension that will be added when using this
   // to create a full file path
-  return truncateFileName(fullSnapshotId, MAX_FILE_NAME_LENGTH - 25);
+  const maxLength = MAX_FILE_NAME_LENGTH - 25;
+  return truncateFileName(fullSnapshotId, maxLength);
 }
 
 // NOTE: This is duplicated in the shared storybook preview.ts

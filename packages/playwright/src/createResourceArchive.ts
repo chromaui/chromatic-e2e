@@ -43,7 +43,7 @@ export const createResourceArchive = async ({
 }): Promise<() => Promise<ResourceArchive>> => {
   const cdpClient = await page.context().newCDPSession(page);
 
-  const resourceArchiver = new ResourceArchiver(cdpClient, assetDomains);
+  const resourceArchiver = new ResourceArchiver({ cdpClient, allowedDomains: assetDomains });
   await resourceArchiver.watch();
 
   return async () => {

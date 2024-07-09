@@ -26,6 +26,13 @@ interface CDPClient {
   close?: () => void;
 }
 
+interface ResourceArchiverParams {
+  cdpClient: CDPClient;
+  allowedDomains?: string[];
+  onRequest?: (url: string) => void;
+  onResponse?: (url: string) => void;
+}
+
 export class ResourceArchiver {
   public archive: ResourceArchive = {};
 
@@ -48,12 +55,7 @@ export class ResourceArchiver {
 
   private onResponseCallback?: (url: string) => void;
 
-  constructor(
-    cdpClient: CDPClient,
-    allowedDomains?: string[],
-    onRequest?: (url: string) => void,
-    onResponse?: (url: string) => void
-  ) {
+  constructor({ cdpClient, allowedDomains, onRequest, onResponse }: ResourceArchiverParams) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.assetDomains = (allowedDomains || []).map((domain) => `https://${domain}`);

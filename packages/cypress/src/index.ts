@@ -92,20 +92,20 @@ const setupNetworkListener = async ({
 
     const networkIdleWatcher = new NetworkIdleWatcher();
     networkIdleWatchers[testId] = networkIdleWatcher;
-    resourceArchivers[testId] = new ResourceArchiver(
-      cdp,
+    resourceArchivers[testId] = new ResourceArchiver({
+      cdpClient: cdp,
       allowedDomains,
       // important that we don't directly pass networkIdleWatcher.onRequest here,
       // as that'd bind `this` in that method to the ResourceArchiver
-      (url) => {
+      onRequest: (url) => {
         networkIdleWatcher.onRequest(url);
       },
       // important that we don't directly pass networkIdleWatcher.onResponse here,
       // as that'd bind `this` in that method to the ResourceArchiver
-      (url) => {
+      onResponse: (url) => {
         networkIdleWatcher.onResponse(url);
-      }
-    );
+      },
+    });
     await resourceArchivers[testId].watch();
   } catch (err) {
     console.log('err', err);

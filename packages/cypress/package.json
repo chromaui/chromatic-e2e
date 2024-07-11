@@ -79,6 +79,6 @@
     "@storybook/server-webpack5": "^8.1.5",
     "chrome-remote-interface": "^0.33.0",
     "rrweb-snapshot": "^2.0.0-alpha.11",
-    "storybook": "^8.1.5"
+    "storybook": "~8.1.5"
   }
 }

@@ -66,7 +66,7 @@ app.use(express.static(path.join(__dirname, 'fixtures/assets')));
 
 // Pages
 app.get('/', (req, res) => {
-  res.send(`${htmlIntro}<body>Testing</body>${htmlOutro}`);
+  res.send(`${htmlIntro}<body>Testing testing just a basic page</body>${htmlOutro}`);
 });
 
 // Asset path pages

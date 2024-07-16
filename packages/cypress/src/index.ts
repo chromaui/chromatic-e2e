@@ -66,6 +66,10 @@ const resourceArchivers: Record<string, ResourceArchiver> = {};
 // same for network idle watchers
 const networkIdleWatchers: Record<string, NetworkIdleWatcher> = {};
 
+const testSpecificArchiveUrls: Record<string, string[]> = {};
+
+let mainArchive: ResourceArchive = {};
+
 let host = '';
 let port = 0;
 let debuggerUrl = '';
@@ -92,6 +96,7 @@ const setupNetworkListener = async ({
 
     const networkIdleWatcher = new NetworkIdleWatcher();
     networkIdleWatchers[testId] = networkIdleWatcher;
+    testSpecificArchiveUrls[testId] = [];
     resourceArchivers[testId] = new ResourceArchiver({
       cdpClient: cdp,
       allowedDomains,
@@ -99,6 +104,7 @@ const setupNetworkListener = async ({
       // as that'd bind `this` in that method to the ResourceArchiver
       onRequest: (url) => {
         networkIdleWatcher.onRequest(url);
+        testSpecificArchiveUrls[testId].push(url);
       },
       // important that we don't directly pass networkIdleWatcher.onResponse here,
       // as that'd bind `this` in that method to the ResourceArchiver
@@ -128,12 +134,6 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
       console.error('No idle watcher found for test');
       resolve(null);
     }
-    // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
-    // notice we're not calling + awaiting watcher.idle() here...
-    // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
-    // so at this point (after the test) we're confident that the resources are all there already without having to wait more
-
-    const { archive } = resourceArchiver;
 
     // `finally` instead of `then` because we need to know idleness however it happened
     return (
@@ -145,11 +145,28 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
           console.error(`Error when archiving resources for test "${testId}": ${err.message}`);
         })
         .finally(() => {
+          // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
+          const { archive } = resourceArchiver;
+
+          mainArchive = {
+            ...mainArchive,
+            ...archive,
+          };
+
+          const finalArchive: ResourceArchive = {};
+
+          // make a subset of this archive that you will actually save
+          testSpecificArchiveUrls[testId].forEach((url) => {
+            if (mainArchive[url]) {
+              finalArchive[url] = mainArchive[url];
+            }
+          });
+
           // clean up the CDP instance
           return resourceArchivers[testId].close().then(() => {
             // remove archives off of object after write them
             delete resourceArchivers[testId];
-            return writeArchives({ ...rest, resourceArchive: archive }).then(() => {
+            return writeArchives({ ...rest, resourceArchive: finalArchive }).then(() => {
               resolve(null);
             });
           });

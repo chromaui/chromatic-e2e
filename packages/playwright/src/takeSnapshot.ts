@@ -9,13 +9,13 @@ const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.j
 // top-level key is the test ID, next level key is the name of the snapshot (which we expect to be unique)
 export const chromaticSnapshots: Map<string, Map<string, Buffer>> = new Map();
 
-async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
-async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
+async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<Buffer>;
+async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<Buffer>;
 async function takeSnapshot(
   page: Page,
   nameOrTestInfo: string | TestInfo,
   maybeTestInfo?: TestInfo
-): Promise<void> {
+): Promise<Buffer> {
   let name: string;
   let testId: string;
   if (typeof nameOrTestInfo === 'string') {
@@ -44,6 +44,8 @@ async function takeSnapshot(
     chromaticSnapshots.set(testId, new Map());
   }
   chromaticSnapshots.get(testId).set(name, bufferedSnapshot);
+
+  return bufferedSnapshot;
 }
 
 export { takeSnapshot };

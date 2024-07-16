@@ -105,7 +105,11 @@ const setupNetworkListener = async ({
       onRequest: (url) => {
         networkIdleWatcher.onRequest(url);
         // gather all the requests that went out, so we can archive even the cached resources
-        testSpecificArchiveUrls[testId].push(url);
+        // it's possible requests are sent out after we're done waiting for the test (and we delete `testSpecificArchiveUrls`
+        // when that happens), so ensure it still exists first.
+        if (testSpecificArchiveUrls[testId]) {
+          testSpecificArchiveUrls[testId].push(url);
+        }
       },
       // important that we don't directly pass networkIdleWatcher.onResponse here,
       // as that'd bind `this` in that method to the ResourceArchiver
@@ -172,6 +176,7 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
             // remove archives off of object after write them
             delete resourceArchivers[testId];
             // clean up now-unneeded objects
+            console.log('deleting', testId);
             delete testSpecificArchiveUrls[testId];
             delete networkIdleWatchers[testId];
             return writeArchives({ ...rest, resourceArchive: finalArchive }).then(() => {

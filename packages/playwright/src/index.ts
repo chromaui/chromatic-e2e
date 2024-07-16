@@ -1,9 +1,9 @@
-import { test as base, expect } from '@playwright/test';
+// import { test as base, expect } from '@playwright/test';
 
-import { makeTest } from './makeTest';
+// import { makeTest } from './makeTest';
 
-export const test = makeTest(base);
-export { expect };
+// export const test = makeTest(base);
+// export { expect };
 
 export { takeSnapshot } from './takeSnapshot';
 export { createResourceArchive } from './createResourceArchive';

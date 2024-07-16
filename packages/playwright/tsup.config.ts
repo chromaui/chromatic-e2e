@@ -20,7 +20,7 @@ export default defineConfig((options) => [
     ...common(options),
     entry: ['src/index.ts'],
     format: ['cjs', 'esm'],
-    platform: 'node',
+    platform: 'browser',
     esbuildOptions(options) {
       options.conditions = ['module'];
       // `require.resolve` is used in `takeSnapshot`, but that is not available in ESM builds. This adds a shim

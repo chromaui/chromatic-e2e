@@ -176,7 +176,6 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
             // remove archives off of object after write them
             delete resourceArchivers[testId];
             // clean up now-unneeded objects
-            console.log('deleting', testId);
             delete testSpecificArchiveUrls[testId];
             delete networkIdleWatchers[testId];
             return writeArchives({ ...rest, resourceArchive: finalArchive }).then(() => {

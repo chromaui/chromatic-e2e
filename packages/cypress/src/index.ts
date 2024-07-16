@@ -65,9 +65,9 @@ const writeArchives = async ({
 const resourceArchivers: Record<string, ResourceArchiver> = {};
 // same for network idle watchers
 const networkIdleWatchers: Record<string, NetworkIdleWatcher> = {};
-
+// Each test's (archivable) network requests. Includes requests that have a cached response.
 const testSpecificArchiveUrls: Record<string, string[]> = {};
-
+// The test-run-wide archive, includes all of the resources in all of the tests
 let mainArchive: ResourceArchive = {};
 
 let host = '';
@@ -104,6 +104,7 @@ const setupNetworkListener = async ({
       // as that'd bind `this` in that method to the ResourceArchiver
       onRequest: (url) => {
         networkIdleWatcher.onRequest(url);
+        // gather all the requests that went out, so we can archive even the cached resources
         testSpecificArchiveUrls[testId].push(url);
       },
       // important that we don't directly pass networkIdleWatcher.onResponse here,
@@ -124,7 +125,7 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
   return new Promise((resolve) => {
     const { testId, ...rest } = archiveInfo;
     const resourceArchiver = resourceArchivers[testId];
-    if (!resourceArchiver) {
+    if (!resourceArchiver || !testSpecificArchiveUrls[testId]) {
       console.error('Unable to archive results for test');
       resolve(null);
     }
@@ -145,9 +146,10 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
           console.error(`Error when archiving resources for test "${testId}": ${err.message}`);
         })
         .finally(() => {
-          // the watcher's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
+          // the archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
           const { archive } = resourceArchiver;
 
+          // include any new resources from this archive
           mainArchive = {
             ...mainArchive,
             ...archive,
@@ -158,6 +160,9 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
           // make a subset of this archive that you will actually save
           testSpecificArchiveUrls[testId].forEach((url) => {
             if (mainArchive[url]) {
+              // since the test's resources may have been cached,
+              // pull the resource off of the main (test-run-wide) archive,
+              // to get the actual resource
               finalArchive[url] = mainArchive[url];
             }
           });
@@ -166,6 +171,9 @@ const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
           return resourceArchivers[testId].close().then(() => {
             // remove archives off of object after write them
             delete resourceArchivers[testId];
+            // clean up now-unneeded objects
+            delete testSpecificArchiveUrls[testId];
+            delete networkIdleWatchers[testId];
             return writeArchives({ ...rest, resourceArchive: finalArchive }).then(() => {
               resolve(null);
             });

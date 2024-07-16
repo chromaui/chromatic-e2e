@@ -2,7 +2,7 @@ import type { elementNode } from 'rrweb-snapshot';
 import CDP, { Version } from 'chrome-remote-interface';
 import {
   ResourceArchiver,
-  writeTestResult,
+  // writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
   Viewport,
@@ -45,17 +45,17 @@ const writeArchives = async ({
     ])
   );
 
-  await writeTestResult(
-    {
-      titlePath: testTitlePath,
-      outputDir,
-      pageUrl,
-      viewport,
-    },
-    allSnapshots,
-    resourceArchive,
-    chromaticStorybookParams
-  );
+  // await writeTestResult(
+  //   {
+  //     titlePath: testTitlePath,
+  //     outputDir,
+  //     pageUrl,
+  //     viewport,
+  //   },
+  //   allSnapshots,
+  //   resourceArchive,
+  //   chromaticStorybookParams
+  // );
 };
 
 // using a single ResourceArchiver instance across all tests (for the test run)

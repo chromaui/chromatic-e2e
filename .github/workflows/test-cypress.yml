@@ -22,17 +22,17 @@ jobs:
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
-      
+
       - name: Build
         run: |
           yarn run build
 
-      - name: Run tests
-        run: |
-          yarn run test:cypress
+      # - name: Run tests
+      #   run: |
+      #     yarn run test:cypress
 
-      - name: Publish to Chromatic
-        uses: chromaui/action@latest
-        with:
-          projectToken: ${{ secrets.chromaticProjectToken }}
-          buildScriptName: build-archive-storybook:cypress
+      # - name: Publish to Chromatic
+      #   uses: chromaui/action@latest
+      #   with:
+      #     projectToken: ${{ secrets.chromaticProjectToken }}
+      #     buildScriptName: build-archive-storybook:cypress

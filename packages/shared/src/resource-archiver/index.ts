@@ -164,7 +164,7 @@ export class ResourceArchiver {
     );
 
     // No need to capture the response of the top level page request
-    const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
+    const isFirstRequest = false; // requestUrl.toString() === this.firstUrl.toString();
     if (isRequestFromAllowedDomain && !isFirstRequest) {
       this.archive[request.url] = {
         statusCode: responseStatusCode,

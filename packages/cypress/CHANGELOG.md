@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.6.17
+
+### Patch Changes
+
+- aa60b5a: Binary path to Storybook robustly handles multiple locations
+
 ## 0.6.16
 
 ### Patch Changes

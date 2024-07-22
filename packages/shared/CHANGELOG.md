@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.6.8
+
+### Patch Changes
+
+- aa60b5a: Binary path to Storybook robustly handles multiple locations
+
 ## 0.6.7
 
 ### Patch Changes

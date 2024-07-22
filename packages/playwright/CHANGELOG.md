@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.6.18
+
+### Patch Changes
+
+- aa60b5a: Binary path to Storybook robustly handles multiple locations
+
 ## 0.6.17
 
 ### Patch Changes

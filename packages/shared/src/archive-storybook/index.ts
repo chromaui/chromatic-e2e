@@ -10,8 +10,7 @@ export function archiveStorybook(
 ) {
   checkArchivesDirExists(defaultOutputDir);
   addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    const binPath = resolve(dirname(require.resolve('storybook/package.json')), './index.js');
-    execFileSync('node', [binPath, 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
+    execFileSync('node', [binPath(), 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
   });
 }
 
@@ -22,7 +21,15 @@ export function buildArchiveStorybook(
 ) {
   checkArchivesDirExists(defaultOutputDir);
   addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    const binPath = resolve(dirname(require.resolve('storybook/package.json')), './index.js');
-    execFileSync('node', [binPath, 'build', ...processArgs, '-c', configDir], { stdio: 'inherit' });
+    execFileSync('node', [binPath(), 'build', ...processArgs, '-c', configDir], {
+      stdio: 'inherit',
+    });
   });
+}
+
+function binPath() {
+  // eslint-disable-next-line global-require
+  const packageJson = require('storybook/package.json');
+  // reference the entry file based on the package.json `bin` value, since it changed between SB 8.1 and 8.2
+  return resolve(dirname(require.resolve('storybook/package.json')), packageJson.bin.storybook);
 }

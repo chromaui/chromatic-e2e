@@ -3,6 +3,10 @@ import { installPlugin } from '../dist';
 import { existsSync } from 'node:fs';
 
 export default defineConfig({
+  env: {
+    // used in tests for external-domain-but-archived resources
+    assetDomains: ['some.external'],
+  },
   // `downloadsFolder` cannot be overridden in tests, so we're setting
   // this to a non-default value for asserting in the tests
   downloadsFolder: 'cypress/test-downloads',

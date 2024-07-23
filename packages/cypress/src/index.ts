@@ -7,6 +7,7 @@ import {
   ResourceArchive,
   Viewport,
 } from '@chromatic-com/shared-e2e';
+import { NetworkIdleWatcher } from './network-idle-watcher';
 
 interface CypressSnapshot {
   // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)
@@ -58,34 +59,65 @@ const writeArchives = async ({
   );
 };
 
-// using a single ResourceArchiver instance across all tests (for the test run)
-// each time a test completes, we'll save to disk whatever archives are there at that point.
-// This should be safe since the same resource from the same URL should be the same during the entire test run.
-// Cypress doesn't give us a way to share variables between the "before test" and "after test" lifecycle events on the server.
-let resourceArchiver: ResourceArchiver = null;
+// Cypress doesn't have a way (on the server) of scoping things per-test.
+// Thus we'll make a lookup table of ResourceArchivers (one per test, with testId as the key)
+// So we can still have test-specific archiving configuration (like which domains to archive)
+const resourceArchivers: Record<string, ResourceArchiver> = {};
+// same for network idle watchers
+const networkIdleWatchers: Record<string, NetworkIdleWatcher> = {};
+// Each test's (archivable) network requests. Includes requests that have a cached response.
+const testSpecificArchiveUrls: Record<string, string[]> = {};
+// The test-run-wide archive, includes all of the resources in all of the tests
+let mainArchive: ResourceArchive = {};
 
 let host = '';
 let port = 0;
+let debuggerUrl = '';
 
 const setupNetworkListener = async ({
   allowedDomains,
+  testId,
 }: {
   allowedDomains?: string[];
+  testId: string;
 }): Promise<null> => {
   try {
-    const { webSocketDebuggerUrl } = await Version({
-      host,
-      port,
-    });
+    if (!debuggerUrl) {
+      const { webSocketDebuggerUrl } = await Version({
+        host,
+        port,
+      });
+      debuggerUrl = webSocketDebuggerUrl;
+    }
 
     const cdp = await CDP({
-      target: webSocketDebuggerUrl,
+      target: debuggerUrl,
     });
 
-    if (!resourceArchiver) {
-      resourceArchiver = new ResourceArchiver(cdp, allowedDomains);
-      await resourceArchiver.watch();
-    }
+    const networkIdleWatcher = new NetworkIdleWatcher();
+    networkIdleWatchers[testId] = networkIdleWatcher;
+    testSpecificArchiveUrls[testId] = [];
+    resourceArchivers[testId] = new ResourceArchiver({
+      cdpClient: cdp,
+      allowedDomains,
+      // important that we don't directly pass networkIdleWatcher.onRequest here,
+      // as that'd bind `this` in that method to the ResourceArchiver
+      onRequest: (url) => {
+        networkIdleWatcher.onRequest(url);
+        // gather all the requests that went out, so we can archive even the cached resources
+        // it's possible requests are sent out after we're done waiting for the test (and we delete `testSpecificArchiveUrls`
+        // when that happens), so ensure it still exists first.
+        if (testSpecificArchiveUrls[testId]) {
+          testSpecificArchiveUrls[testId].push(url);
+        }
+      },
+      // important that we don't directly pass networkIdleWatcher.onResponse here,
+      // as that'd bind `this` in that method to the ResourceArchiver
+      onResponse: (url) => {
+        networkIdleWatcher.onResponse(url);
+      },
+    });
+    await resourceArchivers[testId].watch();
   } catch (err) {
     console.log('err', err);
   }
@@ -93,15 +125,65 @@ const setupNetworkListener = async ({
   return null;
 };
 
-const saveArchives = (archiveInfo: WriteParams) => {
+const saveArchives = (archiveInfo: WriteParams & { testId: string }) => {
   return new Promise((resolve) => {
-    // the resourceArchiver's archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
-    // notice we're not calling + awaiting resourceArchiver.idle() here...
-    // that's because in Cypress, cy.visit() waits until all resources have loaded before finishing
-    // so at this point (after the test) we're confident that the resources are all there already without having to wait more
-    return writeArchives({ ...archiveInfo, resourceArchive: resourceArchiver.archive }).then(() => {
+    const { testId, ...rest } = archiveInfo;
+    const resourceArchiver = resourceArchivers[testId];
+    if (!resourceArchiver || !testSpecificArchiveUrls[testId]) {
+      console.error('Unable to archive results for test');
       resolve(null);
-    });
+    }
+
+    const networkIdleWatcher = networkIdleWatchers[testId];
+    if (!networkIdleWatcher) {
+      console.error('No idle watcher found for test');
+      resolve(null);
+    }
+
+    // `finally` instead of `then` because we need to know idleness however it happened
+    return (
+      networkIdleWatcher
+        .idle()
+        // errors that happened when detecting network idleness should be logged,
+        // but shouldn't error out the entire Cypress test run
+        .catch((err: Error) => {
+          console.error(`Error when archiving resources for test "${testId}": ${err.message}`);
+        })
+        .finally(() => {
+          // the archives come from the server, everything else (DOM snapshots, test info, etc) comes from the browser
+          const { archive } = resourceArchiver;
+
+          // include any new resources from this archive
+          mainArchive = {
+            ...mainArchive,
+            ...archive,
+          };
+
+          const finalArchive: ResourceArchive = {};
+
+          // make a subset of this archive that you will actually save
+          testSpecificArchiveUrls[testId].forEach((url) => {
+            if (mainArchive[url]) {
+              // since the test's resources may have been cached,
+              // pull the resource off of the main (test-run-wide) archive,
+              // to get the actual resource
+              finalArchive[url] = mainArchive[url];
+            }
+          });
+
+          // clean up the CDP instance
+          return resourceArchivers[testId].close().then(() => {
+            // remove archives off of object after write them
+            delete resourceArchivers[testId];
+            // clean up now-unneeded objects
+            delete testSpecificArchiveUrls[testId];
+            delete networkIdleWatchers[testId];
+            return writeArchives({ ...rest, resourceArchive: finalArchive }).then(() => {
+              resolve(null);
+            });
+          });
+        })
+    );
   });
 };
 

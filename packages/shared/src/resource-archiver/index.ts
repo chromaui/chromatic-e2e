@@ -20,6 +20,17 @@ export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 interface CDPClient {
   on: (eventName: keyof Protocol.Events, handlerFunction: (params?: any) => void) => void;
   send: (eventName: keyof Protocol.CommandParameters, payload?: any) => Promise<any>;
+  // Playwright's way of closing the client
+  detach?: () => void;
+  // Cypress' way of closing the client
+  close?: () => void;
+}
+
+interface ResourceArchiverParams {
+  cdpClient: CDPClient;
+  allowedDomains?: string[];
+  onRequest?: (url: string) => void;
+  onResponse?: (url: string) => void;
 }
 
 export class ResourceArchiver {
@@ -40,15 +51,32 @@ export class ResourceArchiver {
    */
   private firstUrl: URL;
 
-  constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
+  private onRequestCallback?: (url: string) => void;
+
+  private onResponseCallback?: (url: string) => void;
+
+  constructor({ cdpClient, allowedDomains, onRequest, onResponse }: ResourceArchiverParams) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.assetDomains = (allowedDomains || []).map((domain) => `https://${domain}`);
+
+    this.onRequestCallback = onRequest;
+
+    this.onResponseCallback = onResponse;
   }
 
   async watch() {
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
     await this.client.send('Fetch.enable');
+  }
+
+  async close() {
+    // Playwright's client uses detach(), Cypress' uses close()
+    if (this.client.close) {
+      await this.client.close();
+    } else if (this.client.detach) {
+      await this.client.detach();
+    }
   }
 
   async clientSend<T extends keyof Protocol.CommandParameters>(
@@ -78,6 +106,19 @@ export class ResourceArchiver {
     if (!request.method.match(/get/i)) {
       await this.clientSend(request, 'Fetch.continueRequest', { requestId });
       return;
+    }
+
+    // "The stage of the request can be determined by presence of responseErrorReason and responseStatusCode --
+    // the request is at the response stage if either of these fields is present and in the request stage otherwise"
+    // -- from https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#event-requestPaused
+    const isResponse = !!(responseErrorReason || responseStatusCode);
+
+    // we are INTENTIONALLY calling these BEFORE the 304 status code check -- if an image were to be cached,
+    // we'd still want to note it here so our request/response ratio stays correct
+    if (isResponse) {
+      this.onResponseCallback?.(request.url);
+    } else {
+      this.onRequestCallback?.(request.url);
     }
 
     // There's no reponse body for us to archive on 304s

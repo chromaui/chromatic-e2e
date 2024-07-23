@@ -1,4 +1,5 @@
-const TOTAL_TIMEOUT_DURATION = 3000;
+export const TOTAL_TIMEOUT_DURATION = 3000;
+export const WATERFALL_BETWEEN_STEPS_DURATION = 200;
 
 // A Cypress equivalent of Playwright's `page.waitForLoadState()` (https://playwright.dev/docs/api/class-page#page-wait-for-load-state).
 // Intentionally simplistic since in Cypress this is just used to make sure there aren't any pending requests hanging around
@@ -8,6 +9,8 @@ export class NetworkIdleWatcher {
 
   private idleTimer: NodeJS.Timeout | null = null;
 
+  private waterfallBetweenStepsTimer: NodeJS.Timeout | null = null;
+
   private exitIdleOnResponse: () => void | null = null;
 
   async idle() {
@@ -16,26 +19,32 @@ export class NetworkIdleWatcher {
         resolve(true);
       } else {
         this.idleTimer = setTimeout(() => {
+          clearTimeout(this.waterfallBetweenStepsTimer);
           reject(new Error('some responses have not returned'));
         }, TOTAL_TIMEOUT_DURATION);
 
         // assign a function that'll be called as soon as responses are all back
         this.exitIdleOnResponse = () => {
-          resolve(true);
+          this.waterfallBetweenStepsTimer = setTimeout(() => {
+            // only resolve if there STILL aren't any incoming requests (after waiting the timeout)
+            if (this.numInFlightRequests === 0) {
+              clearTimeout(this.idleTimer);
+              resolve(true);
+            }
+          }, WATERFALL_BETWEEN_STEPS_DURATION);
         };
       }
     });
   }
 
-  onRequest() {
+  onRequest(url: string) {
     this.numInFlightRequests += 1;
   }
 
-  onResponse() {
+  onResponse(url: string) {
     this.numInFlightRequests -= 1;
     // resolve immediately if the in-flight request amount is now zero
     if (this.numInFlightRequests === 0) {
-      clearTimeout(this.idleTimer);
       this.exitIdleOnResponse?.();
     }
   }

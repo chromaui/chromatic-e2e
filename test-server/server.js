@@ -51,8 +51,15 @@ app.get('/asset-paths/relative/purple.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
 });
 
-app.get('/background-img.png', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+app.get('/delayed-background-img.png', (req, res) => {
+  // artificially force the resource to come back later, to ensure consistent after-other-resources behavior
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(null);
+    }, 2000);
+  }).then(() => {
+    res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+  });
 });
 
 app.use(express.static(path.join(__dirname, 'fixtures/assets')));

@@ -88,6 +88,10 @@ app.get('/viewports', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/viewports.html'));
 });
 
+app.get('/scrolling', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/scrolling.html'));
+});
+
 // Send a redirect to the GET handler with the same path to ensure we're not caching POST responses and serving
 // it instead of the real GET response.
 app.post('/form-success', (req, res) => {

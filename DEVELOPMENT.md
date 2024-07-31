@@ -53,7 +53,12 @@ This is done by running `yarn changeset`, which will guide you through all of th
 
 Commit the resulting changeset file with your other changes and push it up. This can happen at any time in the lifecycle of the branch.
 
-Changesets isn't smart enough to detect dependent changes and version accordingly. If you are only changing code in the `@chromatic-com/shared-e2e` package, you will need to explicitly include the `chromatic-com/playwright` and `chromatic-com/cypress` packages as packages to version-bump as well (assuming the change affects both packages).
+#### Which packages do I publish?
+
+2 guidelines for code changes that warrant publishing to NPM:
+
+1. Publish every package where code changes occur. Example: if you touch code in the `shared` directory, you'll want to include `@chromatic-com/shared-e2e` in the list of packages to be published, even though that package is private.
+1. Publish every package that the changed code affects. If you are only changing code in the `@chromatic-com/shared-e2e` package, you will also need to explicitly include the `chromatic-com/playwright` and `chromatic-com/cypress` packages as packages to publish.
 
 ### Canary Releases
 

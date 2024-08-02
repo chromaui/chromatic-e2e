@@ -62,7 +62,7 @@
   "devDependencies": {
     "@chromatic-com/shared-e2e": "workspace:*",
     "@storybook/types": "^8.1.5",
-    "cypress": "^13.4.0",
+    "cypress": "12.17.4",
     "start-server-and-test": "^2.0.3"
   },
   "lint-staged": {

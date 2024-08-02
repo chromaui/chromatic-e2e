@@ -3594,7 +3594,7 @@ __metadata:
   resolution: "@chromatic-com/playwright@workspace:packages/playwright"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:1.23.0"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
     "@storybook/csf": "npm:^0.1.0"
@@ -3602,8 +3602,8 @@ __metadata:
     "@storybook/server-webpack5": "npm:^8.1.5"
     "@storybook/types": "npm:^8.1.5"
     express: "npm:^4.18.2"
-    playwright: "npm:^1.32.2"
-    playwright-core: "npm:^1.32.2"
+    playwright: "npm:1.23.0"
+    playwright-core: "npm:1.23.0"
     rrweb-snapshot: "npm:2.0.0-alpha.14"
     storybook: "npm:^8.1.5"
     ts-dedent: "npm:^2.2.0"
@@ -3623,7 +3623,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.4"
     "@jest/types": "npm:^27.0.6"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:1.23.0"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
     "@storybook/eslint-config-storybook": "npm:^3.1.2"
@@ -3642,8 +3642,8 @@ __metadata:
     lint-staged: "npm:>=10"
     mime: "npm:^3.0.0"
     node-fetch: "npm:2"
-    playwright: "npm:^1.32.2"
-    playwright-core: "npm:^1.32.2"
+    playwright: "npm:1.23.0"
+    playwright-core: "npm:1.23.0"
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
@@ -3666,7 +3666,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.21.4"
     "@changesets/cli": "npm:^2.27.1"
     "@jest/types": "npm:^27.0.6"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:1.23.0"
     "@storybook/eslint-config-storybook": "npm:^3.1.2"
     "@swc/core": "npm:^1.4.6"
     "@testing-library/dom": "npm:^8.1.0"
@@ -3688,7 +3688,7 @@ __metadata:
     jest-environment-jsdom: "npm:^27.0.6"
     lint-staged: "npm:>=10"
     node-fetch: "npm:2"
-    playwright: "npm:^1.32.2"
+    playwright: "npm:1.23.0"
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
@@ -4805,14 +4805,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/test@npm:1.39.0"
+"@playwright/test@npm:1.23.0":
+  version: 1.23.0
+  resolution: "@playwright/test@npm:1.23.0"
   dependencies:
-    playwright: "npm:1.39.0"
+    "@types/node": "npm:*"
+    playwright-core: "npm:1.23.0"
   bin:
     playwright: cli.js
-  checksum: d808ca36f0a411ae09eece19fc93fcbd048541253c6c9e341fc9488613395bb94ebf65ad64e920d6be0fb20e887cf317c532a45d2c30e1804d6842e55c1fe6e9
+  checksum: 5906be11b8d4bae0f969d18f65fc8e27ed7162831ff05eea4b8c5775194c173b3e7781c607a10f8608006bf21709c2206d47095bf49f48dc84dd2805a0d19540
   languageName: node
   linkType: hard
 
@@ -11534,7 +11535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@npm:2.3.2, fsevents@npm:^2.3.2, fsevents@npm:~2.3.2":
+"fsevents@npm:^2.3.2, fsevents@npm:~2.3.2":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
   dependencies:
@@ -11544,7 +11545,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A^2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.2#optional!builtin<compat/fsevents>":
+"fsevents@patch:fsevents@npm%3A^2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.2#optional!builtin<compat/fsevents>":
   version: 2.3.2
   resolution: "fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
@@ -15830,36 +15831,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright-core@npm:1.39.0"
-  bin:
-    playwright-core: cli.js
-  checksum: dbd719ae77ae84a43f831beb89514ca5cca62840a2f0cce445645002ac045c256c19b5f4f3cf9a7aa205428a1571e9e8d946ff1937cc316033ea58090c549a76
-  languageName: node
-  linkType: hard
-
-"playwright-core@npm:^1.32.2":
-  version: 1.40.1
-  resolution: "playwright-core@npm:1.40.1"
-  bin:
-    playwright-core: cli.js
-  checksum: 56c283012974982313a6ae583b975ee4af76d52059fb9a25d9cc616a11224685ec64682b391910c795d2b12d2ab5c7eec31124722c75c0b1703a76ac9b6fd1c2
-  languageName: node
-  linkType: hard
-
-"playwright@npm:1.39.0, playwright@npm:^1.32.2":
-  version: 1.39.0
-  resolution: "playwright@npm:1.39.0"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.39.0"
-  dependenciesMeta:
-    fsevents:
-      optional: true
+"playwright-core@npm:1.23.0":
+  version: 1.23.0
+  resolution: "playwright-core@npm:1.23.0"
   bin:
     playwright: cli.js
-  checksum: b55adb3453a9c2a02fe61dbcbd5fcb0cbae1038ea6115158c7933d203ae5b62a13cb294905d6661836751a5825bc2cfdc71b67988082ec47ac6930ca744af724
+  checksum: b194cd12e78db5275784c3ed1274be31e7241780f76f8cc95993b99d829489d1e465c3c252c614b0ee2d6c593b516f88c2cf5930b8c6c268fc049d01b9f932d8
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.23.0":
+  version: 1.23.0
+  resolution: "playwright@npm:1.23.0"
+  dependencies:
+    playwright-core: "npm:1.23.0"
+  bin:
+    playwright: cli.js
+  checksum: 4c14e86222364b2e15fee9197101be5b81bf4d6b717efef7563f0d7a36cdac55a30787f105065539ded9eea63e00f5af1cc1c52a7b49ddc0450d2089602a97ac
   languageName: node
   linkType: hard
 

@@ -1,6 +1,7 @@
 const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const express = require('express');
+const basicAuth = require('express-basic-auth');
 
 const app = express();
 const port = 3000;
@@ -8,7 +9,13 @@ const port = 3000;
 const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
 
-// Assets
+app.use(
+  '/auth',
+  basicAuth({
+    users: { admin: 'supersecret' },
+    challenge: true,
+  })
+);
 
 app.get('/css.urls.css', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/css.urls.css'));
@@ -27,6 +34,10 @@ app.get('/img', (req, res) => {
   } else {
     res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
   }
+});
+
+app.get('/auth', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/auth/index.html'));
 });
 
 app.get('/img/another', (req, res) => {

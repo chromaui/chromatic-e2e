@@ -33,7 +33,7 @@
     "@babel/preset-typescript": "^7.21.4",
     "@changesets/cli": "^2.27.1",
     "@jest/types": "^27.0.6",
-    "@playwright/test": "^1.39.0",
+    "@playwright/test": "^1.46.1",
     "@storybook/eslint-config-storybook": "^3.1.2",
     "@swc/core": "^1.4.6",
     "@testing-library/dom": "^8.1.0",

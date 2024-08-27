@@ -48,7 +48,8 @@ export class ResourceArchiver {
 
   async watch() {
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
-    await this.client.send('Fetch.enable');
+    this.client.on('Fetch.authRequired', this.authRequired.bind(this));
+    await this.client.send('Fetch.enable', { handleAuthRequests: true });
   }
 
   async clientSend<T extends keyof Protocol.CommandParameters>(
@@ -65,6 +66,16 @@ export class ResourceArchiver {
     }
   }
 
+  async authRequired({ requestId, request, authChallenge }: Protocol.Fetch.authRequiredPayload) {
+    console.log(request);
+    await this.clientSend(request, 'Fetch.continueWithAuth', {
+      requestId,
+      authChallengeResponse: {
+        response: 'ProvideCredentials',
+      },
+    });
+  }
+
   async requestPaused({
     requestId,
     request,
@@ -73,6 +84,8 @@ export class ResourceArchiver {
     responseErrorReason,
     responseHeaders,
   }: Protocol.Fetch.requestPausedPayload) {
+    const isRequest = !responseErrorReason && !responseStatusCode;
+    console.log(`${isRequest ? 'REQUEST' : 'RESPONSE'}, url: ${request.url}`);
     // We only need to capture assets that will render when the DOM snapshot is rendered,
     // so we only need to handle GET requests.
     if (!request.method.match(/get/i)) {

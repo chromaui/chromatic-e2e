@@ -4,6 +4,10 @@ export default defineConfig({
   testDir: './tests',
   use: {
     baseURL: 'http://localhost:3000',
+    httpCredentials: {
+      username: 'admin',
+      password: 'supersecret',
+    },
   },
   projects: [
     {

@@ -35,7 +35,12 @@ export const performChromaticSnapshot = async (
   use: () => Promise<void>,
   testInfo: TestInfo
 ) => {
-  const { testId } = testInfo;
+  const {
+    testId,
+    project: {
+      use: { httpCredentials },
+    },
+  } = testInfo;
 
   try {
     trackRun();
@@ -53,6 +58,7 @@ export const performChromaticSnapshot = async (
       page,
       networkTimeout: resourceArchiveTimeout,
       assetDomains,
+      httpCredentials,
     });
     await use();
 

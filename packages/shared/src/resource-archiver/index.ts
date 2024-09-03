@@ -40,10 +40,18 @@ export class ResourceArchiver {
    */
   private firstUrl: URL;
 
-  constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
+  /** TODO */
+  private httpCredentials: { username: string; password: string }; // TODO type this out?
+
+  constructor(
+    cdpClient: CDPClient,
+    allowedDomains?: string[],
+    httpCredentials?: { username: string; password: string }
+  ) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.assetDomains = (allowedDomains || []).map((domain) => `https://${domain}`);
+    this.httpCredentials = httpCredentials;
   }
 
   async watch() {
@@ -67,11 +75,11 @@ export class ResourceArchiver {
   }
 
   async authRequired({ requestId, request, authChallenge }: Protocol.Fetch.authRequiredPayload) {
-    console.log(request);
     await this.clientSend(request, 'Fetch.continueWithAuth', {
       requestId,
       authChallengeResponse: {
         response: 'ProvideCredentials',
+        ...this.httpCredentials,
       },
     });
   }
@@ -84,8 +92,6 @@ export class ResourceArchiver {
     responseErrorReason,
     responseHeaders,
   }: Protocol.Fetch.requestPausedPayload) {
-    const isRequest = !responseErrorReason && !responseStatusCode;
-    console.log(`${isRequest ? 'REQUEST' : 'RESPONSE'}, url: ${request.url}`);
     // We only need to capture assets that will render when the DOM snapshot is rendered,
     // so we only need to handle GET requests.
     if (!request.method.match(/get/i)) {

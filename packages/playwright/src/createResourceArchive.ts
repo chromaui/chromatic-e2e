@@ -36,14 +36,19 @@ export const createResourceArchive = async ({
   page,
   networkTimeout,
   assetDomains,
+  httpCredentials,
 }: {
   page: Page;
   networkTimeout?: number;
   assetDomains?: string[];
+  httpCredentials?: {
+    username: string;
+    password: string;
+  }; // TODO type this out?
 }): Promise<() => Promise<ResourceArchive>> => {
   const cdpClient = await page.context().newCDPSession(page);
 
-  const resourceArchiver = new ResourceArchiver(cdpClient, assetDomains);
+  const resourceArchiver = new ResourceArchiver(cdpClient, assetDomains, httpCredentials);
   await resourceArchiver.watch();
 
   return async () => {

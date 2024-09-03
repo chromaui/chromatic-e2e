@@ -35,12 +35,8 @@ export const performChromaticSnapshot = async (
   use: () => Promise<void>,
   testInfo: TestInfo
 ) => {
-  const {
-    testId,
-    project: {
-      use: { httpCredentials },
-    },
-  } = testInfo;
+  const { testId, project } = testInfo;
+  const httpCredentials = project?.use?.httpCredentials;
 
   try {
     trackRun();

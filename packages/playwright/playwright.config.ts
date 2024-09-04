@@ -5,8 +5,8 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     httpCredentials: {
-      username: 'admin',
-      password: 'supersecret',
+      username: 'user',
+      password: 'secret',
     },
   },
   projects: [

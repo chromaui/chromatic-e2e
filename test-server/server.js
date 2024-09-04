@@ -10,7 +10,15 @@ const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
 
 app.use(
-  '/auth',
+  '/protected',
+  basicAuth({
+    users: { user: 'secret' },
+    challenge: true,
+  })
+);
+
+app.use(
+  '/admin',
   basicAuth({
     users: { admin: 'supersecret' },
     challenge: true,
@@ -36,7 +44,11 @@ app.get('/img', (req, res) => {
   }
 });
 
-app.get('/auth', (req, res) => {
+app.get('/protected', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/auth/index.html'));
+});
+
+app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/auth/index.html'));
 });
 

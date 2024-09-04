@@ -3689,7 +3689,7 @@ __metadata:
     jest-environment-jsdom: "npm:^27.0.6"
     lint-staged: "npm:>=10"
     node-fetch: "npm:2"
-    playwright: "npm:^1.32.2"
+    playwright: "npm:^1.46.1"
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
@@ -15849,15 +15849,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright-core@npm:1.39.0"
-  bin:
-    playwright-core: cli.js
-  checksum: dbd719ae77ae84a43f831beb89514ca5cca62840a2f0cce445645002ac045c256c19b5f4f3cf9a7aa205428a1571e9e8d946ff1937cc316033ea58090c549a76
-  languageName: node
-  linkType: hard
-
 "playwright-core@npm:1.46.1, playwright-core@npm:^1.46.1":
   version: 1.46.1
   resolution: "playwright-core@npm:1.46.1"
@@ -15879,21 +15870,6 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 2a328a2073313136192d74b48b981d9aeb1d4cc54926ed235f638c875f9de59c41370bb20bb2d8cf30126c52c6e25cc02db21ffafeb487c92c84c52c84846912
-  languageName: node
-  linkType: hard
-
-"playwright@npm:^1.32.2":
-  version: 1.39.0
-  resolution: "playwright@npm:1.39.0"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.39.0"
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: b55adb3453a9c2a02fe61dbcbd5fcb0cbae1038ea6115158c7933d203ae5b62a13cb294905d6661836751a5825bc2cfdc71b67988082ec47ac6930ca744af724
   languageName: node
   linkType: hard
 

@@ -16,6 +16,11 @@ export type ArchiveResponse =
 
 export type ResourceArchive = Record<UrlString, ArchiveResponse>;
 
+export type HttpCredentials = {
+  username: string;
+  password: string;
+};
+
 // a custom interface that satisfies both playwright's CDPSession and chrome-remote-interface's CDP.Client types.
 interface CDPClient {
   on: (eventName: keyof Protocol.Events, handlerFunction: (params?: any) => void) => void;
@@ -40,15 +45,22 @@ export class ResourceArchiver {
    */
   private firstUrl: URL;
 
-  constructor(cdpClient: CDPClient, allowedDomains?: string[]) {
+  /**
+   * HTTP Basic Auth credentials to use when accessing protected resources.
+   */
+  private httpCredentials: HttpCredentials;
+
+  constructor(cdpClient: CDPClient, allowedDomains?: string[], httpCredentials?: HttpCredentials) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
     this.assetDomains = (allowedDomains || []).map((domain) => `https://${domain}`);
+    this.httpCredentials = httpCredentials;
   }
 
   async watch() {
     this.client.on('Fetch.requestPaused', this.requestPaused.bind(this));
-    await this.client.send('Fetch.enable');
+    this.client.on('Fetch.authRequired', this.authRequired.bind(this));
+    await this.client.send('Fetch.enable', { handleAuthRequests: true });
   }
 
   async clientSend<T extends keyof Protocol.CommandParameters>(
@@ -63,6 +75,16 @@ export class ResourceArchiver {
       this.archive[request.url] = { error };
       return null;
     }
+  }
+
+  async authRequired({ requestId, request }: Protocol.Fetch.authRequiredPayload): Promise<void> {
+    await this.clientSend(request, 'Fetch.continueWithAuth', {
+      requestId,
+      authChallengeResponse: {
+        response: 'ProvideCredentials',
+        ...this.httpCredentials,
+      },
+    });
   }
 
   async requestPaused({

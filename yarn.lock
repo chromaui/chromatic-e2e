@@ -3594,7 +3594,7 @@ __metadata:
   resolution: "@chromatic-com/playwright@workspace:packages/playwright"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
     "@storybook/csf": "npm:^0.1.0"
@@ -3602,8 +3602,8 @@ __metadata:
     "@storybook/server-webpack5": "npm:^8.1.5"
     "@storybook/types": "npm:^8.1.5"
     express: "npm:^4.18.2"
-    playwright: "npm:^1.32.2"
-    playwright-core: "npm:^1.32.2"
+    playwright: "npm:^1.46.1"
+    playwright-core: "npm:^1.46.1"
     rrweb-snapshot: "npm:2.0.0-alpha.14"
     storybook: "npm:^8.1.5"
     ts-dedent: "npm:^2.2.0"
@@ -3623,7 +3623,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.4"
     "@jest/types": "npm:^27.0.6"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
     "@storybook/eslint-config-storybook": "npm:^3.1.2"
@@ -3642,8 +3642,8 @@ __metadata:
     lint-staged: "npm:>=10"
     mime: "npm:^3.0.0"
     node-fetch: "npm:2"
-    playwright: "npm:^1.32.2"
-    playwright-core: "npm:^1.32.2"
+    playwright: "npm:^1.46.1"
+    playwright-core: "npm:^1.46.1"
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
@@ -3666,7 +3666,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.21.4"
     "@changesets/cli": "npm:^2.27.1"
     "@jest/types": "npm:^27.0.6"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:^1.46.1"
     "@storybook/eslint-config-storybook": "npm:^3.1.2"
     "@swc/core": "npm:^1.4.6"
     "@testing-library/dom": "npm:^8.1.0"
@@ -3683,12 +3683,13 @@ __metadata:
     cypress: "npm:^13.6.1"
     eslint: "npm:^7.32.0"
     express: "npm:^4.18.2"
+    express-basic-auth: "npm:^1.2.1"
     husky: "npm:>=6"
     jest: "npm:^27.0.6"
     jest-environment-jsdom: "npm:^27.0.6"
     lint-staged: "npm:>=10"
     node-fetch: "npm:2"
-    playwright: "npm:^1.32.2"
+    playwright: "npm:^1.46.1"
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
@@ -4805,14 +4806,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/test@npm:1.39.0"
+"@playwright/test@npm:^1.46.1":
+  version: 1.46.1
+  resolution: "@playwright/test@npm:1.46.1"
   dependencies:
-    playwright: "npm:1.39.0"
+    playwright: "npm:1.46.1"
   bin:
     playwright: cli.js
-  checksum: d808ca36f0a411ae09eece19fc93fcbd048541253c6c9e341fc9488613395bb94ebf65ad64e920d6be0fb20e887cf317c532a45d2c30e1804d6842e55c1fe6e9
+  checksum: b2d33f33bedfa5a5c72cfc5ee212dfbf531d9c46320b0af901e71ab61b96845e43cc636181b33b3faae27f2f87ce2d44017ac65235bf9c95209f476477b16f93
   languageName: node
   linkType: hard
 
@@ -7958,6 +7959,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"basic-auth@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "basic-auth@npm:2.0.1"
+  dependencies:
+    safe-buffer: "npm:5.1.2"
+  checksum: 05f56db3a0fc31c89c86b605231e32ee143fb6ae38dc60616bc0970ae6a0f034172def99e69d3aed0e2c9e7cac84e2d63bc51a0b5ff6ab5fc8808cc8b29923c1
+  languageName: node
+  linkType: hard
+
 "bcrypt-pbkdf@npm:^1.0.0":
   version: 1.0.2
   resolution: "bcrypt-pbkdf@npm:1.0.2"
@@ -10910,6 +10920,15 @@ __metadata:
   version: 3.1.1
   resolution: "exponential-backoff@npm:3.1.1"
   checksum: 160456d2d647e6019640bd07111634d8c353038d9fa40176afb7cd49b0548bdae83b56d05e907c2cce2300b81cae35d800ef92fefb9d0208e190fa3b7d6bb579
+  languageName: node
+  linkType: hard
+
+"express-basic-auth@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "express-basic-auth@npm:1.2.1"
+  dependencies:
+    basic-auth: "npm:^2.0.1"
+  checksum: 01a14cff7a9d1d243d502b0aef287b2e4199e1c3cabd4a2ab3166ad6b122bc77fdeefcc743f57948b2ab59c4a2bcbe8761f3877a0e28959fa53f415667e348f6
   languageName: node
   linkType: hard
 
@@ -15830,36 +15849,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright-core@npm:1.39.0"
+"playwright-core@npm:1.46.1, playwright-core@npm:^1.46.1":
+  version: 1.46.1
+  resolution: "playwright-core@npm:1.46.1"
   bin:
     playwright-core: cli.js
-  checksum: dbd719ae77ae84a43f831beb89514ca5cca62840a2f0cce445645002ac045c256c19b5f4f3cf9a7aa205428a1571e9e8d946ff1937cc316033ea58090c549a76
+  checksum: 98e48e271caccaa6c54b3c591cbddbef36a679eef011b38e2af11fbaba0aab1f997b45f9207c4099468a0c79047a1e879bbd9e81bd880ae24501a0ee3c7a33c7
   languageName: node
   linkType: hard
 
-"playwright-core@npm:^1.32.2":
-  version: 1.40.1
-  resolution: "playwright-core@npm:1.40.1"
-  bin:
-    playwright-core: cli.js
-  checksum: 56c283012974982313a6ae583b975ee4af76d52059fb9a25d9cc616a11224685ec64682b391910c795d2b12d2ab5c7eec31124722c75c0b1703a76ac9b6fd1c2
-  languageName: node
-  linkType: hard
-
-"playwright@npm:1.39.0, playwright@npm:^1.32.2":
-  version: 1.39.0
-  resolution: "playwright@npm:1.39.0"
+"playwright@npm:1.46.1, playwright@npm:^1.46.1":
+  version: 1.46.1
+  resolution: "playwright@npm:1.46.1"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.39.0"
+    playwright-core: "npm:1.46.1"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: b55adb3453a9c2a02fe61dbcbd5fcb0cbae1038ea6115158c7933d203ae5b62a13cb294905d6661836751a5825bc2cfdc71b67988082ec47ac6930ca744af724
+  checksum: 2a328a2073313136192d74b48b981d9aeb1d4cc54926ed235f638c875f9de59c41370bb20bb2d8cf30126c52c6e25cc02db21ffafeb487c92c84c52c84846912
   languageName: node
   linkType: hard
 

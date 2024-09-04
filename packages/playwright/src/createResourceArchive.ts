@@ -4,6 +4,7 @@ import {
   ResourceArchive,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
   logger,
+  HttpCredentials,
 } from '@chromatic-com/shared-e2e';
 
 const idle = async (page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) => {
@@ -36,14 +37,16 @@ export const createResourceArchive = async ({
   page,
   networkTimeout,
   assetDomains,
+  httpCredentials,
 }: {
   page: Page;
   networkTimeout?: number;
   assetDomains?: string[];
+  httpCredentials?: HttpCredentials;
 }): Promise<() => Promise<ResourceArchive>> => {
   const cdpClient = await page.context().newCDPSession(page);
 
-  const resourceArchiver = new ResourceArchiver(cdpClient, assetDomains);
+  const resourceArchiver = new ResourceArchiver(cdpClient, assetDomains, httpCredentials);
   await resourceArchiver.watch();
 
   return async () => {

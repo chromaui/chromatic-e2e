@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.7.0
+
+### Minor Changes
+
+- 23635f7: Support using httpCredentials in Playwright global config for basic authentication
+
 ## 0.6.18
 
 ### Patch Changes

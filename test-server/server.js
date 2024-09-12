@@ -127,6 +127,10 @@ app.get('/manual-snapshots', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/manual-snapshots.html'));
 });
 
+app.get('/constructible-stylesheets', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/constructible-stylesheets.html'));
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

@@ -8,21 +8,14 @@
         margin: 10px;
       }
     </style>
-    <script type="text/javascript">
-      const stylesheet = new CSSStyleSheet();
-      stylesheet.replaceSync('body { background: blue; } h1 { color: yellow; } p { color: cyan; }');
-      document.adoptedStyleSheets = [stylesheet];
-    </script>
   </head>
   <body>
-    <h1>Constructible Stylesheets (sort of the other CSS)</h1>
-    <p>
-      This page is styled with constructible stylesheets, setting the header, paragraph, and body
-      colors.
-    </p>
+    <h1>Constructable Stylesheets in Shadow DOM</h1>
     <div class="shadowHost">
       <h2>This section should have been generated using shadow DOM</h2>
     </div>
+    <h2>Subheading outside the shadow DOM</h2>
+    <p>Paragraph outside the shadow DOM</p>
     <script type="text/javascript">
       const shadowElement = document.querySelector('.shadowHost');
       const shadow = shadowElement.attachShadow({ mode: 'open' });

@@ -127,8 +127,8 @@ app.get('/manual-snapshots', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/manual-snapshots.html'));
 });
 
-app.get('/constructible-stylesheets', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/constructible-stylesheets.html'));
+app.get('/constructable-stylesheets/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/constructable-stylesheets/${req.params.page}.html`));
 });
 
 app.listen(port, () => {

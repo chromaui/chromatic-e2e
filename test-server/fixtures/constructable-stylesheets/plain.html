@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">
+      const stylesheet = new CSSStyleSheet();
+      stylesheet.replaceSync('body { background: blue; } h1 { color: yellow; } p { color: cyan; }');
+      document.adoptedStyleSheets = [stylesheet];
+    </script>
+  </head>
+  <body>
+    <h1>Constructable Stylesheets (sort of the other CSS)</h1>
+    <p>
+      This page is styled with constructable stylesheets, setting the header, paragraph, and body
+      colors.
+    </p>
+  </body>
+</html>

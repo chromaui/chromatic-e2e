@@ -9,3 +9,7 @@ it('styles render in shadow dom elements', () => {
 it('styles render in web components', () => {
   cy.visit('/constructable-stylesheets/web-components');
 });
+
+it('styles render in web components in shadow dom', () => {
+  cy.visit('/constructable-stylesheets/web-components-shadow-dom');
+});

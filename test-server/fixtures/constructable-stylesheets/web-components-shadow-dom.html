@@ -10,13 +10,16 @@
     </style>
     <script type="text/javascript">
       class StyledComponent extends HTMLElement {
-        connectedCallback() {
+        constructor() {
+          super();
+          const shadow = this.attachShadow({ mode: 'open' });
+
           const h2 = document.createElement('h2');
           h2.textContent = 'This section is generated using a Web Component';
 
           const p = document.createElement('p');
           p.textContent =
-            'It uses global header and paragraph colors, defined within the Web Component.';
+            'It uses its own header and paragraph colors, defined within the Web Component.';
 
           const stylesheet = new CSSStyleSheet();
           stylesheet.replaceSync(`
@@ -28,20 +31,20 @@
             }
           `);
 
-          document.adoptedStyleSheets = [...document.adoptedStyleSheets, stylesheet];
-          this.appendChild(h2);
-          this.appendChild(p);
+          shadow.adoptedStyleSheets = [stylesheet];
+          shadow.appendChild(h2);
+          shadow.appendChild(p);
         }
       }
       customElements.define('styled-component', StyledComponent);
     </script>
   </head>
   <body>
-    <h1>Constructable Stylesheets in Web Components</h1>
+    <h1>Constructable Stylesheets in Web Components in Shadow DOM</h1>
     <div class="webComponents">
       <styled-component></styled-component>
     </div>
-    <h2>Subheading outside the Web Component but still affected by global styles</h2>
-    <p>Paragraph outside the Web Component but still affected by global styles.</p>
+    <h2>Subheading outside the Web Component, unaffected by styles</h2>
+    <p>Paragraph outside the Web Component, unaffected by styles.</p>
   </body>
 </html>

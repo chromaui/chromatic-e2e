@@ -1,5 +1,5 @@
-import { snapshot } from 'rrweb-snapshot';
-import type { elementNode } from 'rrweb-snapshot';
+import { snapshot } from '@chromaui/rrweb-snapshot';
+import type { elementNode } from '@chromaui/rrweb-snapshot';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

@@ -1,4 +1,4 @@
-import type { elementNode } from 'rrweb-snapshot';
+import type { elementNode } from '@chromaui/rrweb-snapshot';
 import CDP, { Version } from 'chrome-remote-interface';
 import {
   ResourceArchiver,

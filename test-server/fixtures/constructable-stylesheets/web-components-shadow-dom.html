@@ -1,50 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      .webComponents {
-        background: lightgray;
-        padding: 10px;
-        margin: 10px;
-      }
-    </style>
+  <body>
+    <h1>Constructable Stylesheets in Web Components in Shadow DOM</h1>
+    <styled-component></styled-component>
+    <p>Paragraph outside the Web Component.</p>
+
     <script type="text/javascript">
       class StyledComponent extends HTMLElement {
-        constructor() {
-          super();
+        connectedCallback() {
           const shadow = this.attachShadow({ mode: 'open' });
 
+          const container = document.createElement('div');
+          shadow.appendChild(container);
+
           const h2 = document.createElement('h2');
-          h2.textContent = 'This section is generated using a Web Component';
+          h2.innerHTML = 'This section is generated using a Web Component (I should be blue)';
+          container.appendChild(h2);
 
           const p = document.createElement('p');
-          p.textContent =
-            'It uses its own header and paragraph colors, defined within the Web Component.';
+          p.innerHTML =
+            'This section is <strong>locally</strong> styled with constructable stylesheets created inside the Web Component using shadow DOM. I should be <strong>green</strong> and the section background should be <strong>cyan</strong>.';
+          container.appendChild(p);
 
           const stylesheet = new CSSStyleSheet();
           stylesheet.replaceSync(`
-            h2 {
+            div {
+              background: cyan;
+              padding: 10px;
+            }            
+            h1, h2 {
               color: blue;
             }
             p {
               color: green;
             }
           `);
-
           shadow.adoptedStyleSheets = [stylesheet];
-          shadow.appendChild(h2);
-          shadow.appendChild(p);
         }
       }
       customElements.define('styled-component', StyledComponent);
     </script>
-  </head>
-  <body>
-    <h1>Constructable Stylesheets in Web Components in Shadow DOM</h1>
-    <div class="webComponents">
-      <styled-component></styled-component>
-    </div>
-    <h2>Subheading outside the Web Component, unaffected by styles</h2>
-    <p>Paragraph outside the Web Component, unaffected by styles.</p>
   </body>
 </html>

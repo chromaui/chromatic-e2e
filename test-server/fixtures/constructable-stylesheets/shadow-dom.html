@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      .shadowHost {
-        background: lightgray;
-        padding: 10px;
-        margin: 10px;
-      }
-    </style>
-  </head>
   <body>
     <h1>Constructable Stylesheets in Shadow DOM</h1>
-    <div class="shadowHost">
+    <div id="shadowHost">
       <h2>This section should have been generated using shadow DOM</h2>
     </div>
-    <h2>Subheading outside the shadow DOM, unaffected by styles</h2>
-    <p>Paragraph outside the shadow DOM, unaffected by styles.</p>
+    <p>Paragraph outside the shadow DOM.</p>
+
     <script type="text/javascript">
-      const shadowElement = document.querySelector('.shadowHost');
+      const shadowElement = document.getElementById('shadowHost');
       const shadow = shadowElement.attachShadow({ mode: 'open' });
 
+      const container = document.createElement('div');
+      shadow.appendChild(container);
+
       const subHeading = document.createElement('h2');
-      subHeading.innerHTML = 'This section is generated using shadow DOM';
-      shadow.appendChild(subHeading);
+      subHeading.innerHTML = 'This section is generated using shadow DOM (I should be blue)';
+      container.appendChild(subHeading);
 
       const paragraph = document.createElement('p');
       paragraph.innerHTML =
-        'It uses its own header and paragraph colors, defined within the shadow DOM.';
-      shadow.appendChild(paragraph);
+        'This section is <strong>locally</strong> styled with constructable stylesheets created inside the shadow DOM. I should be <strong>green</strong> and the section background should be <strong>cyan</strong>.';
+      container.appendChild(paragraph);
 
       const styles = new CSSStyleSheet();
-      styles.replaceSync('h2 { color: purple; } p { color: red; }');
+      styles.replaceSync(`
+        div {
+          background: cyan;
+          padding: 10px;
+        }            
+        h1, h2 {
+          color: blue;
+        }
+        p {
+          color: green;
+        }
+      `);
       shadow.adoptedStyleSheets = [styles];
     </script>
   </body>

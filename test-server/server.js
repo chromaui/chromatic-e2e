@@ -128,7 +128,8 @@ app.get('/manual-snapshots', (req, res) => {
 });
 
 app.get('/constructable-stylesheets/:page', (req, res) => {
-  res.sendFile(path.join(__dirname, `fixtures/constructable-stylesheets/${req.params.page}.html`));
+  const page = req.params.page.replace(/[^a-zA-Z0-9-]/g, '');
+  res.sendFile(path.join(__dirname, `fixtures/constructable-stylesheets/${page}.html`));
 });
 
 app.listen(port, () => {

@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { NodeType } from 'rrweb-snapshot';
+import { NodeType } from '@chromaui/rrweb-snapshot';
 import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
 

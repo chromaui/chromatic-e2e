@@ -1,10 +1,10 @@
 import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { dedent } from 'ts-dedent';
-import type { elementNode } from 'rrweb-snapshot';
+import type { elementNode } from '@chromaui/rrweb-snapshot';
 import { logger } from '@chromatic-com/shared-e2e';
 
-const rrweb = readFileSync(require.resolve('rrweb-snapshot/dist/rrweb-snapshot.js'), 'utf8');
+const rrweb = readFileSync(require.resolve('@chromaui/rrweb-snapshot'), 'utf8');
 
 // top-level key is the test ID, next level key is the name of the snapshot (which we expect to be unique)
 export const chromaticSnapshots: Map<string, Map<string, Buffer>> = new Map();

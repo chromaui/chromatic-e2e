@@ -1,4 +1,4 @@
-import { snapshot } from 'rrweb-snapshot';
+import { snapshot } from '@chromaui/rrweb-snapshot';
 import './commands';
 
 // these client-side lifecycle hooks will be added to the user's Cypress suite

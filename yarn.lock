@@ -3572,6 +3572,7 @@ __metadata:
   resolution: "@chromatic-com/cypress@workspace:packages/cypress"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
     "@storybook/csf": "npm:^0.1.0"
@@ -3580,7 +3581,6 @@ __metadata:
     "@storybook/types": "npm:^8.1.5"
     chrome-remote-interface: "npm:^0.33.0"
     cypress: "npm:^13.4.0"
-    rrweb-snapshot: "npm:^2.0.0-alpha.11"
     start-server-and-test: "npm:^2.0.3"
     storybook: "npm:^8.1.5"
   bin:
@@ -3594,6 +3594,7 @@ __metadata:
   resolution: "@chromatic-com/playwright@workspace:packages/playwright"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17"
     "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
@@ -3604,7 +3605,6 @@ __metadata:
     express: "npm:^4.18.2"
     playwright: "npm:^1.46.1"
     playwright-core: "npm:^1.46.1"
-    rrweb-snapshot: "npm:2.0.0-alpha.14"
     storybook: "npm:^8.1.5"
     ts-dedent: "npm:^2.2.0"
   peerDependencies:
@@ -3622,6 +3622,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.21.4"
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.4"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17"
     "@jest/types": "npm:^27.0.6"
     "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
@@ -3647,7 +3648,6 @@ __metadata:
     prettier: "npm:^2.3.1"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
-    rrweb-snapshot: "npm:^2.0.0-alpha.11"
     srcset: "npm:^4.0.0"
     storybook: "npm:^8.1.5"
     ts-dedent: "npm:^2.2.0"
@@ -3699,6 +3699,15 @@ __metadata:
     typescript: "npm:^4.2.4"
   languageName: unknown
   linkType: soft
+
+"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17":
+  version: 2.0.0-alpha.17
+  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17"
+  dependencies:
+    postcss: "npm:^8.4.38"
+  checksum: cff6946425c2d8b4cf846d498f932ad985987491b91fb3ed43ed05c69444e7b29a690b350135d2086585e7ab37c09289a424888a6b82f76a5928f64a1270f2b6
+  languageName: node
+  linkType: hard
 
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
@@ -14943,6 +14952,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nanoid@npm:^3.3.7":
+  version: 3.3.7
+  resolution: "nanoid@npm:3.3.7"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: e3fb661aa083454f40500473bb69eedb85dc160e763150b9a2c567c7e9ff560ce028a9f833123b618a6ea742e311138b591910e795614a629029e86e180660f3
+  languageName: node
+  linkType: hard
+
 "natural-compare@npm:^1.4.0":
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
@@ -15761,6 +15779,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picocolors@npm:^1.0.1":
+  version: 1.1.0
+  resolution: "picocolors@npm:1.1.0"
+  checksum: 86946f6032148801ef09c051c6fb13b5cf942eaf147e30ea79edb91dd32d700934edebe782a1078ff859fb2b816792e97ef4dab03d7f0b804f6b01a0df35e023
+  languageName: node
+  linkType: hard
+
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.3, picomatch@npm:^2.3.0, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
@@ -15976,6 +16001,17 @@ __metadata:
     picocolors: "npm:^1.0.0"
     source-map-js: "npm:^1.0.2"
   checksum: 748b82e6e5fc34034dcf2ae88ea3d11fd09f69b6c50ecdd3b4a875cfc7cdca435c958b211e2cb52355422ab6fccb7d8f2f2923161d7a1b281029e4a913d59acf
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.4.38":
+  version: 8.4.45
+  resolution: "postcss@npm:8.4.45"
+  dependencies:
+    nanoid: "npm:^3.3.7"
+    picocolors: "npm:^1.0.1"
+    source-map-js: "npm:^1.2.0"
+  checksum: ad6f8b9b1157d678560373696109745ab97a947d449f8a997acac41c7f1e4c0f3ca4b092d6df1387f430f2c9a319987b1780dbdc27e35800a88cde9b606c1e8f
   languageName: node
   linkType: hard
 
@@ -17304,20 +17340,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rrweb-snapshot@npm:2.0.0-alpha.14":
-  version: 2.0.0-alpha.14
-  resolution: "rrweb-snapshot@npm:2.0.0-alpha.14"
-  checksum: 977a87df4ba00f1a5cd1f13cca61532dd5a9c9baeb21715f8394a6aaa1daf9d47f27280f86915e7cc312eb7a0b92cc25d5eb4d6ccf9dc4fdd5de35347aafdaac
-  languageName: node
-  linkType: hard
-
-"rrweb-snapshot@npm:^2.0.0-alpha.11":
-  version: 2.0.0-alpha.11
-  resolution: "rrweb-snapshot@npm:2.0.0-alpha.11"
-  checksum: 8b1c957877af546e89fb5428f5bcfda2a240d3cee9c770a63f897150dd5524e16048b6390a5d44e6d7ff4d1f7f3db63c816685e89ce4791e5645b6b5940378a7
-  languageName: node
-  linkType: hard
-
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
   resolution: "run-parallel@npm:1.2.0"
@@ -17798,6 +17820,13 @@ __metadata:
   version: 1.0.2
   resolution: "source-map-js@npm:1.0.2"
   checksum: 32f2dfd1e9b7168f9a9715eb1b4e21905850f3b50cf02cf476e47e4eebe8e6b762b63a64357896aa29b37e24922b4282df0f492e0d2ace572b43d15525976ff8
+  languageName: node
+  linkType: hard
+
+"source-map-js@npm:^1.2.0":
+  version: 1.2.1
+  resolution: "source-map-js@npm:1.2.1"
+  checksum: 7bda1fc4c197e3c6ff17de1b8b2c20e60af81b63a52cb32ec5a5d67a20a7d42651e2cb34ebe93833c5a2a084377e17455854fee3e21e7925c64a51b6a52b0faf
   languageName: node
   linkType: hard
 

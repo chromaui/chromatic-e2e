@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Constructable Stylesheets in Web Components in Shadow DOM</h1>
+    <styled-component></styled-component>
+    <p>Paragraph outside the Web Component.</p>
+
+    <script type="text/javascript">
+      class StyledComponent extends HTMLElement {
+        connectedCallback() {
+          const shadow = this.attachShadow({ mode: 'open' });
+
+          const container = document.createElement('div');
+          shadow.appendChild(container);
+
+          const h2 = document.createElement('h2');
+          h2.innerHTML = 'This section is generated using a Web Component (I should be blue)';
+          container.appendChild(h2);
+
+          const p = document.createElement('p');
+          p.innerHTML =
+            'This section is <strong>locally</strong> styled with constructable stylesheets created inside the Web Component using shadow DOM. I should be <strong>green</strong> and the section background should be <strong>cyan</strong>.';
+          container.appendChild(p);
+
+          const stylesheet = new CSSStyleSheet();
+          stylesheet.replaceSync(`
+            div {
+              background: cyan;
+              padding: 10px;
+            }            
+            h1, h2 {
+              color: blue;
+            }
+            p {
+              color: green;
+            }
+          `);
+          shadow.adoptedStyleSheets = [stylesheet];
+        }
+      }
+      customElements.define('styled-component', StyledComponent);
+    </script>
+  </body>
+</html>

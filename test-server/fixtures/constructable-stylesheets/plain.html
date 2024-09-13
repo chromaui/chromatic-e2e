@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Constructable Stylesheets, sort of the other CSS (I should be blue)</h1>
+    <p>
+      This page is <strong>globally</strong> styled with constructable stylesheets. I should be
+      <strong>green</strong> and the page background should be <strong>cyan</strong>.
+    </p>
+
+    <script type="text/javascript">
+      const stylesheet = new CSSStyleSheet();
+      stylesheet.replaceSync(`
+        body {
+          background: cyan;
+        }            
+        h1 {
+          color: blue;
+        }
+        p {
+          color: green;
+        }
+      `);
+      document.adoptedStyleSheets = [stylesheet];
+    </script>
+  </body>
+</html>

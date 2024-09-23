@@ -2,11 +2,33 @@
 <html>
   <body>
     <h1>Constructable Stylesheets in Web Components in Shadow DOM</h1>
-    <styled-component></styled-component>
+    <styled-component
+      background-color="cyan"
+      header-color="blue"
+      paragraph-color="green"
+    ></styled-component>
     <p>Paragraph outside the Web Component.</p>
+    <styled-component
+      background-color="yellow"
+      header-color="red"
+      paragraph-color="purple"
+    ></styled-component>
 
     <script type="text/javascript">
       class StyledComponent extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        static get observedAttributes() {
+          return ['background-color', 'header-color', 'paragraph-color'];
+        }
+
+        attributeChangedCallback(property, oldValue, newValue) {
+          if (oldValue === newValue) return;
+          this[property] = newValue;
+        }
+
         connectedCallback() {
           const shadow = this.attachShadow({ mode: 'open' });
 
@@ -18,24 +40,29 @@
           container.appendChild(h2);
 
           const p = document.createElement('p');
-          p.innerHTML =
-            'This section is <strong>locally</strong> styled with constructable stylesheets created inside the Web Component using shadow DOM. I should be <strong>green</strong> and the section background should be <strong>cyan</strong>.';
+          p.innerHTML = `This section is <strong>locally</strong> styled with constructable stylesheets created inside the Web Component using shadow DOM. I should be <strong>green</strong> and the section background should be <strong>${this['background-color']}</strong>.`;
           container.appendChild(p);
 
-          const stylesheet = new CSSStyleSheet();
-          stylesheet.replaceSync(`
+          const bodyStyleSheet = new CSSStyleSheet();
+          bodyStyleSheet.replaceSync(`
             div {
-              background: cyan;
+              background: ${this['background-color']};
               padding: 10px;
             }            
+          `);
+          const headerStylesheet = new CSSStyleSheet();
+          headerStylesheet.replaceSync(`
             h1, h2 {
-              color: blue;
-            }
-            p {
-              color: green;
+              color: ${this['header-color']};
             }
           `);
-          shadow.adoptedStyleSheets = [stylesheet];
+          const paragraphStylesheet = new CSSStyleSheet();
+          paragraphStylesheet.replaceSync(`
+            p {
+              color: ${this['paragraph-color']};
+            }
+          `);
+          shadow.adoptedStyleSheets = [bodyStyleSheet, headerStylesheet, paragraphStylesheet];
         }
       }
       customElements.define('styled-component', StyledComponent);

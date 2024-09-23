@@ -32,26 +32,26 @@
         paragraph.innerHTML = `This section is <strong>locally</strong> styled with constructable stylesheets created inside the shadow DOM. I should be <strong>${paragraphColor}</strong> and the section background should be <strong>${backgroundColor}</strong>.`;
         container.appendChild(paragraph);
 
-        const bodyStyle = new CSSStyleSheet();
-        bodyStyle.replaceSync(`
+        const bodyStyleSheet = new CSSStyleSheet();
+        bodyStyleSheet.replaceSync(`
           div {
             background: ${backgroundColor};
             padding: 10px;
           }            
         `);
-        const headerStyle = new CSSStyleSheet();
-        headerStyle.replaceSync(`
+        const headerStyleSheet = new CSSStyleSheet();
+        headerStyleSheet.replaceSync(`
           h1, h2 {
             color: ${headerColor};
           }
         `);
-        const paragraphStyle = new CSSStyleSheet();
-        paragraphStyle.replaceSync(`
+        const paragraphStyleSheet = new CSSStyleSheet();
+        paragraphStyleSheet.replaceSync(`
           p {
             color: ${paragraphColor};
           }
         `);
-        shadow.adoptedStyleSheets = [bodyStyle, headerStyle, paragraphStyle];
+        shadow.adoptedStyleSheets = [bodyStyleSheet, headerStyleSheet, paragraphStyleSheet];
       };
 
       attachShadowDomElement('shadowHost', 'cyan', 'blue', 'green');

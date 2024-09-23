@@ -6,6 +6,9 @@
       <h2>This section should have been generated using shadow DOM</h2>
     </div>
     <p>Paragraph outside the shadow DOM.</p>
+    <div id="shadowHost2">
+      <h2>This section should have been generated using shadow DOM</h2>
+    </div>
 
     <script type="text/javascript">
       const shadowElement = document.getElementById('shadowHost');
@@ -37,6 +40,38 @@
         }
       `);
       shadow.adoptedStyleSheets = [styles];
+    </script>
+
+    <script type="text/javascript">
+      const shadowElement2 = document.getElementById('shadowHost2');
+      const shadow2 = shadowElement2.attachShadow({ mode: 'open' });
+
+      const container2 = document.createElement('div');
+      shadow2.appendChild(container2);
+
+      const subHeading2 = document.createElement('h2');
+      subHeading2.innerHTML = 'This section is generated using shadow DOM (I should be red)';
+      container2.appendChild(subHeading2);
+
+      const paragraph2 = document.createElement('p');
+      paragraph2.innerHTML =
+        'This section is <strong>locally</strong> styled with constructable stylesheets created inside the shadow DOM. I should be <strong>purple</strong> and the section background should be <strong>yellow</strong>.';
+      container2.appendChild(paragraph2);
+
+      const styles2 = new CSSStyleSheet();
+      styles2.replaceSync(`
+        div {
+          background: yellow;
+          padding: 10px;
+        }            
+        h1, h2 {
+          color: red;
+        }
+        p {
+          color: purple;
+        }
+      `);
+      shadow2.adoptedStyleSheets = [styles2];
     </script>
   </body>
 </html>

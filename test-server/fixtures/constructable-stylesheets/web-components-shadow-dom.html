@@ -36,11 +36,11 @@
           shadow.appendChild(container);
 
           const h2 = document.createElement('h2');
-          h2.innerHTML = 'This section is generated using a Web Component (I should be blue)';
+          h2.innerHTML = `This section is generated using a Web Component (I should be ${this['header-color']})`;
           container.appendChild(h2);
 
           const p = document.createElement('p');
-          p.innerHTML = `This section is <strong>locally</strong> styled with constructable stylesheets created inside the Web Component using shadow DOM. I should be <strong>green</strong> and the section background should be <strong>${this['background-color']}</strong>.`;
+          p.innerHTML = `This section is <strong>locally</strong> styled with constructable stylesheets created inside the Web Component using shadow DOM. I should be <strong>${this['paragraph-color']}</strong> and the section background should be <strong>${this['background-color']}</strong>.`;
           container.appendChild(p);
 
           const bodyStyleSheet = new CSSStyleSheet();

@@ -15,3 +15,7 @@ test('styles render in Web Components', async ({ page }) => {
 test('styles render in web components in shadow DOM', async ({ page }) => {
   await page.goto('/constructable-stylesheets/web-components-shadow-dom');
 });
+
+test('styles render in reused web component in shadow DOM', async ({ page }) => {
+  await page.goto('/constructable-stylesheets/web-components-shadow-dom-reused');
+});

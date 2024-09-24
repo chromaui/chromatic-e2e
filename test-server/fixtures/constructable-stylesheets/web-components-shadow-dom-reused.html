@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Constructable Stylesheets in Web Components in Shadow DOM</h1>
+    <h3>All the web components should look exactly the same.</h3>
+    <styled-component
+      background-color="cyan"
+      header-color="blue"
+      paragraph-color="green"
+    ></styled-component>
+    <p>Paragraph outside the Web Component.</p>
+    <styled-component
+      background-color="cyan"
+      header-color="blue"
+      paragraph-color="green"
+    ></styled-component>
+    <p>Paragraph outside the Web Component.</p>
+    <styled-component
+      background-color="cyan"
+      header-color="blue"
+      paragraph-color="green"
+    ></styled-component>
+    <p>Paragraph outside the Web Component.</p>
+    <styled-component
+      background-color="cyan"
+      header-color="blue"
+      paragraph-color="green"
+    ></styled-component>
+    <p>Paragraph outside the Web Component.</p>
+    <styled-component
+      background-color="cyan"
+      header-color="blue"
+      paragraph-color="green"
+    ></styled-component>
+
+    <script type="text/javascript">
+      class StyledComponent extends HTMLElement {
+        constructor() {
+          super();
+        }
+
+        static get observedAttributes() {
+          return ['background-color', 'header-color', 'paragraph-color'];
+        }
+
+        attributeChangedCallback(property, oldValue, newValue) {
+          if (oldValue === newValue) return;
+          this[property] = newValue;
+        }
+
+        connectedCallback() {
+          const shadow = this.attachShadow({ mode: 'open' });
+
+          const container = document.createElement('div');
+          shadow.appendChild(container);
+
+          const h2 = document.createElement('h2');
+          h2.innerHTML = `This section is generated using a Web Component (I should be ${this['header-color']})`;
+          container.appendChild(h2);
+
+          const p = document.createElement('p');
+          p.innerHTML = `This section is <strong>locally</strong> styled with constructable stylesheets created inside the Web Component using shadow DOM. I should be <strong>${this['paragraph-color']}</strong> and the section background should be <strong>${this['background-color']}</strong>.`;
+          container.appendChild(p);
+
+          const bodyStyleSheet = new CSSStyleSheet();
+          bodyStyleSheet.replaceSync(`
+            div {
+              background: ${this['background-color']};
+              padding: 10px;
+            }            
+          `);
+          const headerStylesheet = new CSSStyleSheet();
+          headerStylesheet.replaceSync(`
+            h1, h2 {
+              color: ${this['header-color']};
+            }
+          `);
+          const paragraphStylesheet = new CSSStyleSheet();
+          paragraphStylesheet.replaceSync(`
+            p {
+              color: ${this['paragraph-color']};
+            }
+          `);
+          shadow.adoptedStyleSheets = [bodyStyleSheet, headerStylesheet, paragraphStylesheet];
+        }
+      }
+      customElements.define('styled-component', StyledComponent);
+    </script>
+  </body>
+</html>

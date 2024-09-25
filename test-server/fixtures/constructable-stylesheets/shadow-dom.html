@@ -6,37 +6,55 @@
       <h2>This section should have been generated using shadow DOM</h2>
     </div>
     <p>Paragraph outside the shadow DOM.</p>
+    <div id="shadowHost2">
+      <h2>This section should have been generated using shadow DOM</h2>
+    </div>
 
     <script type="text/javascript">
-      const shadowElement = document.getElementById('shadowHost');
-      const shadow = shadowElement.attachShadow({ mode: 'open' });
+      const attachShadowDomElement = (
+        shadowHostId,
+        backgroundColor,
+        headerColor,
+        paragraphColor
+      ) => {
+        const shadowElement = document.getElementById(shadowHostId);
+        const shadow = shadowElement.attachShadow({ mode: 'open' });
 
-      const container = document.createElement('div');
-      shadow.appendChild(container);
+        const container = document.createElement('div');
+        shadow.appendChild(container);
 
-      const subHeading = document.createElement('h2');
-      subHeading.innerHTML = 'This section is generated using shadow DOM (I should be blue)';
-      container.appendChild(subHeading);
+        const subHeading = document.createElement('h2');
+        subHeading.innerHTML = `This section is generated using shadow DOM (I should be ${headerColor})`;
+        container.appendChild(subHeading);
 
-      const paragraph = document.createElement('p');
-      paragraph.innerHTML =
-        'This section is <strong>locally</strong> styled with constructable stylesheets created inside the shadow DOM. I should be <strong>green</strong> and the section background should be <strong>cyan</strong>.';
-      container.appendChild(paragraph);
+        const paragraph = document.createElement('p');
+        paragraph.innerHTML = `This section is <strong>locally</strong> styled with constructable stylesheets created inside the shadow DOM. I should be <strong>${paragraphColor}</strong> and the section background should be <strong>${backgroundColor}</strong>.`;
+        container.appendChild(paragraph);
 
-      const styles = new CSSStyleSheet();
-      styles.replaceSync(`
-        div {
-          background: cyan;
-          padding: 10px;
-        }            
-        h1, h2 {
-          color: blue;
-        }
-        p {
-          color: green;
-        }
-      `);
-      shadow.adoptedStyleSheets = [styles];
+        const bodyStyleSheet = new CSSStyleSheet();
+        bodyStyleSheet.replaceSync(`
+          div {
+            background: ${backgroundColor};
+            padding: 10px;
+          }            
+        `);
+        const headerStyleSheet = new CSSStyleSheet();
+        headerStyleSheet.replaceSync(`
+          h1, h2 {
+            color: ${headerColor};
+          }
+        `);
+        const paragraphStyleSheet = new CSSStyleSheet();
+        paragraphStyleSheet.replaceSync(`
+          p {
+            color: ${paragraphColor};
+          }
+        `);
+        shadow.adoptedStyleSheets = [bodyStyleSheet, headerStyleSheet, paragraphStyleSheet];
+      };
+
+      attachShadowDomElement('shadowHost', 'cyan', 'blue', 'green');
+      attachShadowDomElement('shadowHost2', 'yellow', 'red', 'purple');
     </script>
   </body>
 </html>

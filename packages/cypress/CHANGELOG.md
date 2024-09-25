@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.7.0
+
+### Minor Changes
+
+- f2f800f: Support constructable stylesheets in shadow DOM elements
+
 ## 0.6.17
 
 ### Patch Changes

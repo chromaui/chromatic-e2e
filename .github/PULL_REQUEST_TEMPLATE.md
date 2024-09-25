@@ -30,7 +30,6 @@ Check ☑️ the appropriate box once you've finished QA:
 ## Release checklist
 - [ ] [Changeset](https://github.com/chromaui/chromatic-e2e/blob/main/DEVELOPMENT.md#pr-workflow-with-changesets) created in this PR
 
-
 -->
 
 <!-- ignore-task-list-end -->

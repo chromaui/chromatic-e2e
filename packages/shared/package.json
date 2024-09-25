@@ -111,7 +111,7 @@
     "*.{ts,js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.17",
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.17-noAbsolute",
     "@segment/analytics-node": "^1.1.0",
     "storybook": "^8.1.5"
   }

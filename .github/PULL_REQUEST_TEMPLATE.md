@@ -23,3 +23,14 @@ Check ☑️ the appropriate box once you've finished QA:
 
 - [ ] Author - QA OK
 - [ ] Reviewer - QA OK
+
+<!-- ignore-task-list-start -->
+
+<!--
+## Release checklist
+- [ ] https://github.com/chromaui/chromatic-e2e/blob/main/DEVELOPMENT.md#pr-workflow-with-changesets created in this PR
+
+
+-->
+
+<!-- ignore-task-list-end -->

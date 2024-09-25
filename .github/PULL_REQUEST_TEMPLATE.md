@@ -28,7 +28,7 @@ Check ☑️ the appropriate box once you've finished QA:
 
 <!--
 ## Release checklist
-- [ ] https://github.com/chromaui/chromatic-e2e/blob/main/DEVELOPMENT.md#pr-workflow-with-changesets created in this PR
+- [ ] [Checklist](https://github.com/chromaui/chromatic-e2e/blob/main/DEVELOPMENT.md#pr-workflow-with-changesets) created in this PR
 
 
 -->

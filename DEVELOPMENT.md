@@ -45,13 +45,15 @@ If you wish to run the site-under-tests's server separately (e.g. to debug a spe
 
 ### PR Workflow with Changesets
 
-Versioning and releasing is done using [changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md). We use [Semantic Versioning](https://semver.org/).
+Versioning and releasing is done using [changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
 
-If a change made in a PR requires any of the integration packages to be published, you must add a changeset to your branch specifying which packages should be published, what semver version they should be bumped to, and the reason for the change.
+If a change made in a PR requires any of the integration packages to be published, you must add a changeset to your branch specifying which packages should be published, what version they should be bumped to (we use [Semantic Versioning](https://semver.org/)), and the reason for the change.
 
 This is done by running `yarn changeset`, which will guide you through all of the above.
 
 Commit the resulting changeset file with your other changes and push it up. This can happen at any time in the lifecycle of the branch.
+
+After your PR is merged, if you included a changeset, the repo will auto-create a "Version Packages" PR that, when merged, will publish the new package versions to NPM. You can self-review and self-merge this PR.
 
 #### Which packages do I publish?
 

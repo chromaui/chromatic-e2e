@@ -1,0 +1,28 @@
+name: Checking PR checklist
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check-pr-description:
+    runs-on: ubuntu-latest
+    steps:
+      - id: task-completed
+        uses: chromaui/task-completed-checker-action@main
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+        continue-on-error: true
+      - name: Update Check (failure)
+        if: steps.task-completed.outcome != 'success'
+        uses: ouzi-dev/commit-status-updater@v2
+        with:
+          name: PR Checklist
+          status: pending
+          description: Check off PR items to proceed
+      - name: Update Check (success)
+        if: steps.task-completed.outcome == 'success'
+        uses: ouzi-dev/commit-status-updater@v2
+        with:
+          name: PR Checklist
+          status: success
+          description: All tasks checked off!

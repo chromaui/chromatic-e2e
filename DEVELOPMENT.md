@@ -45,7 +45,7 @@ If you wish to run the site-under-tests's server separately (e.g. to debug a spe
 
 ### PR Workflow with Changesets
 
-Versioning and releasing is done using [changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
+Versioning and releasing is done using [changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md). We use [Semantic Versioning](https://semver.org/).
 
 If a change made in a PR requires any of the integration packages to be published, you must add a changeset to your branch specifying which packages should be published, what semver version they should be bumped to, and the reason for the change.
 

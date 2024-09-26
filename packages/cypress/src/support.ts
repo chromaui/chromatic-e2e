@@ -54,7 +54,9 @@ afterEach(() => {
               ...(Cypress.env('cropToViewport') && {
                 cropToViewport: Cypress.env('cropToViewport'),
               }),
-              ...(Cypress.env('ignore') && { ignore: Cypress.env('ignore') }),
+              ...(Cypress.env('ignoreSelectors') && {
+                ignoreSelectors: Cypress.env('ignoreSelectors'),
+              }),
             },
             pageUrl: url,
             viewport: {

@@ -31,7 +31,7 @@ export const performChromaticSnapshot = async (
     resourceArchiveTimeout,
     assetDomains,
     cropToViewport,
-    ignore,
+    ignoreSelectors,
   }: ChromaticConfig & { page: Page },
   use: () => Promise<void>,
   testInfo: TestInfo
@@ -74,7 +74,7 @@ export const performChromaticSnapshot = async (
       ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
       ...(prefersReducedMotion && { prefersReducedMotion }),
       ...(cropToViewport && { cropToViewport }),
-      ...(ignore && { ignore }),
+      ...(ignoreSelectors && { ignoreSelectors }),
     };
 
     // TestInfo.outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
@@ -117,7 +117,7 @@ export const makeTest = (
     resourceArchiveTimeout: [DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS, { option: true }],
     assetDomains: [[], { option: true }],
     cropToViewport: [undefined, { option: true }],
-    ignore: [undefined, { option: true }],
+    ignoreSelectors: [undefined, { option: true }],
 
     chromaticSnapshot: [
       performChromaticSnapshot,

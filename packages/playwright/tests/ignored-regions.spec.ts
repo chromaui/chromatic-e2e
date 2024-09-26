@@ -4,7 +4,7 @@ import { test, expect } from '../src';
 //       with the automated test suite.
 test.describe('ignore regions', () => {
   test.use({ ignore: ['.custom-ignore'] });
-  test('work with chromatic', async ({ page }) => {
+  test('ignored regions work with chromatic', async ({ page }) => {
     test.setTimeout(2000);
     await page.goto('/ignore');
     await setTimeout(() => {}, 1000);

@@ -24,12 +24,10 @@ Check ☑️ the appropriate box once you've finished QA:
 - [ ] Author - QA OK
 - [ ] Reviewer - QA OK
 
-<!-- ignore-task-list-start -->
+## Release checklist
 
 <!--
-## Release checklist
-- [ ] [Changeset](https://github.com/chromaui/chromatic-e2e/blob/main/DEVELOPMENT.md#pr-workflow-with-changesets) created in this PR
-
+  If you're not publishing the packages to NPM, delete this section.
 -->
 
-<!-- ignore-task-list-end -->
+- [ ] [Changeset](https://github.com/chromaui/chromatic-e2e/blob/main/DEVELOPMENT.md#pr-workflow-with-changesets) created in this PR

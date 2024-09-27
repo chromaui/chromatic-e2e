@@ -3572,7 +3572,7 @@ __metadata:
   resolution: "@chromatic-com/cypress@workspace:packages/cypress"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
     "@storybook/csf": "npm:^0.1.0"
@@ -3594,7 +3594,7 @@ __metadata:
   resolution: "@chromatic-com/playwright@workspace:packages/playwright"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
     "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.1.5"
@@ -3622,7 +3622,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.21.4"
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.4"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
     "@jest/types": "npm:^27.0.6"
     "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
@@ -3700,12 +3700,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17":
-  version: 2.0.0-alpha.17
-  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17"
+"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17-noAbsolute":
+  version: 2.0.0-alpha.17-noAbsolute
+  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17-noAbsolute"
   dependencies:
     postcss: "npm:^8.4.38"
-  checksum: cff6946425c2d8b4cf846d498f932ad985987491b91fb3ed43ed05c69444e7b29a690b350135d2086585e7ab37c09289a424888a6b82f76a5928f64a1270f2b6
+  checksum: 983b4a704145da353b73d6fb09675117466e833486ad2efc3033433655a9b12f4e00b05e884a9d4ca85947f01e60f57c14a3d8e809656e470a44bdcb082f9f85
   languageName: node
   linkType: hard
 

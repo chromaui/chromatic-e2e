@@ -1,7 +1,7 @@
 {
   "name": "@chromatic-com/shared-e2e",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Shared Chromatic E2E",
   "repository": {
     "type": "git",
@@ -111,7 +111,7 @@
     "*.{ts,js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.17",
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.17-noAbsolute",
     "@segment/analytics-node": "^1.1.0",
     "storybook": "^8.1.5"
   }

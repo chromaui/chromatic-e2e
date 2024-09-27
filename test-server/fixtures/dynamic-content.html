@@ -22,12 +22,14 @@
             <h1>Hello There! The current time is:</h1>
             <div data-chromatic="ignore" id="time-e2e-test-ignore"></div>
             <div class="chromatic-ignore" id="time-e2e-test-ignore-2"></div>
+            <div class="custom-ignore" id="time-e2e-test-ignore-3"></div>
         </div>
 
         <script>
             let date = new Date();
             document.getElementById('time-e2e-test-ignore').innerText = date.toTimeString();
             document.getElementById('time-e2e-test-ignore-2').innerText = date.toTimeString();
+            document.getElementById('time-e2e-test-ignore-3').innerText = date.toTimeString();
         </script>
     </body>
 </html>

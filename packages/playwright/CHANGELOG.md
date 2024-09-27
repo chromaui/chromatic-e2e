@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.8.0
+
+### Minor Changes
+
+- f2f800f: Support constructable stylesheets in shadow DOM elements
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # chromatic-cypress
 
+## 0.8.0
+
+### Minor Changes
+
+- c6ca75f: Add support for Chromatic custom ignore selectors.
+- 8885d9c: Rename Chromatic `ignore` parameter to `ignoreSelectors`
+
 ## 0.7.0
 
 ### Minor Changes

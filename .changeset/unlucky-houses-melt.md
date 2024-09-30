@@ -3,4 +3,4 @@
 '@chromatic-com/cypress': minor
 ---
 
-Rename Chromatic ignore parameter to ignoreSelectors
+Rename Chromatic `ignore` parameter to `ignoreSelectors`

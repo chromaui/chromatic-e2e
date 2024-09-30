@@ -33,7 +33,7 @@ export interface ChromaticConfig {
   cropToViewport?: boolean;
 
   // CSS selectors of elements to ignore when comparing snapshots.
-  ignore?: string[];
+  ignoreSelectors?: string[];
 }
 
 export type ChromaticStorybookParameters = Omit<ChromaticConfig, 'disableAutoSnapshot'>;

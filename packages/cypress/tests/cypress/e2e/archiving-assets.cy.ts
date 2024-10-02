@@ -47,6 +47,10 @@ it('video poster image is rendered', () => {
   cy.visit('/asset-paths/video-poster');
 });
 
+it('canvas is rendered', () => {
+  cy.visit('/asset-paths/canvas');
+});
+
 it('link tags for fonts preloads and other things are handled', () => {
   cy.visit('/asset-paths/link-tags');
 });

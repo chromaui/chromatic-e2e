@@ -25,7 +25,7 @@ afterEach(() => {
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
     const automaticSnapshots = !Cypress.env('disableAutoSnapshot')
-      ? [{ snapshot: snapshot(doc) }]
+      ? [{ snapshot: snapshot(doc, { recordCanvas: true }) }]
       : [];
     // @ts-expect-error will fix when Cypress has its own package
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {

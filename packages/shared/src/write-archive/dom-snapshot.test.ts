@@ -10,7 +10,17 @@ function createSnapshot(url1: string, url2: string, url3: string) {
 }
 
 function createSrcsetSnapshot(url1: string, url2: string, url3: string) {
-  return `{"type":2,"tagName":"img","attributes":{"srcset":"${url2} 384w, ${url3} 1920w","sizes":"(min-width: 768px) 768px, 192px","src":"${url1}"},"childNodes":[],"id":61}`;
+  return JSON.stringify({
+    type: 2,
+    tagName: 'img',
+    attributes: {
+      srcset: `${url2} 384w, ${url3} 1920w`,
+      sizes: '(min-width: 768px) 768px, 192px',
+      src: url1,
+    },
+    childNodes: [],
+    id: 61,
+  });
 }
 
 const snapshot = createSnapshot(relativeUrl, externalUrl, queryUrl);

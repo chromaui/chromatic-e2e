@@ -6,7 +6,197 @@ const queryUrl = '/images/img?src=https://chromatic.com/img';
 const queryUrlTransformed = '/images/somehash.png';
 
 function createSnapshot(url1: string, url2: string, url3: string) {
-  return `{"type":0,"childNodes":[{"type":1,"name":"html","publicId":"","systemId":"","id":2},{"type":2,"tagName":"html","attributes":{},"childNodes":[{"type":2,"tagName":"head","attributes":{},"childNodes":[{"type":3,"textContent":"    ","id":5},{"type":2,"tagName":"link","attributes":{"rel":"stylesheet","href":"/styles-test.css"},"childNodes":[],"id":6},{"type":3,"textContent":"    ","id":7},{"type":2,"tagName":"style","attributes":{},"childNodes":[{"type":3,"textContent":".test1 { background-image: url(\\"${url1}\\"); }.test2 { background-image: url(\\"${url2}\\"); }.test2 { background-image: url(\\"${url3}\\"); }","isStyle":true,"id":9}],"id":8},{"type":3,"textContent":"  ","id":10}],"id":4},{"type":3,"textContent":"  ","id":11},{"type":2,"tagName":"body","attributes":{},"childNodes":[{"type":3,"textContent":"    ","id":13},{"type":2,"tagName":"div","attributes":{"class":"image-container flex flex-wrap"},"childNodes":[{"type":3,"textContent":"      ","id":15},{"type":2,"tagName":"img","attributes":{"src":"${url1}"},"childNodes":[],"id":16},{"type":3,"textContent":"      ","id":17},{"type":2,"tagName":"img","attributes":{"src":"${url2}"},"childNodes":[],"id":18},{"type":3,"textContent":"      ","id":19},{"type":2,"tagName":"img","attributes":{"src":"${url3}"},"childNodes":[],"id":20},{"type":3,"textContent":"      ","id":21},{"type":2,"tagName":"div","attributes":{"style":"background: url('${url1}'); no-repeat center;"},"childNodes":[],"id":22},{"type":3,"textContent":"      ","id":23},{"type":2,"tagName":"div","attributes":{"style":"background: url('${url2}'); no-repeat center;"},"childNodes":[],"id":24},{"type":3,"textContent":"      ","id":25},{"type":2,"tagName":"div","attributes":{"style":"background: url('${url3}'); no-repeat center;"},"childNodes":[],"id":26},{"type":3,"textContent":"    ","id":27}],"id":14},{"type":3,"textContent":"  ","id":28}],"id":12}],"id":3}],"id":1}`;
+  return JSON.stringify({
+    type: 0,
+    childNodes: [
+      {
+        type: 1,
+        name: 'html',
+        publicId: '',
+        systemId: '',
+        id: 2,
+      },
+      {
+        type: 2,
+        tagName: 'html',
+        attributes: {},
+        childNodes: [
+          {
+            type: 2,
+            tagName: 'head',
+            attributes: {},
+            childNodes: [
+              {
+                type: 3,
+                textContent: '    ',
+                id: 5,
+              },
+              {
+                type: 2,
+                tagName: 'link',
+                attributes: {
+                  rel: 'stylesheet',
+                  href: '/styles-test.css',
+                },
+                childNodes: [],
+                id: 6,
+              },
+              {
+                type: 3,
+                textContent: '    ',
+                id: 7,
+              },
+              {
+                type: 2,
+                tagName: 'style',
+                attributes: {},
+                childNodes: [
+                  {
+                    type: 3,
+                    textContent:
+                      '.test1 { background-image: url("url1"); }.test2 { background-image: url("url2"); }.test2 { background-image: url("url3"); }',
+                    isStyle: true,
+                    id: 9,
+                  },
+                ],
+                id: 8,
+              },
+              {
+                type: 3,
+                textContent: '  ',
+                id: 10,
+              },
+            ],
+            id: 4,
+          },
+          {
+            type: 3,
+            textContent: '  ',
+            id: 11,
+          },
+          {
+            type: 2,
+            tagName: 'body',
+            attributes: {},
+            childNodes: [
+              {
+                type: 3,
+                textContent: '    ',
+                id: 13,
+              },
+              {
+                type: 2,
+                tagName: 'div',
+                attributes: {
+                  class: 'image-container flex flex-wrap',
+                },
+                childNodes: [
+                  {
+                    type: 3,
+                    textContent: '      ',
+                    id: 15,
+                  },
+                  {
+                    type: 2,
+                    tagName: 'img',
+                    attributes: {
+                      src: 'url1',
+                    },
+                    childNodes: [],
+                    id: 16,
+                  },
+                  {
+                    type: 3,
+                    textContent: '      ',
+                    id: 17,
+                  },
+                  {
+                    type: 2,
+                    tagName: 'img',
+                    attributes: {
+                      src: 'url2',
+                    },
+                    childNodes: [],
+                    id: 18,
+                  },
+                  {
+                    type: 3,
+                    textContent: '      ',
+                    id: 19,
+                  },
+                  {
+                    type: 2,
+                    tagName: 'img',
+                    attributes: {
+                      src: 'url3',
+                    },
+                    childNodes: [],
+                    id: 20,
+                  },
+                  {
+                    type: 3,
+                    textContent: '      ',
+                    id: 21,
+                  },
+                  {
+                    type: 2,
+                    tagName: 'div',
+                    attributes: {
+                      style: "background: url('url1'); no-repeat center;",
+                    },
+                    childNodes: [],
+                    id: 22,
+                  },
+                  {
+                    type: 3,
+                    textContent: '      ',
+                    id: 23,
+                  },
+                  {
+                    type: 2,
+                    tagName: 'div',
+                    attributes: {
+                      style: "background: url('url2'); no-repeat center;",
+                    },
+                    childNodes: [],
+                    id: 24,
+                  },
+                  {
+                    type: 3,
+                    textContent: '      ',
+                    id: 25,
+                  },
+                  {
+                    type: 2,
+                    tagName: 'div',
+                    attributes: {
+                      style: "background: url('url3'); no-repeat center;",
+                    },
+                    childNodes: [],
+                    id: 26,
+                  },
+                  {
+                    type: 3,
+                    textContent: '    ',
+                    id: 27,
+                  },
+                ],
+                id: 14,
+              },
+              {
+                type: 3,
+                textContent: '  ',
+                id: 28,
+              },
+            ],
+            id: 12,
+          },
+        ],
+        id: 3,
+      },
+    ],
+    id: 1,
+  });
 }
 
 function createSrcsetSnapshot(url1: string, url2: string, url3: string) {

@@ -102,20 +102,19 @@ export class DOMSnapshot {
       */
 
       if (node.tagName === 'picture') {
-        console.log('SOURCE', node);
         const allSourceUrls = node.childNodes
           .filter(
             (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'source'
           )
           // @ts-expect-error attributes does exist on source
           .map((childNode) => childNode.attributes.srcset);
-        console.log('uruls', allSourceUrls);
+
         // we have all of the raw URLs.
         const matchingUrl = allSourceUrls.find((sourceUrl) => {
           // find a url in the asset map... by which we mean in the sourceMap
           return sourceMap.has(sourceUrl);
         });
-        console.log('matching url', matchingUrl);
+
         // do any of my children match what is in there?
         if (matchingUrl) {
           // if so, blow away all <source> tags

@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <!-- Crucial to make sure we factor out DPI when choosing an image -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
   <body>
     <picture>
       <!-- Instead of having multiple <source> elements, we have 1 that suggests (NOT specifies) which image should be used -->
-      <source srcset="/img?url=fixtures/pink.png 1500w, /img?url=fixtures/blue.png 600w" />
+      <source srcset="/img?url=fixtures/pink.png 2000w, /img?url=fixtures/blue.png 900w" />
       <img src="/img?url=fixtures/purple.png" />
     </picture>
     <p class="text-sm">blue < 768px <= pink</p>

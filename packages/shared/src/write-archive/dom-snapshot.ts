@@ -93,21 +93,19 @@ export class DOMSnapshot {
         }
       }
 
-      /*
-        CONSIDER:
-        can source srcsets have more than one item, or have complex item (url 2x stuff)?
-        If so, parse those out
-
-        If matchingUrl AND imageElement don't exist, don't blow all the source tags away
-      */
-
       if (node.tagName === 'picture') {
-        const allSourceUrls = node.childNodes
+        const allSourceUrls: string[] = node.childNodes
           .filter(
             (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'source'
           )
-          // @ts-expect-error attributes does exist on source
-          .map((childNode) => childNode.attributes.srcset);
+          .map((childNode) => {
+            // there can be multiple values in a single srcset, extract all of them
+            // @ts-expect-error attributes does exist on source
+            const sourceSetValues = srcset.parse(childNode.attributes.srcset);
+            return sourceSetValues.map((srcSetValue) => srcSetValue.url);
+          })
+          // since srcsets can have multiple values, we will have a nested array here
+          .flat();
 
         // we have all of the raw URLs.
         const matchingUrl = allSourceUrls.find((sourceUrl) => {

@@ -39,7 +39,7 @@ it('srcset is used to determine image asset URL', () => {
   cy.visit('/asset-paths/srcset');
 });
 
-it('picture is captured', () => {
+it('picture source is captured, multiple source elements', () => {
   cy.visit('/asset-paths/picture');
 });
 
@@ -49,6 +49,10 @@ it('picture is captured', () => {
 // mistakenly assume they were "captured" by this test and use them instead of the fallback image)
 it.skip('picture captures fallback image', () => {
   cy.visit('/asset-paths/picture-no-matching-source');
+});
+
+it('picture source is captured, single source with srcset', () => {
+  cy.visit('/asset-paths/picture-multiple-srcset');
 });
 
 it('external CSS files are inlined', () => {

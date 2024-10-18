@@ -49,8 +49,12 @@ test('srcset is used to determine image asset URL', async ({ page }) => {
   await page.goto('/asset-paths/srcset');
 });
 
-test('picture is captured', async ({ page }) => {
+test('picture source is captured, multiple source elements', async ({ page }) => {
   await page.goto('/asset-paths/picture');
+});
+
+test('picture source is captured, single source with srcset', async ({ page }) => {
+  await page.goto('/asset-paths/picture-multiple-srcset');
 });
 
 test('picture captures fallback image', async ({ page }) => {

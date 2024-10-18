@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <picture>
+      <!-- Instead of having multiple <source> elements, we have 1 that suggests (NOT specifies) which image should be used -->
+      <source srcset="/img?url=fixtures/pink.png 1500w, /img?url=fixtures/blue.png 600w" />
+      <img src="/img?url=fixtures/purple.png" />
+    </picture>
+    <p class="text-sm">blue < 768px <= pink</p>
+  </body>
+</html>

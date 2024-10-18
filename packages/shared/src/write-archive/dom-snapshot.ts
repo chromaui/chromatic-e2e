@@ -107,6 +107,7 @@ export class DOMSnapshot {
           .filter(
             (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'source'
           )
+          // @ts-expect-error attributes does exist on source
           .map((childNode) => childNode.attributes.srcset);
         console.log('uruls', allSourceUrls);
         // we have all of the raw URLs.
@@ -127,6 +128,7 @@ export class DOMSnapshot {
             (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'img'
           );
           if (imageElement) {
+            // @ts-expect-error attributes does exist on img
             imageElement.attributes.src = sourceMap.get(matchingUrl);
           }
         }

@@ -39,6 +39,10 @@ it('srcset is used to determine image asset URL', () => {
   cy.visit('/asset-paths/srcset');
 });
 
+it('picture is captured', () => {
+  cy.visit('/asset-paths/picture');
+});
+
 it('external CSS files are inlined', () => {
   cy.visit('/asset-paths/external-css-files');
 });

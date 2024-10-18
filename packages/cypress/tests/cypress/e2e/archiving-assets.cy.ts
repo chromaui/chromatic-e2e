@@ -43,7 +43,11 @@ it('picture is captured', () => {
   cy.visit('/asset-paths/picture');
 });
 
-it('picture captures fallback image', () => {
+// TODO: Unskip when we use one-archive-per-test in Cypress (like we do in Playwright)
+// currently, we use one archive for all the tests, but in this case it means we capture
+// the wrong image (since the unmatching images are already in the global archive, we
+// mistakenly assume they were "captured" by this test and use them instead of the fallback image)
+it.skip('picture captures fallback image', () => {
   cy.visit('/asset-paths/picture-no-matching-source');
 });
 

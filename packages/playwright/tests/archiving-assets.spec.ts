@@ -53,6 +53,10 @@ test('picture is captured', async ({ page }) => {
   await page.goto('/asset-paths/picture');
 });
 
+test('picture captures fallback image', async ({ page }) => {
+  await page.goto('/asset-paths/picture-no-matching-source');
+});
+
 test('external CSS files are inlined', async ({ page }) => {
   await page.goto('/asset-paths/external-css-files');
 });

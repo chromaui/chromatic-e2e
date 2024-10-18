@@ -43,6 +43,10 @@ it('picture is captured', () => {
   cy.visit('/asset-paths/picture');
 });
 
+it('picture captures fallback image', () => {
+  cy.visit('/asset-paths/picture-no-matching-source');
+});
+
 it('external CSS files are inlined', () => {
   cy.visit('/asset-paths/external-css-files');
 });

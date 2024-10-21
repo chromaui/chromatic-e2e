@@ -9,7 +9,15 @@ function createSnapshot(url1: string, url2: string, url3: string) {
   return `{"type":0,"childNodes":[{"type":1,"name":"html","publicId":"","systemId":"","id":2},{"type":2,"tagName":"html","attributes":{},"childNodes":[{"type":2,"tagName":"head","attributes":{},"childNodes":[{"type":3,"textContent":"    ","id":5},{"type":2,"tagName":"link","attributes":{"rel":"stylesheet","href":"/styles-test.css"},"childNodes":[],"id":6},{"type":3,"textContent":"    ","id":7},{"type":2,"tagName":"style","attributes":{},"childNodes":[{"type":3,"textContent":".test1 { background-image: url(\\"${url1}\\"); }.test2 { background-image: url(\\"${url2}\\"); }.test2 { background-image: url(\\"${url3}\\"); }","isStyle":true,"id":9}],"id":8},{"type":3,"textContent":"  ","id":10}],"id":4},{"type":3,"textContent":"  ","id":11},{"type":2,"tagName":"body","attributes":{},"childNodes":[{"type":3,"textContent":"    ","id":13},{"type":2,"tagName":"div","attributes":{"class":"image-container flex flex-wrap"},"childNodes":[{"type":3,"textContent":"      ","id":15},{"type":2,"tagName":"img","attributes":{"src":"${url1}"},"childNodes":[],"id":16},{"type":3,"textContent":"      ","id":17},{"type":2,"tagName":"img","attributes":{"src":"${url2}"},"childNodes":[],"id":18},{"type":3,"textContent":"      ","id":19},{"type":2,"tagName":"img","attributes":{"src":"${url3}"},"childNodes":[],"id":20},{"type":3,"textContent":"      ","id":21},{"type":2,"tagName":"div","attributes":{"style":"background: url('${url1}'); no-repeat center;"},"childNodes":[],"id":22},{"type":3,"textContent":"      ","id":23},{"type":2,"tagName":"div","attributes":{"style":"background: url('${url2}'); no-repeat center;"},"childNodes":[],"id":24},{"type":3,"textContent":"      ","id":25},{"type":2,"tagName":"div","attributes":{"style":"background: url('${url3}'); no-repeat center;"},"childNodes":[],"id":26},{"type":3,"textContent":"    ","id":27}],"id":14},{"type":3,"textContent":"  ","id":28}],"id":12}],"id":3}],"id":1}`;
 }
 
-function createImgSrcsetSnapshot(backupUrl: string, smallUrl: string, largeUrl: string) {
+function createImgSrcsetSnapshot({
+  backupUrl,
+  smallUrl,
+  largeUrl,
+}: {
+  backupUrl: string;
+  smallUrl: string;
+  largeUrl: string;
+}) {
   return JSON.stringify({
     type: 2,
     tagName: 'img',
@@ -23,7 +31,13 @@ function createImgSrcsetSnapshot(backupUrl: string, smallUrl: string, largeUrl: 
   });
 }
 
-function createPictureSrcsetSnapshotSingleSource(backupUrl: string, largeUrl: string) {
+function createPictureSrcsetSnapshotSingleSource({
+  backupUrl,
+  matchingUrl,
+}: {
+  backupUrl: string;
+  matchingUrl: string;
+}) {
   return JSON.stringify({
     type: 2,
     tagName: 'picture',
@@ -33,7 +47,7 @@ function createPictureSrcsetSnapshotSingleSource(backupUrl: string, largeUrl: st
         type: 2,
         tagName: 'source',
         attributes: {
-          srcset: largeUrl,
+          srcset: matchingUrl,
         },
         childNodes: [],
         id: 63,
@@ -52,10 +66,13 @@ function createPictureSrcsetSnapshotSingleSource(backupUrl: string, largeUrl: st
   });
 }
 
-function createPictureSrcsetSnapshotSingleSourceImageHasAttributes(
-  backupUrl: string,
-  largeUrl: string
-) {
+function createPictureSrcsetSnapshotSingleSourceImageHasAttributes({
+  backupUrl,
+  matchingUrl,
+}: {
+  backupUrl: string;
+  matchingUrl: string;
+}) {
   return JSON.stringify({
     type: 2,
     tagName: 'picture',
@@ -65,7 +82,7 @@ function createPictureSrcsetSnapshotSingleSourceImageHasAttributes(
         type: 2,
         tagName: 'source',
         attributes: {
-          srcset: largeUrl,
+          srcset: matchingUrl,
         },
         childNodes: [],
         id: 63,
@@ -85,11 +102,15 @@ function createPictureSrcsetSnapshotSingleSourceImageHasAttributes(
   });
 }
 
-function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets(
-  backupUrl: string,
-  smallUrl: string,
-  largeUrl: string
-) {
+function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets({
+  backupUrl,
+  wrongUrl,
+  matchingUrl,
+}: {
+  backupUrl: string;
+  wrongUrl: string;
+  matchingUrl: string;
+}) {
   return JSON.stringify({
     type: 2,
     tagName: 'picture',
@@ -100,7 +121,7 @@ function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets(
         tagName: 'source',
         attributes: {
           expectedMappedSnapshot,
-          srcset: `${smallUrl} 2000w, ${largeUrl} 900w`,
+          srcset: `${wrongUrl} 2000w, ${matchingUrl} 900w`,
         },
         childNodes: [],
         id: 63,
@@ -119,11 +140,15 @@ function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets(
   });
 }
 
-function createPictureSrcsetSnapshotMultipleSources(
-  backupUrl: string,
-  smallUrl: string,
-  largeUrl: string
-) {
+function createPictureSrcsetSnapshotMultipleSources({
+  backupUrl,
+  wrongUrl,
+  matchingUrl,
+}: {
+  backupUrl: string;
+  wrongUrl: string;
+  matchingUrl: string;
+}) {
   return JSON.stringify({
     type: 2,
     tagName: 'picture',
@@ -133,7 +158,7 @@ function createPictureSrcsetSnapshotMultipleSources(
         type: 2,
         tagName: 'source',
         attributes: {
-          srcset: smallUrl,
+          srcset: wrongUrl,
         },
         childNodes: [],
         id: 64,
@@ -142,7 +167,7 @@ function createPictureSrcsetSnapshotMultipleSources(
         type: 2,
         tagName: 'source',
         attributes: {
-          srcset: largeUrl,
+          srcset: matchingUrl,
         },
         childNodes: [],
         id: 63,
@@ -161,7 +186,13 @@ function createPictureSrcsetSnapshotMultipleSources(
   });
 }
 
-function createPictureSrcsetNoUrlMatches(wrongUrl: string, alsoWrongUrl: string) {
+function createPictureSrcsetNoUrlMatches({
+  wrongUrl,
+  alsoWrongUrl,
+}: {
+  wrongUrl: string;
+  alsoWrongUrl: string;
+}) {
   return JSON.stringify({
     type: 2,
     tagName: 'picture',
@@ -235,7 +266,11 @@ describe('DOMSnapshot', () => {
 
     it('maps img srcsets', async () => {
       const domSnapshot = new DOMSnapshot(
-        createImgSrcsetSnapshot(relativeUrl, externalUrl, queryUrl)
+        createImgSrcsetSnapshot({
+          backupUrl: relativeUrl,
+          smallUrl: externalUrl,
+          largeUrl: queryUrl,
+        })
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
@@ -252,7 +287,11 @@ describe('DOMSnapshot', () => {
     });
 
     it('does not change img srcsets when no mapped asset found in source map', async () => {
-      const originalSnapshot = createImgSrcsetSnapshot(relativeUrl, externalUrl, queryUrl);
+      const originalSnapshot = createImgSrcsetSnapshot({
+        backupUrl: relativeUrl,
+        smallUrl: externalUrl,
+        largeUrl: queryUrl,
+      });
       const domSnapshot = new DOMSnapshot(originalSnapshot);
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map<string, string>());
@@ -262,7 +301,7 @@ describe('DOMSnapshot', () => {
 
     it('maps picture srcsets, single <source>', async () => {
       const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSource(relativeUrl, queryUrl)
+        createPictureSrcsetSnapshotSingleSource({ backupUrl: relativeUrl, matchingUrl: queryUrl })
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
@@ -272,7 +311,11 @@ describe('DOMSnapshot', () => {
 
     it('maps picture srcsets, multiple <source>s', async () => {
       const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotMultipleSources(relativeUrl, externalUrl, queryUrl)
+        createPictureSrcsetSnapshotMultipleSources({
+          backupUrl: relativeUrl,
+          wrongUrl: externalUrl,
+          matchingUrl: queryUrl,
+        })
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
@@ -282,7 +325,11 @@ describe('DOMSnapshot', () => {
 
     it('maps picture srcsets, single <source> with multiple srcset values', async () => {
       const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSourceMultipleSrcsets(relativeUrl, externalUrl, queryUrl)
+        createPictureSrcsetSnapshotSingleSourceMultipleSrcsets({
+          backupUrl: relativeUrl,
+          wrongUrl: externalUrl,
+          matchingUrl: queryUrl,
+        })
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
@@ -291,10 +338,10 @@ describe('DOMSnapshot', () => {
     });
 
     it('maps picture srcsets, <picture> and children left untouched if there is no URL match', async () => {
-      const originalSnapshot = createPictureSrcsetNoUrlMatches(
-        '/totally-bogus-url.png',
-        'https://another-totally-bogus.com/url.png'
-      );
+      const originalSnapshot = createPictureSrcsetNoUrlMatches({
+        wrongUrl: '/totally-bogus-url.png',
+        alsoWrongUrl: 'https://another-totally-bogus.com/url.png',
+      });
       const domSnapshot = new DOMSnapshot(originalSnapshot);
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
@@ -306,7 +353,10 @@ describe('DOMSnapshot', () => {
     // we don't want to get rid of any existing <img> attributes (like class for example)
     it('maps picture srcsets, preserves existing <img> attributes', async () => {
       const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSourceImageHasAttributes(relativeUrl, queryUrl)
+        createPictureSrcsetSnapshotSingleSourceImageHasAttributes({
+          backupUrl: relativeUrl,
+          matchingUrl: queryUrl,
+        })
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);

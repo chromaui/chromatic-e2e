@@ -23,12 +23,92 @@ function createImgSrcsetSnapshot(backupUrl: string, smallUrl: string, largeUrl: 
   });
 }
 
-function createPictureSrcsetSnapshot(backupUrl: string, smallUrl: string, largeUrl: string) {
+function createPictureSrcsetSnapshotSingleSource(
+  backupUrl: string,
+  smallUrl: string,
+  largeUrl: string
+) {
   return JSON.stringify({
     type: 2,
     tagName: 'picture',
     attributes: {},
     childNodes: [
+      {
+        type: 2,
+        tagName: 'source',
+        attributes: {
+          srcset: largeUrl,
+        },
+        childNodes: [],
+        id: 63,
+      },
+      {
+        type: 2,
+        tagName: 'img',
+        attributes: {
+          src: backupUrl,
+        },
+        childNodes: [],
+        id: 61,
+      },
+    ],
+    id: 62,
+  });
+}
+
+function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets(
+  backupUrl: string,
+  smallUrl: string,
+  largeUrl: string
+) {
+  return JSON.stringify({
+    type: 2,
+    tagName: 'picture',
+    attributes: {},
+    childNodes: [
+      {
+        type: 2,
+        tagName: 'source',
+        attributes: {
+          expectedMappedSnapshot,
+          srcset: `${smallUrl} 2000w, ${largeUrl} 900w`,
+        },
+        childNodes: [],
+        id: 63,
+      },
+      {
+        type: 2,
+        tagName: 'img',
+        attributes: {
+          src: backupUrl,
+        },
+        childNodes: [],
+        id: 61,
+      },
+    ],
+    id: 62,
+  });
+}
+
+function createPictureSrcsetSnapshotMultipleSources(
+  backupUrl: string,
+  smallUrl: string,
+  largeUrl: string
+) {
+  return JSON.stringify({
+    type: 2,
+    tagName: 'picture',
+    attributes: {},
+    childNodes: [
+      {
+        type: 2,
+        tagName: 'source',
+        attributes: {
+          srcset: smallUrl,
+        },
+        childNodes: [],
+        id: 64,
+      },
       {
         type: 2,
         tagName: 'source',
@@ -105,7 +185,59 @@ describe('DOMSnapshot', () => {
 
     it('maps picture srcsets, single <source>', async () => {
       const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshot(relativeUrl, externalUrl, queryUrl)
+        createPictureSrcsetSnapshotSingleSource(relativeUrl, externalUrl, queryUrl)
+      );
+
+      const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
+
+      expect(JSON.parse(mappedSnapshot)).toEqual({
+        type: 2,
+        tagName: 'picture',
+        attributes: {},
+        childNodes: [
+          {
+            type: 2,
+            tagName: 'img',
+            attributes: {
+              src: queryUrlTransformed,
+            },
+            childNodes: [],
+            id: 61,
+          },
+        ],
+        id: 62,
+      });
+    });
+
+    it('maps picture srcsets, multiple <source>s', async () => {
+      const domSnapshot = new DOMSnapshot(
+        createPictureSrcsetSnapshotMultipleSources(relativeUrl, externalUrl, queryUrl)
+      );
+
+      const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
+
+      expect(JSON.parse(mappedSnapshot)).toEqual({
+        type: 2,
+        tagName: 'picture',
+        attributes: {},
+        childNodes: [
+          {
+            type: 2,
+            tagName: 'img',
+            attributes: {
+              src: queryUrlTransformed,
+            },
+            childNodes: [],
+            id: 61,
+          },
+        ],
+        id: 62,
+      });
+    });
+
+    it('maps picture srcsets, single <source> with multiple srcset values', async () => {
+      const domSnapshot = new DOMSnapshot(
+        createPictureSrcsetSnapshotSingleSourceMultipleSrcsets(relativeUrl, externalUrl, queryUrl)
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);

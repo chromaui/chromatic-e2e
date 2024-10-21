@@ -130,6 +130,9 @@ export class DOMSnapshot {
         (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'img'
       ) as serializedElementNodeWithId;
       if (imageElement && imageElement.attributes) {
+        // we're assuming that whatever was archived is an image URL
+        // this should be the case (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source#srcset),
+        // but noting it here as it'a an assumption
         imageElement.attributes.src = sourceMap.get(matchingUrl);
       }
     }

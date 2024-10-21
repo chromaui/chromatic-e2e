@@ -23,11 +23,7 @@ function createImgSrcsetSnapshot(backupUrl: string, smallUrl: string, largeUrl: 
   });
 }
 
-function createPictureSrcsetSnapshotSingleSource(
-  backupUrl: string,
-  smallUrl: string,
-  largeUrl: string
-) {
+function createPictureSrcsetSnapshotSingleSource(backupUrl: string, largeUrl: string) {
   return JSON.stringify({
     type: 2,
     tagName: 'picture',
@@ -58,7 +54,6 @@ function createPictureSrcsetSnapshotSingleSource(
 
 function createPictureSrcsetSnapshotSingleSourceImageHasAttributes(
   backupUrl: string,
-  smallUrl: string,
   largeUrl: string
 ) {
   return JSON.stringify({
@@ -201,6 +196,7 @@ const imageTag = {
   attributes: {
     src: queryUrlTransformed,
   },
+  // @ts-expect-error I don't want to deal with this right now
   childNodes: [],
   id: 61,
 };
@@ -266,7 +262,7 @@ describe('DOMSnapshot', () => {
 
     it('maps picture srcsets, single <source>', async () => {
       const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSource(relativeUrl, externalUrl, queryUrl)
+        createPictureSrcsetSnapshotSingleSource(relativeUrl, queryUrl)
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
@@ -310,11 +306,7 @@ describe('DOMSnapshot', () => {
     // we don't want to get rid of any existing <img> attributes (like class for example)
     it('maps picture srcsets, preserves existing <img> attributes', async () => {
       const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSourceImageHasAttributes(
-          relativeUrl,
-          externalUrl,
-          queryUrl
-        )
+        createPictureSrcsetSnapshotSingleSourceImageHasAttributes(relativeUrl, queryUrl)
       );
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);

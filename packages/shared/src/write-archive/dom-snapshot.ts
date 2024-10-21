@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
-import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+import type { serializedElementNodeWithId, serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import { NodeType } from '@chromaui/rrweb-snapshot';
 import srcset from 'srcset';
 
@@ -94,45 +94,49 @@ export class DOMSnapshot {
       }
 
       if (node.tagName === 'picture') {
-        const allSourceUrls: string[] = node.childNodes
-          .filter(
-            (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'source'
-          )
-          .map((childNode) => {
-            // there can be multiple values in a single srcset, extract all of them
-            // @ts-expect-error attributes does exist on source
-            const sourceSetValues = srcset.parse(childNode.attributes.srcset);
-            return sourceSetValues.map((srcSetValue) => srcSetValue.url);
-          })
-          // since srcsets can have multiple values, we will have a nested array here
-          .flat();
-
-        // we have all of the raw URLs.
-        const matchingUrl = allSourceUrls.find((sourceUrl) => {
-          // find a url in the asset map... by which we mean in the sourceMap
-          return sourceMap.has(sourceUrl);
-        });
-
-        // do any of my children match what is in there?
-        if (matchingUrl) {
-          // if so, blow away all <source> tags
-          node.childNodes = node.childNodes.filter(
-            (childNode) => !(childNode.type === NodeType.Element && childNode.tagName === 'source')
-          );
-
-          // replace the <img> tag's `src` with this asset-mapped URL
-          const imageElement = node.childNodes.find(
-            (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'img'
-          );
-          if (imageElement) {
-            // @ts-expect-error attributes does exist on img
-            imageElement.attributes.src = sourceMap.get(matchingUrl);
-          }
-        }
+        this.mapPictureElement(node, sourceMap);
       }
     }
 
     return node;
+  }
+
+  private mapPictureElement(node: serializedElementNodeWithId, sourceMap: Map<string, string>) {
+    const allSourceUrls: string[] = node.childNodes
+      .filter(this.isSourceElement)
+      .map((childNode) => {
+        // there can be multiple values in a single srcset, extract all of them
+        // @ts-expect-error attributes does exist on source
+        const sourceSetValues = srcset.parse(childNode.attributes.srcset);
+        return sourceSetValues.map((srcSetValue) => srcSetValue.url);
+      })
+      // since srcsets can have multiple values, we will have a nested array here
+      .flat();
+
+    // we have all of the raw URLs.
+    const matchingUrl = allSourceUrls.find((sourceUrl) => {
+      // find a url in the asset map... by which we mean in the sourceMap
+      return sourceMap.has(sourceUrl);
+    });
+
+    // do any of my children match what is in there?
+    if (matchingUrl) {
+      // if so, blow away all <source> tags
+      node.childNodes = node.childNodes.filter((childNode) => !this.isSourceElement(childNode));
+
+      // replace the <img> tag's `src` with this asset-mapped URL
+      const imageElement = node.childNodes.find(
+        (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'img'
+      );
+      if (imageElement) {
+        // @ts-expect-error attributes does exist on img
+        imageElement.attributes.src = sourceMap.get(matchingUrl);
+      }
+    }
+  }
+
+  private isSourceElement(childNode: serializedNodeWithId) {
+    return childNode.type === NodeType.Element && childNode.tagName === 'source';
   }
 
   private mapTextElement(node: serializedNodeWithId, sourceMap: Map<string, string>) {

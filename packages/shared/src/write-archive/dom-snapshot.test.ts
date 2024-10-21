@@ -1,3 +1,4 @@
+import { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import { DOMSnapshot } from './dom-snapshot';
 
 const relativeUrl = '/images/image.png';
@@ -227,8 +228,7 @@ const imageTag = {
   attributes: {
     src: queryUrlTransformed,
   },
-  // @ts-expect-error I don't want to deal with this right now
-  childNodes: [],
+  childNodes: [] as serializedNodeWithId[],
   id: 61,
 };
 

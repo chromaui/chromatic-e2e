@@ -56,6 +56,40 @@ function createPictureSrcsetSnapshotSingleSource(
   });
 }
 
+function createPictureSrcsetSnapshotSingleSourceImageHasAttributes(
+  backupUrl: string,
+  smallUrl: string,
+  largeUrl: string
+) {
+  return JSON.stringify({
+    type: 2,
+    tagName: 'picture',
+    attributes: {},
+    childNodes: [
+      {
+        type: 2,
+        tagName: 'source',
+        attributes: {
+          srcset: largeUrl,
+        },
+        childNodes: [],
+        id: 63,
+      },
+      {
+        type: 2,
+        tagName: 'img',
+        attributes: {
+          class: 'do-not-remove-me',
+          src: backupUrl,
+        },
+        childNodes: [],
+        id: 61,
+      },
+    ],
+    id: 62,
+  });
+}
+
 function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets(
   backupUrl: string,
   smallUrl: string,
@@ -132,6 +166,53 @@ function createPictureSrcsetSnapshotMultipleSources(
   });
 }
 
+function createPictureSrcsetNoUrlMatches(wrongUrl: string, alsoWrongUrl: string) {
+  return JSON.stringify({
+    type: 2,
+    tagName: 'picture',
+    attributes: {},
+    childNodes: [
+      {
+        type: 2,
+        tagName: 'source',
+        attributes: {
+          srcset: wrongUrl,
+        },
+        childNodes: [],
+        id: 63,
+      },
+      {
+        type: 2,
+        tagName: 'img',
+        attributes: {
+          src: alsoWrongUrl,
+        },
+        childNodes: [],
+        id: 61,
+      },
+    ],
+    id: 62,
+  });
+}
+
+const imageTag = {
+  type: 2,
+  tagName: 'img',
+  attributes: {
+    src: queryUrlTransformed,
+  },
+  childNodes: [],
+  id: 61,
+};
+
+const pictureWithJustImageTag = {
+  type: 2,
+  tagName: 'picture',
+  attributes: {},
+  childNodes: [imageTag],
+  id: 62,
+};
+
 const snapshot = createSnapshot(relativeUrl, externalUrl, queryUrl);
 const expectedMappedSnapshot = createSnapshot(relativeUrl, externalUrl, queryUrlTransformed);
 
@@ -175,12 +256,12 @@ describe('DOMSnapshot', () => {
     });
 
     it('does not change img srcsets when no mapped asset found in source map', async () => {
-      const origSnapshot = createImgSrcsetSnapshot(relativeUrl, externalUrl, queryUrl);
-      const domSnapshot = new DOMSnapshot(origSnapshot);
+      const originalSnapshot = createImgSrcsetSnapshot(relativeUrl, externalUrl, queryUrl);
+      const domSnapshot = new DOMSnapshot(originalSnapshot);
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map<string, string>());
 
-      expect(mappedSnapshot).toEqual(origSnapshot);
+      expect(mappedSnapshot).toEqual(originalSnapshot);
     });
 
     it('maps picture srcsets, single <source>', async () => {
@@ -190,23 +271,7 @@ describe('DOMSnapshot', () => {
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(JSON.parse(mappedSnapshot)).toEqual({
-        type: 2,
-        tagName: 'picture',
-        attributes: {},
-        childNodes: [
-          {
-            type: 2,
-            tagName: 'img',
-            attributes: {
-              src: queryUrlTransformed,
-            },
-            childNodes: [],
-            id: 61,
-          },
-        ],
-        id: 62,
-      });
+      expect(JSON.parse(mappedSnapshot)).toEqual(pictureWithJustImageTag);
     });
 
     it('maps picture srcsets, multiple <source>s', async () => {
@@ -216,23 +281,7 @@ describe('DOMSnapshot', () => {
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(JSON.parse(mappedSnapshot)).toEqual({
-        type: 2,
-        tagName: 'picture',
-        attributes: {},
-        childNodes: [
-          {
-            type: 2,
-            tagName: 'img',
-            attributes: {
-              src: queryUrlTransformed,
-            },
-            childNodes: [],
-            id: 61,
-          },
-        ],
-        id: 62,
-      });
+      expect(JSON.parse(mappedSnapshot)).toEqual(pictureWithJustImageTag);
     });
 
     it('maps picture srcsets, single <source> with multiple srcset values', async () => {
@@ -242,22 +291,45 @@ describe('DOMSnapshot', () => {
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
+      expect(JSON.parse(mappedSnapshot)).toEqual(pictureWithJustImageTag);
+    });
+
+    it('maps picture srcsets, <picture> and children left untouched if there is no URL match', async () => {
+      const originalSnapshot = createPictureSrcsetNoUrlMatches(
+        '/totally-bogus-url.png',
+        'https://another-totally-bogus.com/url.png'
+      );
+      const domSnapshot = new DOMSnapshot(originalSnapshot);
+
+      const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
+
+      expect(JSON.parse(mappedSnapshot)).toEqual(JSON.parse(originalSnapshot));
+    });
+
+    // important that we only blow away what we need to; since <picture> contents are styled by their <img> tag,
+    // we don't want to get rid of any existing <img> attributes (like class for example)
+    it('maps picture srcsets, preserves existing <img> attributes', async () => {
+      const domSnapshot = new DOMSnapshot(
+        createPictureSrcsetSnapshotSingleSourceImageHasAttributes(
+          relativeUrl,
+          externalUrl,
+          queryUrl
+        )
+      );
+
+      const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
+
       expect(JSON.parse(mappedSnapshot)).toEqual({
-        type: 2,
-        tagName: 'picture',
-        attributes: {},
+        ...pictureWithJustImageTag,
         childNodes: [
           {
-            type: 2,
-            tagName: 'img',
+            ...imageTag,
             attributes: {
-              src: queryUrlTransformed,
+              ...imageTag.attributes,
+              class: 'do-not-remove-me',
             },
-            childNodes: [],
-            id: 61,
           },
         ],
-        id: 62,
       });
     });
   });

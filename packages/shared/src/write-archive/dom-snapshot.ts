@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
-import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+import type { serializedElementNodeWithId, serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import { NodeType } from '@chromaui/rrweb-snapshot';
 import srcset from 'srcset';
 
@@ -92,9 +92,54 @@ export class DOMSnapshot {
           delete node.attributes.sizes;
         }
       }
+
+      if (node.tagName === 'picture') {
+        this.mapPictureElement(node, sourceMap);
+      }
     }
 
     return node;
+  }
+
+  private mapPictureElement(node: serializedElementNodeWithId, sourceMap: Map<string, string>) {
+    const allSourceUrls: string[] = node.childNodes
+      .filter(this.isSourceElement)
+      .map((childNode: serializedElementNodeWithId) => {
+        // there can be multiple values in a single srcset, extract all of them
+        const sourceSetValues = srcset.parse(
+          (childNode.attributes?.srcset as string | undefined) ?? ''
+        );
+        return sourceSetValues.map((srcSetValue) => srcSetValue.url);
+      })
+      // since srcsets can have multiple values, we will have a nested array here
+      .flat();
+
+    // we have all of the raw URLs.
+    const matchingUrl = allSourceUrls.find((sourceUrl) => {
+      // find a url in the asset map... by which we mean in the sourceMap
+      return sourceMap.has(sourceUrl);
+    });
+
+    // do any of my children match what is in there?
+    if (matchingUrl) {
+      // if so, blow away all <source> tags
+      node.childNodes = node.childNodes.filter((childNode) => !this.isSourceElement(childNode));
+
+      // replace the <img> tag's `src` with this asset-mapped URL
+      const imageElement = node.childNodes.find(
+        (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'img'
+      ) as serializedElementNodeWithId;
+      if (imageElement && imageElement.attributes) {
+        // we're assuming that whatever was archived is an image URL
+        // this should be the case (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source#srcset),
+        // but noting it here as it'a an assumption
+        imageElement.attributes.src = sourceMap.get(matchingUrl);
+      }
+    }
+  }
+
+  private isSourceElement(childNode: serializedNodeWithId) {
+    return childNode.type === NodeType.Element && childNode.tagName === 'source';
   }
 
   private mapTextElement(node: serializedNodeWithId, sourceMap: Map<string, string>) {

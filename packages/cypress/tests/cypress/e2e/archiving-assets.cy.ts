@@ -39,6 +39,42 @@ it('srcset is used to determine image asset URL', () => {
   cy.visit('/asset-paths/srcset');
 });
 
+it('picture source is captured, multiple source elements', () => {
+  cy.visit('/asset-paths/picture');
+});
+
+// TODO: Unskip when we use one-archive-per-test in Cypress (like we do in Playwright)
+// currently, we use one archive for all the tests, but in this case it means we capture
+// the wrong image (since the unmatching images are already in the global archive, we
+// mistakenly assume they were "captured" by this test and use them instead of the fallback image)
+context.skip('mobile', { viewportWidth: 500, viewportHeight: 500 }, () => {
+  it('picture source is captured, multiple source elements', () => {
+    cy.visit('/asset-paths/picture');
+  });
+});
+
+// TODO: Unskip when we use one-archive-per-test in Cypress (like we do in Playwright)
+// currently, we use one archive for all the tests, but in this case it means we capture
+// the wrong image (since the unmatching images are already in the global archive, we
+// mistakenly assume they were "captured" by this test and use them instead of the fallback image)
+it.skip('picture captures fallback image', () => {
+  cy.visit('/asset-paths/picture-no-matching-source');
+});
+
+it('picture source is captured, single source with srcset', () => {
+  cy.visit('/asset-paths/picture-multiple-srcset');
+});
+
+// TODO: Unskip when we use one-archive-per-test in Cypress (like we do in Playwright)
+// currently, we use one archive for all the tests, but in this case it means we capture
+// the wrong image (since the unmatching images are already in the global archive, we
+// mistakenly assume they were "captured" by this test and use them instead of the fallback image)
+context.skip('mobile', { viewportWidth: 500, viewportHeight: 500 }, () => {
+  it('picture source is captured, single source with srcset', () => {
+    cy.visit('/asset-paths/picture-multiple-srcset');
+  });
+});
+
 it('external CSS files are inlined', () => {
   cy.visit('/asset-paths/external-css-files');
 });

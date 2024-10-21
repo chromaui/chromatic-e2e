@@ -104,10 +104,11 @@ export class DOMSnapshot {
   private mapPictureElement(node: serializedElementNodeWithId, sourceMap: Map<string, string>) {
     const allSourceUrls: string[] = node.childNodes
       .filter(this.isSourceElement)
-      .map((childNode) => {
+      .map((childNode: serializedElementNodeWithId) => {
         // there can be multiple values in a single srcset, extract all of them
-        // @ts-expect-error attributes does exist on source
-        const sourceSetValues = srcset.parse(childNode.attributes.srcset);
+        const sourceSetValues = srcset.parse(
+          (childNode.attributes?.srcset as string | undefined) ?? ''
+        );
         return sourceSetValues.map((srcSetValue) => srcSetValue.url);
       })
       // since srcsets can have multiple values, we will have a nested array here
@@ -127,9 +128,8 @@ export class DOMSnapshot {
       // replace the <img> tag's `src` with this asset-mapped URL
       const imageElement = node.childNodes.find(
         (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'img'
-      );
-      if (imageElement) {
-        // @ts-expect-error attributes does exist on img
+      ) as serializedElementNodeWithId;
+      if (imageElement && imageElement.attributes) {
         imageElement.attributes.src = sourceMap.get(matchingUrl);
       }
     }

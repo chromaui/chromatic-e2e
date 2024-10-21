@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <picture>
+      <!-- both <source>s have media stipulations that should "never" be true -->
+      <source srcset="/img?url=fixtures/pink.png" media="(min-width: 7068px)" />
+      <source srcset="/img?url=fixtures/blue.png" media="(max-width: 20px)" />
+      <!-- We should, then, "always" be rendering this purple image as it is the fallback -->
+      <img src="/img?url=fixtures/purple.png" />
+    </picture>
+    <p class="text-sm">Should show purple as it's the only compatible image</p>
+  </body>
+</html>

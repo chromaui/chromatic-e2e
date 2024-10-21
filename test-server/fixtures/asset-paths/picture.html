@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <picture>
+      <source srcset="/img?url=fixtures/pink.png" media="(min-width: 768px)" />
+      <source srcset="/img?url=fixtures/blue.png" />
+      <img src="/img?url=fixtures/purple.png" />
+    </picture>
+    <p class="text-sm">blue < 768px <= pink</p>
+  </body>
+</html>

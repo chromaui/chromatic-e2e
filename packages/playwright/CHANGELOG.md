@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.10.0
+
+### Minor Changes
+
+- 86a0672: Picture tags are archived
+
 ## 0.9.0
 
 ### Minor Changes

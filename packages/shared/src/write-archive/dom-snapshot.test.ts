@@ -83,9 +83,15 @@ describe('DOMSnapshot', () => {
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(mappedSnapshot).toEqual(
-        `{"type":2,"tagName":"img","attributes":{"src":"${queryUrlTransformed}"},"childNodes":[],"id":61}`
-      );
+      expect(JSON.parse(mappedSnapshot)).toEqual({
+        type: 2,
+        tagName: 'img',
+        attributes: {
+          src: `${queryUrlTransformed}`,
+        },
+        childNodes: [],
+        id: 61,
+      });
     });
 
     it('does not change img srcsets when no mapped asset found in source map', async () => {

@@ -23,6 +23,35 @@ function createImgSrcsetSnapshot(backupUrl: string, smallUrl: string, largeUrl: 
   });
 }
 
+function createPictureSrcsetSnapshot(backupUrl: string, smallUrl: string, largeUrl: string) {
+  return JSON.stringify({
+    type: 2,
+    tagName: 'picture',
+    attributes: {},
+    childNodes: [
+      {
+        type: 2,
+        tagName: 'source',
+        attributes: {
+          srcset: largeUrl,
+        },
+        childNodes: [],
+        id: 63,
+      },
+      {
+        type: 2,
+        tagName: 'img',
+        attributes: {
+          src: backupUrl,
+        },
+        childNodes: [],
+        id: 61,
+      },
+    ],
+    id: 62,
+  });
+}
+
 const snapshot = createSnapshot(relativeUrl, externalUrl, queryUrl);
 const expectedMappedSnapshot = createSnapshot(relativeUrl, externalUrl, queryUrlTransformed);
 
@@ -66,6 +95,32 @@ describe('DOMSnapshot', () => {
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map<string, string>());
 
       expect(mappedSnapshot).toEqual(origSnapshot);
+    });
+
+    it('maps picture srcsets, single <source>', async () => {
+      const domSnapshot = new DOMSnapshot(
+        createPictureSrcsetSnapshot(relativeUrl, externalUrl, queryUrl)
+      );
+
+      const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
+
+      expect(JSON.parse(mappedSnapshot)).toEqual({
+        type: 2,
+        tagName: 'picture',
+        attributes: {},
+        childNodes: [
+          {
+            type: 2,
+            tagName: 'img',
+            attributes: {
+              src: queryUrlTransformed,
+            },
+            childNodes: [],
+            id: 61,
+          },
+        ],
+        id: 62,
+      });
     });
   });
 });

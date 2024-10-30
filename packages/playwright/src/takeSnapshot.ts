@@ -35,7 +35,7 @@ async function takeSnapshot(
   // Serialize and capture the DOM
   const domSnapshot: elementNode = await page.evaluate(dedent`
     ${rrweb};
-    rrwebSnapshot.snapshot(document);
+    rrwebSnapshot.snapshot(document, { recordCanvas: true });
   `);
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));

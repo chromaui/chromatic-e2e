@@ -35,7 +35,15 @@ async function takeSnapshot(
   // Serialize and capture the DOM
   const domSnapshot: elementNode = await page.evaluate(dedent`
     ${rrweb};
-    rrwebSnapshot.snapshot(document);
+    if (typeof define === "function" && define.amd) {
+      new Promise((resolve) => {
+        require(['rrwebSnapshot'], (rrwebSnapshot) => {
+          resolve(rrwebSnapshot.snapshot(document));
+        });
+      });
+    } else {
+      rrwebSnapshot.snapshot(document);
+    }
   `);
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));

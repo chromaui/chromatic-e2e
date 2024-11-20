@@ -132,6 +132,10 @@ app.get('/constructable-stylesheets/:page', (req, res) => {
   res.sendFile(path.join(__dirname, `fixtures/constructable-stylesheets/${page}.html`));
 });
 
+app.get('/amd', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/amd.html'));
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

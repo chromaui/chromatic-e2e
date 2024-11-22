@@ -36,6 +36,7 @@ async function takeSnapshot(
   const domSnapshot: elementNode = await page.evaluate(dedent`
     ${rrweb};
     if (typeof define === "function" && define.amd) {
+      // AMD support is detected, so we need to load rrwebSnapshot asynchronously
       new Promise((resolve) => {
         require(['rrwebSnapshot'], (rrwebSnapshot) => {
           resolve(rrwebSnapshot.snapshot(document));

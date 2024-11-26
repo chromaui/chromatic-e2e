@@ -35,7 +35,19 @@ async function takeSnapshot(
   // Serialize and capture the DOM
   const domSnapshot: elementNode = await page.evaluate(dedent`
     ${rrweb};
-    rrwebSnapshot.snapshot(document);
+    // page.evaluate returns the value of the function being evaluated. In this case, it means that
+    // it is returning either the resolved value of the Promise or the return value of the call to
+    // the snapshot function. See https://playwright.dev/docs/api/class-page#page-evaluate.
+    if (typeof define === "function" && define.amd) {
+      // AMD support is detected, so we need to load rrwebSnapshot asynchronously
+      new Promise((resolve) => {
+        require(['rrwebSnapshot'], (rrwebSnapshot) => {
+          resolve(rrwebSnapshot.snapshot(document));
+        });
+      });
+    } else {
+      rrwebSnapshot.snapshot(document);
+    }
   `);
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));

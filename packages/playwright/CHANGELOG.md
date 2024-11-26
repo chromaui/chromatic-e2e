@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.10.1
+
+### Patch Changes
+
+- f78e3ce: Add support for AMD module-based web pages
+
 ## 0.10.0
 
 ### Minor Changes

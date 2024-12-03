@@ -4,9 +4,9 @@ import {
   archivesDir,
   assetsDir,
   ensureDir,
-  readJSONFile,
   outputFile,
   outputJSONFile,
+  readJSONFile,
   truncateFileName,
 } from './filePaths';
 
@@ -130,13 +130,15 @@ describe('truncateFileName', () => {
   });
 
   it('ignores length of path parts before the file name', () => {
+    const encoder = new TextEncoder();
     const filePath =
       '/a/bunch/of/paths/that/donot/affect-size/this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js';
-    expect(filePath.length).toBeGreaterThan(255);
+    const filePathLength = encoder.encode(filePath).byteLength;
+    expect(filePathLength).toBeGreaterThan(255);
 
     const truncated = truncateFileName(filePath);
 
-    expect(truncated.split('/').at(-1).length).toEqual(255);
+    expect(encoder.encode(truncated.split('/').at(-1)).byteLength).toEqual(255);
     expect(truncated).toMatch(
       new RegExp(
         '^/a/bunch/of/paths/that/donot/affect-size/this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$'
@@ -145,46 +147,74 @@ describe('truncateFileName', () => {
   });
 
   it('truncates long file names without changing extension', () => {
+    const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js';
-    expect(fileName.length).toBeGreaterThan(255);
+      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js';
+    const fileNameLength = encoder.encode(fileName).byteLength;
+    expect(fileNameLength).toBeGreaterThan(255);
 
     const truncated = truncateFileName(fileName);
+    const truncatedLength = encoder.encode(truncated).byteLength;
 
-    expect(truncated.length).toEqual(255);
+    expect(truncatedLength).toEqual(255);
     expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$'));
   });
 
-  it('truncates long file names without changing multiple extensions', () => {
+  it('correctly truncates file names with multi-byte characters', () => {
+    const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.one.js';
-    expect(fileName.length).toBeGreaterThan(255);
+      'このタイトルは260byteあります-私が数えたので間違いないです-そしてそれはファイルシステムにとっては大きすぎます-ああだこうだ-ああだこうだ-ああだこうだ-ああだこうだ-これで終わりです.js';
+    const fileNameLength = encoder.encode(fileName).byteLength;
+    expect(fileNameLength).toBeGreaterThan(255);
 
     const truncated = truncateFileName(fileName);
+    const truncatedLength = encoder.encode(truncated).byteLength;
 
-    expect(truncated.length).toEqual(255);
+    expect(truncatedLength).toEqual(255);
+    expect(truncated).toMatch(
+      new RegExp('^このタイトルは260byteあります-.*-ああだこうだ-これで終[a-z0-9]{4}.js$')
+    );
+  });
+
+  it('truncates long file names without changing multiple extensions', () => {
+    const encoder = new TextEncoder();
+    const fileName =
+      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.one.js';
+    const fileNameLength = encoder.encode(fileName).byteLength;
+    expect(fileNameLength).toBeGreaterThan(255);
+
+    const truncated = truncateFileName(fileName);
+    const truncatedLength = encoder.encode(truncated).byteLength;
+
+    expect(truncatedLength).toEqual(255);
     expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-th[a-z0-9]{4}.one.js$'));
   });
 
   it('truncates long names without an extension', () => {
+    const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
-    expect(fileName.length).toBeGreaterThan(255);
+      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
+    const fileNameLength = encoder.encode(fileName).byteLength;
+    expect(fileNameLength).toBeGreaterThan(255);
 
     const truncated = truncateFileName(fileName);
+    const truncatedLength = encoder.encode(truncated).byteLength;
 
-    expect(truncated.length).toEqual(255);
+    expect(truncatedLength).toEqual(255);
     expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-this-is-t[a-z0-9]{4}$'));
   });
 
   it('truncates long names to given size', () => {
+    const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
-    expect(fileName.length).toBeGreaterThan(255);
+      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
+    const fileNameLength = encoder.encode(fileName).byteLength;
+    expect(fileNameLength).toBeGreaterThan(255);
 
     const truncated = truncateFileName(fileName, 100);
+    const truncatedLength = encoder.encode(truncated).byteLength;
 
-    expect(truncated.length).toEqual(100);
+    expect(truncatedLength).toEqual(100);
     expect(truncated).toMatch(new RegExp('^this-title-.*-a-file-system-[a-z0-9]{4}$'));
   });
 });

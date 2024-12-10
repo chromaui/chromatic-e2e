@@ -3,7 +3,7 @@ import { ChromaticStorybookParameters } from '../types';
 import { snapshotId } from './snapshot-files';
 import { sanitize } from './storybook-sanitize';
 import { Viewport, viewportToString } from '../utils/viewport';
-import { MAX_FILE_NAME_LENGTH, truncateFileName } from '../utils/filePaths';
+import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from '../utils/filePaths';
 
 const STORIES_FILE_EXT = 'stories.json';
 
@@ -11,8 +11,8 @@ const STORIES_FILE_EXT = 'stories.json';
 export function storiesFileName(testTitle: string) {
   const fileName = [sanitize(testTitle), STORIES_FILE_EXT].join('.');
   // Leave room for built storybook extensions that may be added (like `-stories.iframe.bundle.js`)
-  const maxLength = MAX_FILE_NAME_LENGTH - 25;
-  return truncateFileName(fileName, maxLength);
+  const maxByteLength = MAX_FILE_NAME_BYTE_LENGTH - 25;
+  return truncateFileName(fileName, maxByteLength);
 }
 
 // Converts the DOM snapshots into a JSON stories file.

@@ -56,28 +56,38 @@ function hash(data: string) {
   return createHash('shake256', { outputLength: 2 }).update(data).digest('hex');
 }
 
-// 255 is a good upper bound on file name size to work on most platforms
-export const MAX_FILE_NAME_LENGTH = 255;
+// 255 bytes is a good upper bound on file name size to work on most platforms
+export const MAX_FILE_NAME_BYTE_LENGTH = 255;
 
 // Ensures that the file name part on the given `filePath` is not longer
-// than the given `maxLength`.
+// than the given `maxByteLength`.
 // If truncation is necessary, a hash is added to avoid collisions on the
 // file system in cases where names match up until a differentiating part
 // at the end that is truncated.
-export function truncateFileName(filePath: string, maxLength: number = MAX_FILE_NAME_LENGTH) {
+export function truncateFileName(
+  filePath: string,
+  maxByteLength: number = MAX_FILE_NAME_BYTE_LENGTH
+) {
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+
   const filePathParts = filePath.split('/');
   const fileName = filePathParts.pop();
-  if (fileName.length <= maxLength) {
+
+  const fileNameByteArray = encoder.encode(fileName);
+  if (fileNameByteArray.byteLength <= maxByteLength) {
     return filePath;
   }
 
   const hashedFileName = hash(fileName);
   const [baseName, ...extensions] = fileName.split('.');
+  const baseNameByteArray = encoder.encode(baseName);
   const ext = extensions.join('.');
-  const extLength = ext.length === 0 ? 0 : ext.length + 1; // +1 for leading `.` if needed
+  const extLength = ext.length === 0 ? 0 : encoder.encode(ext).byteLength + 1; // +1 for leading `.` if needed
 
-  const lengthHashAndExt = hashedFileName.length + extLength;
-  const truncatedBaseName = baseName.slice(0, maxLength - lengthHashAndExt);
+  const lengthHashAndExt = encoder.encode(hashedFileName).byteLength + extLength;
+  const truncatedBaseNameByteArray = baseNameByteArray.slice(0, maxByteLength - lengthHashAndExt);
+  const truncatedBaseName = decoder.decode(truncatedBaseNameByteArray);
   const truncatedFileName = [`${truncatedBaseName}${hashedFileName}`, ext]
     .filter(Boolean)
     .join('.');

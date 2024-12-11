@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.10.2
+
+### Patch Changes
+
+- 57ef80c: Fix to truncate filename based on byte size
+
 ## 0.10.1
 
 ### Patch Changes

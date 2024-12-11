@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.1
+
+### Patch Changes
+
+- 57ef80c: Fix to truncate filename based on byte size
+
 ## 0.9.0
 
 ### Minor Changes

@@ -136,6 +136,10 @@ app.get('/amd', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/amd.html'));
 });
 
+app.get('/createObjectUrl', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/createObjectUrl.html'));
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

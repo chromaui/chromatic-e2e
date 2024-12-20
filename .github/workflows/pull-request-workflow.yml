@@ -13,6 +13,7 @@ jobs:
   test:
     uses: ./.github/workflows/test-base.yml
     secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   test_cypress:
     needs: test
     uses: ./.github/workflows/test-cypress.yml

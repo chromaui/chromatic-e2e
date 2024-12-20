@@ -13,7 +13,7 @@ jobs:
   test:
     uses: ./.github/workflows/test-base.yml
     secrets:
-      codacyProjectToken: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   test_cypress:
     needs: test
     uses: ./.github/workflows/test-cypress.yml
@@ -30,4 +30,3 @@ jobs:
     secrets:
       githubToken: ${{ secrets.GITHUB_TOKEN }}
       npmToken: ${{ secrets.NPM_CHROMATIC_COM_PUBLISH_TOKEN }}
-

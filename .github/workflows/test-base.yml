@@ -4,7 +4,7 @@ name: Test Base
 on:
   workflow_call:
     secrets:
-      codacyProjectToken:
+      CODECOV_TOKEN:
         required: true
 
 jobs:
@@ -39,8 +39,7 @@ jobs:
         run: |
           yarn run test:unit
 
-      - name: Report code coverage to Codacy
-        run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r packages/cypress/coverage/lcov.info -r packages/playwright/coverage/lcov.info -r packages/shared/coverage/lcov.info
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.codacyProjectToken }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

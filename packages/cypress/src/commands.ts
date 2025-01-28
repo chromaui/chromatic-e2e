@@ -24,6 +24,7 @@ Cypress.Commands.add('takeSnapshot', (name?: string) => {
 
   cy.document().then((doc) => {
     // here, handle the source map
+    // need to do same post-snapshot-processing logic here
     const manualSnapshot = snapshot(doc);
     // reassign manualSnapshots so it includes this new snapshot
     cy.get('@manualSnapshots')

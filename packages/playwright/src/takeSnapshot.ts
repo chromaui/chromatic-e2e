@@ -46,7 +46,12 @@ async function takeSnapshot(
         });
       });
     } else {
-      rrwebSnapshot.snapshot(document);
+      const snapshot = rrwebSnapshot.snapshot(document);
+      
+      // within the snapshot, find any blob URLs and write them to disk
+      
+      
+      return snapshot;
     }
   `);
 

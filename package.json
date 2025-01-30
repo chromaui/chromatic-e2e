@@ -19,8 +19,6 @@
     "build": "yarn workspaces foreach --all --topological-dev --parallel run build",
     "test:unit": "yarn workspaces foreach --all run test:unit",
     "dev:server": "node test-server/server",
-    "dev:storybook": "cd test-storybook && yarn storybook",
-    "start": "yarn build:watch",
     "lint": "yarn workspaces foreach --all --parallel run lint",
     "prettier": "prettier",
     "prepare": "husky install",

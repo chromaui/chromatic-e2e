@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { test, expect } from '../src';
 
-test.only('Upload a Single file and Assert blob', async ({ page }) => {
+test('Upload a Single file and Assert blob', async ({ page }) => {
   await page.goto('/createObjectUrl');
   const fileWithPath = path.join(__dirname, '../../../test-server/fixtures/blue.png');
   const [fileChooser] = await Promise.all([

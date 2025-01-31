@@ -30,6 +30,10 @@ it('assets from css urls are archived', () => {
   cy.visit('/asset-paths/css-urls');
 });
 
+it('assets from data urls are archived', () => {
+  cy.visit('/asset-paths/data-urls');
+});
+
 // TODO: Unskip when Cypress support achieves parity with Playwright
 it.skip('percents in URLs are handled', () => {
   cy.visit('/asset-paths/percents');

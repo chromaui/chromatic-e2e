@@ -46,12 +46,10 @@ async function takeSnapshot(
         });
       });
     } else {
-      const snapshot = rrwebSnapshot.snapshot(document);
+      rrwebSnapshot.snapshot(document);
       
       // within the snapshot, find any blob URLs and write them to disk
       
-      
-      return snapshot;
     }
   `);
 

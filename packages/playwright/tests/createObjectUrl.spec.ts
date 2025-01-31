@@ -3,7 +3,7 @@ import { test, expect } from '../src';
 
 test.only('Upload a Single file and Assert blob', async ({ page }) => {
   await page.goto('/createObjectUrl');
-  const fileWithPath = path.join(__dirname, 'assets/blue.png');
+  const fileWithPath = path.join(__dirname, '../../../test-server/fixtures/blue.png');
   const [fileChooser] = await Promise.all([
     page.waitForEvent('filechooser'),
     page.locator('#fileInput').click(),

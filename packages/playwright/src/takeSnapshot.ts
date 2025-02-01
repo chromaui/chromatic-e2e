@@ -46,7 +46,11 @@ async function takeSnapshot(
         });
       });
     } else {
-      rrwebSnapshot.snapshot(document);
+     new Promise((resolve) => {
+        const snappy = rrwebSnapshot.snapshot(document);
+        snappy.foobar = 'baz';
+        resolve(snappy);
+      });      
       
       // within the snapshot, find any blob URLs and write them to disk
       

@@ -68,11 +68,19 @@ async function takeSnapshot(
           blobUrl: string;
         }
 
+        interface Base64NodeInfo {
+          nodeId: number;
+          base64Url: string;
+        }
+
         const getTheBlobs = async (blobNodeInfos: BlobNodeInfo[]) => {
-          const dataUrls = await Promise.all(
-            blobNodeInfos.map((blobNodeInfo) => toDataURL(blobNodeInfo.blobUrl))
+          const dataUrls: Base64NodeInfo[] = await Promise.all(
+            blobNodeInfos.map(async (blobNodeInfo) => ({
+              nodeId: blobNodeInfo.nodeId,
+              base64Url: await toDataURL(blobNodeInfo.blobUrl),
+            }))
           );
-          console.log(dataUrls);
+          console.log(dataUrls[0]);
         };
 
         const blobUrls: BlobNodeInfo[] = [];

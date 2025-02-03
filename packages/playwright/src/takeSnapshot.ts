@@ -32,30 +32,30 @@ async function takeSnapshot(
     logger.log(`CONSOLE: "${msg.text()}"`);
   });
 
+  await page.evaluate(dedent`${rrweb}`);
+
   // Serialize and capture the DOM
-  const domSnapshot: elementNode = await page.evaluate(dedent`
-    ${rrweb};
+  const domSnapshot: elementNode = await page.evaluate(() => {
     // page.evaluate returns the value of the function being evaluated. In this case, it means that
     // it is returning either the resolved value of the Promise or the return value of the call to
     // the snapshot function. See https://playwright.dev/docs/api/class-page#page-evaluate.
-    if (typeof define === "function" && define.amd) {
+    if (typeof define === 'function' && define.amd) {
       // AMD support is detected, so we need to load rrwebSnapshot asynchronously
-      new Promise((resolve) => {
+      return new Promise((resolve) => {
         require(['rrwebSnapshot'], (rrwebSnapshot) => {
           resolve(rrwebSnapshot.snapshot(document));
         });
       });
     } else {
-     new Promise((resolve) => {
+      return new Promise((resolve) => {
         const domSnapshot = rrwebSnapshot.snapshot(document);
         // do some post-processing on the snapshot
         resolve(domSnapshot);
-      });      
-      
+      });
+
       // within the snapshot, find any blob URLs and write them to disk
-      
     }
-  `);
+  });
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
   if (!chromaticSnapshots.has(testId)) {

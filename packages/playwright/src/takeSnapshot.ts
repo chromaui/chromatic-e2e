@@ -33,6 +33,11 @@ async function takeSnapshot(
     logger.log(`CONSOLE: "${msg.text()}"`);
   });
 
+  // page.evaluate can take in a string or a function
+  // below (when we post-process the DOM) we want to have that code as a function
+  // as it's easier to type, test, and (eventually) lint
+  // so we import the rrweb code into the same page separately, and then use it in the other
+  // page.evaluate call down below.
   await page.evaluate(dedent`${rrweb}`);
 
   // Serialize and capture the DOM

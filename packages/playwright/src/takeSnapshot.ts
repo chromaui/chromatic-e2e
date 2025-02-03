@@ -50,6 +50,41 @@ async function takeSnapshot(
       return new Promise((resolve) => {
         const domSnapshot = rrwebSnapshot.snapshot(document);
         // do some post-processing on the snapshot
+        const toDataURL = async (url) => {
+          // read contents of the blob URL
+          const response = await fetch(url);
+          const blob = await response.blob();
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            // convert the blob to base64 string
+            reader.readAsDataURL(blob);
+          });
+        };
+
+        const getTheBlobs = async (urls: string[]) => {
+          const dataUrls = await Promise.all(urls.map((url) => toDataURL(url)));
+          console.log(dataUrls);
+        };
+
+        const blobUrls = [];
+
+        const gatherBlobUrls = (node) => {
+          node.childNodes.forEach((childNode) => {
+            if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
+              blobUrls.push(childNode.attributes.src);
+            }
+
+            if (childNode.childNodes?.length) {
+              gatherBlobUrls(childNode);
+            }
+          });
+        };
+
+        gatherBlobUrls(domSnapshot);
+        getTheBlobs(blobUrls);
+
         resolve(domSnapshot);
       });
 

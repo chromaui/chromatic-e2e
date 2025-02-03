@@ -63,17 +63,24 @@ async function takeSnapshot(
           });
         };
 
-        const getTheBlobs = async (urls: string[]) => {
-          const dataUrls = await Promise.all(urls.map((url) => toDataURL(url)));
+        interface BlobNodeInfo {
+          nodeId: number;
+          blobUrl: string;
+        }
+
+        const getTheBlobs = async (blobNodeInfos: BlobNodeInfo[]) => {
+          const dataUrls = await Promise.all(
+            blobNodeInfos.map((blobNodeInfo) => toDataURL(blobNodeInfo.blobUrl))
+          );
           console.log(dataUrls);
         };
 
-        const blobUrls = [];
+        const blobUrls: BlobNodeInfo[] = [];
 
         const gatherBlobUrls = (node) => {
           node.childNodes.forEach((childNode) => {
             if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
-              blobUrls.push(childNode.attributes.src);
+              blobUrls.push({ nodeId: childNode.id, blobUrl: childNode.attributes.src });
             }
 
             if (childNode.childNodes?.length) {

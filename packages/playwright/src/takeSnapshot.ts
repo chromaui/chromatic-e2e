@@ -63,47 +63,25 @@ async function takeSnapshot(
           });
         };
 
-        interface BlobNodeInfo {
-          nodeId: number;
-          blobUrl: string;
-        }
+        const gatherBlobUrls = async (node) => {
+          await Promise.all(
+            node.childNodes.map(async (childNode) => {
+              if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
+                const base64Url = await toDataURL(childNode.attributes.src);
+                childNode.attributes.src = base64Url;
+              }
 
-        interface Base64NodeInfo {
-          nodeId: number;
-          base64Url: string;
-        }
-
-        const getTheBlobs = async (blobNodeInfos: BlobNodeInfo[]) => {
-          const dataUrls: Base64NodeInfo[] = await Promise.all(
-            blobNodeInfos.map(async (blobNodeInfo) => ({
-              nodeId: blobNodeInfo.nodeId,
-              base64Url: await toDataURL(blobNodeInfo.blobUrl),
-            }))
+              if (childNode.childNodes?.length) {
+                await gatherBlobUrls(childNode);
+              }
+            })
           );
-          console.log(dataUrls[0]);
         };
 
-        const blobUrls: BlobNodeInfo[] = [];
-
-        const gatherBlobUrls = (node) => {
-          node.childNodes.forEach((childNode) => {
-            if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
-              blobUrls.push({ nodeId: childNode.id, blobUrl: childNode.attributes.src });
-            }
-
-            if (childNode.childNodes?.length) {
-              gatherBlobUrls(childNode);
-            }
-          });
-        };
-
-        gatherBlobUrls(domSnapshot);
-        getTheBlobs(blobUrls);
-
-        resolve(domSnapshot);
+        gatherBlobUrls(domSnapshot).then(() => {
+          resolve(domSnapshot);
+        });
       });
-
-      // within the snapshot, find any blob URLs and write them to disk
     }
   });
 

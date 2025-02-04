@@ -6,9 +6,11 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
   // page.evaluate returns the value of the function being evaluated. In this case, it means that
   // it is returning either the resolved value of the Promise or the return value of the call to
   // the snapshot function. See https://playwright.dev/docs/api/class-page#page-evaluate.
+  // @ts-expect-error define is a global in the browser
   if (typeof define === 'function' && define.amd) {
     // AMD support is detected, so we need to load rrwebSnapshot asynchronously
     return new Promise((resolve) => {
+      // @ts-expect-error "require" in this context is in browser (AMD require), not Node.js require
       require(['rrwebSnapshot'], (rrwebSnapshot) => {
         resolve(rrwebSnapshot.snapshot(document));
       });

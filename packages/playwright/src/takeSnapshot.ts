@@ -1,7 +1,7 @@
 import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { dedent } from 'ts-dedent';
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import { logger } from '@chromatic-com/shared-e2e';
 import { postProcessSnapshot } from './inBrowserPostProcessing';
 
@@ -41,7 +41,7 @@ async function takeSnapshot(
   await page.evaluate(dedent`${rrweb}`);
 
   // Serialize and capture the DOM
-  const domSnapshot: elementNode = await page.evaluate(postProcessSnapshot);
+  const domSnapshot: serializedNodeWithId = await page.evaluate(postProcessSnapshot);
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
   if (!chromaticSnapshots.has(testId)) {

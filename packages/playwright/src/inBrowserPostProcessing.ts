@@ -1,6 +1,8 @@
-// @ts-nocheck
+import { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+import whatevz from '@chromaui/rrweb-snapshot';
+
 // Ignoring TS checks on the whole file as we are in the browser here
-export const postProcessSnapshot = () => {
+export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
   // page.evaluate returns the value of the function being evaluated. In this case, it means that
   // it is returning either the resolved value of the Promise or the return value of the call to
   // the snapshot function. See https://playwright.dev/docs/api/class-page#page-evaluate.
@@ -13,9 +15,10 @@ export const postProcessSnapshot = () => {
     });
   } else {
     return new Promise((resolve) => {
-      const domSnapshot = rrwebSnapshot.snapshot(document);
+      // @ts-expect-error -- rrwebSnapshot is available as a global in the browser
+      const domSnapshot = (rrwebSnapshot as typeof whatevz).snapshot(document);
       // do some post-processing on the snapshot
-      const toDataURL = async (url) => {
+      const toDataURL = async (url: string) => {
         // read contents of the blob URL
         const response = await fetch(url);
         const blob = await response.blob();

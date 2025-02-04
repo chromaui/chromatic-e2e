@@ -9,7 +9,7 @@ it('Upload a Single file and Assert blob', () => {
 });
 
 it('Fetch data for blob', () => {
-  cy.visit('/createObjectUrl');
+  cy.visit('/createObjectUrl?noUpload=true');
 
   // probably can just do this part?
 

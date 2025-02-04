@@ -3,5 +3,5 @@ storybook-static/**/*.js
 
 tsup.config.ts
 playwright.config.ts
-src/inBrowserPostProcessing.ts
+src/inBrowserPostProcessing.js
 __playwright-tests__

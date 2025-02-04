@@ -3,18 +3,6 @@
 
 // test.use({ ignoreSelectors: ['#objectUrl'] });
 
-// test('Upload a Single file and Assert blob', async ({ page }) => {
-//   await page.goto('/createObjectUrl');
-//   const fileWithPath = path.join(__dirname, '../../../test-server/fixtures/blue.png');
-//   const [fileChooser] = await Promise.all([
-//     page.waitForEvent('filechooser'),
-//     page.locator('#fileInput').click(),
-//   ]);
-//   await fileChooser.setFiles([fileWithPath]);
-//   await page.locator('#fileInput').dispatchEvent('change');
-//   await expect(page.locator('#objectUrl')).toHaveText(/blob:.*/);
-// });
-
 // // adapted from https://fossies.org/linux/playwright/tests/library/trace-viewer.spec.ts
 // test('Fetch data for blob', async ({ page }) => {
 //   await page.goto('/createObjectUrl');
@@ -34,7 +22,7 @@
 //   expect(size).toBe(10);
 // });
 
-it('assets from data urls are archived', () => {
+it('Upload a Single file and Assert blob', () => {
   cy.visit('/createObjectUrl');
 
   cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
@@ -43,3 +31,13 @@ it('assets from data urls are archived', () => {
     .invoke('text')
     .should('match', /blob:.*/);
 });
+
+// it('Fetch data for blob', () => {
+//   cy.visit('/createObjectUrl');
+
+//   cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
+
+//   cy.get('#objectUrl')
+//     .invoke('text')
+//     .should('match', /blob:.*/);
+// });

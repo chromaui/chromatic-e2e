@@ -1,7 +1,7 @@
 // THIS FILE IS RUN IN THE BROWSER (via Playwright page.evaluate()).
 
 export const postProcessSnapshot = () => {
-  const doAllThisStuff = (importedRRWebSnapshot, resolve) => {
+  const handleBlobUrls = (importedRRWebSnapshot, resolve) => {
     const domSnapshot = importedRRWebSnapshot.snapshot(document);
     // do some post-processing on the snapshot
     const toDataURL = async (url) => {
@@ -44,12 +44,13 @@ export const postProcessSnapshot = () => {
     // AMD support is detected, so we need to load rrwebSnapshot asynchronously
     return new Promise((resolve) => {
       require(['rrwebSnapshot'], (rrwebSnapshot) => {
-        doAllThisStuff(rrwebSnapshot, resolve);
+        handleBlobUrls(rrwebSnapshot, resolve);
       });
     });
   } else {
     return new Promise((resolve) => {
-      doAllThisStuff(rrwebSnapshot, resolve);
+      // rrwebSnapshot here is a global imported in a previous `page.evaluate()` (see takeSnapshot.ts for more info)
+      handleBlobUrls(rrwebSnapshot, resolve);
     });
   }
 };

@@ -3,7 +3,6 @@ import RRWebSnapshot, {
   serializedNodeWithId,
 } from '@chromaui/rrweb-snapshot';
 
-// Ignoring TS checks on the whole file as we are in the browser here
 export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
   // page.evaluate returns the value of the function being evaluated. In this case, it means that
   // it is returning either the resolved value of the Promise or the return value of the call to

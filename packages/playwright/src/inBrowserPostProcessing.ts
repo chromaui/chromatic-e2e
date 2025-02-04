@@ -1,5 +1,7 @@
-import { serializedElementNodeWithId, serializedNodeWithId } from '@chromaui/rrweb-snapshot';
-import whatevz from '@chromaui/rrweb-snapshot';
+import RRWebSnapshot, {
+  serializedElementNodeWithId,
+  serializedNodeWithId,
+} from '@chromaui/rrweb-snapshot';
 
 // Ignoring TS checks on the whole file as we are in the browser here
 export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
@@ -18,7 +20,7 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
   } else {
     return new Promise((resolve) => {
       // @ts-expect-error -- rrwebSnapshot is available as a global in the browser
-      const domSnapshot = (rrwebSnapshot as typeof whatevz).snapshot(
+      const domSnapshot = (rrwebSnapshot as typeof RRWebSnapshot).snapshot(
         document
       ) as serializedElementNodeWithId;
       // do some post-processing on the snapshot

@@ -1,4 +1,4 @@
-import { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+import { serializedElementNodeWithId, serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import whatevz from '@chromaui/rrweb-snapshot';
 
 // Ignoring TS checks on the whole file as we are in the browser here
@@ -16,7 +16,9 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
   } else {
     return new Promise((resolve) => {
       // @ts-expect-error -- rrwebSnapshot is available as a global in the browser
-      const domSnapshot = (rrwebSnapshot as typeof whatevz).snapshot(document);
+      const domSnapshot = (rrwebSnapshot as typeof whatevz).snapshot(
+        document
+      ) as serializedElementNodeWithId;
       // do some post-processing on the snapshot
       const toDataURL = async (url: string) => {
         // read contents of the blob URL
@@ -31,10 +33,15 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
         });
       };
 
-      const gatherBlobUrls = async (node) => {
+      const gatherBlobUrls = async (node: serializedElementNodeWithId) => {
         await Promise.all(
           node.childNodes.map(async (childNode) => {
-            if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
+            if (
+              childNode.type === 2 &&
+              childNode.tagName === 'img' &&
+              typeof childNode.attributes.src === 'string' &&
+              childNode.attributes.src?.startsWith('blob:')
+            ) {
               const base64Url = await toDataURL(childNode.attributes.src);
               childNode.attributes.src = base64Url;
             }

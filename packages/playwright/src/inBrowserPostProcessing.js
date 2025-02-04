@@ -1,3 +1,5 @@
+// THIS FILE IS RUN IN THE BROWSER (via Playwright page.evaluate()).
+
 export const postProcessSnapshot = () => {
   // page.evaluate returns the value of the function being evaluated. In this case, it means that
   // it is returning either the resolved value of the Promise or the return value of the call to

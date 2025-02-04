@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { dedent } from 'ts-dedent';
 import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import { logger } from '@chromatic-com/shared-e2e';
+// @ts-expect-error no declaration file for an in-house, meant-for-browser module
 import { postProcessSnapshot } from './inBrowserPostProcessing';
 
 const rrweb = readFileSync(require.resolve('@chromaui/rrweb-snapshot'), 'utf8');

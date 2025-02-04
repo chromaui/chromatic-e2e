@@ -28,7 +28,7 @@ export const postProcessSnapshot = () => {
         });
       };
 
-      const gatherBlobUrls = async (node) => {
+      const replaceBlobUrls = async (node) => {
         await Promise.all(
           node.childNodes.map(async (childNode) => {
             if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
@@ -37,13 +37,13 @@ export const postProcessSnapshot = () => {
             }
 
             if (childNode.childNodes?.length) {
-              await gatherBlobUrls(childNode);
+              await replaceBlobUrls(childNode);
             }
           })
         );
       };
 
-      gatherBlobUrls(domSnapshot).then(() => {
+      replaceBlobUrls(domSnapshot).then(() => {
         resolve(domSnapshot);
       });
     });

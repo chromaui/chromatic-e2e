@@ -20,13 +20,13 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
         document
       ) as serializedElementNodeWithId;
       // do some post-processing on the snapshot
-      const toDataURL = async (url: string) => {
+      const toDataURL = async (url: string): Promise<string> => {
         // read contents of the blob URL
         const response = await fetch(url);
         const blob = await response.blob();
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
+          reader.onloadend = () => resolve(typeof reader.result === 'string' ? reader.result : '');
           reader.onerror = reject;
           // convert the blob to base64 string
           reader.readAsDataURL(blob);
@@ -36,8 +36,11 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
       const gatherBlobUrls = async (node: serializedElementNodeWithId) => {
         await Promise.all(
           node.childNodes.map(async (childNode) => {
+            // only process actual element nodes
+            if (childNode.type !== 2) {
+              return;
+            }
             if (
-              childNode.type === 2 &&
               childNode.tagName === 'img' &&
               typeof childNode.attributes.src === 'string' &&
               childNode.attributes.src?.startsWith('blob:')

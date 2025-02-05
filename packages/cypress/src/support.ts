@@ -1,4 +1,4 @@
-import { snapshot } from '@chromaui/rrweb-snapshot';
+import { serializedNodeWithId, snapshot } from '@chromaui/rrweb-snapshot';
 import './commands';
 import { CypressSnapshot } from './types';
 
@@ -20,9 +20,45 @@ beforeEach(() => {
 
 const getSnapshot = (doc: Document): Promise<CypressSnapshot[]> => {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(!Cypress.env('disableAutoSnapshot') ? [{ snapshot: snapshot(doc) }] : []);
-    }, 2000);
+    if (Cypress.env('disableAutoSnapshot')) {
+      resolve([]);
+    }
+
+    const domSnapshot = snapshot(doc);
+    // do some post-processing on the snapshot
+    const toDataURL = async (url: string) => {
+      // read contents of the blob URL
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolveFileRead, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolveFileRead(reader.result);
+        reader.onerror = reject;
+        // convert the blob to base64 string
+        reader.readAsDataURL(blob);
+      });
+    };
+
+    const replaceBlobUrls = async (node: serializedNodeWithId) => {
+      await Promise.all(
+        // @ts-expect-error
+        node.childNodes.map(async (childNode) => {
+          if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
+            const base64Url = await toDataURL(childNode.attributes.src);
+            // eslint-disable-next-line no-param-reassign
+            childNode.attributes.src = base64Url;
+          }
+
+          if (childNode.childNodes?.length) {
+            await replaceBlobUrls(childNode);
+          }
+        })
+      );
+    };
+
+    replaceBlobUrls(domSnapshot).then(() => {
+      resolve([{ snapshot: domSnapshot }]);
+    });
   });
 };
 

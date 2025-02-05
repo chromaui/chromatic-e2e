@@ -1,5 +1,5 @@
-import { serializedNodeWithId, snapshot } from '@chromaui/rrweb-snapshot';
 import './commands';
+import { takeSnapshot } from './takeSnapshot';
 import { CypressSnapshot } from './types';
 
 // these client-side lifecycle hooks will be added to the user's Cypress suite
@@ -18,50 +18,6 @@ beforeEach(() => {
   });
 });
 
-const getSnapshot = (doc: Document): Promise<CypressSnapshot[]> => {
-  return new Promise((resolve) => {
-    if (Cypress.env('disableAutoSnapshot')) {
-      resolve([]);
-    }
-
-    const domSnapshot = snapshot(doc);
-    // do some post-processing on the snapshot
-    const toDataURL = async (url: string) => {
-      // read contents of the blob URL
-      const response = await fetch(url);
-      const blob = await response.blob();
-      return new Promise((resolveFileRead, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolveFileRead(reader.result);
-        reader.onerror = reject;
-        // convert the blob to base64 string
-        reader.readAsDataURL(blob);
-      });
-    };
-
-    const replaceBlobUrls = async (node: serializedNodeWithId) => {
-      await Promise.all(
-        // @ts-expect-error
-        node.childNodes.map(async (childNode) => {
-          if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
-            const base64Url = await toDataURL(childNode.attributes.src);
-            // eslint-disable-next-line no-param-reassign
-            childNode.attributes.src = base64Url;
-          }
-
-          if (childNode.childNodes?.length) {
-            await replaceBlobUrls(childNode);
-          }
-        })
-      );
-    };
-
-    replaceBlobUrls(domSnapshot).then(() => {
-      resolve([{ snapshot: domSnapshot }]);
-    });
-  });
-};
-
 afterEach(() => {
   // don't take snapshots when running `cypress open`
   if (!Cypress.config('isTextTerminal')) {
@@ -69,7 +25,7 @@ afterEach(() => {
   }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
-    cy.wrap(getSnapshot(doc)).then((automaticSnapshots: CypressSnapshot[]) => {
+    cy.wrap(takeSnapshot(doc)).then((automaticSnapshots: CypressSnapshot[]) => {
       // @ts-expect-error will fix when Cypress has its own package
       cy.get('@manualSnapshots').then((manualSnapshots = []) => {
         cy.url().then((url) => {

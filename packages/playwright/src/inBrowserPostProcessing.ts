@@ -9,45 +9,46 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
   if (typeof define === 'function' && define.amd) {
     // AMD support is detected, so we need to load rrwebSnapshot asynchronously
     return new Promise((resolve) => {
+      // eslint-disable-next-line import/no-dynamic-require, global-require
       require(['rrwebSnapshot'], (rrwebSnapshot) => {
         resolve(rrwebSnapshot.snapshot(document));
       });
     });
-  } else {
-    return new Promise((resolve) => {
-      const domSnapshot = rrwebSnapshot.snapshot(document);
-      // do some post-processing on the snapshot
-      const toDataURL = async (url) => {
-        // read contents of the blob URL
-        const response = await fetch(url);
-        const blob = await response.blob();
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          // convert the blob to base64 string
-          reader.readAsDataURL(blob);
-        });
-      };
-
-      const replaceBlobUrls = async (node) => {
-        await Promise.all(
-          node.childNodes.map(async (childNode) => {
-            if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
-              const base64Url = await toDataURL(childNode.attributes.src);
-              childNode.attributes.src = base64Url;
-            }
-
-            if (childNode.childNodes?.length) {
-              await replaceBlobUrls(childNode);
-            }
-          })
-        );
-      };
-
-      replaceBlobUrls(domSnapshot).then(() => {
-        resolve(domSnapshot);
-      });
-    });
   }
+
+  return new Promise((resolve) => {
+    const domSnapshot = rrwebSnapshot.snapshot(document);
+    // do some post-processing on the snapshot
+    const toDataURL = async (url) => {
+      // read contents of the blob URL
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolveFileRead, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolveFileRead(reader.result);
+        reader.onerror = reject;
+        // convert the blob to base64 string
+        reader.readAsDataURL(blob);
+      });
+    };
+
+    const replaceBlobUrls = async (node) => {
+      await Promise.all(
+        node.childNodes.map(async (childNode) => {
+          if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
+            const base64Url = await toDataURL(childNode.attributes.src);
+            childNode.attributes.src = base64Url;
+          }
+
+          if (childNode.childNodes?.length) {
+            await replaceBlobUrls(childNode);
+          }
+        })
+      );
+    };
+
+    replaceBlobUrls(domSnapshot).then(() => {
+      resolve(domSnapshot);
+    });
+  });
 };

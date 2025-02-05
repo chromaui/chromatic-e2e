@@ -1,4 +1,4 @@
-import { takeSnapshot } from './takeSnapshot';
+import { takeSnapshot as takeChromaticSnapshot } from './takeSnapshot';
 import { CypressSnapshot } from './types';
 
 declare global {
@@ -25,7 +25,7 @@ Cypress.Commands.add('takeSnapshot', (name?: string) => {
   cy.document().then((doc) => {
     // here, handle the source map
 
-    cy.wrap(takeSnapshot(doc)).then((manualSnapshot: CypressSnapshot) => {
+    cy.wrap(takeChromaticSnapshot(doc, true)).then((manualSnapshot: CypressSnapshot) => {
       // reassign manualSnapshots so it includes this new snapshot
       cy.get('@manualSnapshots')
         // @ts-expect-error will fix when Cypress has its own package

@@ -1,9 +1,12 @@
 import { serializedNodeWithId, snapshot } from '@chromaui/rrweb-snapshot';
 import { CypressSnapshot } from './types';
 
-export const takeSnapshot = (doc: Document): Promise<CypressSnapshot | null> => {
+export const takeSnapshot = (
+  doc: Document,
+  isManualSnapshot?: boolean
+): Promise<CypressSnapshot | null> => {
   return new Promise((resolve) => {
-    if (Cypress.env('disableAutoSnapshot')) {
+    if (!isManualSnapshot && Cypress.env('disableAutoSnapshot')) {
       resolve(null);
     }
 

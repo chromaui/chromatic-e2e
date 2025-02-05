@@ -1,8 +1,8 @@
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 
 export interface CypressSnapshot {
   // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)
   name?: string;
   // the DOM snapshot
-  snapshot: elementNode;
+  snapshot: serializedNodeWithId;
 }

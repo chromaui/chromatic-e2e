@@ -1,10 +1,10 @@
 import { serializedNodeWithId, snapshot } from '@chromaui/rrweb-snapshot';
 import { CypressSnapshot } from './types';
 
-export const takeSnapshot = (doc: Document): Promise<CypressSnapshot[]> => {
+export const takeSnapshot = (doc: Document): Promise<CypressSnapshot | null> => {
   return new Promise((resolve) => {
     if (Cypress.env('disableAutoSnapshot')) {
-      resolve([]);
+      resolve(null);
     }
 
     const domSnapshot = snapshot(doc);
@@ -40,7 +40,7 @@ export const takeSnapshot = (doc: Document): Promise<CypressSnapshot[]> => {
     };
 
     replaceBlobUrls(domSnapshot).then(() => {
-      resolve([{ snapshot: domSnapshot }]);
+      resolve({ snapshot: domSnapshot });
     });
   });
 };

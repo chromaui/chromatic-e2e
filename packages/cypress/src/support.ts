@@ -25,7 +25,7 @@ afterEach(() => {
   }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
-    cy.wrap(takeSnapshot(doc)).then((automaticSnapshots: CypressSnapshot[]) => {
+    cy.wrap(takeSnapshot(doc)).then((automaticSnapshot: CypressSnapshot) => {
       // @ts-expect-error will fix when Cypress has its own package
       cy.get('@manualSnapshots').then((manualSnapshots = []) => {
         cy.url().then((url) => {
@@ -35,7 +35,7 @@ afterEach(() => {
             payload: {
               // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
               testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
-              domSnapshots: [...manualSnapshots, ...automaticSnapshots],
+              domSnapshots: [...manualSnapshots, ...(automaticSnapshot ? [automaticSnapshot] : [])],
               chromaticStorybookParams: {
                 ...(Cypress.env('diffThreshold') && {
                   diffThreshold: Cypress.env('diffThreshold'),

@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.11.0
+
+### Minor Changes
+
+- 73ea103: Support for blob URL images in Playwright
+
 ## 0.10.2
 
 ### Patch Changes

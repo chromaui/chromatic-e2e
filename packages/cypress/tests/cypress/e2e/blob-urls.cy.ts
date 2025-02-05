@@ -20,3 +20,16 @@ it('Fetch data for blob', () => {
       expect($img[0].naturalWidth).to.eq(10);
     });
 });
+
+it('Captures blob contents for manual snapshots', () => {
+  cy.visit('/createObjectUrl');
+
+  cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
+
+  cy.get('#objectUrl')
+    .invoke('text')
+    .should('match', /blob:.*/);
+  cy.takeSnapshot('Manual snapshot (Should show a blue square)');
+
+  cy.visit('/asset-paths/query-params');
+});

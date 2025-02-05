@@ -41,6 +41,10 @@ test('assets from css urls are archived', async ({ page }) => {
   await page.goto('/asset-paths/css-urls');
 });
 
+test('assets from data urls are archived', async ({ page }) => {
+  await page.goto('/asset-paths/data-urls');
+});
+
 test('percents in URLs are handled', async ({ page }) => {
   await page.goto('/asset-paths/percents');
 });

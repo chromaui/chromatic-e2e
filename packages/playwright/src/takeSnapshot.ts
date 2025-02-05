@@ -1,8 +1,9 @@
 import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { dedent } from 'ts-dedent';
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
 import { logger } from '@chromatic-com/shared-e2e';
+import { postProcessSnapshot } from './inBrowserPostProcessing';
 
 const rrweb = readFileSync(require.resolve('@chromaui/rrweb-snapshot'), 'utf8');
 
@@ -32,23 +33,15 @@ async function takeSnapshot(
     logger.log(`CONSOLE: "${msg.text()}"`);
   });
 
+  // page.evaluate can take in a string or a function
+  // below (when we post-process the DOM) we want to have that code as a function
+  // as it's easier to type, test, and (eventually) lint
+  // so we import the rrweb code into the same page separately, and then use it in the other
+  // page.evaluate call down below.
+  await page.evaluate(dedent`${rrweb}`);
+
   // Serialize and capture the DOM
-  const domSnapshot: elementNode = await page.evaluate(dedent`
-    ${rrweb};
-    // page.evaluate returns the value of the function being evaluated. In this case, it means that
-    // it is returning either the resolved value of the Promise or the return value of the call to
-    // the snapshot function. See https://playwright.dev/docs/api/class-page#page-evaluate.
-    if (typeof define === "function" && define.amd) {
-      // AMD support is detected, so we need to load rrwebSnapshot asynchronously
-      new Promise((resolve) => {
-        require(['rrwebSnapshot'], (rrwebSnapshot) => {
-          resolve(rrwebSnapshot.snapshot(document));
-        });
-      });
-    } else {
-      rrwebSnapshot.snapshot(document);
-    }
-  `);
+  const domSnapshot: serializedNodeWithId = await page.evaluate(postProcessSnapshot);
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
   if (!chromaticSnapshots.has(testId)) {

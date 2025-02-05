@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <title>createObjectURL example</title>
+  </head>
+
+  <body>
+    <input id="fileInput" type="file" />
+    <p id="objectUrl"></p>
+    <img id="uploadImg" />
+  </body>
+  <script>
+    const inputElement = document.querySelector('input');
+    const imgElement = document.querySelector('#uploadImg');
+    inputElement.addEventListener('change', function () {
+      const url = URL.createObjectURL(inputElement.files[0]);
+      imgElement.src = url;
+      const urlText = document.querySelector('#objectUrl');
+      urlText.textContent = url;
+    });
+  </script>
+</html>

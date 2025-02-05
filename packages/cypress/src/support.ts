@@ -17,6 +17,10 @@ beforeEach(() => {
   });
 });
 
+const getSnapshot = (doc: Document) => {
+  snapshot(doc);
+};
+
 afterEach(() => {
   // don't take snapshots when running `cypress open`
   if (!Cypress.config('isTextTerminal')) {
@@ -26,7 +30,7 @@ afterEach(() => {
   cy.document().then((doc) => {
     const automaticSnapshots = !Cypress.env('disableAutoSnapshot')
       ? // need to do same post-snapshot-processing logic here
-        [{ snapshot: snapshot(doc) }]
+        [{ snapshot: getSnapshot(doc) }]
       : [];
     // @ts-expect-error will fix when Cypress has its own package
     cy.get('@manualSnapshots').then((manualSnapshots = []) => {

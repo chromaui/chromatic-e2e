@@ -1,5 +1,5 @@
-import { snapshot } from '@chromaui/rrweb-snapshot';
-import type { elementNode } from '@chromaui/rrweb-snapshot';
+import { takeSnapshot } from './takeSnapshot';
+import { CypressSnapshot } from './types';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -24,14 +24,15 @@ Cypress.Commands.add('takeSnapshot', (name?: string) => {
 
   cy.document().then((doc) => {
     // here, handle the source map
-    // need to do same post-snapshot-processing logic here
-    const manualSnapshot = snapshot(doc);
-    // reassign manualSnapshots so it includes this new snapshot
-    cy.get('@manualSnapshots')
-      // @ts-expect-error will fix when Cypress has its own package
-      .then((snapshots: elementNode[]) => {
-        return [...snapshots, { name, snapshot: manualSnapshot }];
-      })
-      .as('manualSnapshots');
+
+    cy.wrap(takeSnapshot(doc)).then((manualSnapshot: CypressSnapshot) => {
+      // reassign manualSnapshots so it includes this new snapshot
+      cy.get('@manualSnapshots')
+        // @ts-expect-error will fix when Cypress has its own package
+        .then((snapshots: CypressSnapshot[]) => {
+          return [...snapshots, { ...manualSnapshot, name }];
+        })
+        .as('manualSnapshots');
+    });
   });
 });

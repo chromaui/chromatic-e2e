@@ -27,7 +27,7 @@ export const takeSnapshot = (
 
     const replaceBlobUrls = async (node: serializedNodeWithId) => {
       await Promise.all(
-        // @ts-expect-error
+        // @ts-expect-error we assume childNodes will be on there
         node.childNodes.map(async (childNode) => {
           if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
             const base64Url = await toDataURL(childNode.attributes.src);

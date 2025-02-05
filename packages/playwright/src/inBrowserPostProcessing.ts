@@ -37,6 +37,7 @@ export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
         node.childNodes.map(async (childNode) => {
           if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
             const base64Url = await toDataURL(childNode.attributes.src);
+            // eslint-disable-next-line no-param-reassign
             childNode.attributes.src = base64Url;
           }
 

@@ -1,5 +1,6 @@
-import { serializedNodeWithId, snapshot } from '@chromaui/rrweb-snapshot';
+import { snapshot } from '@chromaui/rrweb-snapshot';
 import './commands';
+import { CypressSnapshot } from './types';
 
 // these client-side lifecycle hooks will be added to the user's Cypress suite
 beforeEach(() => {
@@ -17,7 +18,7 @@ beforeEach(() => {
   });
 });
 
-const getSnapshot = (doc: Document): Promise<any[]> => {
+const getSnapshot = (doc: Document): Promise<CypressSnapshot[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(!Cypress.env('disableAutoSnapshot') ? [{ snapshot: snapshot(doc) }] : []);
@@ -32,7 +33,7 @@ afterEach(() => {
   }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
-    cy.wrap(getSnapshot(doc)).then((automaticSnapshots: serializedNodeWithId[]) => {
+    cy.wrap(getSnapshot(doc)).then((automaticSnapshots: CypressSnapshot[]) => {
       // @ts-expect-error will fix when Cypress has its own package
       cy.get('@manualSnapshots').then((manualSnapshots = []) => {
         cy.url().then((url) => {

@@ -1,4 +1,4 @@
-import { snapshot } from '@chromaui/rrweb-snapshot';
+import { serializedNodeWithId, snapshot } from '@chromaui/rrweb-snapshot';
 import './commands';
 
 // these client-side lifecycle hooks will be added to the user's Cypress suite
@@ -17,8 +17,12 @@ beforeEach(() => {
   });
 });
 
-const getSnapshot = (doc: Document) => {
-  snapshot(doc);
+const getSnapshot = (doc: Document): Promise<any[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(!Cypress.env('disableAutoSnapshot') ? [{ snapshot: snapshot(doc) }] : []);
+    }, 2000);
+  });
 };
 
 afterEach(() => {
@@ -28,48 +32,50 @@ afterEach(() => {
   }
   // can we be sure this always fires after all the requests are back?
   cy.document().then((doc) => {
-    const automaticSnapshots = !Cypress.env('disableAutoSnapshot')
-      ? // need to do same post-snapshot-processing logic here
-        [{ snapshot: getSnapshot(doc) }]
-      : [];
-    // @ts-expect-error will fix when Cypress has its own package
-    cy.get('@manualSnapshots').then((manualSnapshots = []) => {
-      cy.url().then((url) => {
-        // pass the snapshot to the server to write to disk
-        cy.task('prepareArchives', {
-          action: 'save-archives',
-          payload: {
-            // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
-            testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
-            domSnapshots: [...manualSnapshots, ...automaticSnapshots],
-            chromaticStorybookParams: {
-              ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
-              ...(Cypress.env('delay') && { delay: Cypress.env('delay') }),
-              ...(Cypress.env('diffIncludeAntiAliasing') && {
-                diffIncludeAntiAliasing: Cypress.env('diffIncludeAntiAliasing'),
-              }),
-              ...(Cypress.env('diffThreshold') && { diffThreshold: Cypress.env('diffThreshold') }),
-              ...(Cypress.env('forcedColors') && { forcedColors: Cypress.env('forcedColors') }),
-              ...(Cypress.env('pauseAnimationAtEnd') && {
-                pauseAnimationAtEnd: Cypress.env('pauseAnimationAtEnd'),
-              }),
-              ...(Cypress.env('prefersReducedMotion') && {
-                prefersReducedMotion: Cypress.env('prefersReducedMotion'),
-              }),
-              ...(Cypress.env('cropToViewport') && {
-                cropToViewport: Cypress.env('cropToViewport'),
-              }),
-              ...(Cypress.env('ignoreSelectors') && {
-                ignoreSelectors: Cypress.env('ignoreSelectors'),
-              }),
+    cy.wrap(getSnapshot(doc)).then((automaticSnapshots: serializedNodeWithId[]) => {
+      // @ts-expect-error will fix when Cypress has its own package
+      cy.get('@manualSnapshots').then((manualSnapshots = []) => {
+        cy.url().then((url) => {
+          // pass the snapshot to the server to write to disk
+          cy.task('prepareArchives', {
+            action: 'save-archives',
+            payload: {
+              // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
+              testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
+              domSnapshots: [...manualSnapshots, ...automaticSnapshots],
+              chromaticStorybookParams: {
+                ...(Cypress.env('diffThreshold') && {
+                  diffThreshold: Cypress.env('diffThreshold'),
+                }),
+                ...(Cypress.env('delay') && { delay: Cypress.env('delay') }),
+                ...(Cypress.env('diffIncludeAntiAliasing') && {
+                  diffIncludeAntiAliasing: Cypress.env('diffIncludeAntiAliasing'),
+                }),
+                ...(Cypress.env('diffThreshold') && {
+                  diffThreshold: Cypress.env('diffThreshold'),
+                }),
+                ...(Cypress.env('forcedColors') && { forcedColors: Cypress.env('forcedColors') }),
+                ...(Cypress.env('pauseAnimationAtEnd') && {
+                  pauseAnimationAtEnd: Cypress.env('pauseAnimationAtEnd'),
+                }),
+                ...(Cypress.env('prefersReducedMotion') && {
+                  prefersReducedMotion: Cypress.env('prefersReducedMotion'),
+                }),
+                ...(Cypress.env('cropToViewport') && {
+                  cropToViewport: Cypress.env('cropToViewport'),
+                }),
+                ...(Cypress.env('ignoreSelectors') && {
+                  ignoreSelectors: Cypress.env('ignoreSelectors'),
+                }),
+              },
+              pageUrl: url,
+              viewport: {
+                height: Cypress.config('viewportHeight'),
+                width: Cypress.config('viewportWidth'),
+              },
+              outputDir: Cypress.config('downloadsFolder'),
             },
-            pageUrl: url,
-            viewport: {
-              height: Cypress.config('viewportHeight'),
-              width: Cypress.config('viewportWidth'),
-            },
-            outputDir: Cypress.config('downloadsFolder'),
-          },
+          });
         });
       });
     });

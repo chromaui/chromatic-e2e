@@ -1,6 +1,8 @@
 // THIS FILE IS RUN IN THE BROWSER (via Playwright page.evaluate()).
 
-export const postProcessSnapshot = () => {
+import { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+
+export const postProcessSnapshot = (): Promise<serializedNodeWithId> => {
   // page.evaluate returns the value of the function being evaluated. In this case, it means that
   // it is returning either the resolved value of the Promise or the return value of the call to
   // the snapshot function. See https://playwright.dev/docs/api/class-page#page-evaluate.

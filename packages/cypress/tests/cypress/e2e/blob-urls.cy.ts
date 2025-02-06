@@ -1,4 +1,4 @@
-it('Upload a Single file and Assert blob', () => {
+it('Upload a Single file and Assert blob', { env: { ignoreSelectors: ['#objectUrl'] } }, () => {
   cy.visit('/createObjectUrl');
 
   cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
@@ -21,15 +21,19 @@ it('Fetch data for blob', () => {
     });
 });
 
-it('Captures blob contents for manual snapshots', () => {
-  cy.visit('/createObjectUrl');
+it(
+  'Captures blob contents for manual snapshots',
+  { env: { ignoreSelectors: ['#objectUrl'] } },
+  () => {
+    cy.visit('/createObjectUrl');
 
-  cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
+    cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
 
-  cy.get('#objectUrl')
-    .invoke('text')
-    .should('match', /blob:.*/);
-  cy.takeSnapshot('Manual snapshot (Should show a blue square)');
+    cy.get('#objectUrl')
+      .invoke('text')
+      .should('match', /blob:.*/);
+    cy.takeSnapshot('Manual snapshot (Should show a blue square)');
 
-  cy.visit('/asset-paths/query-params');
-});
+    cy.visit('/asset-paths/query-params');
+  }
+);

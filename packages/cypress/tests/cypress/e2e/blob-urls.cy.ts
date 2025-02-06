@@ -11,8 +11,6 @@ it('Upload a Single file and Assert blob', { env: { ignoreSelectors: ['#objectUr
 it('Fetch data for blob', () => {
   cy.visit('/createObjectUrl?noUpload=true');
 
-  // probably can just do this part?
-
   cy.get('#blobImg')
     .should('be.visible')
     .should(($img) => {

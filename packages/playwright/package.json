@@ -67,7 +67,7 @@
     "@storybook/csf": "^0.1.0",
     "@storybook/manager-api": "^8.1.5",
     "@storybook/server-webpack5": "^8.1.5",
-    "storybook": "^8.1.5",
+    "storybook": "^8.5.3",
     "ts-dedent": "^2.2.0"
   },
   "peerDependencies": {

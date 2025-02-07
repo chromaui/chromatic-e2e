@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.10.0
+
+### Minor Changes
+
+- 80b5fdf: Blob URLs supported
+
 ## 0.9.1
 
 ### Patch Changes

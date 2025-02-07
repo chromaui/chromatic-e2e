@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.11.1
+
+### Patch Changes
+
+- 80b5fdf: blob URLs supported in AMD
+
 ## 0.11.0
 
 ### Minor Changes

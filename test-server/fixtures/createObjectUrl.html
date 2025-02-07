@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <title>createObjectURL example</title>
@@ -18,5 +18,21 @@
       const urlText = document.querySelector('#objectUrl');
       urlText.textContent = url;
     });
+
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('noUpload')) {
+      const createBlobUrl = async () => {
+        const dataUrl =
+          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAASCAQAAADIvofAAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAHdElNRQfhBhAPKSstM+EuAAAAvUlEQVQY05WQIW4CYRgF599gEZgeoAKBWIfCNSmVvQMe3wv0ChhIViKwtTQEAYJwhgpISBA0JSxNIdlB7LIGTJ/8kpeZ7wW5TcT9o/QNBtvOrrWMrtg0sSGOFeELbHlCDsQ+ukeYiHNFJPHBDRKlQKVEbFkLUT3AiAxI6VGCXsWXAoQLBUl5E7HjUFwiyI4zf/wWoB3CFnxX5IeGdY8IGU/iwE9jcZrLy4pnEat+FL4hf/cbqREKo/Cf6W5zASVMeh234UtGAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTA2LTE2VDE1OjQxOjQzLTA3OjAwd1xNIQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wNi0xNlQxNTo0MTo0My0wNzowMAYB9Z0AAAAASUVORK5CYII=';
+        const blob = await fetch(dataUrl).then((res) => res.blob());
+        const url = window.URL.createObjectURL(blob);
+        const img = document.createElement('img');
+        img.id = 'blobImg';
+        img.src = url;
+        const loaded = new Promise((f) => (img.onload = f));
+        document.body.appendChild(img);
+      };
+      createBlobUrl();
+    }
   </script>
 </html>

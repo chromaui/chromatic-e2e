@@ -1,4 +1,3 @@
-import type { elementNode } from '@chromaui/rrweb-snapshot';
 import CDP, { Version } from 'chrome-remote-interface';
 import {
   ResourceArchiver,
@@ -7,13 +6,7 @@ import {
   ResourceArchive,
   Viewport,
 } from '@chromatic-com/shared-e2e';
-
-interface CypressSnapshot {
-  // the name of the snapshot (optionally provided for manual snapshots, never provided for automatic snapshots)
-  name?: string;
-  // the DOM snapshot
-  snapshot: elementNode;
-}
+import { CypressSnapshot } from './types';
 
 interface WriteParams {
   testTitlePath: string[];

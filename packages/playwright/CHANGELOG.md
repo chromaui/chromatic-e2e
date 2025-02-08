@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.11.2
+
+### Patch Changes
+
+- 4996f83: Blob-url post-processing passed as a template string instead of a function
+
 ## 0.11.1
 
 ### Patch Changes

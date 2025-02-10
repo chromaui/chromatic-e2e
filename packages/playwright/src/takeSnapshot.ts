@@ -99,6 +99,10 @@ async function takeSnapshot(
     }    
   `);
 
+  await page.evaluate(() => {
+    console.log('blarb');
+  });
+
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
   if (!chromaticSnapshots.has(testId)) {
     // map used so the snapshots are always in order

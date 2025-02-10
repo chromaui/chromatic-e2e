@@ -7,5 +7,4 @@ it('pages with AMD modules are archived', { env: { ignoreSelectors: ['#objectUrl
   cy.get('#objectUrl')
     .invoke('text')
     .should('match', /blob:.*/);
-  cy.takeSnapshot('Manual snapshot (Should show a blue square)');
 });

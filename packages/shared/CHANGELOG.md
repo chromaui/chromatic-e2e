@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.2
+
+### Patch Changes
+
+- 3d17bb6: Update Storybook Dependencies to 8.6.0
+
 ## 0.9.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.11.3
+
+### Patch Changes
+
+- 3d17bb6: Update Storybook Dependencies to 8.6.0
+
 ## 0.11.2
 
 ### Patch Changes

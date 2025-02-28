@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.10.1
+
+### Patch Changes
+
+- 3d17bb6: Update Storybook Dependencies to 8.6.0
+
 ## 0.10.0
 
 ### Minor Changes

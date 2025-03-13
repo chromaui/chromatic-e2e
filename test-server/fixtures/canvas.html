@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>Here we have a canvas with a circle</p>
+    <canvas id="canvas1" width="200" height="200" style="border:1px solid #000000;">
+    </canvas>
+
+    <p>And another with a gradient</p>
+    <canvas id="canvas2" width="200" height="200" style="border:1px solid #000000;">
+    </canvas>
+  </body>
+  <script>
+    var c = document.getElementById("canvas1");
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+    ctx.stroke();
+  </script>
+  <script>
+    var c = document.getElementById("canvas2");
+    var ctx = c.getContext("2d");
+    
+    // Create gradient
+    var grd = ctx.createRadialGradient(75, 50, 5, 90, 60, 100);
+    grd.addColorStop(0, "red");
+    grd.addColorStop(1, "white");
+    
+    // Fill with gradient
+    ctx.fillStyle = grd;
+    ctx.fillRect(10, 10, 150, 80);
+  </script>
+</html>

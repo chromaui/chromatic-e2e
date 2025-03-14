@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.0
+
+### Minor Changes
+
+- fa22af9: snapshot the contents of canvas elements
+
 ## 0.11.3
 
 ### Patch Changes

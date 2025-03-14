@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="flex w-full">
+      <div class="m-5">
+        <p class="text-sm">A canvas with a circle</p>
+        <canvas id="canvas1" width="200" height="200" class="border-2"></canvas>
+      </div>
+      <div class="m-5">
+        <p class="text-sm">Another with a gradient</p>
+        <canvas id="canvas2" width="200" height="200" class="border-2"></canvas>
+      </div>
+      <div class="m-5">
+        <p class="text-sm">One blue image from a tag</p>
+        <div style="display: none;">
+          <img id="canvasImage" src="/img?cache=canvas3"/>
+        </div>
+        
+        <canvas id="canvas3" width="200" height="200" class="border-2"></canvas>
+      </div>
+      <div class="m-5">
+        <p class="text-sm">And a pink image from a src</p>
+        <canvas id="canvas4" width="200" height="200" class="border-2"></canvas>
+      </div>
+    </div>  
+  </body>
+  <script>
+    const ctx1 = document.getElementById("canvas1").getContext("2d");
+    ctx1.beginPath();
+    ctx1.arc(95, 50, 40, 0, 2 * Math.PI);
+    ctx1.stroke();
+  </script>
+  <script>
+    const ctx2 = document.getElementById("canvas2").getContext("2d");
+    
+    // Create gradient
+    const grd = ctx2.createRadialGradient(75, 50, 5, 90, 60, 100);
+    grd.addColorStop(0, "red");
+    grd.addColorStop(1, "white");
+    
+    // Fill with gradient
+    ctx2.fillStyle = grd;
+    ctx2.fillRect(10, 10, 150, 80);
+  </script>
+  <script>
+    const ctx3 = document.getElementById("canvas3").getContext("2d");
+    const img = document.getElementById("canvasImage");
+    
+    // In case the image has already loaded, meaning the following event listener will never fire
+    ctx3.drawImage(img, 10, 10);
+
+    img.addEventListener("load", () => {
+      ctx3.drawImage(img, 10, 10);
+    });
+  </script>
+  <script>
+    const ctx4 = document.getElementById("canvas4").getContext("2d");
+    const img2 = new Image();
+
+    img2.addEventListener("load", () => {
+      ctx4.drawImage(img2, 10, 10);
+    });
+
+    img2.src = "/img/another?cache=canvas4";
+  </script>
+</html>

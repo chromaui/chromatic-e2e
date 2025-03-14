@@ -10,7 +10,7 @@ export const takeSnapshot = (
       resolve(null);
     }
 
-    const domSnapshot = snapshot(doc);
+    const domSnapshot = snapshot(doc, { recordCanvas: true });
     // do some post-processing on the snapshot
     const toDataURL = async (url: string) => {
       // read contents of the blob URL

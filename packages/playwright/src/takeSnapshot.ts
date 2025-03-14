@@ -40,7 +40,7 @@ async function takeSnapshot(
     // so for now it is being passed as a string until that can be resolved.
     const doPostProcessing = (rrwebSnapshotInstance, documentToSnapshot) => {
       return new Promise((resolve) => {
-        const domSnapshot = rrwebSnapshotInstance.snapshot(documentToSnapshot);
+        const domSnapshot = rrwebSnapshotInstance.snapshot(documentToSnapshot, { recordCanvas: true });
         // do some post-processing on the snapshot
         const toDataURL = async (url) => {
           // read contents of the blob URL

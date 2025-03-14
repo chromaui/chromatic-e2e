@@ -140,6 +140,10 @@ app.get('/createObjectUrl', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/createObjectUrl.html'));
 });
 
+app.get('/canvas', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/canvas.html'));
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

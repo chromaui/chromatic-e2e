@@ -9,7 +9,11 @@ function getAbsolutePath(value: string) {
 /** @type { import('@storybook/server-webpack5').StorybookConfig } */
 export default {
   stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
-  addons: [getAbsolutePath('@storybook/addon-essentials'), '.'],
+  addons: [
+    getAbsolutePath('@storybook/addon-essentials'),
+    getAbsolutePath('@storybook/addon-a11y'),
+    '.',
+  ],
   framework: {
     name: getAbsolutePath('@storybook/server-webpack5'),
     options: {},

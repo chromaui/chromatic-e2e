@@ -90,3 +90,7 @@ it('video poster image is rendered', () => {
 it('link tags for fonts preloads and other things are handled', () => {
   cy.visit('/asset-paths/link-tags');
 });
+
+it('use tags for sprites are archived', () => {
+  cy.visit('/asset-paths/sprites');
+});

@@ -65,10 +65,17 @@ export class DOMSnapshot {
         node.attributes._cssText = mappedCssText;
       }
 
-      if (node.tagName === 'link' && node.attributes.href) {
+      if (['link', 'use'].includes(node.tagName) && node.attributes.href) {
         const hrefVal = node.attributes.href as string;
-        if (sourceMap.has(hrefVal)) {
-          node.attributes.href = sourceMap.get(hrefVal);
+
+        // SVGs and other href values can have an anchor which will not be included
+        // in the source map lookup. We'll remove it to do the lookup and add it back
+        // onto the found value.
+        const hrefValAndAnchor = hrefVal.split('#');
+        const hrefValWithoutAnchor = hrefValAndAnchor[0];
+        if (sourceMap.has(hrefValWithoutAnchor)) {
+          hrefValAndAnchor[0] = sourceMap.get(hrefValWithoutAnchor);
+          node.attributes.href = hrefValAndAnchor.join('#');
         }
       }
 

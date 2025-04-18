@@ -76,3 +76,7 @@ test('video poster image is rendered', async ({ page }) => {
 test('link tags for fonts preloads and other things are handled', async ({ page }) => {
   await page.goto('/asset-paths/link-tags');
 });
+
+test('use tags for sprites are archived', async ({ page }) => {
+  await page.goto('/asset-paths/sprites');
+});

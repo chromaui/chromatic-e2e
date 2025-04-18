@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.3
+
+### Patch Changes
+
+- 6fd27b1: Archive `use` tags to support SVGs
+
 ## 0.9.2
 
 ### Patch Changes

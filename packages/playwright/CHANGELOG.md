@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.1
+
+### Patch Changes
+
+- 6fd27b1: Archive `use` tags to support SVGs
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.11.1
+
+### Patch Changes
+
+- 6fd27b1: Archive `use` tags to support SVGs
+
 ## 0.11.0
 
 ### Minor Changes

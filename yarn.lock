@@ -1884,13 +1884,14 @@ __metadata:
     "@chromatic-com/shared-e2e": "workspace:*"
     "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
     "@segment/analytics-node": "npm:^1.1.0"
-    "@storybook/addon-essentials": "npm:^8.6.0"
+    "@storybook/addon-docs": "npm:^9.0.0-beta.6"
     "@storybook/csf": "npm:^0.1.0"
-    "@storybook/server-webpack5": "npm:^8.6.0"
+    "@storybook/server-webpack5": "npm:^9.0.0-beta.6"
     chrome-remote-interface: "npm:^0.33.0"
     cypress: "npm:^13.4.0"
+    eslint-plugin-storybook: "npm:9.0.0-beta.6"
     start-server-and-test: "npm:^2.0.3"
-    storybook: "npm:^8.6.0"
+    storybook: "npm:^9.0.0-beta.6"
   bin:
     archive-storybook: dist/bin/archive-storybook.js
     build-archive-storybook: dist/bin/build-archive-storybook.js

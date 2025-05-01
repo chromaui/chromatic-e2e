@@ -1,2 +1,3 @@
 dist/**/*.js
 tsup.config.ts
+!.storybook

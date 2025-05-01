@@ -105,7 +105,6 @@ describe('new', () => {
 
     await page.goto(baseUrl);
 
-    // eslint-disable-next-line jest/valid-expect-in-promise
     await complete();
 
     expect(mockWarn).toBeCalledWith(`Global timeout of 1ms reached`);

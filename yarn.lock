@@ -1920,7 +1920,7 @@ __metadata:
     node-fetch: "npm:2"
     playwright: "npm:^1.46.1"
     playwright-core: "npm:^1.46.1"
-    prettier: "npm:^2.3.1"
+    prettier: "npm:^3.5.3"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
     srcset: "npm:^4.0.0"
@@ -1965,7 +1965,7 @@ __metadata:
     lint-staged: "npm:>=10"
     node-fetch: "npm:2"
     playwright: "npm:^1.46.1"
-    prettier: "npm:^2.3.1"
+    prettier: "npm:^3.5.3"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
     start-server-and-test: "npm:^2.0.3"
@@ -14363,21 +14363,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.3.1":
-  version: 2.8.7
-  resolution: "prettier@npm:2.8.7"
-  bin:
-    prettier: bin-prettier.js
-  checksum: 84c5b62f7d4909ae5b18b1a4cee67f6a30a548244c8919e67158dee1453f4fa4ff4d291c6f2e41e21d443a0c405f03ec27690502d4ad90c3a7c59bcaf38b51ba
-  languageName: node
-  linkType: hard
-
 "prettier@npm:^2.7.1":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
     prettier: bin-prettier.js
   checksum: 463ea8f9a0946cd5b828d8cf27bd8b567345cf02f56562d5ecde198b91f47a76b7ac9eae0facd247ace70e927143af6135e8cf411986b8cb8478784a4d6d724a
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^3.5.3":
+  version: 3.5.3
+  resolution: "prettier@npm:3.5.3"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: 3880cb90b9dc0635819ab52ff571518c35bd7f15a6e80a2054c05dbc8a3aa6e74f135519e91197de63705bcb38388ded7e7230e2178432a1468005406238b877
   languageName: node
   linkType: hard
 

@@ -55,7 +55,7 @@
     "lint-staged": ">=10",
     "node-fetch": "2",
     "playwright": "^1.46.1",
-    "prettier": "^2.3.1",
+    "prettier": "^3.5.3",
     "prompts": "^2.4.2",
     "rimraf": "^3.0.2",
     "start-server-and-test": "^2.0.3",

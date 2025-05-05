@@ -163,7 +163,7 @@ export class ResourceArchiver {
     const { request, requestId, responseStatusCode, responseStatusText, responseHeaders } =
       requestPausedPayload;
 
-    if ([301, 302, 307, 308].includes(responseStatusCode)) {
+    if ([301, 302, 303, 307, 308].includes(responseStatusCode)) {
       await this.clientSend(request, 'Fetch.continueRequest', {
         requestId,
         interceptResponse: true,

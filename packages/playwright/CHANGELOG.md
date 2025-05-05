@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.2
+
+### Patch Changes
+
+- c16a1e2: follow redirects for 303 http response status codes
+
 ## 0.12.1
 
 ### Patch Changes

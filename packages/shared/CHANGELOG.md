@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.4
+
+### Patch Changes
+
+- c16a1e2: follow redirects for 303 http response status codes
+
 ## 0.9.3
 
 ### Patch Changes

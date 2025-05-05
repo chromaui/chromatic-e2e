@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['@storybook/eslint-config-storybook', 'plugin:storybook/recommended'],
+  extends: ['plugin:storybook/recommended'],
   overrides: [
     {
       files: ['**/*.tsx'],

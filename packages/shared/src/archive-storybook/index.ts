@@ -28,7 +28,7 @@ export function buildArchiveStorybook(
 }
 
 function binPath() {
-  // eslint-disable-next-line global-require
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const packageJson = require('storybook/package.json');
   const parsedVersion = parseInt(packageJson.version[0], 10);
   const storybookPackageJsonHasBinObject = parsedVersion >= 9;

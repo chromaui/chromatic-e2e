@@ -1,12 +1,22 @@
 module.exports = {
-  extends: ['plugin:storybook/recommended'],
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:storybook/recommended'],
+  plugins: ['import'],
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.ts', '.tsx', '.mjs', '.d.ts'],
+        paths: ['node_modules/', 'node_modules/@types/'],
+      },
+    },
+  },
   overrides: [
     {
-      files: ['**/*.tsx'],
+      files: ['**/*.ts'],
       rules: {
-        'react/prop-types': 'off',
-        'react/require-default-props': 'off',
-        'react/default-props-match-prop-types': 'off',
+        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       },
     },
     {

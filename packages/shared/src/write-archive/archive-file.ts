@@ -84,7 +84,7 @@ export class ArchiveFile {
     const rebuiltPieces: Array<string> = [];
 
     // Shorten each individual piece
-    pathPieces.forEach((piece, index) => {
+    pathPieces.forEach((piece) => {
       let shortName: string = piece;
       if (piece.length > this.shortenedFileNameLength) {
         shortName = piece.substring(0, this.shortenedFileNameLength);

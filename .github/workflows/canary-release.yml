@@ -20,11 +20,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js 18
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
         with:
-          node-version: 18
-          registry-url: 'https://registry.npmjs.org'
+          node-version: lts/*
 
       - name: Install Dependencies
         run: yarn install

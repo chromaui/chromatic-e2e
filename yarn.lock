@@ -1839,7 +1839,6 @@ __metadata:
     "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-docs": "npm:^9.0.0-beta.10"
-    "@storybook/csf": "npm:^0.1.0"
     "@storybook/server-webpack5": "npm:^9.0.0-beta.10"
     "@typescript-eslint/eslint-plugin": "npm:^8.32.0"
     "@typescript-eslint/parser": "npm:^8.32.0"
@@ -1864,7 +1863,6 @@ __metadata:
     "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.6.0"
-    "@storybook/csf": "npm:^0.1.0"
     "@storybook/server-webpack5": "npm:^9.0.0-beta.10"
     "@typescript-eslint/eslint-plugin": "npm:^8.32.0"
     "@typescript-eslint/parser": "npm:^8.32.0"
@@ -3484,15 +3482,6 @@ __metadata:
   peerDependencies:
     storybook: ^9.0.0-beta.10
   checksum: 73818ccfd0732cda8dd52160723c320ed6030dc281018770d35c903d73caa6a9c7880e9f0bf97d895145b0263e7899374e2f1bd0fb12d6ac73909404944bdba6
-  languageName: node
-  linkType: hard
-
-"@storybook/csf@npm:^0.1.0":
-  version: 0.1.2
-  resolution: "@storybook/csf@npm:0.1.2"
-  dependencies:
-    type-fest: "npm:^2.19.0"
-  checksum: b51a55292e5d2af8b1d135a28ecaa94f8860ddfedcb393adfa2cca1ee23853156066f737d8be1cb5412f572781aa525dc0b2f6e4a6f6ce805489f0149efe837c
   languageName: node
   linkType: hard
 
@@ -15021,13 +15010,6 @@ __metadata:
   version: 0.8.1
   resolution: "type-fest@npm:0.8.1"
   checksum: dffbb99329da2aa840f506d376c863bd55f5636f4741ad6e65e82f5ce47e6914108f44f340a0b74009b0cb5d09d6752ae83203e53e98b1192cf80ecee5651636
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^2.19.0":
-  version: 2.19.0
-  resolution: "type-fest@npm:2.19.0"
-  checksum: a5a7ecf2e654251613218c215c7493574594951c08e52ab9881c9df6a6da0aeca7528c213c622bc374b4e0cb5c443aa3ab758da4e3c959783ce884c3194e12cb
   languageName: node
   linkType: hard
 

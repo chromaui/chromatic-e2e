@@ -1830,7 +1830,7 @@ __metadata:
     "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
     "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
-    "@storybook/addon-docs": "npm:^9.0.0-beta.10"
+    "@storybook/addon-docs": "npm:^9.0.0-beta.11"
     "@storybook/server-webpack5": "npm:^9.0.0-beta.10"
     "@typescript-eslint/eslint-plugin": "npm:^8.32.0"
     "@typescript-eslint/parser": "npm:^8.32.0"
@@ -1855,6 +1855,7 @@ __metadata:
     "@playwright/test": "npm:^1.46.1"
     "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
+    "@storybook/addon-docs": "npm:^9.0.0-beta.11"
     "@storybook/server-webpack5": "npm:^9.0.0-beta.10"
     "@typescript-eslint/eslint-plugin": "npm:^8.32.0"
     "@typescript-eslint/parser": "npm:^8.32.0"
@@ -3249,7 +3250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-docs@npm:^9.0.0-beta.10":
+"@storybook/addon-docs@npm:^9.0.0-beta.10, @storybook/addon-docs@npm:^9.0.0-beta.11":
   version: 9.0.0-rc.5
   resolution: "@storybook/addon-docs@npm:9.0.0-rc.5"
   dependencies:

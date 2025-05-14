@@ -1,6 +1,7 @@
 import type { RenderContext, RenderToCanvas, WebRenderer } from '@storybook/types';
-import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
-import { NodeType, rebuild } from '@chromaui/rrweb-snapshot';
+import type { serializedNodeWithId } from '@rrweb/types';
+import { NodeType } from '@rrweb/types';
+import { rebuild } from '@chromaui/rrweb-snapshot';
 
 const pageUrl = new URL(window.location.href);
 pageUrl.pathname = '';

@@ -1848,6 +1848,7 @@ __metadata:
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
     "@chromaui/rrweb-snapshot": "npm:2.0.0-canary.18-noAbsolute"
+    "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.6.0"
     "@storybook/csf": "npm:^0.1.0"
@@ -1871,6 +1872,7 @@ __metadata:
     "@chromatic-com/shared-e2e": "workspace:*"
     "@chromaui/rrweb-snapshot": "npm:2.0.0-canary.18-noAbsolute"
     "@playwright/test": "npm:^1.46.1"
+    "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.6.0"
     "@storybook/csf": "npm:^0.1.0"
@@ -1900,6 +1902,7 @@ __metadata:
     "@chromaui/rrweb-snapshot": "npm:2.0.0-canary.18-noAbsolute"
     "@jest/types": "npm:^27.0.6"
     "@playwright/test": "npm:^1.46.1"
+    "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.6.0"
     "@storybook/eslint-config-storybook": "npm:^4.0.0"
@@ -3256,6 +3259,13 @@ __metadata:
   version: 4.12.1
   resolution: "@rollup/rollup-win32-x64-msvc@npm:4.12.1"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rrweb/types@npm:^2.0.0-alpha.18":
+  version: 2.0.0-alpha.18
+  resolution: "@rrweb/types@npm:2.0.0-alpha.18"
+  checksum: a1adb842f59b782e04576a7e88ffc2e43b8b29460555922e6a15f8ffd4840e554e96c1331653b0a322a3a8f25e73a9ae38ff37d3e60f1da71b6f6c0d001a20e7
   languageName: node
   linkType: hard
 

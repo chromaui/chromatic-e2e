@@ -1,7 +1,7 @@
 import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { dedent } from 'ts-dedent';
-import type { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+import type { serializedNodeWithId } from '@rrweb/types';
 import { logger } from '@chromatic-com/shared-e2e';
 
 const rrweb = readFileSync(require.resolve('@chromaui/rrweb-snapshot'), 'utf8');

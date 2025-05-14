@@ -1,5 +1,6 @@
-import { serializedNodeWithId, snapshot } from '@chromaui/rrweb-snapshot';
+import { snapshot } from '@chromaui/rrweb-snapshot';
 import { CypressSnapshot } from './types';
+import type { serializedNodeWithId } from '@rrweb/types';
 
 export const takeSnapshot = (
   doc: Document,

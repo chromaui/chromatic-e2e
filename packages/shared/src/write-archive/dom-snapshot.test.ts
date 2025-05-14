@@ -1,4 +1,4 @@
-import { serializedNodeWithId } from '@chromaui/rrweb-snapshot';
+import { serializedNodeWithId } from '@rrweb/types';
 import { DOMSnapshot } from './dom-snapshot';
 
 const relativeUrl = '/images/image.png';

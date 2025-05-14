@@ -61,6 +61,7 @@
     "@chromatic-com/shared-e2e": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
+    "@rrweb/types": "^2.0.0-alpha.18",
     "cypress": "^13.4.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-storybook": "9.0.0-beta.10",
@@ -73,7 +74,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.17-noAbsolute",
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
     "@segment/analytics-node": "^1.1.0",
     "@storybook/addon-docs": "^9.0.0-beta.11",
     "@storybook/server-webpack5": "^9.0.0-beta.10",

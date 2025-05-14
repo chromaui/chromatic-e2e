@@ -1827,7 +1827,8 @@ __metadata:
   resolution: "@chromatic-com/cypress@workspace:packages/cypress"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
+    "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-docs": "npm:^9.0.0-beta.11"
     "@storybook/server-webpack5": "npm:^9.0.0-beta.10"
@@ -1850,8 +1851,9 @@ __metadata:
   resolution: "@chromatic-com/playwright@workspace:packages/playwright"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
     "@playwright/test": "npm:^1.46.1"
+    "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-docs": "npm:^9.0.0-beta.11"
     "@storybook/server-webpack5": "npm:^9.0.0-beta.10"
@@ -1879,9 +1881,10 @@ __metadata:
     "@babel/preset-env": "npm:^7.21.4"
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.4"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
     "@jest/types": "npm:^27.0.6"
     "@playwright/test": "npm:^1.46.1"
+    "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-docs": "npm:^9.0.0-beta.10"
     "@storybook/server-webpack5": "npm:^9.0.0-beta.10"
@@ -1963,12 +1966,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17-noAbsolute":
-  version: 2.0.0-alpha.17-noAbsolute
-  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17-noAbsolute"
+"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.18-noAbsolute":
+  version: 2.0.0-alpha.18-noAbsolute
+  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.18-noAbsolute"
   dependencies:
     postcss: "npm:^8.4.38"
-  checksum: 983b4a704145da353b73d6fb09675117466e833486ad2efc3033433655a9b12f4e00b05e884a9d4ca85947f01e60f57c14a3d8e809656e470a44bdcb082f9f85
+  checksum: a405c6cf4229bc06a1d0e6fe56ceb3ac9bdf73df57f6a95704586b87059bf05a8954ecbf479a6d02059e7e9eb04f789982ce323432fd937bb79e4735929c1ec8
   languageName: node
   linkType: hard
 
@@ -3165,6 +3168,13 @@ __metadata:
   version: 4.12.1
   resolution: "@rollup/rollup-win32-x64-msvc@npm:4.12.1"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rrweb/types@npm:^2.0.0-alpha.18":
+  version: 2.0.0-alpha.18
+  resolution: "@rrweb/types@npm:2.0.0-alpha.18"
+  checksum: a1adb842f59b782e04576a7e88ffc2e43b8b29460555922e6a15f8ffd4840e554e96c1331653b0a322a3a8f25e73a9ae38ff37d3e60f1da71b6f6c0d001a20e7
   languageName: node
   linkType: hard
 

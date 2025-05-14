@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
-import type { serializedElementNodeWithId, serializedNodeWithId } from '@chromaui/rrweb-snapshot';
-import { NodeType } from '@chromaui/rrweb-snapshot';
+import type { serializedElementNodeWithId, serializedNodeWithId } from '@rrweb/types';
+import { NodeType } from '@rrweb/types';
 import srcset from 'srcset';
 
 // Matches `url(...)` function in CSS text, excluding data URLs

@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.5
+
+### Patch Changes
+
+- de3b345: upgrade rrweb
+
 ## 0.9.4
 
 ### Patch Changes

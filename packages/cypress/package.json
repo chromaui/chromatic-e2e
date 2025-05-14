@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-com/cypress",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "description": "Chromatic Visual Regression Testing for Cypress",
   "repository": {
     "type": "git",

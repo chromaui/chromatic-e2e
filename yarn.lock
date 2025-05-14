@@ -1847,7 +1847,7 @@ __metadata:
   resolution: "@chromatic-com/cypress@workspace:packages/cypress"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-canary.18-noAbsolute"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.6.0"
     "@storybook/csf": "npm:^0.1.0"
@@ -1869,7 +1869,7 @@ __metadata:
   resolution: "@chromatic-com/playwright@workspace:packages/playwright"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-canary.18-noAbsolute"
     "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
     "@storybook/addon-essentials": "npm:^8.6.0"
@@ -1897,7 +1897,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.21.4"
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.21.4"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.17-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-canary.18-noAbsolute"
     "@jest/types": "npm:^27.0.6"
     "@playwright/test": "npm:^1.46.1"
     "@segment/analytics-node": "npm:^1.1.0"
@@ -1975,12 +1975,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17-noAbsolute":
-  version: 2.0.0-alpha.17-noAbsolute
-  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.17-noAbsolute"
+"@chromaui/rrweb-snapshot@npm:2.0.0-canary.18-noAbsolute":
+  version: 2.0.0-canary.18-noAbsolute
+  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-canary.18-noAbsolute"
   dependencies:
     postcss: "npm:^8.4.38"
-  checksum: 983b4a704145da353b73d6fb09675117466e833486ad2efc3033433655a9b12f4e00b05e884a9d4ca85947f01e60f57c14a3d8e809656e470a44bdcb082f9f85
+  checksum: 90aaf458c8a6049378ee85a0b29ddf142712d1e90f3341b85dc0f0e82daa720389dfaca8749805a8ed6dc16af170862d1dab64274f5303c260f6f7f2feb4dad1
   languageName: node
   linkType: hard
 

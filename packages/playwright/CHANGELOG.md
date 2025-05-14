@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.3
+
+### Patch Changes
+
+- de3b345: upgrade rrweb
+
 ## 0.12.2
 
 ### Patch Changes

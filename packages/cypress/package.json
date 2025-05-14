@@ -59,9 +59,9 @@
   },
   "devDependencies": {
     "@chromatic-com/shared-e2e": "workspace:*",
+    "@rrweb/types": "^2.0.0-alpha.18",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
-    "@rrweb/types": "^2.0.0-alpha.18",
     "cypress": "^13.4.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-storybook": "9.0.0-beta.10",

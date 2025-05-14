@@ -78,6 +78,7 @@
     "@babel/preset-typescript": "^7.21.4",
     "@jest/types": "^27.0.6",
     "@playwright/test": "^1.46.1",
+    "@rrweb/types": "^2.0.0-alpha.18",
     "@storybook/addon-essentials": "^8.6.0",
     "@storybook/eslint-config-storybook": "^4.0.0",
     "@storybook/server-webpack5": "^8.6.0",
@@ -110,7 +111,7 @@
     "*.{ts,js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.17-noAbsolute",
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
     "@segment/analytics-node": "^1.1.0",
     "storybook": "^8.6.0"
   }

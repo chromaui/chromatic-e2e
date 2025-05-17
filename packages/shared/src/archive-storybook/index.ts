@@ -1,4 +1,4 @@
-import { execFileSync, exec } from 'child_process';
+import { execFileSync, spawnSync } from 'child_process';
 import { resolve, dirname } from 'path';
 import { checkArchivesDirExists } from '../utils/filePaths';
 import { addViewportsToStoriesFiles } from './viewports';
@@ -24,7 +24,9 @@ export function buildArchiveStorybook(
     // execFileSync('node', [binPath(), 'build', ...processArgs, '-c', configDir], {
     //   stdio: 'inherit',
     // });
-    exec(`npx storybook@latest build ${processArgs.join(' ')} -c ${configDir}`);
+    spawnSync(
+      `npx storybook@latest build ${processArgs.join(' ')} -c ${configDir} --loglevel verbose`
+    );
   });
 }
 

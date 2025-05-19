@@ -6,6 +6,7 @@ const common = (options) => ({
   dts: {
     resolve: true,
   },
+  external: ['react'],
   treeshake: true,
   sourcemap: true,
   clean: false, // This set to `true` caused a race condition since we're running multiple builds below

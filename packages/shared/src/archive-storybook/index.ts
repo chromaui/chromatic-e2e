@@ -1,5 +1,4 @@
-import { execFileSync } from 'child_process';
-import { resolve, dirname } from 'path';
+import { exec } from 'child_process';
 import { checkArchivesDirExists } from '../utils/filePaths';
 import { addViewportsToStoriesFiles } from './viewports';
 
@@ -10,7 +9,7 @@ export function archiveStorybook(
 ) {
   checkArchivesDirExists(defaultOutputDir);
   addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    execFileSync('node', [binPath(), 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
+    // execFileSync('node', [binPath(), 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
   });
 }
 
@@ -21,20 +20,21 @@ export function buildArchiveStorybook(
 ) {
   checkArchivesDirExists(defaultOutputDir);
   addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    execFileSync('node', [binPath(), 'build', ...processArgs, '-c', configDir], {
-      stdio: 'inherit',
-    });
+    // execFileSync('node', [binPath(), 'build', ...processArgs, '-c', configDir], {
+    //   stdio: 'inherit',
+    // });
+    exec(`npx storybook@latest build ${processArgs.join(' ')} -c ${configDir} --loglevel verbose`);
   });
 }
 
-function binPath() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const packageJson = require('storybook/package.json');
-  const parsedVersion = parseInt(packageJson.version[0], 10);
-  const storybookPackageJsonHasBinObject = parsedVersion >= 9;
-  // reference the entry file based on the package.json `bin` value, since it changed between SB 8.1 and 8.2
-  return resolve(
-    dirname(require.resolve('storybook/package.json')),
-    storybookPackageJsonHasBinObject ? packageJson.bin : packageJson.bin.storybook
-  );
-}
+// function binPath() {
+//   // eslint-disable-next-line @typescript-eslint/no-require-imports
+//   const packageJson = require('storybook/package.json');
+//   const parsedVersion = parseInt(packageJson.version[0], 10);
+//   const storybookPackageJsonHasBinObject = parsedVersion >= 9;
+//   // reference the entry file based on the package.json `bin` value, since it changed between SB 8.1 and 8.2
+//   return resolve(
+//     dirname(require.resolve('storybook/package.json')),
+//     storybookPackageJsonHasBinObject ? packageJson.bin : packageJson.bin.storybook
+//   );
+// }

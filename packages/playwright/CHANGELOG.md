@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.4
+
+### Patch Changes
+
+- 0f0ef62: pin Storybook to 8.5.x to fix the error with the `server-webpack5` mismatch with version 8.6 and above
+
 ## 0.12.3
 
 ### Patch Changes

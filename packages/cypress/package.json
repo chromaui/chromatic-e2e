@@ -64,7 +64,7 @@
     "@typescript-eslint/parser": "^8.32.0",
     "cypress": "^13.4.0",
     "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-storybook": "9.0.0-beta.10",
+    "eslint-plugin-storybook": "^9.0.0-rc.5",
     "start-server-and-test": "^2.0.3"
   },
   "lint-staged": {
@@ -76,8 +76,10 @@
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
     "@segment/analytics-node": "^1.1.0",
-    "@storybook/server-webpack5": "^9.0.0-beta.10",
-    "chrome-remote-interface": "^0.33.0",
-    "storybook": "^9.0.0-beta.10"
+    "chrome-remote-interface": "^0.33.0"
+  },
+  "peerDependencies": {
+    "@storybook/server-webpack5": "> 9.0.0-rc < 10",
+    "storybook": "> 9.0.0-rc < 10"
   }
 }

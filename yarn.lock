@@ -1832,11 +1832,11 @@ __metadata:
     chrome-remote-interface: "npm:^0.33.0"
     cypress: "npm:^13.4.0"
     eslint-plugin-import: "npm:^2.31.0"
-    eslint-plugin-storybook: "npm:^9.0.0-rc.5"
+    eslint-plugin-storybook: "npm:^9.0.0"
     start-server-and-test: "npm:^2.0.3"
   peerDependencies:
-    "@storybook/server-webpack5": "> 9.0.0-rc < 10"
-    storybook: "> 9.0.0-rc < 10"
+    "@storybook/server-webpack5": ^9.0.0
+    storybook: ^9.0.0
   bin:
     archive-storybook: dist/bin/archive-storybook.js
     build-archive-storybook: dist/bin/build-archive-storybook.js
@@ -1855,15 +1855,15 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^8.32.0"
     "@typescript-eslint/parser": "npm:^8.32.0"
     eslint-plugin-import: "npm:^2.31.0"
-    eslint-plugin-storybook: "npm:^9.0.0-rc.5"
+    eslint-plugin-storybook: "npm:^9.0.0"
     express: "npm:^4.18.2"
     playwright: "npm:^1.46.1"
     playwright-core: "npm:^1.46.1"
     ts-dedent: "npm:^2.2.0"
   peerDependencies:
     "@playwright/test": ^1.0.0
-    "@storybook/server-webpack5": "> 9.0.0-rc < 10"
-    storybook: "> 9.0.0-rc < 10"
+    "@storybook/server-webpack5": ^9.0.0
+    storybook: ^9.0.0
   bin:
     archive-storybook: dist/bin/archive-storybook.js
     build-archive-storybook: dist/bin/build-archive-storybook.js
@@ -1894,7 +1894,7 @@ __metadata:
     concurrently: "npm:^7.0.0"
     eslint: "npm:^8.0.0"
     eslint-plugin-import: "npm:^2.31.0"
-    eslint-plugin-storybook: "npm:9.0.0-rc.5"
+    eslint-plugin-storybook: "npm:^9.0.0"
     jest: "npm:^27.0.6"
     jest-environment-jsdom: "npm:^27.0.6"
     lint-staged: "npm:>=10"
@@ -1906,13 +1906,13 @@ __metadata:
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
     srcset: "npm:^4.0.0"
-    storybook: "npm:^9.0.0-rc.5"
+    storybook: "npm:^9.0.0"
     ts-dedent: "npm:^2.2.0"
     ts-jest: "npm:^27.0.4"
     typescript: "npm:^4.2.4"
   peerDependencies:
-    "@storybook/server-webpack5": "> 9.0.0-rc < 10"
-    storybook: "> 9.0.0-rc < 10"
+    "@storybook/server-webpack5": ^9.0.0
+    storybook: ^9.0.0
   languageName: unknown
   linkType: soft
 
@@ -1927,7 +1927,7 @@ __metadata:
     "@changesets/cli": "npm:^2.27.1"
     "@jest/types": "npm:^27.0.6"
     "@playwright/test": "npm:^1.46.1"
-    "@storybook/server-webpack5": "npm:^9.0.0-rc.5"
+    "@storybook/server-webpack5": "npm:^9.0.0"
     "@swc/core": "npm:^1.4.6"
     "@testing-library/dom": "npm:^8.1.0"
     "@testing-library/react": "npm:^12.0.0"
@@ -1945,7 +1945,7 @@ __metadata:
     cypress: "npm:^13.6.1"
     eslint: "npm:^8.0.0"
     eslint-plugin-import: "npm:^2.31.0"
-    eslint-plugin-storybook: "npm:^9.0.0-rc.5"
+    eslint-plugin-storybook: "npm:^9.0.0"
     express: "npm:^4.18.2"
     express-basic-auth: "npm:^1.2.1"
     husky: "npm:>=6"
@@ -1958,7 +1958,7 @@ __metadata:
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
     start-server-and-test: "npm:^2.0.3"
-    storybook: "npm:^9.0.0-rc.5"
+    storybook: "npm:^9.0.0"
     ts-jest: "npm:^27.0.4"
     tsup: "npm:^7.3.0"
     typescript: "npm:^4.2.4"
@@ -3261,11 +3261,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/builder-webpack5@npm:9.0.0-rc.5":
-  version: 9.0.0-rc.5
-  resolution: "@storybook/builder-webpack5@npm:9.0.0-rc.5"
+"@storybook/builder-webpack5@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@storybook/builder-webpack5@npm:9.0.0"
   dependencies:
-    "@storybook/core-webpack": "npm:9.0.0-rc.5"
+    "@storybook/core-webpack": "npm:9.0.0"
     case-sensitive-paths-webpack-plugin: "npm:^2.4.0"
     cjs-module-lexer: "npm:^1.2.3"
     css-loader: "npm:^6.7.1"
@@ -3281,22 +3281,22 @@ __metadata:
     webpack-hot-middleware: "npm:^2.25.1"
     webpack-virtual-modules: "npm:^0.6.0"
   peerDependencies:
-    storybook: ^9.0.0-rc.5
+    storybook: ^9.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: ad9b2dde7a79b021aa504b3b2f5bbda8682dc22e6cfaf4d0d196ad221a845901e52e71041528ef9fae99aec20bd9424cf919f9e5aabd508afd476b2b1a7130e4
+  checksum: 3645692d7aa7e4d68ceb112f06519e66476d3ac2f67d4c0e7dc8b2aa6544042de99dd38487ac0fb84ba829a768212d512cee7ad0773ddcdbdb797602ac521f58
   languageName: node
   linkType: hard
 
-"@storybook/core-webpack@npm:9.0.0-rc.5":
-  version: 9.0.0-rc.5
-  resolution: "@storybook/core-webpack@npm:9.0.0-rc.5"
+"@storybook/core-webpack@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@storybook/core-webpack@npm:9.0.0"
   dependencies:
     ts-dedent: "npm:^2.0.0"
   peerDependencies:
-    storybook: ^9.0.0-rc.5
-  checksum: f646fce06f5f7944014cd49f747c60b6fba28ab2791dc672420125473c96c8ddd5ba1ce867516602d727e98b8446c6a49ee41f2bedac5a6bbed7dc1a1d04abbb
+    storybook: ^9.0.0
+  checksum: 3146606a153d2b970968df3a52be39ba280945cb99d3644ea8bf4b1e7a524b2cc6de49308e972f6126f5dadb4def4d5f4e93cfb56606ad1ed4a5432889352712
   languageName: node
   linkType: hard
 
@@ -3307,43 +3307,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/preset-server-webpack@npm:9.0.0-rc.5":
-  version: 9.0.0-rc.5
-  resolution: "@storybook/preset-server-webpack@npm:9.0.0-rc.5"
+"@storybook/preset-server-webpack@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@storybook/preset-server-webpack@npm:9.0.0"
   dependencies:
-    "@storybook/core-webpack": "npm:9.0.0-rc.5"
+    "@storybook/core-webpack": "npm:9.0.0"
     safe-identifier: "npm:^0.4.1"
     ts-dedent: "npm:^2.0.0"
     yaml-loader: "npm:^0.8.0"
   peerDependencies:
-    storybook: ^9.0.0-rc.5
-  checksum: 2263c92e48c27193c8b14261dd445f74aa2356c09dc48931162130e51fbff997b9c8cc613ec0ab276df26bd7041bc57ea7d7c634e1e9edc2ac31a7ebdf2dd7d8
+    storybook: ^9.0.0
+  checksum: 8b79675c482a95ce1592d0f3f81a2925fced000f5a627d00b3f84a67e5c0d0f4d270798b7cfec0eb37bb2d80ded42b93fd747b2b345590028b357446f448c879
   languageName: node
   linkType: hard
 
-"@storybook/server-webpack5@npm:^9.0.0-rc.5":
-  version: 9.0.0-rc.5
-  resolution: "@storybook/server-webpack5@npm:9.0.0-rc.5"
+"@storybook/server-webpack5@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@storybook/server-webpack5@npm:9.0.0"
   dependencies:
-    "@storybook/builder-webpack5": "npm:9.0.0-rc.5"
-    "@storybook/preset-server-webpack": "npm:9.0.0-rc.5"
-    "@storybook/server": "npm:9.0.0-rc.5"
+    "@storybook/builder-webpack5": "npm:9.0.0"
+    "@storybook/preset-server-webpack": "npm:9.0.0"
+    "@storybook/server": "npm:9.0.0"
   peerDependencies:
-    storybook: ^9.0.0-rc.5
-  checksum: f13a4c9fc880a28c642d29176a1e020653d3ae43f026f3b633f1e4ded245ade46344f4a2b85c13e2ce4899ebd48368e472362e05fabcf91a0008d37e2e2843bb
+    storybook: ^9.0.0
+  checksum: 639466a43830b6025af8b4de61c2b6b01cb951e713e81b5bb2f372cebe446ab6843579d984b8fd4c2383f76c307f348bb1d7983f8d8ea5c2c1908f7599f2bf27
   languageName: node
   linkType: hard
 
-"@storybook/server@npm:9.0.0-rc.5":
-  version: 9.0.0-rc.5
-  resolution: "@storybook/server@npm:9.0.0-rc.5"
+"@storybook/server@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@storybook/server@npm:9.0.0"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     ts-dedent: "npm:^2.0.0"
     yaml: "npm:^2.3.1"
   peerDependencies:
-    storybook: ^9.0.0-rc.5
-  checksum: abbdd3637374b275ceffae48cf92dd9b974ed508df3ae851d8710966c478a8bb23dfe485832f394c29342cd4b990470245f32a97b55a534f2f2cbf38f78dee58
+    storybook: ^9.0.0
+  checksum: e97d111d68617d8197a3262e12b36223b48ac0685e670042da8d2a75965ce16c0c35044cd8bcbddd16265f50c483bcfa3be1294695aa488f071ca6c188ec760a
   languageName: node
   linkType: hard
 
@@ -7432,15 +7432,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-storybook@npm:9.0.0-rc.5, eslint-plugin-storybook@npm:^9.0.0-rc.5":
-  version: 9.0.0-rc.5
-  resolution: "eslint-plugin-storybook@npm:9.0.0-rc.5"
+"eslint-plugin-storybook@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "eslint-plugin-storybook@npm:9.0.0"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.8.1"
   peerDependencies:
     eslint: ">=8"
-    storybook: ^9.0.0-rc.5
-  checksum: aeb7bcd92f0dad6066de5090797c761a1cb38a2b5da4130ca5a62bf1a4132774913569567a76bd3522567be5b9f06edba32abb6b7d89e735a0a0005464b83906
+    storybook: ^9.0.0
+  checksum: 6a2224be8e1a8369a3f97073527c20e662d79b8540932b571682121698e70c36ce7e92a0ad845471f65b38129ffc42c24503f87e7f6c9e167f652f5f08df2ca0
   languageName: node
   linkType: hard
 
@@ -13823,9 +13823,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^9.0.0-rc.5":
-  version: 9.0.0-rc.5
-  resolution: "storybook@npm:9.0.0-rc.5"
+"storybook@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "storybook@npm:9.0.0"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -13845,7 +13845,7 @@ __metadata:
       optional: true
   bin:
     storybook: ./bin/index.cjs
-  checksum: eabcab328341fd74f03e0e72eacba7a0a1f6f1b33b1978a33d4dcdcfcbf064c6b43e3c4038446794961a91398d164f24f5683950c3d7e202afab595d20bac378
+  checksum: 55424999e20c39124bf2dfb4e7ab0ffd85dbee8e04ba0ec9482083f5dd349ad441bbc6fdbe87d55d407ec896dbe91a48f9ad86f9d01605a37683c651c5b8b1a9
   languageName: node
   linkType: hard
 

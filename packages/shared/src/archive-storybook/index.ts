@@ -30,11 +30,10 @@ export function buildArchiveStorybook(
 function binPath() {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const packageJson = require('storybook/package.json');
-  const parsedVersion = parseInt(packageJson.version[0], 10);
-  const storybookPackageJsonHasBinObject = parsedVersion >= 9;
+
   // reference the entry file based on the package.json `bin` value, since it changed between SB 8.1 and 8.2
-  return resolve(
-    dirname(require.resolve('storybook/package.json')),
-    storybookPackageJsonHasBinObject ? packageJson.bin : packageJson.bin.storybook
-  );
+  // `bin` is a string in SB 9 but an object in previous versions
+  const storybookBinScript = packageJson.bin.storybook || packageJson.bin;
+  const storybookDir = dirname(require.resolve('storybook/package.json'));
+  return resolve(storybookDir, storybookBinScript);
 }

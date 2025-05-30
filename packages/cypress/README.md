@@ -38,5 +38,5 @@ npm install --save-dev @chromatic-com/cypress storybook @storybook/server-webpac
 You'll need to ensure that `@storybook/server-webpack5` is installed at the same version as your Storybook dependency.
 
 ```
-mpm install --save-dev @chromatic-com/cypress @storybook/server-webpack5@YOUR.STORYBOOK.VERSION
+npm install --save-dev @chromatic-com/cypress @storybook/server-webpack5@YOUR.STORYBOOK.VERSION
 ```

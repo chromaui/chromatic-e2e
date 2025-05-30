@@ -38,5 +38,5 @@ npm install --save-dev @chromatic-com/playwright storybook @storybook/server-web
 You'll need to ensure that `@storybook/server-webpack5` is installed at the same version as your Storybook dependency.
 
 ```
-mpm install --save-dev @chromatic-com/playwright @storybook/server-webpack5@YOUR.STORYBOOK.VERSION
+npm install --save-dev @chromatic-com/playwright @storybook/server-webpack5@YOUR.STORYBOOK.VERSION
 ```

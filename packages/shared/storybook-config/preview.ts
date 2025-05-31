@@ -1,4 +1,4 @@
-import type { RenderContext, RenderToCanvas, WebRenderer } from '@storybook/types';
+import type { RenderContext, RenderToCanvas, WebRenderer } from 'storybook/internal/types';
 import type { serializedNodeWithId } from '@rrweb/types';
 import { NodeType } from '@rrweb/types';
 import { rebuild } from '@chromaui/rrweb-snapshot';
@@ -57,7 +57,7 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   return response.json();
 }
 
-const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
+const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {
   const snapshot = await fetchSnapshot(context);
 
   // The snapshot is a representation of a complete HTML document

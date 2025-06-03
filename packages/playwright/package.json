@@ -54,7 +54,8 @@
     "@storybook/core-webpack": "9.0.4",
     "express": "^4.18.2",
     "playwright": "^1.46.1",
-    "playwright-core": "^1.46.1"
+    "playwright-core": "^1.46.1",
+    "safe-identifier": "^0.4.2"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"

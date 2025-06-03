@@ -30,6 +30,13 @@ describe('storiesFileName', () => {
     expect(fileName.length).toEqual(230);
     expect(fileName).toMatch(new RegExp('^this-title-has-.*blah-bl[a-z0-9]{4}.stories.json$'));
   });
+
+  it('replaces newlines with -', () => {
+    const title = '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n'
+
+    const filename = storiesFiles.storiesFileName(title);
+    expect(filename).toEqual('there-should-be-no-newlines.stories.json');
+  });
 });
 
 describe('createStories', () => {

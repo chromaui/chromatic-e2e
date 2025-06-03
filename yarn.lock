@@ -1904,9 +1904,11 @@ __metadata:
     "@playwright/test": "npm:^1.46.1"
     "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:^1.1.0"
-    "@storybook/addon-essentials": "npm:~8.5.8"
+    "@storybook/addon-essentials": "npm:8.5.8"
+    "@storybook/builder-webpack5": "npm:8.5.8"
+    "@storybook/core-webpack": "npm:8.5.8"
     "@storybook/eslint-config-storybook": "npm:^4.0.0"
-    "@storybook/server-webpack5": "npm:~8.5.8"
+    "@storybook/server-webpack5": "npm:8.5.8"
     "@testing-library/dom": "npm:^8.1.0"
     "@testing-library/react": "npm:^12.0.0"
     "@testing-library/user-event": "npm:^13.2.1"
@@ -1927,7 +1929,7 @@ __metadata:
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
     srcset: "npm:^4.0.0"
-    storybook: "npm:~8.5.8"
+    storybook: "npm:8.5.8"
     ts-dedent: "npm:^2.2.0"
     ts-jest: "npm:^27.0.4"
     typescript: "npm:^4.2.4"
@@ -3399,7 +3401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-essentials@npm:~8.5.8":
+"@storybook/addon-essentials@npm:8.5.8, @storybook/addon-essentials@npm:~8.5.8":
   version: 8.5.8
   resolution: "@storybook/addon-essentials@npm:8.5.8"
   dependencies:
@@ -3743,7 +3745,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/server-webpack5@npm:~8.5.8":
+"@storybook/server-webpack5@npm:8.5.8, @storybook/server-webpack5@npm:~8.5.8":
   version: 8.5.8
   resolution: "@storybook/server-webpack5@npm:8.5.8"
   dependencies:
@@ -16336,7 +16338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:~8.5.8":
+"storybook@npm:8.5.8, storybook@npm:~8.5.8":
   version: 8.5.8
   resolution: "storybook@npm:8.5.8"
   dependencies:

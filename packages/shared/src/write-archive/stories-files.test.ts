@@ -32,7 +32,7 @@ describe('storiesFileName', () => {
   });
 
   it('replaces newlines with -', () => {
-    const title = '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n'
+    const title = '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n';
 
     const filename = storiesFiles.storiesFileName(title);
     expect(filename).toEqual('there-should-be-no-newlines.stories.json');

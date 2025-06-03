@@ -1,7 +1,7 @@
-import { execFileSync } from 'child_process';
 import { resolve, dirname } from 'path';
 import { checkArchivesDirExists } from '../utils/filePaths';
 import { addViewportsToStoriesFiles } from './viewports';
+import { build } from 'storybook/internal/core-server';
 
 export function archiveStorybook(
   processArgs: string[],
@@ -9,9 +9,14 @@ export function archiveStorybook(
   defaultOutputDir: string
 ) {
   checkArchivesDirExists(defaultOutputDir);
-  addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    execFileSync('node', [binPath(), 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
-  });
+  addViewportsToStoriesFiles(defaultOutputDir).then(() =>
+    // TODO: convert processArgs to options
+    build({
+      configDir,
+      outputDir: './storybook-static',
+      mode: 'dev',
+    })
+  );
 }
 
 export function buildArchiveStorybook(
@@ -20,11 +25,14 @@ export function buildArchiveStorybook(
   defaultOutputDir: string
 ) {
   checkArchivesDirExists(defaultOutputDir);
-  addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    execFileSync('node', [binPath(), 'build', ...processArgs, '-c', configDir], {
-      stdio: 'inherit',
-    });
-  });
+  addViewportsToStoriesFiles(defaultOutputDir).then(() =>
+    // TODO: convert processArgs to options
+    build({
+      configDir,
+      outputDir: './storybook-static',
+      mode: 'static',
+    })
+  );
 }
 
 function binPath() {

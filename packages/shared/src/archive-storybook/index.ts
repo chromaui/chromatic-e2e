@@ -31,5 +31,5 @@ function binPath() {
   // eslint-disable-next-line global-require
   const packageJson = require('storybook/package.json');
   // reference the entry file based on the package.json `bin` value, since it changed between SB 8.1 and 8.2
-  return resolve(dirname(require.resolve('storybook/package.json')), packageJson.bin.storybook);
+  return resolve(dirname(require.resolve('storybook/package.json')), packageJson.bin);
 }

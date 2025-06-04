@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.11.5
+
+### Patch Changes
+
+- 5f63d70: Sanitize newlines in snapshot archive filenames
+
 ## 0.11.4
 
 ### Patch Changes

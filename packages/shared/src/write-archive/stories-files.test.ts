@@ -17,7 +17,7 @@ beforeEach(() => {
 
 describe('storiesFileName', () => {
   it('sanitizes the file name', () => {
-    const fileName = storiesFiles.storiesFileName('a title *() with $%& chars');
+    const fileName = storiesFiles.storiesFileName('--a title *() with $%& chars---');
     expect(fileName).toEqual('a-title-with-chars.stories.json');
   });
 
@@ -29,6 +29,13 @@ describe('storiesFileName', () => {
     const fileName = storiesFiles.storiesFileName(title);
     expect(fileName.length).toEqual(230);
     expect(fileName).toMatch(new RegExp('^this-title-has-.*blah-bl[a-z0-9]{4}.stories.json$'));
+  });
+
+  it('replaces newlines with -', () => {
+    const title = '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n';
+
+    const filename = storiesFiles.storiesFileName(title);
+    expect(filename).toEqual('there-should-be-no-newlines.stories.json');
   });
 });
 

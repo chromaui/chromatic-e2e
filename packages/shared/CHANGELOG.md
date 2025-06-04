@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.7
+
+### Patch Changes
+
+- 5f63d70: Sanitize newlines in snapshot archive filenames
+
 ## 0.9.6
 
 ### Patch Changes

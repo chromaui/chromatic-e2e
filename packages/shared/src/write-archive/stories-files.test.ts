@@ -17,7 +17,7 @@ beforeEach(() => {
 
 describe('storiesFileName', () => {
   it('sanitizes the file name', () => {
-    const fileName = storiesFiles.storiesFileName('a title *() with $%& chars');
+    const fileName = storiesFiles.storiesFileName('--a title *() with $%& chars---');
     expect(fileName).toEqual('a-title-with-chars.stories.json');
   });
 

@@ -7,6 +7,11 @@ import srcset from 'srcset';
 // Matches `url(...)` function in CSS text, excluding data URLs
 const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
 
+function normalizePath(path: string): string {
+  // Convert Windows backslashes to forward slashes
+  return path.replace(/\\/g, '/');
+}
+
 /**
  * Wraps a snapshot from rrweb and handles post-processing to remap asset paths.
  */
@@ -46,8 +51,9 @@ export class DOMSnapshot {
     if (node.type === NodeType.Element) {
       if (node.attributes.src) {
         const sourceVal = node.attributes.src as string;
-        if (sourceMap.has(sourceVal)) {
-          node.attributes.src = sourceMap.get(sourceVal);
+        const normalizedSourceVal = normalizePath(sourceVal);
+        if (sourceMap.has(normalizedSourceVal)) {
+          node.attributes.src = sourceMap.get(normalizedSourceVal);
         }
       }
 
@@ -67,12 +73,8 @@ export class DOMSnapshot {
 
       if (['link', 'use'].includes(node.tagName) && node.attributes.href) {
         const hrefVal = node.attributes.href as string;
-
-        // SVGs and other href values can have an anchor which will not be included
-        // in the source map lookup. We'll remove it to do the lookup and add it back
-        // onto the found value.
         const hrefValAndAnchor = hrefVal.split('#');
-        const hrefValWithoutAnchor = hrefValAndAnchor[0];
+        const hrefValWithoutAnchor = normalizePath(hrefValAndAnchor[0]);
         if (sourceMap.has(hrefValWithoutAnchor)) {
           hrefValAndAnchor[0] = sourceMap.get(hrefValWithoutAnchor);
           node.attributes.href = hrefValAndAnchor.join('#');
@@ -163,8 +165,9 @@ export class DOMSnapshot {
   private mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
     return cssText.replace(CSS_URL_REGEX, (match, fullUrl) => {
       let cssUrl = match;
-      if (sourceMap.has(fullUrl)) {
-        cssUrl = match.replace(fullUrl, sourceMap.get(fullUrl));
+      const normalizedUrl = normalizePath(fullUrl);
+      if (sourceMap.has(normalizedUrl)) {
+        cssUrl = match.replace(fullUrl, sourceMap.get(normalizedUrl));
       }
       return cssUrl;
     });
@@ -174,11 +177,11 @@ export class DOMSnapshot {
     const parsedSrcset = srcset.parse(srcsetValue);
     let currentSrc;
     parsedSrcset.forEach((set) => {
-      if (sourceMap.has(set.url)) {
-        currentSrc = sourceMap.get(set.url);
+      const normalizedUrl = normalizePath(set.url);
+      if (sourceMap.has(normalizedUrl)) {
+        currentSrc = sourceMap.get(normalizedUrl);
       }
     });
-
     return currentSrc;
   }
 }

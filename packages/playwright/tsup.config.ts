@@ -1,7 +1,7 @@
 import { Options, defineConfig } from 'tsup';
 
 const common = (options) => ({
-  minify: !options.watch,
+  minify: false,
   splitting: false,
   dts: {
     resolve: true,
@@ -39,6 +39,8 @@ export default defineConfig((options) => [
       'bin/build-archive-storybook': 'src/bin/build-archive-storybook.ts',
       'storybook-config/main': 'src/storybook-config/main.ts',
       'storybook-config/manager': 'src/storybook-config/shared/manager.ts',
+      'storybook-framework/preset': 'src/storybook-framework/preset.ts',
+      'storybook-framework/loader': 'src/storybook-framework/loader.ts',
     },
     format: ['cjs'],
     platform: 'node',

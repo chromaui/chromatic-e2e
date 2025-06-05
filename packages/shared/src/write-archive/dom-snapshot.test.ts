@@ -374,5 +374,31 @@ describe('DOMSnapshot', () => {
         ],
       });
     });
+
+    it('normalizes Windows-style paths in CSS URLs and attributes', async () => {
+      const windowsPath = 'C:\\path\\to\\image.png';
+      const normalizedPath = '/path/to/image.png';
+      const windowsSnapshot = createSnapshot(windowsPath, windowsPath, windowsPath);
+      const domSnapshot = new DOMSnapshot(windowsSnapshot);
+      const windowsSourceMap = new Map([[normalizedPath, queryUrlTransformed]]);
+
+      const mappedSnapshot = await domSnapshot.mapAssetPaths(windowsSourceMap);
+      const parsedSnapshot = JSON.parse(mappedSnapshot);
+
+      // Check style tag content
+      const styleNode = parsedSnapshot.childNodes[1].childNodes[0].childNodes[2];
+      expect(styleNode.childNodes[0].textContent).toContain(`url("${queryUrlTransformed}")`);
+
+      // Check img src attributes
+      const imgNodes = parsedSnapshot.childNodes[1].childNodes[1].childNodes[1].childNodes;
+      expect(imgNodes[1].attributes.src).toBe(queryUrlTransformed);
+      expect(imgNodes[3].attributes.src).toBe(queryUrlTransformed);
+      expect(imgNodes[5].attributes.src).toBe(queryUrlTransformed);
+
+      // Check inline style attributes
+      expect(imgNodes[7].attributes.style).toContain(`url('${queryUrlTransformed}')`);
+      expect(imgNodes[9].attributes.style).toContain(`url('${queryUrlTransformed}')`);
+      expect(imgNodes[11].attributes.style).toContain(`url('${queryUrlTransformed}')`);
+    });
   });
 });

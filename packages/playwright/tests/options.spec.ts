@@ -1,4 +1,4 @@
-import { test } from '../src';
+import { test, takeSnapshot } from '../src';
 
 test.describe(() => {
   test.use({ delay: 2500 });
@@ -50,4 +50,16 @@ test.describe(() => {
 
 test('does not crop to viewport by default', async ({ page }) => {
   await page.goto('/options/crop-to-viewport');
+});
+
+test.describe(() => {
+  test.use({ groupByProject: true });
+
+  test('groups test by project', async ({ page }, testInfo) => {
+    await page.goto('/options/group-by-project');
+
+    if (testInfo.project.name === 'Desktop') {
+      takeSnapshot(page, 'Extra Desktop Snapshot', testInfo);
+    }
+  });
 });

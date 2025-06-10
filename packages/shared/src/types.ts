@@ -34,6 +34,9 @@ export interface ChromaticConfig {
 
   // CSS selectors of elements to ignore when comparing snapshots.
   ignoreSelectors?: string[];
+
+  // Group stories by project, Playwright only
+  groupByProject?: boolean;
 }
 
 export type ChromaticStorybookParameters = Omit<ChromaticConfig, 'disableAutoSnapshot'>;

@@ -19,6 +19,7 @@ interface E2ETestInfo {
   outputDir: string;
   pageUrl: string;
   viewport: Viewport;
+  projectName?: string;
 }
 
 export async function writeTestResult(
@@ -27,7 +28,8 @@ export async function writeTestResult(
   archive: ResourceArchive,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { titlePath, outputDir, pageUrl, viewport } = e2eTestInfo;
+  const { titlePath, outputDir, pageUrl, projectName, viewport } = e2eTestInfo;
+
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
   const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
     // make sure we remove file extensions, even if the file name doesn't have .spec or .test or.cy
@@ -37,7 +39,9 @@ export async function writeTestResult(
     pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '').replace(/\.(spec|test|cy)$/, '')
   );
   // in Storybook, `/` splits the title out into hierarchies (folders)
-  const title = titlePathWithoutFileExtensions.join('/');
+  const title = [projectName, titlePathWithoutFileExtensions.join('/')]
+    .filter((i) => !!i)
+    .join('/');
   const finalOutputDir = join(outputDir, 'chromatic-archives');
 
   const archiveDir = join(finalOutputDir, 'archive');
@@ -67,7 +71,7 @@ export async function writeTestResult(
   );
 
   await Promise.all(
-    await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
+    Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
       // XXX_jwir3: We go through our stories here and map any instances that are found in
       //            the keys of the source map to their respective values.
       const snapshot = new DOMSnapshot(domSnapshot);

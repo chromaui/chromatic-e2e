@@ -32,6 +32,7 @@ export const performChromaticSnapshot = async (
     assetDomains,
     cropToViewport,
     ignoreSelectors,
+    groupByProject,
   }: ChromaticConfig & { page: Page },
   use: () => Promise<void>,
   testInfo: TestInfo
@@ -77,11 +78,13 @@ export const performChromaticSnapshot = async (
       ...(ignoreSelectors && { ignoreSelectors }),
     };
 
+    const projectName = groupByProject ? testInfo.project.name : '';
+
     // TestInfo.outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
     // we want to write one level above that
     const outputDir = join(testInfo.outputDir, '..');
     await writeTestResult(
-      { ...testInfo, outputDir, pageUrl: page.url(), viewport: page.viewportSize() },
+      { ...testInfo, outputDir, pageUrl: page.url(), viewport: page.viewportSize(), projectName },
       Object.fromEntries(snapshots),
       resourceArchive,
       chromaticStorybookParams
@@ -118,6 +121,7 @@ export const makeTest = (
     assetDomains: [[], { option: true }],
     cropToViewport: [undefined, { option: true }],
     ignoreSelectors: [undefined, { option: true }],
+    groupByProject: [false, { option: true }],
 
     chromaticSnapshot: [
       performChromaticSnapshot,

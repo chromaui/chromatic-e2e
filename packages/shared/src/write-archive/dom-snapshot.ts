@@ -160,8 +160,7 @@ export class DOMSnapshot {
     return node;
   }
 
-  // Made public for testability
-  public mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
+  private mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
     return cssText.replace(CSS_URL_REGEX, (match, fullUrl) => {
       // Normalize to POSIX-style slashes
       const normalizedUrl = fullUrl.replace(/\\/g, '/');

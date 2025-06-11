@@ -377,17 +377,25 @@ describe('DOMSnapshot', () => {
   });
 
   describe('mapCssUrls', () => {
-    it('normalizes backslashes to forward slashes in CSS url() and maps using the source map', () => {
-      const domSnapshot = new DOMSnapshot('{}');
-      const cssText = 'background: url("/foo\\bar\\baz.png"); background: url(/foo/bar/baz2.png);';
-      const testSourceMap = new Map([
-        ['/foo/bar/baz.png', '/mapped/foo/bar/baz.png'],
-        ['/foo/bar/baz2.png', '/mapped/foo/bar/baz2.png'],
-      ]);
-      const result = domSnapshot.mapCssUrls(cssText, testSourceMap);
-      expect(result).toBe(
-        'background: url("/mapped/foo/bar/baz.png"); background: url(/mapped/foo/bar/baz2.png);'
-      );
+    it('normalizes backslashes to forward slashes in CSS url() and maps using the source map via mapAssetPaths', async () => {
+      // Simulate a node with a style attribute containing a url() with backslashes
+      const cssUrlWithBackslashes = '/foo\\bar\\baz.png';
+      const mappedUrl = '/mapped/foo/bar/baz.png';
+      const styleValue = `background: url("${cssUrlWithBackslashes}");`;
+      const snapshotObj = {
+        type: 2, // NodeType.Element
+        tagName: 'div',
+        attributes: {
+          style: styleValue,
+        },
+        childNodes: [] as any[],
+        id: 1,
+      };
+      const testSourceMap = new Map([['/foo/bar/baz.png', mappedUrl]]);
+      const domSnapshot = new DOMSnapshot(JSON.stringify(snapshotObj));
+      const result = await domSnapshot.mapAssetPaths(testSourceMap);
+      const parsed = JSON.parse(result);
+      expect(parsed.attributes.style).toBe(`background: url("${mappedUrl}");`);
     });
   });
 });

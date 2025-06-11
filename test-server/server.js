@@ -136,8 +136,8 @@ app.get('/amd', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/amd.html'));
 });
 
-app.get('/createObjectUrl', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/createObjectUrl.html'));
+app.get('/blob-urls', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/blob-urls.html'));
 });
 
 app.get('/canvas', (req, res) => {

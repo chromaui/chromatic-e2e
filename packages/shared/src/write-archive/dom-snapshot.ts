@@ -160,11 +160,14 @@ export class DOMSnapshot {
     return node;
   }
 
-  private mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
+  // Made public for testability
+  public mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
     return cssText.replace(CSS_URL_REGEX, (match, fullUrl) => {
+      // Normalize to POSIX-style slashes
+      const normalizedUrl = fullUrl.replace(/\\/g, '/');
       let cssUrl = match;
-      if (sourceMap.has(fullUrl)) {
-        cssUrl = match.replace(fullUrl, sourceMap.get(fullUrl));
+      if (sourceMap.has(normalizedUrl)) {
+        cssUrl = match.replace(fullUrl, sourceMap.get(normalizedUrl));
       }
       return cssUrl;
     });

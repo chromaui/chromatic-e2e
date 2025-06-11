@@ -375,4 +375,19 @@ describe('DOMSnapshot', () => {
       });
     });
   });
+
+  describe('mapCssUrls', () => {
+    it('normalizes backslashes to forward slashes in CSS url() and maps using the source map', () => {
+      const domSnapshot = new DOMSnapshot('{}');
+      const cssText = 'background: url("/foo\\bar\\baz.png"); background: url(/foo/bar/baz2.png);';
+      const testSourceMap = new Map([
+        ['/foo/bar/baz.png', '/mapped/foo/bar/baz.png'],
+        ['/foo/bar/baz2.png', '/mapped/foo/bar/baz2.png'],
+      ]);
+      const result = domSnapshot.mapCssUrls(cssText, testSourceMap);
+      expect(result).toBe(
+        'background: url("/mapped/foo/bar/baz.png"); background: url(/mapped/foo/bar/baz2.png);'
+      );
+    });
+  });
 });

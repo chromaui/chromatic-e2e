@@ -162,22 +162,8 @@ export class DOMSnapshot {
 
   private mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
     return cssText.replace(CSS_URL_REGEX, (match, fullUrl) => {
-      // Normalize to POSIX-style slashes in the whole URL
-      let normalizedUrl = fullUrl.replace(/\\/g, '/');
-      // Use a dummy base for relative URLs
-      try {
-        const urlObj = new URL(normalizedUrl, 'http://_/');
-        if (urlObj.searchParams.has('url')) {
-          const param = urlObj.searchParams.get('url');
-          if (param) {
-            urlObj.searchParams.set('url', param.replace(/\\/g, '/'));
-            normalizedUrl = urlObj.pathname + urlObj.search;
-          }
-        }
-      } catch {
-        // If it's not a valid URL, fallback to previous normalization
-      }
-
+      // Normalize to POSIX-style slashes
+      const normalizedUrl = fullUrl.replace(/\\/g, '/');
       let cssUrl = match;
       if (sourceMap.has(normalizedUrl)) {
         cssUrl = match.replace(fullUrl, sourceMap.get(normalizedUrl));

@@ -26,7 +26,7 @@ it.skip('external asset is archived', () => {
   cy.visit('/asset-paths/external-asset-archived');
 });
 
-it.only('assets from css urls are archived', () => {
+it('assets from css urls are archived', () => {
   cy.visit('/asset-paths/css-urls');
 });
 

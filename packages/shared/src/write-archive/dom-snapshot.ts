@@ -164,7 +164,7 @@ export class DOMSnapshot {
     return cssText.replace(CSS_URL_REGEX, (match, fullUrl) => {
       // Normalize to POSIX-style slashes
       const normalizedUrl = fullUrl.replace(/\\/g, '/');
-      let cssUrl = match;
+      let cssUrl = match.replace(/\\/g, '/');
       if (sourceMap.has(normalizedUrl)) {
         cssUrl = match.replace(fullUrl, sourceMap.get(normalizedUrl));
       }

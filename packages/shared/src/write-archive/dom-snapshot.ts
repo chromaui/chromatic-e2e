@@ -162,10 +162,13 @@ export class DOMSnapshot {
 
   private mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
     return cssText.replace(CSS_URL_REGEX, (match, fullUrl) => {
-      // Normalize to POSIX-style slashes
-      const normalizedUrl = fullUrl.replace(/\\/g, '/');
-      let cssUrl = match.replace(/\\/g, '/');
+      const normalizedUrl = fullUrl.replace(/\\/g, '/').replace(/([^:])\/\/+/, '$1/');
+      console.log('normalizedUrl', normalizedUrl);
+      let cssUrl = match.replace(/\\/g, '/').replace(/([^:])\/\/+/, '$1/');
+      console.log('cssUrl', cssUrl);
+      console.log('sourceMap', sourceMap);
       if (sourceMap.has(normalizedUrl)) {
+        console.log('sourceMap.get(normalizedUrl)', sourceMap.get(normalizedUrl));
         cssUrl = match.replace(fullUrl, sourceMap.get(normalizedUrl));
       }
       return cssUrl;

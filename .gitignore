@@ -24,3 +24,5 @@ packages/playwright/test-results/
 packages/cypress/tests/cypress/downloads/
 packages/cypress/tests/cypress/test-downloads/
 packages/*/coverage/
+
+test-results/

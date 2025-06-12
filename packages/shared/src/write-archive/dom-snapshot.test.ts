@@ -374,28 +374,28 @@ describe('DOMSnapshot', () => {
         ],
       });
     });
-  });
 
-  describe('mapCssUrls', () => {
-    it('normalizes backslashes to forward slashes in CSS url() and maps using the source map via mapAssetPaths', async () => {
-      // Simulate a node with a style attribute containing a url() with backslashes
-      const cssUrlWithBackslashes = '/foo\\bar\\baz.png';
-      const mappedUrl = '/mapped/foo/bar/baz.png';
-      const styleValue = `background: url("${cssUrlWithBackslashes}");`;
-      const snapshotObj = {
-        type: 2, // NodeType.Element
-        tagName: 'div',
-        attributes: {
-          style: styleValue,
-        },
-        childNodes: [] as any[],
-        id: 1,
-      };
-      const testSourceMap = new Map([['/foo/bar/baz.png', mappedUrl]]);
-      const domSnapshot = new DOMSnapshot(JSON.stringify(snapshotObj));
-      const result = await domSnapshot.mapAssetPaths(testSourceMap);
-      const parsed = JSON.parse(result);
-      expect(parsed.attributes.style).toBe(`background: url("${mappedUrl}");`);
+    describe('mapCssUrls', () => {
+      it('normalizes backslashes to forward slashes in CSS url() and maps using the source map via mapAssetPaths', async () => {
+        // Simulate a node with a style attribute containing a url() with backslashes
+        const cssUrlWithBackslashes = '\\foo\\bar\\baz.png';
+        const mappedUrl = '/mapped/foo/bar/baz.png';
+        const styleValue = `background: url("${cssUrlWithBackslashes}");`;
+        const snapshotObj = {
+          type: 2, // NodeType.Element
+          tagName: 'div',
+          attributes: {
+            style: styleValue,
+          },
+          childNodes: [] as any[],
+          id: 1,
+        };
+        const testSourceMap = new Map([['/foo/bar/baz.png', mappedUrl]]);
+        const domSnapshot = new DOMSnapshot(JSON.stringify(snapshotObj));
+        const result = await domSnapshot.mapAssetPaths(testSourceMap);
+        const parsed = JSON.parse(result);
+        expect(parsed.attributes.style).toBe(`background: url("${mappedUrl}");`);
+      });
     });
   });
 });

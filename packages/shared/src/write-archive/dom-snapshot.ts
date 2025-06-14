@@ -162,9 +162,10 @@ export class DOMSnapshot {
 
   private mapCssUrls(cssText: string, sourceMap: Map<string, string>) {
     return cssText.replace(CSS_URL_REGEX, (match, fullUrl) => {
-      let cssUrl = match;
-      if (sourceMap.has(fullUrl)) {
-        cssUrl = match.replace(fullUrl, sourceMap.get(fullUrl));
+      const normalizedUrl = fullUrl.replace(/\\/g, '/').replace(/([^:])\/\/+/, '$1/');
+      let cssUrl = match.replace(/\\/g, '/').replace(/([^:])\/\/+/, '$1/');
+      if (sourceMap.has(normalizedUrl)) {
+        cssUrl = match.replace(fullUrl, sourceMap.get(normalizedUrl));
       }
       return cssUrl;
     });

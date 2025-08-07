@@ -58,8 +58,12 @@ export async function writeTestResult(
       const origSrcPath = archiveFile.originalSrc();
       const fileSystemPath = archiveFile.toFileSystemPath();
 
+      // we write the archive files to the file system using the file system path (this could be a windows path)
+      // and we update the source map with a url path for the resource -> this will be used to update the src attribute in the DOM snapshot
+      // if the file system path is a windows path, we convert it to a url path by replacing the backslashes with forward slashes
       if (origSrcPath !== fileSystemPath) {
-        sourceMap.set(origSrcPath, fileSystemPath);
+        const mappedSrcUrl = fileSystemPath.replace(/\\/g, '/');
+        sourceMap.set(origSrcPath, mappedSrcUrl);
       }
 
       await outputFile(join(archiveDir, fileSystemPath), response.body);

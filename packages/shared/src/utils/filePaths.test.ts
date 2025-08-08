@@ -9,6 +9,7 @@ import {
   readJSONFile,
   truncateFileName,
 } from './filePaths';
+import { removeLocalhostFromBaseRef } from './filePaths';
 
 jest.mock('fs');
 jest.mock('fs/promises');
@@ -216,5 +217,24 @@ describe('truncateFileName', () => {
 
     expect(truncatedLength).toEqual(100);
     expect(truncated).toMatch(new RegExp('^this-title-.*-a-file-system-[a-z0-9]{4}$'));
+  });
+  describe('removeLocalhostFromBaseRef', () => {
+    it('should remove localhost from href', () => {
+      const href = 'http://localhost:3000/some/path/';
+      const result = removeLocalhostFromBaseRef(href);
+      expect(result).toBe('/some/path/');
+    });
+
+    it('should not remove localhost from href if it is not the first part', () => {
+      const href = 'http://localhost:3000/';
+      const result = removeLocalhostFromBaseRef(href);
+      expect(result).toBe('/');
+    });
+
+    it('should not remove localhost from href if it is not the first part', () => {
+      const href = '/some/path/';
+      const result = removeLocalhostFromBaseRef(href);
+      expect(result).toBe('/some/path/');
+    });
   });
 });

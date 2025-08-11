@@ -219,19 +219,19 @@ describe('truncateFileName', () => {
     expect(truncated).toMatch(new RegExp('^this-title-.*-a-file-system-[a-z0-9]{4}$'));
   });
   describe('removeLocalhostFromBaseRef', () => {
-    it('should remove localhost from href', () => {
+    it('should remove localhost from href but keeps the relative path', () => {
       const href = 'http://localhost:3000/some/path/';
       const result = removeLocalhostFromBaseRef(href);
       expect(result).toBe('/some/path/');
     });
 
-    it('should not remove localhost from href if it is not the first part', () => {
+    it('should remove localhost from href', () => {
       const href = 'http://localhost:3000/';
       const result = removeLocalhostFromBaseRef(href);
       expect(result).toBe('/');
     });
 
-    it('should not remove localhost from href if it is not the first part', () => {
+    it('should return the exact href if it is already relative', () => {
       const href = '/some/path/';
       const result = removeLocalhostFromBaseRef(href);
       expect(result).toBe('/some/path/');

@@ -19,3 +19,9 @@ div {
 .with-rewritten-background-img {
   background-image: url('/img?url=fixtures/purple.png');
 }
+
+.with-background-img-as-after-content {
+  &::after {
+    content: url('/img?url=fixtures/pink.png');
+  }
+}

@@ -80,3 +80,7 @@ test('link tags for fonts preloads and other things are handled', async ({ page 
 test('use tags for sprites are archived', async ({ page }) => {
   await page.goto('/asset-paths/sprites');
 });
+
+test('assets from relative css urls with base tag are archived', async ({ page }) => {
+  await page.goto('/asset-paths/relative-urls-with-base');
+});

@@ -94,3 +94,21 @@ export function truncateFileName(
 
   return [...filePathParts, truncatedFileName].join('/');
 }
+
+/**
+ * The <base> HTML element specifies the base URL to use for all relative URLs in a document.
+ * This is used to rewrite the base href in the DOM snapshot to not include localhost.
+ */
+export const removeLocalhostFromBaseUrl = (href: string) => {
+  let baseUrl;
+  try {
+    baseUrl = new URL(href);
+    if (baseUrl.hostname === 'localhost') {
+      return baseUrl.pathname + baseUrl.search + baseUrl.hash;
+    }
+    return href;
+  } catch (error) {
+    // If the base ref is not a valid URL, we return the original href since it could be a relative path
+    return href;
+  }
+};

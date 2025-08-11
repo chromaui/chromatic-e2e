@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.8
+
+### Patch Changes
+
+- 127011b: Sanitize localhost hostname from base element URL in archived snapshots
+
 ## 0.9.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.6
+
+### Patch Changes
+
+- 127011b: Sanitize localhost hostname from base element URL in archived snapshots
+
 ## 0.12.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.11.6
+
+### Patch Changes
+
+- 127011b: Sanitize localhost hostname from base element URL in archived snapshots
+
 ## 0.11.5
 
 ### Patch Changes

@@ -104,7 +104,7 @@ export const removeLocalhostFromBaseUrl = (href: string) => {
   try {
     baseUrl = new URL(href);
     if (baseUrl.hostname === 'localhost') {
-      return baseUrl.pathname;
+      return baseUrl.pathname + baseUrl.search + baseUrl.hash;
     }
     return href;
   } catch (error) {

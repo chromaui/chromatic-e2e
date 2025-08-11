@@ -225,6 +225,12 @@ describe('truncateFileName', () => {
       expect(result).toBe('/some/path/');
     });
 
+    it('should remove localhost from href but keeps the search and hash paramters', () => {
+      const href = 'http://localhost:3000/some/path/?query=value#fragment';
+      const result = removeLocalhostFromBaseUrl(href);
+      expect(result).toBe('/some/path/?query=value#fragment');
+    });
+
     it('should remove localhost from href', () => {
       const href = 'http://localhost:3000/';
       const result = removeLocalhostFromBaseUrl(href);
@@ -236,6 +242,7 @@ describe('truncateFileName', () => {
       const result = removeLocalhostFromBaseUrl(href);
       expect(result).toBe('/some/path/');
     });
+
     it('should return the exact href if locahost is not the host name', () => {
       const href = 'https://www.example.com/';
       const result = removeLocalhostFromBaseUrl(href);

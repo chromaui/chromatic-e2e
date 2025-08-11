@@ -236,5 +236,10 @@ describe('truncateFileName', () => {
       const result = removeLocalhostFromBaseRef(href);
       expect(result).toBe('/some/path/');
     });
+    it('should return the exact href if locahost is not the host name', () => {
+      const href = 'https://www.example.com/';
+      const result = removeLocalhostFromBaseRef(href);
+      expect(result).toBe(href);
+    });
   });
 });

@@ -3,7 +3,7 @@
 import type { serializedElementNodeWithId, serializedNodeWithId } from '@rrweb/types';
 import { NodeType } from '@rrweb/types';
 import srcset from 'srcset';
-import { removeLocalhostFromBaseRef } from '../utils/filePaths';
+import { removeLocalhostFromBaseUrl } from '../utils/filePaths';
 
 // Matches `url(...)` function in CSS text, excluding data URLs
 const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
@@ -107,7 +107,7 @@ export class DOMSnapshot {
 
       // If the element is a base tag, we remove the localhost from the href
       if (node.tagName === 'base' && node.attributes.href) {
-        node.attributes.href = removeLocalhostFromBaseRef(node.attributes.href as string);
+        node.attributes.href = removeLocalhostFromBaseUrl(node.attributes.href as string);
       }
     }
 

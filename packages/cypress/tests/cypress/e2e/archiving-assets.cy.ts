@@ -30,6 +30,10 @@ it('assets from css urls are archived', () => {
   cy.visit('/asset-paths/css-urls');
 });
 
+it('assets from relative css urls with base tag are archived', () => {
+  cy.visit('/asset-paths/relative-urls-with-base');
+});
+
 it('assets from data urls are archived', () => {
   cy.visit('/asset-paths/data-urls');
 });

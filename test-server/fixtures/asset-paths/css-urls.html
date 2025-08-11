@@ -1,23 +1,19 @@
 <!doctype html>
 <html>
+  <head>
+    <link rel="stylesheet" href="/css.urls.css" />
 
-<head>
-  <link rel="stylesheet" href="/css.urls.css" />
-  <base href="/" />
-  <style>
-    .with-rewritten-background-img-inline {
-      background-image: url('/img?url=fixtures/blue.png');
-    }
-  </style>
-</head>
-
-<body>
-  <div class="with-background-img"></div>
-  <div class="with-external-background-img"></div>
-  <div class="with-rewritten-background-img"></div>
-  <div class="with-rewritten-background-img-inline"></div>
-  <div style="background: url('/img?url=fixtures/pink.png'); no-repeat center;"></div>
-  <div class="with-background-img-as-after-content"></div>
-</body>
-
+    <style>
+      .with-rewritten-background-img-inline {
+        background-image: url('/img?url=fixtures/blue.png');
+      }
+    </style>
+  </head>
+  <body>
+    <div class="with-background-img"></div>
+    <div class="with-external-background-img"></div>
+    <div class="with-rewritten-background-img"></div>
+    <div class="with-rewritten-background-img-inline"></div>
+    <div style="background: url('/img?url=fixtures/pink.png'); no-repeat center;"></div>
+  </body>
 </html>

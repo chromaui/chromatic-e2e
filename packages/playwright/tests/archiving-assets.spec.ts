@@ -49,6 +49,10 @@ test('percents in URLs are handled', async ({ page }) => {
   await page.goto('/asset-paths/percents');
 });
 
+test('colons in URLs are handled', async ({ page }) => {
+  await page.goto('/asset-paths/colons');
+});
+
 test('srcset is used to determine image asset URL', async ({ page }) => {
   await page.goto('/asset-paths/srcset');
 });

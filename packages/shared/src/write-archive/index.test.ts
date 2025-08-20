@@ -149,6 +149,35 @@ describe('writeTestResult', () => {
     );
   });
 
+  describe('archive file system path windows', () => {
+    it('handles system paths', async () => {
+      await writeTestResult(
+        {
+          titlePath: ['file.spec.ts', 'Test Story'],
+          // simulates a system path (for windows)
+          outputDir:
+            'C:/Users/testuser/dev/test-results/dist/.playwright/apps/web-react-demo/test-output/',
+          pageUrl: 'http://localhost:3000/',
+          viewport: { height: 800, width: 800 },
+        },
+        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        {
+          'http://localhost:3000/@fs/C:/Users/testuser/dev/test-results/node_modules/vite/dist/client/index.html':
+            {
+              statusCode: 200,
+              body: Buffer.from('Chromatic'),
+            },
+        },
+        {}
+      );
+
+      expect(filePaths.outputFile).toHaveBeenCalledWith(
+        'C:/Users/testuser/dev/test-results/dist/.playwright/apps/web-react-demo/test-output/chromatic-archives/archive/fs/C/Users/testuser/dev/test-results/node_modules/vite/dist/client/index.html',
+        Buffer.from('Chromatic')
+      );
+    });
+  });
+
   describe('smart story naming', () => {
     it('derives story title from test info, using all of the title path', async () => {
       // @ts-expect-error Jest mock

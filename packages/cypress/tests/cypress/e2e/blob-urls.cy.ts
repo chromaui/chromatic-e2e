@@ -1,5 +1,5 @@
 it('Upload a Single file and Assert blob', { env: { ignoreSelectors: ['#objectUrl'] } }, () => {
-  cy.visit('/createObjectUrl');
+  cy.visit('/blob-urls');
 
   cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
 
@@ -9,7 +9,7 @@ it('Upload a Single file and Assert blob', { env: { ignoreSelectors: ['#objectUr
 });
 
 it('Fetch data for blob', () => {
-  cy.visit('/createObjectUrl?noUpload=true');
+  cy.visit('/blob-urls?noUpload=true');
 
   cy.get('#blobImg')
     .should('be.visible')
@@ -23,7 +23,7 @@ it(
   'Captures blob contents for manual snapshots',
   { env: { ignoreSelectors: ['#objectUrl'] } },
   () => {
-    cy.visit('/createObjectUrl');
+    cy.visit('/blob-urls');
 
     cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
 

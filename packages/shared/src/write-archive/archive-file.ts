@@ -100,7 +100,7 @@ export class ArchiveFile {
 
   private removeSpecialChars(pathname: string) {
     // The storybook server seems to have a problem with percents in file names
-    return pathname.replace(/[%]/g, '');
+    return pathname.replace(/[%:@]/g, '');
   }
 
   private addExtension(pathname: string) {

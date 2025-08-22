@@ -28,6 +28,7 @@ it.skip('external asset is archived', () => {
 
 it('assets from css urls are archived', () => {
   cy.visit('/asset-paths/css-urls');
+  cy.get('.with-background-img').should('be.visible');
 });
 
 it('assets from relative css urls with base tag are archived', () => {
@@ -41,6 +42,10 @@ it('assets from data urls are archived', () => {
 // TODO: Unskip when Cypress support achieves parity with Playwright
 it.skip('percents in URLs are handled', () => {
   cy.visit('/asset-paths/percents');
+});
+
+it('colons in URLs are handled', () => {
+  cy.visit('/asset-paths/colons');
 });
 
 it('srcset is used to determine image asset URL', () => {

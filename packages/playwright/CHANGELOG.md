@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.7
+
+### Patch Changes
+
+- c40badc: Improvements to windows compatibility in archive creation
+
 ## 0.12.6
 
 ### Patch Changes

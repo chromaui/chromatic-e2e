@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.9
+
+### Patch Changes
+
+- c40badc: Improvements to windows compatibility in archive creation
+
 ## 0.9.8
 
 ### Patch Changes

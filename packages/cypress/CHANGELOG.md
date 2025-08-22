@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.11.7
+
+### Patch Changes
+
+- c40badc: Improvements to windows compatibility in archive creation
+
 ## 0.11.6
 
 ### Patch Changes

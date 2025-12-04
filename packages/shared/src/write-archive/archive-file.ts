@@ -95,7 +95,7 @@ export class ArchiveFile {
     });
 
     // Re-join the pieces
-    return `${pathname.startsWith('/') ? '/' : ''}${path.join(...rebuiltPieces)}`;
+    return rebuiltPieces.join('/');
   }
 
   private removeSpecialChars(pathname: string) {
@@ -124,7 +124,7 @@ export class ArchiveFile {
     // Windows doesn't support colons in file names
     const encodedHost = encodeURIComponent(this.url.host);
 
-    return `/${encodedHost}/${this.url.pathname}`;
+    return `/${encodedHost}${this.url.pathname}`; // pathname already starts with '/'
   }
 
   private hash(name: string) {

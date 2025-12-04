@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.11.8
+
+### Patch Changes
+
+- b46f181: Always use forward slashes when rebuilding asset paths
+
 ## 0.11.7
 
 ### Patch Changes

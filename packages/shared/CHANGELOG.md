@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.9.10
+
+### Patch Changes
+
+- b46f181: Always use forward slashes when rebuilding asset paths
+
 ## 0.9.9
 
 ### Patch Changes

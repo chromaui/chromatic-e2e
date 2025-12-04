@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.12.8
+
+### Patch Changes
+
+- b46f181: Always use forward slashes when rebuilding asset paths
+
 ## 0.12.7
 
 ### Patch Changes

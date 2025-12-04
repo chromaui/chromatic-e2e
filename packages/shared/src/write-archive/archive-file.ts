@@ -95,7 +95,7 @@ export class ArchiveFile {
     });
 
     // Re-join the pieces
-    return `${pathname.startsWith('/') ? '/' : ''}${path.join(...rebuiltPieces)}`;
+    return `${pathname.startsWith('/') ? '/' : ''}${rebuiltPieces.join('/')}`;
   }
 
   private removeSpecialChars(pathname: string) {

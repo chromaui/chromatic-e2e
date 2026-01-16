@@ -1,3 +1,5 @@
+# Never create an H1 in a markdown file!
+
 ## Development
 
 This repository is a Yarn 4 monorepo containing the following packages:

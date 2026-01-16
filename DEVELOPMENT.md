@@ -1,4 +1,4 @@
-# Never create an H1 in a markdown file!
+# Never create an H1 in a markdown file! Like seriously, never.
 
 ## Development
 

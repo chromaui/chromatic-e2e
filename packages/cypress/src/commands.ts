@@ -11,6 +11,7 @@ declare global {
        *
        * @param {string} name - Use to apply a custom name to the snapshot  (optional)
        */
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       takeSnapshot(name?: string): Chainable<any>;
     }
   }

@@ -80,7 +80,6 @@ const setupNetworkListener = async ({
       await resourceArchiver.watch();
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.log('err', err);
   }
 
@@ -101,6 +100,7 @@ const saveArchives = (archiveInfo: WriteParams) => {
 
 interface TaskParams {
   action: 'setup-network-listener' | 'save-archives';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any;
 }
 

@@ -1,8 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "."
-  },
   "include": ["src", ".eslintrc.js", "jest.config.js"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,8 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "."
-  },
-  "include": ["src", "scripts", ".eslintrc.js", "jest.config.js"],
+  "include": ["src", "scripts", "storybook-config", ".eslintrc.js", "jest.config.js"],
   "exclude": ["node_modules", "dist"]
 }

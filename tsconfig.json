@@ -10,13 +10,12 @@
     "strictBindCallApply": true,
     "jsx": "react",
     "lib": ["es2020", "dom"],
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
-    "rootDir": "./src",
     "skipLibCheck": true,
     "target": "ES2020",
-    "types": ["jest", "node", "cypress"],
-    "moduleResolution": "node"
+    "types": ["jest", "node", "cypress"]
   },
   "include": ["src", "tests", "scripts", ".eslintrc.js", "jest.config.js"]
 }

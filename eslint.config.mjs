@@ -14,10 +14,24 @@ export default tseslint.config(
       '**/playwright.config.ts',
       '**/tests/**',
       '**/__playwright-tests__/**',
+      'test-server/fixtures/**',
     ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    files: ['test-server/**/*.js'],
+    languageOptions: { globals: { ...globals.node } },
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
+  {
+    files: ['**/.babelrc.js', '**/jest.config.js', '**/*.config.js'],
+    languageOptions: {
+      globals: { ...globals.node },
+      sourceType: 'commonjs',
+      parserOptions: { ecmaVersion: 'latest' },
+    },
+  },
   {
     files: ['**/*.js'],
     languageOptions: {

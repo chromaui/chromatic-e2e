@@ -8,9 +8,15 @@ module.exports = {
       },
     },
     {
-      files: ['**/*.test.ts', '**/*.spec.ts'],
+      files: ['**/*.test.ts', '**/*.spec.ts', 'vitest.config.ts'],
       rules: {
-        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+        'import/no-extraneous-dependencies': [
+          'error',
+          {
+            devDependencies: true,
+            packageDir: [__dirname, require('path').join(__dirname, '../../')],
+          },
+        ],
         'no-restricted-syntax': 'off',
       },
       parserOptions: {

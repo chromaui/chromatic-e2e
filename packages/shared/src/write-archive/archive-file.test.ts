@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { ArchiveFile } from './archive-file';
 import type { ArchiveResponse, UrlString } from '../resource-archiver';
 

@@ -1,13 +1,14 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { resolve } from 'path';
 import { NodeType } from '@rrweb/types';
 import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
 
-jest.mock('../utils/filePaths', () => ({
-  ...jest.requireActual('../utils/filePaths'),
-  ensureDir: jest.fn(),
-  outputFile: jest.fn(),
-  outputJSONFile: jest.fn(),
+vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
+  ...(await importOriginal()),
+  ensureDir: vi.fn(),
+  outputFile: vi.fn(),
+  outputJSONFile: vi.fn(),
 }));
 
 const snapshotJson = {
@@ -28,13 +29,11 @@ const snapshotJson = {
 };
 
 afterEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 describe('writeTestResult', () => {
   it('successfully generates test results', async () => {
-    // @ts-expect-error Jest mock
-    filePaths.ensureDir.mockReturnValue(true);
     await writeTestResult(
       // the default output directory in playwright
       {
@@ -71,9 +70,6 @@ describe('writeTestResult', () => {
   });
 
   it('successfully generates test results with mapped source entries', async () => {
-    // @ts-expect-error Jest mock
-    filePaths.ensureDir.mockReturnValue(true);
-
     const expectedMappedJson = {
       childNodes: [
         {
@@ -126,8 +122,6 @@ describe('writeTestResult', () => {
   });
 
   it('stores archives in custom directory', async () => {
-    // @ts-expect-error Jest mock
-    filePaths.ensureDir.mockReturnValue(true);
     await writeTestResult(
       {
         titlePath: ['file.spec.ts', 'Test Story'],
@@ -180,8 +174,6 @@ describe('writeTestResult', () => {
 
   describe('smart story naming', () => {
     it('derives story title from test info, using all of the title path', async () => {
-      // @ts-expect-error Jest mock
-      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
@@ -202,8 +194,6 @@ describe('writeTestResult', () => {
     });
 
     it('preserves dots in directories, describe blocks, and test titles', async () => {
-      // @ts-expect-error Jest mock
-      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: [
@@ -228,8 +218,6 @@ describe('writeTestResult', () => {
     });
 
     it('preserves dots in file name, besides file extension (Playwright)', async () => {
-      // @ts-expect-error Jest mock
-      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['some.file.spec.ts', 'Test Story'],
@@ -250,8 +238,6 @@ describe('writeTestResult', () => {
     });
 
     it('preserves dots in file name, besides file extension (Cypress)', async () => {
-      // @ts-expect-error Jest mock
-      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['some.file.cy.ts', 'Test Story'],
@@ -272,8 +258,6 @@ describe('writeTestResult', () => {
     });
 
     it('removes file extension, even if .spec or .cy are not used', async () => {
-      // @ts-expect-error Jest mock
-      filePaths.ensureDir.mockReturnValue(true);
       await writeTestResult(
         {
           titlePath: ['file.ts', 'Test Story'],

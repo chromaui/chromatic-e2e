@@ -62,7 +62,8 @@ export async function writeTestResult(
         sourceMap.set(origSrcPath, fileSystemPath);
       }
 
-      await outputFile(join(archiveDir, fileSystemPath), response.body);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await outputFile(join(archiveDir, fileSystemPath), response.body as any);
     })
   );
 

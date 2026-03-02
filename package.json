@@ -7,22 +7,28 @@
     "type": "git",
     "url": "https://github.com/chromaui/chromatic-e2e.git"
   },
-  "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/archive-storybook.js",
-    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/build-archive-storybook.js",
     "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/archive-storybook.js",
-    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/build-archive-storybook.js",
-    "clean": "yarn workspaces foreach --all --parallel run clean",
+    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/archive-storybook.js",
     "prebuild": "yarn clean",
     "build": "yarn workspaces foreach --all --topological-dev --parallel run build",
-    "test:unit": "yarn workspaces foreach --all run test:unit",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/build-archive-storybook.js",
+    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/build-archive-storybook.js",
+    "clean": "yarn workspaces foreach --all --parallel run clean",
     "dev:server": "node test-server/server",
     "lint": "eslint .",
-    "prettier": "prettier",
     "prepare": "husky install",
-    "release": "yarn build && yarn changeset publish"
+    "prettier": "prettier",
+    "release": "yarn build && yarn changeset publish",
+    "test:unit": "yarn workspaces foreach --all run test:unit"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
   },
   "devDependencies": {
     "@auto-it/released": "^10.32.6",
@@ -66,11 +72,5 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.15.0"
   },
-  "lint-staged": {
-    "*.{ts,js,css,md}": "prettier --write"
-  },
-  "packageManager": "yarn@4.0.2",
-  "workspaces": [
-    "packages/*"
-  ]
+  "packageManager": "yarn@4.0.2"
 }

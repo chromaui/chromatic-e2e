@@ -7,11 +7,8 @@
     "url": "https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/cypress"
   },
-  "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "author": "Chromatic <tom@chromatic.com>",
   "exports": {
     ".": {
       "import": {
@@ -37,6 +34,9 @@
     "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js",
     "./package.json": "./package.json"
   },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "bin": {
     "archive-storybook": "dist/bin/archive-storybook.js",
     "build-archive-storybook": "dist/bin/build-archive-storybook.js"
@@ -48,14 +48,25 @@
     "*.d.ts"
   ],
   "scripts": {
-    "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
+    "clean": "rimraf ./dist",
+    "lint": "eslint src/*",
+    "prettier": "prettier",
     "test:cypress": "start-server-and-test 'yarn run dev:server' 3000 'yarn run test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
-    "test:unit": "jest --passWithNoTests --coverage",
-    "lint": "eslint src/*",
-    "prettier": "prettier"
+    "test:unit": "jest --passWithNoTests --coverage"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
+  },
+  "dependencies": {
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
+    "@segment/analytics-node": "2.1.3",
+    "@storybook/builder-webpack5": "10.2.13",
+    "@storybook/server-webpack5": "10.2.13",
+    "chrome-remote-interface": "^0.33.0",
+    "storybook": "10.2.13"
   },
   "devDependencies": {
     "@chromatic-com/shared-e2e": "workspace:*",
@@ -63,17 +74,7 @@
     "cypress": "^13.4.0",
     "start-server-and-test": "^2.0.3"
   },
-  "lint-staged": {
-    "*.{ts,js,css,md}": "prettier --write"
-  },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
-    "@segment/analytics-node": "2.1.3",
-    "@storybook/server-webpack5": "^10.2.13",
-    "chrome-remote-interface": "^0.33.0",
-    "storybook": "^10.2.13"
   }
 }

@@ -24,6 +24,7 @@
     "lint": "eslint .",
     "prepare": "husky install",
     "prettier": "prettier",
+    "changeset": "changeset",
     "release": "yarn build && yarn changeset publish",
     "test:unit": "yarn workspaces foreach --all run test:unit"
   },

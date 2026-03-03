@@ -1,21 +1,14 @@
-import { defineConfig } from 'vitest/config';
+import { defineProject } from 'vitest/config';
 import { resolve } from 'path';
 
-export default defineConfig({
+export default defineProject({
   test: {
-    include: ['src/**/*.test.{ts,tsx}'],
-    exclude: [
-      '**/__playwrightTests__/**',
-      'tests/**',
-      '**/*.spec.{ts,tsx}',
-    ],
-    environment: 'node',
-    globals: true,
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: ['**/test-results/**', '**/node_modules/**'],
+    name: {
+      label: 'playwright',
+      color: 'blue',
     },
+    include: ['src/**/*.test.{ts,tsx}'],
+    exclude: ['**/__playwrightTests__/**', 'tests/**', '**/*.spec.{ts,tsx}'],
     setupFiles: [resolve(__dirname, 'vitest.setup.ts')],
   },
   resolve: {

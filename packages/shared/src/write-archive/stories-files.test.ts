@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import { ChromaticStorybookParameters } from '../types';
 import { Viewport } from '../utils/viewport';
 import * as storiesFiles from './stories-files';
-
+import { describe, it, beforeEach, expect, vi } from 'vitest';
 vi.mock('fs/promises', () => ({
   readdir: vi.fn(),
 }));

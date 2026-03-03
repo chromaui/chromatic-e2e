@@ -2,6 +2,7 @@ import { dedent } from 'ts-dedent';
 import express, { type Request } from 'express';
 import { Server } from 'http';
 import { Browser, chromium, Page } from 'playwright';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 
 import { logger } from '@chromatic-com/shared-e2e';
 import { createResourceArchive } from './createResourceArchive';

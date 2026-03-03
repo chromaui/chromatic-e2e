@@ -1,6 +1,6 @@
 import { serializedNodeWithId } from '@rrweb/types';
 import { DOMSnapshot } from './dom-snapshot';
-
+import { describe, it, expect } from 'vitest';
 const relativeUrl = '/images/image.png';
 const externalUrl = 'https://chromatic.com/img';
 const queryUrl = '/images/img?src=https://chromatic.com/img';

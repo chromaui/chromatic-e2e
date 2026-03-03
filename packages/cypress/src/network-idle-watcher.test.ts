@@ -1,4 +1,5 @@
 import { NetworkIdleWatcher } from './network-idle-watcher';
+import { it, expect, vi } from 'vitest';
 
 vi.useFakeTimers();
 

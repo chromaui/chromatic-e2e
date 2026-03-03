@@ -10,6 +10,7 @@ import {
   truncateFileName,
 } from './filePaths';
 import { removeLocalhostFromBaseUrl } from './filePaths';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 
 vi.mock('fs', () => ({
   existsSync: vi.fn(),

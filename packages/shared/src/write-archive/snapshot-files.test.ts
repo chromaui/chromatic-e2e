@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import * as snapshotFiles from './snapshot-files';
-
+import { describe, it, beforeEach, expect, vi } from 'vitest';
 vi.mock('fs/promises', () => ({
   readdir: vi.fn(),
 }));

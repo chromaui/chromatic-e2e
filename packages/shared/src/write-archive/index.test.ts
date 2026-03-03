@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import { NodeType } from '@rrweb/types';
 import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
-
+import { describe, it, afterEach, expect, vi } from 'vitest';
 vi.mock('../utils/filePaths', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../utils/filePaths')>()),
   ensureDir: vi.fn(),

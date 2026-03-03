@@ -1,13 +1,11 @@
-import { defineConfig } from 'vitest/config';
+import { defineProject } from 'vitest/config';
 
-export default defineConfig({
+export default defineProject({
   test: {
-    include: ['src/**/*.test.{ts,tsx}'],
-    environment: 'node',
-    globals: true,
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+    name: {
+      label: 'shared',
+      color: 'yellow',
     },
+    include: ['src/**/*.test.{ts,tsx}'],
   },
 });

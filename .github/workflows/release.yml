@@ -16,7 +16,7 @@ name: Release
 
 on:
   workflow_run:
-    workflows: ["Test and Release Main", "Test and Release PR"]
+    workflows: ['Test and Release Main', 'Test and Release PR']
     types: [completed]
 
 permissions:

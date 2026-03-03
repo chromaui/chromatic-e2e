@@ -3,8 +3,8 @@ import { NodeType } from '@rrweb/types';
 import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
 import { describe, it, afterEach, expect, vi } from 'vitest';
-vi.mock('../utils/filePaths', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../utils/filePaths')>()),
+vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
+  ...(await importOriginal()),
   ensureDir: vi.fn(),
   outputFile: vi.fn(),
   outputJSONFile: vi.fn(),

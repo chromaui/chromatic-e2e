@@ -5,8 +5,8 @@ import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 
 // mock the tracking as it causes memory leak in test
-vi.mock('@chromatic-com/shared-e2e', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@chromatic-com/shared-e2e')>()),
+vi.mock(import('@chromatic-com/shared-e2e'), async (importOriginal) => ({
+  ...(await importOriginal()),
   trackComplete: vi.fn(),
   trackRun: vi.fn(),
 }));

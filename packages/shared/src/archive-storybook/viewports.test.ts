@@ -3,8 +3,8 @@ import { addViewportsToStoriesFiles } from './viewports';
 import * as snapshots from '../write-archive/snapshot-files';
 import * as stories from '../write-archive/stories-files';
 import { describe, it, afterEach, expect, vi } from 'vitest';
-vi.mock('../utils/filePaths', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('../utils/filePaths')>()),
+vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
+  ...(await importOriginal()),
   readJSONFile: vi.fn(),
   outputJSONFile: vi.fn(),
 }));

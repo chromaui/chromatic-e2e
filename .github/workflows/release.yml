@@ -1,26 +1,39 @@
-# Runs the main changeset release process
-# This has two phases:
-# 1. When a PR is merged that contains changesets, a PR will
-#    be opened with package.json version bumps and changelog updates
-# 2. When the above PR with the package.json version bumps is merged,
-#    the changed packages will then be published to npm
+# Single release workflow for npm Trusted Publisher (OIDC).
+# npm allows only one workflow filename per package; this file is triggered
+# by workflow_run so npm attributes the run to release.yml.
+#
+# - On main (after "Test and Release Main"): changeset version PR or publish (stable).
+# - On PRs (after "Test and Release PR"): snapshot version + publish with tag canary.
+#
+# Re-running the test workflow triggers this again. Concurrency ensures we don't run
+# two release jobs for the same commit at once (later trigger cancels in-progress).
+# Stable: republish is safe (npm rejects existing versions). Canary: may publish again.
+concurrency:
+  group: release-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: true
+
 name: Release
 
 on:
-  workflow_call:
-    secrets:
-      githubToken:
-        required: true
-      npmToken:
-        required: true
+  workflow_run:
+    workflows: ["Test and Release Main", "Test and Release PR"]
+    types: [completed]
+
+permissions:
+  id-token: write # Required for npm Trusted Publisher (OIDC)
+  contents: read
+
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    # Only run when the test workflow succeeded
+    if: github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -32,11 +45,27 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Create Release Pull Request or Publish to npm
-        id: changesets
+      - name: Stable release (main)
+        if: github.event.workflow_run.name == 'Test and Release Main'
         uses: changesets/action@v1
         with:
           publish: yarn run release
         env:
-          GITHUB_TOKEN: ${{ secrets.githubToken }}
-          NODE_AUTH_TOKEN: ${{ secrets.npmToken }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build (canary)
+        if: github.event.workflow_run.name == 'Test and Release PR'
+        run: yarn run build
+
+      - name: Set canary snapshot hash
+        if: github.event.workflow_run.name == 'Test and Release PR'
+        run: |
+          echo "GIT_HASH=$(git rev-parse --short ${{ github.event.workflow_run.head_sha }})" >> "$GITHUB_ENV"
+
+      - name: Publish canary
+        if: github.event.workflow_run.name == 'Test and Release PR'
+        run: |
+          yarn run changeset version --snapshot $GIT_HASH
+          yarn run changeset publish --no-git-tag --tag canary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

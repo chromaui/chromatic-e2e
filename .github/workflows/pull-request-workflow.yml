@@ -24,9 +24,3 @@ jobs:
     uses: ./.github/workflows/test-playwright.yml
     secrets:
       chromaticProjectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
-  release_canary:
-    needs: test
-    uses: ./.github/workflows/canary-release.yml
-    secrets:
-      githubToken: ${{ secrets.GITHUB_TOKEN }}
-      npmToken: ${{ secrets.NPM_CHROMATIC_COM_PUBLISH_TOKEN }}

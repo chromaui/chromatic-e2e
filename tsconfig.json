@@ -10,7 +10,7 @@
     "strictBindCallApply": true,
     "jsx": "react",
     "lib": ["es2020", "dom"],
-    "module": "esnext",
+    "module": "preserve",
     "moduleResolution": "bundler",
     "noImplicitAny": true,
     "skipLibCheck": true,

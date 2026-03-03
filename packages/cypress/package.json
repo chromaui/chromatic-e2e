@@ -55,7 +55,7 @@
     "prettier": "prettier",
     "test:cypress": "start-server-and-test 'yarn run dev:server' 3000 'yarn run test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
-    "test:unit": "jest --passWithNoTests --coverage"
+    "test:unit": "vitest run --coverage"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
@@ -72,7 +72,8 @@
     "@chromatic-com/shared-e2e": "workspace:*",
     "@rrweb/types": "^2.0.0-alpha.18",
     "cypress": "^15.11.0",
-    "start-server-and-test": "^2.0.3"
+    "start-server-and-test": "^2.0.3",
+    "vitest": "^2.1.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,5 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "scripts", "storybook-config", ".eslintrc.js", "jest.config.js"],
+  "include": ["src", "scripts", "storybook-config", ".eslintrc.js"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,10 +1,12 @@
-import fs from 'fs/promises';
+import * as fs from 'fs/promises';
 import * as snapshotFiles from './snapshot-files';
 
-jest.mock('fs/promises');
+vi.mock('fs/promises', () => ({
+  readdir: vi.fn(),
+}));
 
 beforeEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 describe('snapshotId', () => {
@@ -61,7 +63,7 @@ describe('listSnapshotFiles', () => {
       'some-id.w1200h820.snapshot.json',
       'not-a-snapshot.json',
     ];
-    fs.readdir = jest.fn().mockResolvedValueOnce(allFiles);
+    vi.mocked(fs.readdir).mockResolvedValueOnce(allFiles);
     const files = await snapshotFiles.listSnapshotFiles('some-dir');
 
     expect(files).toEqual(['some-id.w500h720.snapshot.json', 'some-id.w1200h820.snapshot.json']);

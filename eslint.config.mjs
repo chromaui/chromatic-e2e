@@ -26,7 +26,7 @@ export default tseslint.config(
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   {
-    files: ['**/.babelrc.js', '**/jest.config.js', '**/*.config.js'],
+    files: ['**/.babelrc.js', '**/*.config.js'],
     languageOptions: {
       globals: { ...globals.node },
       sourceType: 'commonjs',

@@ -18,7 +18,7 @@
     "noImplicitAny": true,
     "skipLibCheck": true,
     "target": "ES2020",
-    "types": ["jest", "node", "cypress"]
+    "types": ["node", "cypress", "vitest/globals"]
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "jest.config.js"]
+  "include": ["packages/**/*.ts", "packages/**/*.tsx", "vitest.config.ts"]
 }

@@ -4,10 +4,10 @@ import { performChromaticSnapshot } from './makeTest';
 import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 
 // mock the tracking as it causes memory leak in test
-jest.mock('@chromatic-com/shared-e2e', () => ({
-  ...jest.requireActual('@chromatic-com/shared-e2e'),
-  trackComplete: jest.fn(),
-  trackRun: jest.fn(),
+vi.mock('@chromatic-com/shared-e2e', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@chromatic-com/shared-e2e')>()),
+  trackComplete: vi.fn(),
+  trackRun: vi.fn(),
 }));
 
 describe('makeTest', () => {
@@ -25,8 +25,8 @@ describe('makeTest', () => {
   afterEach(async () => {
     await browser.close();
 
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
+    vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   const mockTestInfo: Partial<TestInfo> = {

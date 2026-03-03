@@ -44,7 +44,7 @@
     "lint": "eslint src/*",
     "prettier": "prettier",
     "test:playwright": "playwright test",
-    "test:unit": "jest --passWithNoTests --coverage"
+    "test:unit": "vitest run --coverage"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
@@ -63,7 +63,8 @@
     "@rrweb/types": "^2.0.0-alpha.18",
     "express": "^4.18.2",
     "playwright": "^1.46.1",
-    "playwright-core": "^1.46.1"
+    "playwright-core": "^1.46.1",
+    "vitest": "^2.1.0"
   },
   "peerDependencies": {
     "@playwright/test": "^1.0.0"

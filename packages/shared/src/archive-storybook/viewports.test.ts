@@ -3,10 +3,10 @@ import { addViewportsToStoriesFiles } from './viewports';
 import * as snapshots from '../write-archive/snapshot-files';
 import * as stories from '../write-archive/stories-files';
 
-jest.mock('../utils/filePaths', () => ({
-  ...jest.requireActual('../utils/filePaths'),
-  readJSONFile: jest.fn(),
-  outputJSONFile: jest.fn(),
+vi.mock('../utils/filePaths', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../utils/filePaths')>()),
+  readJSONFile: vi.fn(),
+  outputJSONFile: vi.fn(),
 }));
 
 const mockSnapshotFiles = [
@@ -31,15 +31,15 @@ const mockStoriesFileJson = {
 };
 
 afterEach(() => {
-  jest.resetAllMocks();
-  jest.restoreAllMocks();
+  vi.resetAllMocks();
+  vi.restoreAllMocks();
 });
 
 describe('addViewportsToStoriesFiles', () => {
   it('adds snapshot viewports to stories files', async () => {
-    jest.spyOn(snapshots, 'listSnapshotFiles').mockResolvedValueOnce(mockSnapshotFiles);
-    jest.spyOn(stories, 'listStoriesFiles').mockResolvedValueOnce(mockStoriesFiles);
-    (readJSONFile as jest.Mock).mockResolvedValueOnce(mockStoriesFileJson);
+    vi.spyOn(snapshots, 'listSnapshotFiles').mockResolvedValueOnce(mockSnapshotFiles);
+    vi.spyOn(stories, 'listStoriesFiles').mockResolvedValueOnce(mockStoriesFiles);
+    vi.mocked(readJSONFile).mockResolvedValueOnce(mockStoriesFileJson);
 
     await addViewportsToStoriesFiles('test-archives');
 

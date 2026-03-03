@@ -75,7 +75,7 @@ afterEach(async () => {
 describe('new', () => {
   let browser: Browser;
   let page: Page;
-  const mockWarn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+  const mockWarn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
 
   beforeEach(async () => {
     // create a bare-bones Playwright test launch (https://playwright.dev/docs/library)

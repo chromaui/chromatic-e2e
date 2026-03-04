@@ -1,8 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["node", "cypress", "vitest/globals"]
+    "types": ["node", "cypress"]
   },
-  "include": ["src", "scripts", ".eslintrc.js"],
+  "include": ["src", "scripts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

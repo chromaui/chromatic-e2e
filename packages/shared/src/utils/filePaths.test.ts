@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as fsPromises from 'fs/promises';
 import * as fs from 'fs';
 import {
@@ -10,16 +11,9 @@ import {
   truncateFileName,
 } from './filePaths';
 import { removeLocalhostFromBaseUrl } from './filePaths';
-import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 
-vi.mock('fs', () => ({
-  existsSync: vi.fn(),
-  mkdirSync: vi.fn(),
-}));
-vi.mock('fs/promises', () => ({
-  readFile: vi.fn(),
-  writeFile: vi.fn(),
-}));
+vi.mock('fs');
+vi.mock('fs/promises');
 
 const currentDir = '/base/dir';
 const originalProcess = process;

@@ -1,11 +1,10 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as fs from 'fs/promises';
 import { ChromaticStorybookParameters } from '../types';
 import { Viewport } from '../utils/viewport';
 import * as storiesFiles from './stories-files';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
-vi.mock('fs/promises', () => ({
-  readdir: vi.fn(),
-}));
+
+vi.mock('fs/promises');
 
 const vports = [
   { width: 100, height: 1000 },
@@ -189,6 +188,7 @@ describe('listStoriesFiles', () => {
       'some-id.stories.json',
       'not-a-snapshot.json',
     ];
+    // @ts-expect-error - Intentionally handling only single function override
     vi.mocked(fs.readdir).mockResolvedValueOnce(allFiles);
     const files = await storiesFiles.listStoriesFiles('some-dir');
 

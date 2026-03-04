@@ -44,7 +44,7 @@
     "lint": "eslint src/*",
     "prettier": "prettier",
     "test:playwright": "playwright test",
-    "test:unit": "yarn workspace @chromatic-com/playwright test:unit --project playwright"
+    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Playwright"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"

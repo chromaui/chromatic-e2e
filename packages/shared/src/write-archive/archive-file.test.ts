@@ -1,6 +1,7 @@
+import { describe, expect, it } from 'vitest';
 import { ArchiveFile } from './archive-file';
 import type { ArchiveResponse, UrlString } from '../resource-archiver';
-import { describe, it, expect } from 'vitest';
+
 const imgPng =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 

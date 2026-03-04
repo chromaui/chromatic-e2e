@@ -1,9 +1,8 @@
 import * as fs from 'fs/promises';
 import * as snapshotFiles from './snapshot-files';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-vi.mock('fs/promises', () => ({
-  readdir: vi.fn(),
-}));
+
+vi.mock('fs/promises');
 
 beforeEach(() => {
   vi.resetAllMocks();
@@ -63,6 +62,7 @@ describe('listSnapshotFiles', () => {
       'some-id.w1200h820.snapshot.json',
       'not-a-snapshot.json',
     ];
+    // @ts-expect-error - Intentionally handling only single function override
     vi.mocked(fs.readdir).mockResolvedValueOnce(allFiles);
     const files = await snapshotFiles.listSnapshotFiles('some-dir');
 

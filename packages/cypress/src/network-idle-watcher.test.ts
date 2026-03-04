@@ -1,5 +1,5 @@
+import { expect, it, vi } from 'vitest';
 import { NetworkIdleWatcher } from './network-idle-watcher';
-import { it, expect, vi } from 'vitest';
 
 vi.useFakeTimers();
 

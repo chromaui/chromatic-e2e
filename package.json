@@ -20,22 +20,19 @@
     "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/build-archive-storybook.js",
     "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/build-archive-storybook.js",
     "clean": "yarn workspaces foreach --all --parallel run clean",
+    "test:unit": "vitest run",
     "dev:server": "node test-server/server",
     "lint": "eslint .",
     "prepare": "husky install",
     "prettier": "prettier",
     "changeset": "changeset",
-    "release": "yarn build && yarn changeset publish",
-    "test:unit": "vitest run --coverage"
+    "release": "yarn build && yarn changeset publish"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
   },
   "devDependencies": {
     "@auto-it/released": "^10.32.6",
-    "@babel/preset-env": "^7.21.4",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.21.4",
     "@changesets/cli": "^2.27.1",
     "@eslint/js": "^9.15.0",
     "@playwright/test": "^1.46.1",
@@ -45,7 +42,7 @@
     "@testing-library/user-event": "^13.2.1",
     "@types/chrome-remote-interface": "^0",
     "@types/express": "^4.17.17",
-    "@types/node": "^16.4.1",
+    "@types/node": "^20.0.0",
     "@types/node-fetch": "^2.6.6",
     "@vitest/coverage-v8": "^4.0.18",
     "auto": "^10.3.0",

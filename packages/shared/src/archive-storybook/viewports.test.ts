@@ -1,8 +1,9 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readJSONFile, outputJSONFile } from '../utils/filePaths';
 import { addViewportsToStoriesFiles } from './viewports';
 import * as snapshots from '../write-archive/snapshot-files';
 import * as stories from '../write-archive/stories-files';
-import { describe, it, afterEach, expect, vi } from 'vitest';
+
 vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
   ...(await importOriginal()),
   readJSONFile: vi.fn(),

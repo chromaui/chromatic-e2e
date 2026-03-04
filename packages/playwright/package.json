@@ -41,7 +41,7 @@
     "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
-    "test:unit": "jest --passWithNoTests --coverage",
+    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Playwright",
     "test:playwright": "playwright test",
     "lint": "eslint src/*",
     "prettier": "prettier"

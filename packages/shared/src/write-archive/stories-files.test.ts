@@ -1,9 +1,10 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import fs from 'fs/promises';
 import { ChromaticStorybookParameters } from '../types';
 import { Viewport } from '../utils/viewport';
 import * as storiesFiles from './stories-files';
 
-jest.mock('fs/promises');
+vi.mock('fs/promises');
 
 const vports = [
   { width: 100, height: 1000 },
@@ -12,7 +13,7 @@ const vports = [
 ];
 
 beforeEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 describe('storiesFileName', () => {
@@ -187,7 +188,8 @@ describe('listStoriesFiles', () => {
       'some-id.stories.json',
       'not-a-snapshot.json',
     ];
-    fs.readdir = jest.fn().mockResolvedValueOnce(allFiles);
+    // @ts-expect-error - Intentionally handling only single function override
+    vi.mocked(fs.readdir).mockResolvedValueOnce(allFiles);
     const files = await storiesFiles.listStoriesFiles('some-dir');
 
     expect(files).toEqual(['some-id.stories.json', 'some-id.stories.json']);

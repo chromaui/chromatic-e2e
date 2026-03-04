@@ -12,11 +12,11 @@
     "lib": ["es2020", "dom"],
     "module": "commonjs",
     "noImplicitAny": true,
-    "rootDir": "./src",
+    "rootDir": ".",
     "skipLibCheck": true,
     "target": "ES2020",
-    "types": ["jest", "node", "cypress"],
+    "types": ["node", "cypress"],
     "moduleResolution": "node"
   },
-  "include": ["src", "tests", "scripts", ".eslintrc.js", "jest.config.js"]
+  "include": ["src", "tests", "scripts", "vitest.config.ts"]
 }

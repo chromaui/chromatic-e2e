@@ -1,6 +1,7 @@
+import { expect, it, vi } from 'vitest';
 import { NetworkIdleWatcher } from './network-idle-watcher';
 
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 it('Resolves when there is no network activity', async () => {
   const watcher = new NetworkIdleWatcher();
@@ -39,7 +40,7 @@ it('Rejects if response never sent for request', async () => {
   // fire off request
   watcher.onRequest();
   const promise = watcher.idle();
-  jest.runAllTimers();
+  vi.runAllTimers();
   // no response fired off
   await expect(promise).rejects.toBeDefined();
 });
@@ -53,7 +54,7 @@ it("Resolves if response hasn't happened at time of idle(), but comes back befor
 
   watcher.onResponse();
   // makes sure we finish the idle watcher as soon as the reponse comes back, and not waiting the full timeout duration
-  jest.advanceTimersByTime(1);
+  vi.advanceTimersByTime(1);
 
   await expect(promise).resolves.toBeDefined();
 });
@@ -70,7 +71,7 @@ it("Rejects if response hasn't happened at time of idle(), and doesn't come back
     watcher.onResponse();
   }, 10000);
 
-  jest.runAllTimers();
+  vi.runAllTimers();
 
   await expect(promise).rejects.toBeDefined();
 });

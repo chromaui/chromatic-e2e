@@ -53,7 +53,7 @@
     "build": "yarn prebuild && tsup",
     "test:cypress": "start-server-and-test 'yarn run dev:server' 3000 'yarn run test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
-    "test:unit": "jest --passWithNoTests --coverage",
+    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Cypress",
     "lint": "eslint src/*",
     "prettier": "prettier"
   },

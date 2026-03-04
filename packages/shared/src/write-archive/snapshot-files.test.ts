@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import fs from 'fs/promises';
 import * as snapshotFiles from './snapshot-files';
 
-jest.mock('fs/promises');
+vi.mock('fs/promises');
 
 beforeEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 describe('snapshotId', () => {
@@ -61,7 +62,8 @@ describe('listSnapshotFiles', () => {
       'some-id.w1200h820.snapshot.json',
       'not-a-snapshot.json',
     ];
-    fs.readdir = jest.fn().mockResolvedValueOnce(allFiles);
+    // @ts-expect-error - Intentionally handling only single function override
+    vi.mocked(fs.readdir).mockResolvedValueOnce(allFiles);
     const files = await snapshotFiles.listSnapshotFiles('some-dir');
 
     expect(files).toEqual(['some-id.w500h720.snapshot.json', 'some-id.w1200h820.snapshot.json']);

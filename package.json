@@ -7,26 +7,34 @@
     "type": "git",
     "url": "https://github.com/chromaui/chromatic-e2e.git"
   },
-  "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/archive-storybook.js",
-    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/build-archive-storybook.js",
     "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/archive-storybook.js",
-    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/build-archive-storybook.js",
-    "clean": "yarn workspaces foreach --all --parallel run clean",
+    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/archive-storybook.js",
     "prebuild": "yarn clean",
     "build": "yarn workspaces foreach --all --topological-dev --parallel run build",
-    "test:unit": "vitest run",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/build-archive-storybook.js",
+    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/build-archive-storybook.js",
+    "changeset": "changeset",
+    "clean": "yarn workspaces foreach --all --parallel run clean",
     "dev:server": "node test-server/server",
-    "lint": "yarn workspaces foreach --all --parallel run lint",
-    "prettier": "prettier",
+    "lint": "eslint .",
     "prepare": "husky install",
-    "release": "yarn build && yarn changeset publish"
+    "prettier": "prettier",
+    "release": "yarn build && yarn changeset publish",
+    "test:unit": "vitest run"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
   },
   "devDependencies": {
     "@auto-it/released": "^10.32.6",
     "@changesets/cli": "^2.27.1",
+    "@eslint/js": "^9.15.0",
     "@playwright/test": "^1.46.1",
     "@storybook/eslint-config-storybook": "^4.0.0",
     "@swc/core": "^1.4.6",
@@ -41,9 +49,11 @@
     "auto": "^10.3.0",
     "concurrently": "^7.0.0",
     "cypress": "^13.6.1",
-    "eslint": "^8.0.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
     "express": "^4.18.2",
     "express-basic-auth": "^1.2.1",
+    "globals": "^15.12.0",
     "husky": ">=6",
     "lint-staged": ">=10",
     "node-fetch": "2",
@@ -53,14 +63,9 @@
     "rimraf": "^3.0.2",
     "start-server-and-test": "^2.0.3",
     "tsup": "^7.3.0",
-    "typescript": "^4.2.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.15.0",
     "vitest": "^4.0.18"
   },
-  "lint-staged": {
-    "*.{ts,js,css,md}": "prettier --write"
-  },
-  "packageManager": "yarn@4.0.2",
-  "workspaces": [
-    "packages/*"
-  ]
+  "packageManager": "yarn@4.0.2"
 }

@@ -1,4 +1,0 @@
-dist/**/*.js
-storybook-static/**/*.js
-
-tsup.config.ts

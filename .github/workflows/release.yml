@@ -30,7 +30,7 @@ jobs:
   release-stable:
     name: Release (stable)
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Test and Release Main' && github.repository == 'chromatic-com/chromatic-e2e'
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Test and Release Main' && github.repository == 'chromaui/chromatic-e2e'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4

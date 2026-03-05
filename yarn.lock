@@ -481,7 +481,6 @@ __metadata:
     "@testing-library/dom": "npm:^8.1.0"
     "@testing-library/react": "npm:^12.0.0"
     "@testing-library/user-event": "npm:^13.2.1"
-    "@types/node": "npm:^20.0.0"
     "@types/node-fetch": "npm:^2.6.6"
     concurrently: "npm:^7.0.0"
     lint-staged: "npm:>=10"
@@ -513,7 +512,7 @@ __metadata:
     "@testing-library/user-event": "npm:^13.2.1"
     "@types/chrome-remote-interface": "npm:^0"
     "@types/express": "npm:^4.17.17"
-    "@types/node": "npm:^20.0.0"
+    "@types/node": "npm:^22.0.0"
     "@types/node-fetch": "npm:^2.6.6"
     "@vitest/coverage-v8": "npm:^4.0.18"
     auto: "npm:^10.3.0"
@@ -2182,12 +2181,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.0.0":
-  version: 20.19.35
-  resolution: "@types/node@npm:20.19.35"
+"@types/node@npm:^22.0.0":
+  version: 22.19.13
+  resolution: "@types/node@npm:22.19.13"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: e27d3e1eac4105b627fdba2d86577e603c66fc7b4ad61418d41f3898d84b2f5ff3e0c6b6d3948b34976ea91056e6359740b387edcc65ca516c3f2b5a0c0f9c6a
+  checksum: ad8a0b6a69dd8ef663701573eca94ef6d20ce093f54f05bed823c826374eb1ea8b06e6f2c5d7f6cfc203b82dfd60293296bf80ea987ddb77775840bc2ef9f803
   languageName: node
   linkType: hard
 

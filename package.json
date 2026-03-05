@@ -42,7 +42,7 @@
     "@testing-library/user-event": "^13.2.1",
     "@types/chrome-remote-interface": "^0",
     "@types/express": "^4.17.17",
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.0.0",
     "@types/node-fetch": "^2.6.6",
     "@vitest/coverage-v8": "^4.0.18",
     "auto": "^10.3.0",

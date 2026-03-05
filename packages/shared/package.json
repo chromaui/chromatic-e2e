@@ -86,7 +86,6 @@
     "@testing-library/dom": "^8.1.0",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
-    "@types/node": "^20.0.0",
     "@types/node-fetch": "^2.6.6",
     "concurrently": "^7.0.0",
     "lint-staged": ">=10",

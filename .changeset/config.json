@@ -7,9 +7,6 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@chromatic-com/shared-e2e"
-  ],
   "snapshot": {
     "useCalculatedVersion": true
   }

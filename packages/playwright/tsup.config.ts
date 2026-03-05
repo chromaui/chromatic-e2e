@@ -1,6 +1,6 @@
 import { Options, defineConfig } from 'tsup';
 
-const common = {
+const common: Partial<Options> = {
   splitting: false,
   dts: {
     resolve: true,
@@ -8,9 +8,6 @@ const common = {
   treeshake: true,
   minify: false,
   clean: false, // This set to `true` caused a race condition since we're running multiple builds below
-  esbuildOptions(options: any) {
-    options.conditions = ['module'];
-  },
 };
 
 export default defineConfig((options) => [
@@ -28,7 +25,7 @@ export default defineConfig((options) => [
         js: "import { createRequire as topLevelCreateRequire } from 'module';\n const require = topLevelCreateRequire(import.meta.url);",
       };
     },
-  } as Options,
+  },
   // These are all node scripts so we keep it simple and only generate CJS.
   // In particular SB will warn if we generate both CJS+ESM main files
   {
@@ -41,8 +38,10 @@ export default defineConfig((options) => [
     },
     format: ['cjs'],
     platform: 'node',
-    minify: false,
-  } as Options,
+    esbuildOptions(options) {
+      options.conditions = ['module'];
+    },
+  },
   // This is a SB browser file so ESM is better.
   {
     ...common,
@@ -53,6 +52,8 @@ export default defineConfig((options) => [
     platform: 'browser',
     // We need to be careful how we minimize `preview.ts` because the
     // SB indexer is quite particular about the format of `parameters`.
-    minify: false,
-  } as Options,
+    esbuildOptions(options) {
+      options.conditions = ['module'];
+    },
+  },
 ]);

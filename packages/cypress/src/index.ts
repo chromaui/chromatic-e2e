@@ -80,7 +80,6 @@ const setupNetworkListener = async ({
       await resourceArchiver.watch();
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.log('err', err);
   }
 

@@ -68,8 +68,6 @@
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
     "clean": "rimraf ./dist",
-    "lint": "eslint src/*",
-    "prettier": "prettier",
     "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Shared"
   },
   "lint-staged": {

@@ -19,14 +19,14 @@
     "build": "yarn workspaces foreach --all --topological-dev --parallel run build",
     "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/build-archive-storybook.js",
     "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/build-archive-storybook.js",
+    "changeset": "changeset",
     "clean": "yarn workspaces foreach --all --parallel run clean",
-    "test:unit": "vitest run",
     "dev:server": "node test-server/server",
     "lint": "eslint .",
     "prepare": "husky install",
     "prettier": "prettier",
-    "changeset": "changeset",
-    "release": "yarn build && yarn changeset publish"
+    "release": "yarn build && yarn changeset publish",
+    "test:unit": "vitest run"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
@@ -47,7 +47,6 @@
     "@vitest/coverage-v8": "^4.0.18",
     "auto": "^10.3.0",
     "concurrently": "^7.0.0",
-    "cypress": "^15.11.0",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "express": "^4.18.2",

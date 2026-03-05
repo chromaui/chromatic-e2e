@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Protocol } from 'playwright-core/types/protocol';
 import { logger } from '../utils/logger';
 

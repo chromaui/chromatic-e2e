@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { readdir } from 'fs/promises';
 import { ChromaticStorybookParameters } from '../types';
 import { snapshotId } from './snapshot-files';

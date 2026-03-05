@@ -18,7 +18,6 @@
     "noImplicitAny": true,
     "skipLibCheck": true,
     "target": "ES2020",
-    "types": ["node", "cypress"]
   },
   "include": ["packages/**/*.ts", "packages/**/*.tsx", "vitest.config.ts"]
 }

@@ -58,12 +58,6 @@
       ]
     }
   },
-  "files": [
-    "dist/**/*",
-    "README.md",
-    "*.js",
-    "*.d.ts"
-  ],
   "scripts": {
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
@@ -95,7 +89,6 @@
     "node-fetch": "2",
     "playwright": "^1.46.1",
     "playwright-core": "^1.46.1",
-    "prettier": "^3.5.3",
     "prompts": "^2.4.2",
     "rimraf": "^3.0.2",
     "srcset": "^4.0.0",

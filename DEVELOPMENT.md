@@ -11,7 +11,7 @@ This repository is a Yarn 4 monorepo containing the following packages:
 
 ### Requirements
 
-- Node 18
+- Node 22
 - Yarn 4
 
 ### Getting Started
@@ -42,6 +42,18 @@ Then, the test commands are as follows:
 - Cypress: `yarn test:cypress`, then `yarn archive-storybook:cypress` to see the archived UI
 
 If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `yarn dev:server` and visit `http://localhost:3000`.
+
+### Linting & formatting
+
+We use `eslint` and `prettier` to ensure code consistency.
+
+To have all formatting and linting auto-fixed (so much as possible) run this at the project root:
+
+```
+yarn lint --fix
+
+yarn prettier . --write
+```
 
 ### PR Workflow with Changesets
 

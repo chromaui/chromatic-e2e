@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestInfo } from 'playwright/test';
 import { Page } from 'playwright';
 import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';

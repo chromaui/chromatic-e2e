@@ -107,7 +107,7 @@ export const removeLocalhostFromBaseUrl = (href: string) => {
       return baseUrl.pathname + baseUrl.search + baseUrl.hash;
     }
     return href;
-  } catch (error) {
+  } catch {
     // If the base ref is not a valid URL, we return the original href since it could be a relative path
     return href;
   }

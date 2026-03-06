@@ -7,11 +7,8 @@
     "url": "https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/cypress"
   },
-  "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "author": "Chromatic <tom@chromatic.com>",
   "exports": {
     ".": {
       "import": {
@@ -37,6 +34,9 @@
     "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js",
     "./package.json": "./package.json"
   },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "bin": {
     "archive-storybook": "dist/bin/archive-storybook.js",
     "build-archive-storybook": "dist/bin/build-archive-storybook.js"
@@ -48,27 +48,15 @@
     "*.d.ts"
   ],
   "scripts": {
-    "clean": "rimraf ./dist",
     "prebuild": "yarn clean",
     "build": "yarn prebuild && tsup",
+    "clean": "rimraf ./dist",
     "test:cypress": "start-server-and-test 'yarn run dev:server' 3000 'yarn run test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
-    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Cypress",
-    "lint": "eslint src/*",
-    "prettier": "prettier"
-  },
-  "devDependencies": {
-    "@chromatic-com/shared-e2e": "workspace:*",
-    "@rrweb/types": "^2.0.0-alpha.18",
-    "@storybook/types": "^8.1.5",
-    "cypress": "^13.4.0",
-    "start-server-and-test": "^2.0.3"
+    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Cypress"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
@@ -79,5 +67,15 @@
     "@storybook/server-webpack5": "~8.5.8",
     "chrome-remote-interface": "^0.33.0",
     "storybook": "~8.5.8"
+  },
+  "devDependencies": {
+    "@chromatic-com/shared-e2e": "workspace:*",
+    "@rrweb/types": "^2.0.0-alpha.18",
+    "@storybook/types": "^8.1.5",
+    "cypress": "^15.11.0",
+    "start-server-and-test": "^2.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

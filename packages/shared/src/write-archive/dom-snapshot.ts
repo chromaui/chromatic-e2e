@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-param-reassign */
 import type { serializedElementNodeWithId, serializedNodeWithId } from '@rrweb/types';
 import { NodeType } from '@rrweb/types';
 import srcset from 'srcset';
@@ -188,5 +186,3 @@ export class DOMSnapshot {
     return currentSrc;
   }
 }
-/* eslint-enable no-underscore-dangle */
-/* eslint-enable no-param-reassign */

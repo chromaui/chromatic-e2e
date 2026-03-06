@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/named
 import { addons } from '@storybook/manager-api';
 
 addons.setConfig({

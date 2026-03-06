@@ -488,7 +488,6 @@ __metadata:
     node-fetch: "npm:2"
     playwright: "npm:^1.46.1"
     playwright-core: "npm:^1.46.1"
-    prettier: "npm:^3.5.3"
     prompts: "npm:^2.4.2"
     rimraf: "npm:^3.0.2"
     srcset: "npm:^4.0.0"

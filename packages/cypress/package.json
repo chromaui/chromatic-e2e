@@ -72,7 +72,7 @@
     "@chromatic-com/shared-e2e": "workspace:*",
     "@rrweb/types": "^2.0.0-alpha.18",
     "@storybook/types": "^8.1.5",
-    "cypress": "^13.4.0",
+    "cypress": "^15.11.0",
     "start-server-and-test": "^2.0.3"
   },
   "publishConfig": {

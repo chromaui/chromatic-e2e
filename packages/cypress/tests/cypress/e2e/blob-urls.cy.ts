@@ -14,7 +14,7 @@ it('Fetch data for blob', () => {
   cy.get('#blobImg')
     .should('be.visible')
     .should(($img) => {
-      // "naturalWidth" and "naturalHeight" are set when the image loads
+      // @ts-expect-error -- "naturalWidth" and "naturalHeight" are set when the image loads
       expect($img[0].naturalWidth).to.eq(10);
     });
 });

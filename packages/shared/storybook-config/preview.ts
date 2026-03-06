@@ -1,4 +1,4 @@
-import type { RenderContext, RenderToCanvas, WebRenderer } from '@storybook/types';
+import type { RenderContext, RenderToCanvas, WebRenderer } from 'storybook/internal/types';
 import type { serializedNodeWithId } from '@rrweb/types';
 import { NodeType } from '@rrweb/types';
 import { rebuild } from '@chromaui/rrweb-snapshot';

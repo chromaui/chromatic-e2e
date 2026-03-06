@@ -62,7 +62,7 @@ export async function writeTestResult(
         sourceMap.set(origSrcPath, fileSystemPath);
       }
 
-      await outputFile(join(archiveDir, fileSystemPath), response.body);
+      await outputFile(join(archiveDir, fileSystemPath), response.body as any);
     })
   );
 

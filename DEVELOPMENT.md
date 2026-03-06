@@ -11,7 +11,7 @@ This repository is a Yarn 4 monorepo containing the following packages:
 
 ### Requirements
 
-- Node 18
+- Node 22
 - Yarn 4
 
 ### Getting Started

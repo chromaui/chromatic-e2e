@@ -18,7 +18,7 @@ function getAbsolutePath(value: string) {
 export default {
   stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
   managerEntries: [path.resolve(__dirname, 'manager.mjs')],
-  projectAnnotations: [path.resolve(__dirname, 'preview.mjs')],
+  previewAnnotations: [path.resolve(__dirname, 'preview.mjs')],
   framework: {
     name: getAbsolutePath('@storybook/server-webpack5'),
     options: {},

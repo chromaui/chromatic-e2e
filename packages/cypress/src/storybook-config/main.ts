@@ -17,14 +17,14 @@ function getAbsolutePath(value: string) {
 /** @type { import('@storybook/server-webpack5').StorybookConfig } */
 export default {
   stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
-  managerEntries: [path.resolve(__dirname, 'manager.js')],
-  projectAnnotations: [path.resolve(__dirname, 'preview.js')],
+  managerEntries: [path.resolve(__dirname, 'manager.mjs')],
+  projectAnnotations: [path.resolve(__dirname, 'preview.mjs')],
   framework: {
     name: getAbsolutePath('@storybook/server-webpack5'),
     options: {},
   },
   core: {
-    builder: import.meta.resolve('@storybook/server-webpack5'),
+    builder: import.meta.resolve('@storybook/builder-webpack5'),
   },
   staticDirs: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), 'archive')],
 };

@@ -1,7 +1,7 @@
 ---
-'@chromatic-com/playwright': patch
-'@chromatic-com/cypress': patch
-'@chromatic-com/shared-e2e': patch
+'@chromatic-com/playwright': minor
+'@chromatic-com/cypress': minor
+'@chromatic-com/shared-e2e': minor
 ---
 
 upgrade storybook to latest

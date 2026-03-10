@@ -13,12 +13,12 @@
     "packages/*"
   ],
   "scripts": {
-    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/archive-storybook.js",
-    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/archive-storybook.js",
+    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads yarn workspace @chromatic-com/cypress exec archive-storybook",
+    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results yarn workspace @chromatic-com/playwright archive-storybook",
     "prebuild": "yarn clean",
     "build": "yarn workspaces foreach --all --topological-dev --parallel run build",
-    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=packages/cypress/tests/cypress/test-downloads packages/cypress/dist/bin/build-archive-storybook.js",
-    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=packages/playwright/test-results packages/playwright/dist/bin/build-archive-storybook.js",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads yarn workspace @chromatic-com/cypress exec build-archive-storybook",
+    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results yarn workspace @chromatic-com/playwright build-archive-storybook",
     "changeset": "changeset",
     "clean": "yarn workspaces foreach --all --parallel run clean",
     "dev:server": "node test-server/server",

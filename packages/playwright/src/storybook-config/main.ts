@@ -25,6 +25,7 @@ export default {
   },
   core: {
     builder: import.meta.resolve('@storybook/builder-webpack5'),
+    renderer: import.meta.resolve('@storybook/server/preset'),
   },
   staticDirs: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), 'archive')],
 };

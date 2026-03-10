@@ -27,11 +27,42 @@ permissions:
   contents: read
 
 jobs:
-  release:
-    name: Release
+  release-stable:
+    name: Release (stable)
     runs-on: ubuntu-latest
-    # Only run when the test workflow succeeded
-    if: github.event.workflow_run.conclusion == 'success'
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Test and Release Main' && github.repository == 'chromaui/chromatic-e2e'
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Update npm
+        run: |
+          npm --version
+          npm install -g npm@latest
+          npm --version
+
+      - name: Stable release (main)
+        uses: changesets/action@v1
+        with:
+          publish: yarn run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-canary:
+    name: Release (canary)
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Test and Release PR'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -48,27 +79,20 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Stable release (main)
-        if: github.event.workflow_run.name == 'Test and Release Main'
-        uses: changesets/action@v1
-        with:
-          publish: yarn run release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build (canary)
-        if: github.event.workflow_run.name == 'Test and Release PR'
         run: yarn run build
 
       - name: Set canary snapshot hash
-        if: github.event.workflow_run.name == 'Test and Release PR'
         run: |
           echo "GIT_HASH=$(git rev-parse --short ${{ github.event.workflow_run.head_sha }})" >> "$GITHUB_ENV"
 
+      - name: Update npm
+        run: |
+          npm --version
+          npm install -g npm@latest
+          npm --version
+
       - name: Publish canary
-        if: github.event.workflow_run.name == 'Test and Release PR'
         run: |
           yarn run changeset version --snapshot $GIT_HASH
           yarn run changeset publish --no-git-tag --tag canary
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

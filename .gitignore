@@ -20,7 +20,9 @@ chromatic.log
 test-archives
 **/playwright-report/
 **/playwright/.cache/
+packages/playwright/embedded/
 packages/playwright/test-results/
+packages/cypress/embedded/
 packages/cypress/tests/cypress/downloads/
 packages/cypress/tests/cypress/test-downloads/
 packages/*/coverage/

@@ -1,7 +1,7 @@
 /**
  * Populates embedded/ by copying @storybook/builder-webpack5, @storybook/server,
- * @storybook/server-webpack5 and their transitive deps (excluding 'storybook')
- * from the monorepo's node_modules. Run from repo root.
+ * @storybook/server-webpack5 and their transitive deps (excluding the target
+ * package's own dependencies) from the monorepo's node_modules. Run from repo root.
  * Usage: jiti scripts/prepare-embedded.ts [playwright] [cypress]
  * With no args: runs for both playwright and cypress.
  */
@@ -14,7 +14,6 @@ const PACKAGES_TO_EMBED = [
   '@storybook/server',
   '@storybook/server-webpack5',
 ];
-const EXCLUDE_PACKAGE = 'storybook';
 
 const DEFAULT_PACKAGE_NAMES = ['playwright', 'cypress'];
 
@@ -42,7 +41,7 @@ function getPackageNameAndDeps(absDir: string): { name: string; deps: string[] }
   return { name: pkg.name, deps: Object.keys(deps || {}) };
 }
 
-function gatherAllPackages(req: NodeRequire): Map<string, string> {
+function gatherAllPackages(req: NodeRequire, excludePackages: Set<string>): Map<string, string> {
   const byPath = new Map<string, string>();
   const processed = new Set<string>();
   const queue = [...PACKAGES_TO_EMBED];
@@ -62,7 +61,7 @@ function gatherAllPackages(req: NodeRequire): Map<string, string> {
     processed.add(info.name);
 
     for (const dep of info.deps) {
-      if (dep === EXCLUDE_PACKAGE) continue;
+      if (excludePackages.has(dep)) continue;
       if (!processed.has(dep)) queue.push(dep);
     }
   }
@@ -88,7 +87,11 @@ function runForPackage(pkgDir: string): void {
   }
   fs.mkdirSync(embeddedDir, { recursive: true });
 
-  const byPath = gatherAllPackages(req);
+  const pkgPath = path.join(pkgDir, 'package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as { dependencies?: Record<string, string> };
+  const excludePackages = new Set(Object.keys(pkg.dependencies || {}));
+
+  const byPath = gatherAllPackages(req, excludePackages);
   for (const [realPath, packageName] of byPath) {
     copyPackage(realPath, packageName, embeddedDir);
   }

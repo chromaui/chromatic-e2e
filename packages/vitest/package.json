@@ -1,0 +1,33 @@
+{
+  "name": "@chromatic-com/vitest",
+  "version": "0.0.1",
+  "description": "Chromatic Visual Regression Testing for Vitest",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chromaui/chromatic-e2e.git",
+    "directory": "packages/vitest"
+  },
+  "author": "Chromatic <tom@chromatic.com>",
+  "license": "MIT",
+  "type": "module",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./index.js"
+      }
+    }
+  },
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "build": "echo skipped"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

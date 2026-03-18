@@ -582,6 +582,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@chromatic-com/vitest@workspace:packages/vitest":
+  version: 0.0.0-use.local
+  resolution: "@chromatic-com/vitest@workspace:packages/vitest"
+  languageName: unknown
+  linkType: soft
+
 "@chromaui/chromatic-e2e@workspace:.":
   version: 0.0.0-use.local
   resolution: "@chromaui/chromatic-e2e@workspace:."

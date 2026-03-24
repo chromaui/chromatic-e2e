@@ -36,6 +36,12 @@ export interface ResolvedOptions
 type InternalMeta = Record<ChromaticNamespace, unknown> & {
   /** Indicates whether Visual Regression tracking is registered */
   __chromatic_isRegistered?: boolean;
+
+  /** Indicates whether `takeSnapshot()` has been called */
+  __chromatic_isTakeSnapshotCalled?: boolean;
+
+  /** Pending `takeSnapshot()` promises */
+  __chromatic_pendingTakeSnapshots?: { promise: Promise<void>; error: Error }[];
 };
 
 /** @internal */

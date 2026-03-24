@@ -1,3 +1,3 @@
 /* Entrypoint for browser context */
 
-export {};
+export { takeSnapshot } from './browser/public/takeSnapshot';

@@ -64,7 +64,7 @@ export class ResourceArchiver {
     await this.client.send('Fetch.enable', { handleAuthRequests: true });
   }
 
-  async off() {
+  async unwatch() {
     this.client.off?.('Fetch.requestPaused', this.requestPaused);
     this.client.off?.('Fetch.authRequired', this.authRequired);
     await this.client.send('Fetch.disable');

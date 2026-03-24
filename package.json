@@ -15,11 +15,13 @@
   "scripts": {
     "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads yarn workspace @chromatic-com/cypress exec archive-storybook",
     "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results yarn workspace @chromatic-com/playwright archive-storybook",
+    "archive-storybook:vitest": "CHROMATIC_ARCHIVE_LOCATION=test/.vitest/chromatic yarn workspace @chromatic-com/vitest exec archive-storybook",
     "prebuild": "yarn clean",
     "build": "yarn prebuild && yarn workspaces foreach --all --topological-dev --parallel run build && jiti scripts/prepare-embedded.ts",
     "prepare-embedded": "jiti scripts/prepare-embedded.ts",
     "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads yarn workspace @chromatic-com/cypress exec build-archive-storybook",
     "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results yarn workspace @chromatic-com/playwright build-archive-storybook",
+    "build-archive-storybook:vitest": "CHROMATIC_ARCHIVE_LOCATION=test/.vitest/chromatic yarn workspace @chromatic-com/vitest exec build-archive-storybook",
     "changeset": "changeset",
     "clean": "yarn workspaces foreach --all --parallel run clean",
     "dev:server": "node test-server/server",
@@ -45,7 +47,7 @@
     "@types/express": "^4.17.17",
     "@types/node": "^22.0.0",
     "@types/node-fetch": "^2.6.6",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/coverage-v8": "^4.1.0",
     "auto": "^10.3.0",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
@@ -64,7 +66,7 @@
     "tsup": "^7.3.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.15.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "packageManager": "yarn@4.0.2"
 }

@@ -1,0 +1,72 @@
+{
+  "name": "@chromatic-com/vitest",
+  "version": "0.0.0",
+  "description": "Chromatic Visual Regression Testing for Vitest",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chromaui/chromatic-e2e.git",
+    "directory": "packages/vitest"
+  },
+  "author": "Chromatic <tom@chromatic.com>",
+  "license": "MIT",
+  "type": "module",
+  "module": "dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      }
+    },
+    "./plugin": {
+      "import": {
+        "types": "./dist/plugin.d.ts",
+        "default": "./dist/plugin.mjs"
+      }
+    },
+    "./bin/archive-storybook": {
+      "require": "./dist/bin/archive-storybook.cjs"
+    },
+    "./bin/build-archive-storybook": {
+      "require": "./dist/bin/build-archive-storybook.cjs"
+    }
+  },
+  "bin": {
+    "archive-storybook": "dist/bin/archive-storybook.cjs",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.cjs"
+  },
+  "files": [
+    "dist",
+    "embedded"
+  ],
+  "scripts": {
+    "clean": "rimraf ./dist ./embedded",
+    "prebuild": "yarn clean",
+    "build": "yarn prebuild && tsup",
+    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project 'Vitest Unit' --project 'Vitest Browser'",
+    "test:vitest": "vitest --config test/vitest.config.e2e.ts"
+  },
+  "dependencies": {
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
+    "@segment/analytics-node": "2.1.3",
+    "storybook": "10.2.13",
+    "tinyrainbow": "^3.1.0"
+  },
+  "devDependencies": {
+    "@chromatic-com/shared-e2e": "workspace:*",
+    "@rrweb/types": "^2.0.0-alpha.18",
+    "@storybook/builder-webpack5": "10.2.13",
+    "@storybook/server": "10.2.13",
+    "@storybook/server-webpack5": "10.2.13",
+    "@vitest/browser-playwright": "^4.1.0",
+    "msw": "^2.12.10",
+    "vitest": "^4.1.0"
+  },
+  "peerDependencies": {
+    "vitest": "^4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

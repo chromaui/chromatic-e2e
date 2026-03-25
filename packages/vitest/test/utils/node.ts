@@ -22,8 +22,7 @@ export async function runFixture(
   options: CliOptions,
   pluginOptions: Parameters<typeof chromaticPlugin>[0] | { disabled: true } = {}
 ) {
-  const stdout = vi.fn().mockImplementation((_chunk, _encoding, _callback) => _callback?.());
-  const stderr = vi.fn().mockImplementation((_chunk, _encoding, _callback) => _callback?.());
+  const { streams, getOutput } = createOutputStreams();
 
   const vitest = await startVitest(
     'test',
@@ -38,11 +37,11 @@ export async function runFixture(
         ...options,
       },
     },
-    { stdout: new Writable({ write: stdout }), stderr: new Writable({ write: stderr }) }
+    streams
   );
   vitest.close();
 
-  return { stdout: formatStreamCalls(stdout), stderr: formatStreamCalls(stderr) };
+  return getOutput();
 }
 
 export async function getResolvedConfig(
@@ -53,11 +52,21 @@ export async function getResolvedConfig(
     'test',
     { config: false, watch: false },
     { plugins: [chromaticPlugin(pluginOptions)], test: options },
-    { stdout: new Writable(), stderr: new Writable() }
+    createOutputStreams().streams
   );
   onTestFinished(() => vitest.close());
 
   return vitest.config;
+}
+
+export function createOutputStreams() {
+  const stdout = vi.fn().mockImplementation((_chunk, _encoding, _callback) => _callback?.());
+  const stderr = vi.fn().mockImplementation((_chunk, _encoding, _callback) => _callback?.());
+
+  return {
+    streams: { stdout: new Writable({ write: stdout }), stderr: new Writable({ write: stderr }) },
+    getOutput: () => ({ stdout: formatStreamCalls(stdout), stderr: formatStreamCalls(stderr) }),
+  };
 }
 
 function formatStreamCalls({ mock }: Mock) {

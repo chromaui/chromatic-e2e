@@ -14,6 +14,7 @@ import { type ResolvedOptions, type Options } from '../types';
 export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
   const options: ResolvedOptions = {
     assetDomains: [],
+    disableAutoSnapshot: false,
     outputDirectory: DEFAULT_OUTPUT_DIR,
     resourceArchiveTimeout: DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     idleNetworkInterval: 100,

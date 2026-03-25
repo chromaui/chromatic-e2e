@@ -18,6 +18,7 @@ test('browser commands are available', () => {
       "__chromatic_getSnapshots": [Function],
       "__chromatic_interceptFetch": [Function],
       "__chromatic_reset": [Function],
+      "__chromatic_stopWithoutSnapshots": [Function],
       "__chromatic_uploadDOMSnapshot": [Function],
       "__chromatic_waitForIdleNetwork": [Function],
       "__chromatic_writeTestResult": [Function],
@@ -32,6 +33,7 @@ test('getOptions', async () => {
   expect(options).toMatchInlineSnapshot(`
     {
       "assetDomains": [],
+      "disableAutoSnapshot": false,
       "idleNetworkInterval": 100,
       "outputDirectory": ".vitest/chromatic",
       "resourceArchiveTimeout": 10000,

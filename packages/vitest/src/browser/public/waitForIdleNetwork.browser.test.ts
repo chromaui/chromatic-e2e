@@ -2,8 +2,10 @@ import { beforeEach, expect, test } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupWorker } from 'msw/browser';
 import { waitForIdleNetwork } from './waitForIdleNetwork';
+import { disableAutoSnapshot } from './autoSnapshot';
 
 const worker = setupWorker();
+disableAutoSnapshot();
 
 beforeEach(async () => {
   await worker.start({ quiet: true });

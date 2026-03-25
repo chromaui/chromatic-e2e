@@ -33,10 +33,12 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
 
   test.meta.__chromatic_isTakeSnapshotCalled = true;
 
-  const domSnapshot = snapshot(document, { recordCanvas: true });
-  assert(domSnapshot, 'Failed to capture DOM snapshot');
-
   const save = async () => {
+    const domSnapshot = await hackyInlineStatefulElements(() =>
+      snapshot(document, { recordCanvas: true })
+    );
+    assert(domSnapshot, 'Failed to capture DOM snapshot');
+
     await replaceBlobUrls(domSnapshot);
     await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, name);
   };
@@ -101,6 +103,84 @@ async function toDataURL(url: string): Promise<string> {
     // convert the blob to base64 string
     reader.readAsDataURL(blob);
   });
+}
+
+/**
+ * This should either be in rrweb/snapshot or Capture should support triggering element pseudo states
+ */
+// v8 ignore next
+async function hackyInlineStatefulElements<T>(method: () => T | Promise<T>): Promise<T> {
+  // getComputedStyle() may give different results if animations are not finished
+  await Promise.race([
+    Promise.allSettled(document.getAnimations().map((animation) => animation.finished)),
+    new Promise((resolve) => setTimeout(resolve, 1_000)),
+  ]);
+
+  const cleanups: (() => void)[] = [];
+
+  const customProps = new Set<string>();
+  const pseudoRe = /:hover|:focus|:focus-visible|:focus-within|:active|:checked/;
+  const propRe = /(--[\w-]+)\s*:/g;
+
+  for (const style of Array.from(document.querySelectorAll('style'))) {
+    const text = style.textContent || '';
+    const ruleMatches = text.matchAll(/([^{}]+)\{([^{}]+)\}/g);
+
+    for (const [, selector, body] of ruleMatches) {
+      if (pseudoRe.test(selector)) {
+        for (const match of body.matchAll(propRe)) {
+          customProps.add(match[1]);
+        }
+      }
+    }
+  }
+
+  const statefulElements = Array.from(
+    document.querySelectorAll(
+      ':hover, :focus, :focus-visible, :focus-within, :active, :checked' as 'div'
+    )
+  ).reverse();
+
+  for (const element of statefulElements) {
+    const style = getComputedStyle(element);
+
+    const values = [];
+
+    for (let i = 0; i < style.length; i++) {
+      const prop = style.item(i);
+      const value = style.getPropertyValue(prop);
+      if (value !== '') {
+        values.push({ prop, value });
+      }
+    }
+
+    for (const prop of customProps) {
+      const value = style.getPropertyValue(prop);
+
+      if (value !== '') {
+        values.push({ prop, value });
+      }
+    }
+
+    const originalStyle = element.getAttribute('style') || '';
+    cleanups.push(() => element.setAttribute('style', originalStyle));
+    cleanups.push(() => element.removeAttribute('data-chromatic-modified'));
+
+    if (values.length !== 0) {
+      // So that we can see in snapshots that this hack actually ran, just debugging
+      element.setAttribute('data-chromatic-modified', 'true');
+    }
+
+    for (const { prop, value } of values) {
+      // This is bad, we don't want to modify user's DOM during test run. This should be in rr-web snapshot serialization instead.
+      element.style.setProperty(prop, value);
+    }
+  }
+
+  const output = await method();
+  cleanups.splice(0).forEach((fn) => fn());
+
+  return output;
 }
 
 export { takeSnapshot };

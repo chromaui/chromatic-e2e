@@ -51,6 +51,11 @@ export class ResourceArchiver {
    */
   private httpCredentials: HttpCredentials;
 
+  /**
+   * Currently active requests
+   */
+  private pendingRequests = new Set<Protocol.Fetch.requestPausedPayload['requestId']>();
+
   constructor(cdpClient: CDPClient, allowedDomains?: string[], httpCredentials?: HttpCredentials) {
     this.client = cdpClient;
     // tack on the protocol so we can properly check if requests are cross-origin
@@ -68,6 +73,11 @@ export class ResourceArchiver {
     this.client.off?.('Fetch.requestPaused', this.requestPaused);
     this.client.off?.('Fetch.authRequired', this.authRequired);
     await this.client.send('Fetch.disable');
+    this.pendingRequests.clear();
+  }
+
+  getPendingRequestsCount() {
+    return this.pendingRequests.size;
   }
 
   async clientSend<T extends keyof Protocol.CommandParameters>(
@@ -102,6 +112,8 @@ export class ResourceArchiver {
     responseErrorReason,
     responseHeaders,
   }: Protocol.Fetch.requestPausedPayload) => {
+    this.pendingRequests.delete(requestId);
+
     // We only need to capture assets that will render when the DOM snapshot is rendered,
     // so we only need to handle GET requests.
     if (!request.method.match(/get/i)) {
@@ -152,6 +164,8 @@ export class ResourceArchiver {
       );
       return;
     }
+
+    this.pendingRequests.add(requestId);
 
     await this.clientSend(request, 'Fetch.continueRequest', {
       requestId,

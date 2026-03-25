@@ -13,6 +13,15 @@ export type ChromaticNamespace = `__chromatic_${string}`;
  */
 export interface Options extends ChromaticConfig {
   /**
+   * Tags used to register tests for visual regression tracking.
+   * If specified, only tests with at least one matching tag will be registered for visual regression tracking.
+   * Tests without any of the specified tags will be ignored and won't have snapshots taken, even if `disableAutoSnapshot` is false.
+   *
+   * @default none (all tests are registered)
+   */
+  tags?: string[];
+
+  /**
    * Directory where temporary archives and snapshots will be stored.
    * Relative to the project [the project `root`](https://vitest.dev/config/root.html#root).
    *
@@ -30,7 +39,7 @@ export interface Options extends ChromaticConfig {
 }
 
 /** Options that don't have internal default values */
-type UnresolvedOptionKeys = Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
+type UnresolvedOptionKeys = 'tags' | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
 
 /** Options with resolved values - derived from internal default values when not passed by user. */
 type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;

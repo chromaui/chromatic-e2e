@@ -1,8 +1,13 @@
 import { resolve } from 'node:path';
-import { expect, test } from 'vitest';
-import { type TestModule } from 'vitest/node';
+import { expect, onTestFinished, test } from 'vitest';
+import { createVitest, type TestModule } from 'vitest/node';
 import { chromaticPlugin } from './plugin';
-import { getBrowserConfig, getResolvedConfig, runFixture } from '../../test/utils/node';
+import {
+  createOutputStreams,
+  getBrowserConfig,
+  getResolvedConfig,
+  runFixture,
+} from '../../test/utils/node';
 
 test.each([
   { name: 'string', setupFiles: 'some-user-defined-setup.ts' },
@@ -32,6 +37,58 @@ test('adds browser commands', async () => {
       "__chromatic_writeTestResult": [Function],
     }
   `);
+});
+
+test('adds tags', async () => {
+  const config = await getResolvedConfig(undefined, { tags: ['my-tag-for-vrt'] });
+
+  expect(config.tags).toMatchInlineSnapshot(`
+    [
+      {
+        "description": "Visual Regression Tests for \`@chromatic-com/vitest\`",
+        "name": "my-tag-for-vrt",
+      },
+    ]
+  `);
+});
+
+test('does not override user-defined tags', async () => {
+  const config = await getResolvedConfig(
+    {
+      tags: [{ name: 'my-tag-for-vrt', description: 'Custom description' }],
+    },
+    { tags: ['my-tag-for-vrt'] }
+  );
+
+  expect(config.tags).toMatchInlineSnapshot(`
+    [
+      {
+        "description": "Custom description",
+        "name": "my-tag-for-vrt",
+      },
+    ]
+  `);
+});
+
+test('warns if tags are used with Vitest 4.0', async () => {
+  const { streams, getOutput } = createOutputStreams();
+  const plugin = chromaticPlugin({ tags: ['my-tag-for-vrt'] });
+  const vitest = await createVitest(
+    'test',
+    { config: false, standalone: true, watch: true },
+    {},
+    streams
+  );
+  onTestFinished(() => vitest.close());
+
+  // @ts-expect-error -- intentional
+  vitest.version = '4.0.1';
+
+  plugin.configureVitest?.({ vitest, project: vitest.getRootProject() } as any);
+
+  expect(getOutput().stderr).toContain(
+    'chromatic  Tags cannot be used with Vitest 4.0.1. Please upgrade to Vitest 4.1 or later to use this feature.'
+  );
 });
 
 test('can be scoped to a Vitest project', async () => {

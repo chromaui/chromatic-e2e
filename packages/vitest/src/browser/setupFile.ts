@@ -9,6 +9,16 @@ import type {} from '../node/commands';
 beforeEach<InternalTestContext>(async ({ task }) => {
   const options = await commands.__chromatic_getOptions();
 
+  if (options.tags) {
+    // If user has defined plugin tags we register only the tests that match those tags
+    const hasMatchingTag = task.tags?.some((tag) => options.tags?.includes(tag));
+
+    if (!hasMatchingTag) {
+      task.meta.__chromatic_isRegistered = false;
+      return cleanup;
+    }
+  }
+
   task.meta.__chromatic_isRegistered = true;
   task.meta.__chromatic_isTakeSnapshotCalled = false;
 

@@ -1,11 +1,14 @@
 import { beforeEach } from 'vitest';
 import { commands } from 'vitest/browser';
 import { takeSnapshot } from './public/takeSnapshot';
+import { waitForIdleNetwork } from './public/waitForIdleNetwork';
 import { type InternalTestContext } from '../types';
 import type {} from '../node/commands';
 
 // Destructuring the context is important, so that possible user-provided fixtures work too
 beforeEach<InternalTestContext>(async ({ task }) => {
+  const options = await commands.__chromatic_getOptions();
+
   task.meta.__chromatic_isRegistered = true;
   task.meta.__chromatic_isTakeSnapshotCalled = false;
 
@@ -21,8 +24,9 @@ beforeEach<InternalTestContext>(async ({ task }) => {
       );
     }
 
-    // TODO: Replace with waitForIdleNetwork API in Milestone #4
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    if (options.resourceArchiveTimeout !== 0) {
+      await waitForIdleNetwork(options.resourceArchiveTimeout);
+    }
 
     await takeSnapshot(undefined, { ignoreUnawaited: true });
 

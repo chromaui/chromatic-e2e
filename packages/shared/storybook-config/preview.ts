@@ -57,7 +57,7 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   return response.json();
 }
 
-const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context, element) => {
+const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {
   const snapshot = await fetchSnapshot(context);
 
   // The snapshot is a representation of a complete HTML document

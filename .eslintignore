@@ -1,6 +1,0 @@
-dist/**/*.js
-storybook-static/**/*.js
-
-tsup.config.ts
-playwright.config.ts
-tests

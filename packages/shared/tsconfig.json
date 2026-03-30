@@ -1,8 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "."
-  },
-  "include": ["src", "scripts", ".eslintrc.js", "vitest.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "scripts", "storybook-config", "vitest.config.ts"]
 }

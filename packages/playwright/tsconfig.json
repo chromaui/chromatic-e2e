@@ -1,8 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "."
-  },
-  "include": ["src", ".eslintrc.js", "vitest.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "vitest.config.ts"]
 }

@@ -10,20 +10,14 @@
   "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
   "type": "module",
-  "module": "dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
     },
     "./plugin": {
-      "import": {
-        "types": "./dist/plugin.d.ts",
-        "default": "./dist/plugin.mjs"
-      }
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.mjs"
     },
     "./bin/archive-storybook": {
       "require": "./dist/bin/archive-storybook.cjs"

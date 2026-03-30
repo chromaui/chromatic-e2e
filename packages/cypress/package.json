@@ -55,9 +55,6 @@
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
     "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Cypress"
   },
-  "lint-staged": {
-    "*.{ts,js,css,md}": "prettier --write"
-  },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
     "@segment/analytics-node": "2.1.3",

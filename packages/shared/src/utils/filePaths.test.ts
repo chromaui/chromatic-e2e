@@ -76,7 +76,6 @@ describe('overridden output dir', () => {
 describe('ensureDir', () => {
   it('creates the directory if it does not exist', async () => {
     vi.mocked(fs.existsSync).mockReturnValueOnce(false);
-    vi.mocked(fs.mkdirSync).mockReturnValueOnce('' as never);
 
     ensureDir('/some/path');
     expect(fs.mkdirSync).toHaveBeenCalledWith('/some/path', { recursive: true });

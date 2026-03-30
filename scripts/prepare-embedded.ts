@@ -88,7 +88,9 @@ function runForPackage(pkgDir: string): void {
   fs.mkdirSync(embeddedDir, { recursive: true });
 
   const pkgPath = path.join(pkgDir, 'package.json');
-  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as { dependencies?: Record<string, string> };
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as {
+    dependencies?: Record<string, string>;
+  };
   const excludePackages = new Set(Object.keys(pkg.dependencies || {}));
 
   const byPath = gatherAllPackages(req, excludePackages);

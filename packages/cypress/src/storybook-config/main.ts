@@ -1,8 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-
 import { archivesDir } from '@chromatic-com/shared-e2e/utils/filePaths';
-
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
 const __filename = fileURLToPath(import.meta.url);

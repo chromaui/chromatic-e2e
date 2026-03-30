@@ -75,6 +75,7 @@ export async function listStoriesFiles(storiesDir: string) {
 export function buildStoryModesConfig(viewports: Viewport[]) {
   return viewports.reduce((modes: any, viewport: Viewport) => {
     const viewportName = viewportToString(viewport);
+
     modes[viewportName] = { viewport: viewportName };
     return modes;
   }, {});
@@ -85,6 +86,7 @@ export function buildStoryModesConfig(viewports: Viewport[]) {
 export function buildStoryViewportsConfig(viewports: Viewport[]) {
   return viewports.reduce((viewportsConfig: any, viewport: Viewport) => {
     const viewportName = viewportToString(viewport);
+
     viewportsConfig[viewportName] = {
       name: viewportName,
       styles: {

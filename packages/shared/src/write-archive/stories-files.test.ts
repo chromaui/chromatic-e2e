@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import * as fs from 'fs/promises';
+import fs from 'fs/promises';
 import { ChromaticStorybookParameters } from '../types';
 import { Viewport } from '../utils/viewport';
 import * as storiesFiles from './stories-files';

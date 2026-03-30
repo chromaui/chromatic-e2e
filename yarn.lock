@@ -518,7 +518,6 @@ __metadata:
     "@types/node-fetch": "npm:^2.6.6"
     "@vitest/coverage-v8": "npm:^4.0.18"
     auto: "npm:^10.3.0"
-    concurrently: "npm:^7.0.0"
     eslint: "npm:^9.15.0"
     eslint-config-prettier: "npm:^9.1.0"
     express: "npm:^4.18.2"

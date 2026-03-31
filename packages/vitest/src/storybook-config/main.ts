@@ -13,8 +13,8 @@ const embeddedDir = path.join(packageRoot, 'embedded', 'node_modules');
 /** @type { import('@storybook/server-webpack5').StorybookConfig } */
 export default {
   stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
-  managerEntries: [path.resolve(__dirname, 'manager.mjs')],
-  previewAnnotations: [path.resolve(__dirname, 'preview.mjs')],
+  managerEntries: [path.resolve(__dirname, 'manager.js')],
+  previewAnnotations: [path.resolve(__dirname, 'preview.js')],
   framework: {
     name: path.join(embeddedDir, '@storybook', 'server-webpack5'),
     options: {},

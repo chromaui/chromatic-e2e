@@ -524,8 +524,8 @@ __metadata:
   peerDependencies:
     vitest: ^4
   bin:
-    archive-storybook: dist/bin/archive-storybook.cjs
-    build-archive-storybook: dist/bin/build-archive-storybook.cjs
+    archive-storybook: dist/bin/archive-storybook.js
+    build-archive-storybook: dist/bin/build-archive-storybook.js
   languageName: unknown
   linkType: soft
 

@@ -1,8 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
-
-// @ts-expect-error -- not sure why extension is required
-import { chromaticPlugin } from '../dist/plugin.mjs';
+import { chromaticPlugin } from '../dist/plugin';
 
 export default defineConfig({
   plugins: [chromaticPlugin()],

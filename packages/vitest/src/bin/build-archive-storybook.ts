@@ -6,7 +6,7 @@ import { DEFAULT_OUTPUT_DIR } from '../constants';
 
 // Discard first two entries (exec path and file path)
 const args = process.argv.slice(2);
-const configDir = path.resolve(__dirname, '../storybook-config');
+const configDir = path.resolve(import.meta.dirname, '../storybook-config');
 
 try {
   buildArchiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);

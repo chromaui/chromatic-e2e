@@ -13,22 +13,18 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
     },
     "./plugin": {
       "types": "./dist/plugin.d.ts",
-      "import": "./dist/plugin.mjs"
+      "import": "./dist/plugin.js"
     },
-    "./bin/archive-storybook": {
-      "require": "./dist/bin/archive-storybook.cjs"
-    },
-    "./bin/build-archive-storybook": {
-      "require": "./dist/bin/build-archive-storybook.cjs"
-    }
+    "./bin/archive-storybook": "./dist/bin/archive-storybook.js",
+    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js"
   },
   "bin": {
-    "archive-storybook": "dist/bin/archive-storybook.cjs",
-    "build-archive-storybook": "dist/bin/build-archive-storybook.cjs"
+    "archive-storybook": "dist/bin/archive-storybook.js",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.js"
   },
   "files": [
     "dist",

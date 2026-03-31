@@ -1,7 +1,11 @@
 import { execFileSync } from 'child_process';
 import { resolve, dirname } from 'path';
+import { readFileSync } from 'fs';
+import { createRequire } from 'module';
 import { checkArchivesDirExists } from '../utils/filePaths';
 import { addViewportsToStoriesFiles } from './viewports';
+
+const req = require.resolve ? require : createRequire(import.meta.url);
 
 export function archiveStorybook(
   processArgs: string[],
@@ -28,8 +32,9 @@ export function buildArchiveStorybook(
 }
 
 function binPath() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const packageJson = require('storybook/package.json');
+  const filename = req.resolve('storybook/package.json');
+  const packageJson = JSON.parse(readFileSync(filename, 'utf8'));
+
   // reference the entry file based on the package.json `bin` value, since it changed between SB 8.1 and 8.2
-  return resolve(dirname(require.resolve('storybook/package.json')), packageJson.bin);
+  return resolve(dirname(filename), packageJson.bin);
 }

@@ -20,10 +20,10 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
   return {
     name: 'vitest:chromatic',
     config() {
-      const isDist = import.meta.url.includes('dist/plugin.mjs');
+      const isDist = import.meta.url.includes('dist/plugin.js');
       const setupFile = resolve(
         import.meta.dirname,
-        isDist ? './setupFile.mjs' : '../browser/setupFile.ts'
+        isDist ? './setupFile.js' : '../browser/setupFile.ts'
       );
 
       return {

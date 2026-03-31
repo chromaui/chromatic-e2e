@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import * as fsPromises from 'fs/promises';
-import * as fs from 'fs';
+import fsPromises from 'fs/promises';
+import fs from 'fs';
 import {
   archivesDir,
   assetsDir,
@@ -91,7 +91,6 @@ describe('ensureDir', () => {
 
 describe('outputFile', () => {
   it('writes the given data to the given file', async () => {
-    vi.mocked(fsPromises.writeFile).mockResolvedValueOnce(undefined);
     await outputFile('/some/path', 'some data');
     expect(fsPromises.writeFile).toHaveBeenCalledWith('/some/path', 'some data', { mode: 511 });
   });
@@ -99,7 +98,6 @@ describe('outputFile', () => {
 
 describe('outputJSONFile', () => {
   it('writes the given JSON data to the given file', async () => {
-    vi.mocked(fsPromises.writeFile).mockResolvedValueOnce(undefined);
     await outputJSONFile('/some/path', { data: 'some data ' });
     expect(fsPromises.writeFile).toHaveBeenCalledWith(
       '/some/path',

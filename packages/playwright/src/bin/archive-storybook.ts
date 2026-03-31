@@ -13,6 +13,7 @@ try {
 } catch (err) {
   // Throwing the error results in a large output of minified code and a stacktrace that is
   // likely not helpful to users, so this should hide the noise.
+
   console.error(err.message);
   process.exitCode = 1;
 }

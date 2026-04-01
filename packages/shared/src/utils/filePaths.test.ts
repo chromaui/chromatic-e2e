@@ -76,24 +76,21 @@ describe('overridden output dir', () => {
 describe('ensureDir', () => {
   it('creates the directory if it does not exist', async () => {
     vi.mocked(fs.existsSync).mockReturnValueOnce(false);
-    const mkdirSpy = vi.spyOn(fs, 'mkdirSync').mockReturnValueOnce('');
 
     ensureDir('/some/path');
-    expect(mkdirSpy).toBeCalledWith('/some/path', { recursive: true });
+    expect(fs.mkdirSync).toHaveBeenCalledWith('/some/path', { recursive: true });
   });
 
   it('does nothing if directory does exist', async () => {
     vi.mocked(fs.existsSync).mockReturnValueOnce(true);
-    const mkdirSpy = vi.spyOn(fs, 'mkdirSync');
 
     ensureDir('/some/path');
-    expect(mkdirSpy).not.toBeCalled();
+    expect(fs.mkdirSync).not.toHaveBeenCalled();
   });
 });
 
 describe('outputFile', () => {
   it('writes the given data to the given file', async () => {
-    vi.mocked(fsPromises.writeFile).mockReturnValueOnce(null);
     await outputFile('/some/path', 'some data');
     expect(fsPromises.writeFile).toHaveBeenCalledWith('/some/path', 'some data', { mode: 511 });
   });
@@ -101,7 +98,6 @@ describe('outputFile', () => {
 
 describe('outputJSONFile', () => {
   it('writes the given JSON data to the given file', async () => {
-    vi.mocked(fsPromises.writeFile).mockReturnValueOnce(null);
     await outputJSONFile('/some/path', { data: 'some data ' });
     expect(fsPromises.writeFile).toHaveBeenCalledWith(
       '/some/path',
@@ -113,9 +109,9 @@ describe('outputJSONFile', () => {
 
 describe('readJSONFile', () => {
   it('returns the contents of the file parsed as JSON', async () => {
-    vi.mocked(fsPromises.readFile).mockImplementationOnce((filePath) => {
-      return Buffer.from(JSON.stringify({ filePath })) as any;
-    });
+    vi.mocked(fsPromises.readFile).mockResolvedValueOnce(
+      Buffer.from(JSON.stringify({ filePath: '/some/path' }))
+    );
     const json = await readJSONFile('/some/path');
     expect(json).toEqual({ filePath: '/some/path' });
   });

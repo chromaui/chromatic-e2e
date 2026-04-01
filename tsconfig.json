@@ -2,6 +2,9 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "paths": {
+      "playwright-core/types/protocol": ["node_modules/playwright-core/types/protocol.d.ts"]
+    },
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
@@ -14,8 +17,7 @@
     "moduleResolution": "bundler",
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "target": "ES2020",
-    "types": ["node"]
+    "target": "ES2020"
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "vitest.config.ts"]
+  "include": ["packages/**/*.ts", "packages/**/*.tsx", "scripts/**/*.ts", "vitest.config.ts"]
 }

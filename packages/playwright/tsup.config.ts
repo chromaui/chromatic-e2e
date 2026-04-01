@@ -33,8 +33,6 @@ export default defineConfig((options) => [
     entry: {
       'bin/archive-storybook': 'src/bin/archive-storybook.ts',
       'bin/build-archive-storybook': 'src/bin/build-archive-storybook.ts',
-      'storybook-config/main': 'src/storybook-config/main.ts',
-      'storybook-config/manager': 'src/storybook-config/shared/manager.ts',
     },
     format: ['cjs'],
     platform: 'node',
@@ -42,10 +40,24 @@ export default defineConfig((options) => [
       options.conditions = ['module'];
     },
   },
-  // This is a SB browser file so ESM is better.
+  // This is a SB node file so ESM is better.
   {
     ...common,
     entry: {
+      'storybook-config/main': 'src/storybook-config/main.ts',
+    },
+    format: ['esm'],
+    platform: 'node',
+    // We need to be careful how we minimize `preview.ts` because the
+    // SB indexer is quite particular about the format of `parameters`.
+    esbuildOptions(options) {
+      options.conditions = ['module'];
+    },
+  },
+  {
+    ...common,
+    entry: {
+      'storybook-config/manager': 'src/storybook-config/shared/manager.ts',
       'storybook-config/preview': 'src/storybook-config/shared/preview.ts',
     },
     format: ['esm'],

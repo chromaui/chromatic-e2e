@@ -54,8 +54,9 @@ function getPackageNameAndDeps(absDir: string): { name: string; deps: string[] }
         styleText(
           'bgYellow',
           `Packing ${pkg.name} with OS/CPU constraints (${JSON.stringify({ os: pkg.os, cpu: pkg.cpu })}).` +
-            `On CI this would be an error. \nSee ${pkgPath}\n`
-        )
+            `On CI this would be an error. \nSee ${pkgPath}`
+        ),
+        '\n'
       );
     }
   }
@@ -112,6 +113,7 @@ function runForPackage(pkgDir: string): void {
     fs.rmSync(path.join(pkgDir, 'embedded'), { recursive: true });
   }
   fs.mkdirSync(embeddedDir, { recursive: true });
+  console.log('Embedding packages into', styleText('bgGreen', embeddedDir));
 
   const pkgPath = path.join(pkgDir, 'package.json');
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as {

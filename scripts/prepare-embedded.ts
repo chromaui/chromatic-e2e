@@ -8,6 +8,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
+import { styleText } from 'node:util';
 
 const PACKAGES_TO_EMBED = [
   '@storybook/builder-webpack5',
@@ -33,7 +34,32 @@ function getPackageNameAndDeps(absDir: string): { name: string; deps: string[] }
     name: string;
     dependencies?: Record<string, string>;
     optionalDependencies?: Record<string, string>;
+    os?: string[];
+    cpu?: string[];
   };
+
+  // Embedded packages may not contain OS-specific native packages
+  if (pkg.os?.length || pkg.cpu?.length) {
+    if (process.env.CI) {
+      throw new Error(
+        styleText(
+          'bgRed',
+          `Package ${pkg.name} has OS/CPU constraints, which is not supported for embedded packages.` +
+            `\n See ${pkgPath}` +
+            `\n${JSON.stringify(pkg, null, 2)}`
+        )
+      );
+    } else {
+      console.warn(
+        styleText(
+          'bgYellow',
+          `Packing ${pkg.name} with OS/CPU constraints (${JSON.stringify({ os: pkg.os, cpu: pkg.cpu })}).` +
+            `On CI this would be an error. \nSee ${pkgPath}\n`
+        )
+      );
+    }
+  }
+
   const deps = {
     ...pkg.dependencies,
     ...(pkg.optionalDependencies || {}),

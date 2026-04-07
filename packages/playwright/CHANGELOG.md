@@ -1,5 +1,17 @@
 # chromatic-playwright
 
+## 0.13.0
+
+### Minor Changes
+
+- bf9e686: upgrade storybook to latest
+
+### Patch Changes
+
+- ea271c9: upgrade eslint
+- c9d9d6a: improve CI release flow
+- ea271c9: remove sourcemaps and stop minifying distributed code
+
 ## 0.12.8
 
 ### Patch Changes

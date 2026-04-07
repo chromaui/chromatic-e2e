@@ -24,7 +24,9 @@ on:
 
 permissions:
   id-token: write # Required for npm Trusted Publisher (OIDC)
-  contents: read
+  contents: write # Others are required by changesets/action@v1
+  pull-requests: write
+  issues: read
 
 jobs:
   release-stable:
@@ -49,6 +51,7 @@ jobs:
       - name: Update npm
         run: |
           npm --version
+          npm install -g npm@~11.10.0 # Work-around for https://github.com/npm/cli/issues/9151#issuecomment-4131466208
           npm install -g npm@latest
           npm --version
 

@@ -28,3 +28,4 @@ packages/cypress/tests/cypress/test-downloads/
 packages/*/coverage/
 coverage
 packages/chromatic-archives/
+.vitest/

@@ -6,6 +6,6 @@ export default defineConfig({
       provider: 'v8',
       enabled: true,
     },
-    projects: ['./packages/*'],
+    projects: ['./packages/*/vitest.config.*'],
   },
 });

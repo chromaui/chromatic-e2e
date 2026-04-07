@@ -6,6 +6,8 @@ This repository is a Yarn 4 monorepo containing the following packages:
   - Chromatic E2E Visual Test integration for Cypress
 - [playwright](https://github.com/chromaui/chromatic-e2e/tree/main/packages/playwright)
   - Chromatic E2E Visual Test integration for Playwright
+- [vitest](https://github.com/chromaui/chromatic-e2e/tree/main/packages/vitest)
+  - Chromatic Visual Test integration for Vitest
 - [shared](https://github.com/chromaui/chromatic-e2e/tree/main/packages/shared)
   - Internal workspace package shared by the integrations above (does not get published individually)
 
@@ -40,6 +42,7 @@ Then, the test commands are as follows:
 - Unit tests: `yarn test:unit`
 - Playwright: `yarn test:playwright`, then `yarn archive-storybook:playwright` to see the archived UI
 - Cypress: `yarn test:cypress`, then `yarn archive-storybook:cypress` to see the archived UI
+- Vitest: `yarn test:vitest`, then `yarn archive-storybook:vitest` to see the archived UI
 
 If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `yarn dev:server` and visit `http://localhost:3000`.
 
@@ -72,7 +75,7 @@ After your PR is merged, if you included a changeset, the repo will auto-create 
 2 guidelines for code changes that warrant publishing to NPM:
 
 1. Publish every package where code changes occur. Example: if you touch code in the `shared` directory, you'll want to include `@chromatic-com/shared-e2e` in the list of packages to be published, even though that package is private.
-1. Publish every package that the changed code affects. If you are only changing code in the `@chromatic-com/shared-e2e` package, you will also need to explicitly include the `chromatic-com/playwright` and `chromatic-com/cypress` packages as packages to publish.
+1. Publish every package that the changed code affects. If you are only changing code in the `@chromatic-com/shared-e2e` package, you will also need to explicitly include the `@chromatic-com/playwright`, `@chromatic-com/cypress` and `@chromatic-com/vitest` packages as packages to publish.
 
 ### Canary Releases
 

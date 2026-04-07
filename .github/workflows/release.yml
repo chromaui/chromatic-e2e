@@ -24,7 +24,9 @@ on:
 
 permissions:
   id-token: write # Required for npm Trusted Publisher (OIDC)
-  contents: read
+  contents: write # Others are required by changesets/action@v1
+  pull-requests: write
+  issues: read
 
 jobs:
   release-stable:

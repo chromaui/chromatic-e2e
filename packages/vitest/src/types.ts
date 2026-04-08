@@ -11,7 +11,7 @@ export type ChromaticNamespace = `__chromatic_${string}`;
 /**
  * Options for the Chromatic Vitest plugin
  */
-export interface Options extends Omit<ChromaticConfig, 'resourceArchiveTimeout'> {
+export interface Options extends ChromaticConfig {
   /**
    * Directory where temporary archives and snapshots will be stored.
    * Relative to the project [the project `root`](https://vitest.dev/config/root.html#root).
@@ -19,6 +19,14 @@ export interface Options extends Omit<ChromaticConfig, 'resourceArchiveTimeout'>
    * Defaults to `.vitest/chromatic`.
    */
   outputDirectory?: string;
+
+  /**
+   * Time in milliseconds to determine whether network is idle.
+   * The network is considered idle if there are no new network requests for at least this duration.
+   *
+   * @default 100
+   */
+  idleNetworkInterval?: number;
 }
 
 /** Options that don't have internal default values */

@@ -125,6 +125,13 @@ export function createCommands(options: ResolvedOptions) {
     },
 
     /**
+     * Clear test state without writing test results.
+     */
+    async __chromatic_stopWithoutSnapshots(_, id: TestID) {
+      await onTestCleanup(id);
+    },
+
+    /**
      * Reset all state of the plugin. Should be called between test runs.
      */
     async __chromatic_reset() {

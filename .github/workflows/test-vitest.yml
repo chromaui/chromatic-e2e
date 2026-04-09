@@ -1,0 +1,42 @@
+# Runs Vitest E2E test and Chromatic publish
+name: Test Vitest
+
+on:
+  workflow_call:
+    secrets:
+      chromaticProjectToken:
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+
+      - name: Install Playwright
+        run: |
+          yarn playwright install
+
+      - name: Build
+        run: |
+          yarn run build
+
+      - name: Run tests
+        run: |
+          yarn run test:vitest
+
+      - name: Publish to Chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.chromaticProjectToken }}
+          buildScriptName: build-archive-storybook:vitest

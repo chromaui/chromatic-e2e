@@ -69,7 +69,11 @@ app.get('/img/another%Cwith%Cpercents', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
 });
 
-app.get('/asset-paths/@fs/C:/img/another:Cwith:colons/image.png', (req, res) => {
+app.get('/asset-paths/@fz/C:/img/another:Cwith:colons/image.png', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
+});
+
+app.get('/@fz/C:/img/another:Cwith:colons/image.png', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
 });
 
@@ -147,6 +151,8 @@ app.get('/canvas', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/canvas.html'));
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+module.exports = { server };

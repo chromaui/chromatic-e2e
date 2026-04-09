@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "target": "esnext",
+    "lib": ["es2021", "dom"],
+    "stripInternal": true
+  },
+  "include": ["src", "test", "vitest.config.unit.ts", "vitest.config.browser.ts"]
+}

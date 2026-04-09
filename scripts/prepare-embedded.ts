@@ -22,7 +22,23 @@ function resolvePackagePath(req: NodeRequire, packageId: string): string | null 
   try {
     const p = req.resolve(`${packageId}/package.json`);
     return path.dirname(p);
-  } catch {
+  } catch (error: any) {
+    /*
+     * Attempt to parse package.json from error message:
+     * ```
+     * Package subpath './package.json' is not defined by "exports" in /x/chromatic-e2e/node_modules/supports-color/package.json
+     * ```
+     */
+    if (error.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
+      const parsed = error.message.split('is not defined by "exports" in ')[1];
+
+      if (fs.existsSync(parsed)) {
+        return path.dirname(parsed);
+      }
+    }
+
+    console.log(styleText('bgRed', `Failed to resolve package.json for "${packageId}".`));
+
     return null;
   }
 }

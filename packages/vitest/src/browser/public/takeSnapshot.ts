@@ -5,20 +5,65 @@ import { serializedNodeWithId } from '@rrweb/types';
 import { getCurrentTest } from '../getCurrentTest';
 import type {} from '../../node/commands';
 
+interface Options {
+  ignoreUnawaited?: boolean;
+}
+
 /**
  * Take visual regression snapshot of the current state of the DOM.
  */
-export async function takeSnapshot(name?: string) {
+async function takeSnapshot(name?: string): Promise<void>;
+
+/** @internal Pass options when used by automatic snapshots */
+async function takeSnapshot(name: string | undefined, options: Options): Promise<void>;
+
+async function takeSnapshot(name?: string, options?: Options): Promise<void> {
   const test = getCurrentTest();
-  assert(test, 'takeSnapshot() must be called within a test()');
+
+  if (!test) {
+    throw new TypeError('takeSnapshot() must be called within a test()');
+  }
+
+  if (!test.meta.__chromatic_isRegistered) {
+    throw new TypeError(
+      'takeSnapshot() cannot be called in a test that is not registered for Chromatic plugin.' +
+        `\nMake sure ${test.file.projectName || 'root'} project has chromaticPlugin() enabled.`
+    );
+  }
+
+  test.meta.__chromatic_isTakeSnapshotCalled = true;
 
   const domSnapshot = snapshot(document, { recordCanvas: true });
-
   assert(domSnapshot, 'Failed to capture DOM snapshot');
 
-  await replaceBlobUrls(domSnapshot);
+  const save = async () => {
+    await replaceBlobUrls(domSnapshot);
+    await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, name);
+  };
 
-  await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, name);
+  // Ignore is set when called by automatic snapshots
+  if (options?.ignoreUnawaited) {
+    return await save();
+  }
+
+  /**
+   * Provide descriptive error if the user forgets to await the takeSnapshot() call.
+   * See {@link file://./takeSnapshot.test.ts} for examples.
+   */
+  const error = new Error('takeSnapshot() call was not awaited!');
+  Error.captureStackTrace?.(error, takeSnapshot);
+
+  const pendingCall = { promise: save(), error };
+  test.meta.__chromatic_pendingTakeSnapshots ||= [];
+  test.meta.__chromatic_pendingTakeSnapshots.push(pendingCall);
+
+  await pendingCall.promise.finally(() => {
+    const index = test.meta.__chromatic_pendingTakeSnapshots?.indexOf(pendingCall);
+
+    if (index !== undefined && index !== -1) {
+      test.meta.__chromatic_pendingTakeSnapshots?.splice(index, 1);
+    }
+  });
 }
 
 async function replaceBlobUrls(node: serializedNodeWithId) {
@@ -57,3 +102,5 @@ async function toDataURL(url: string): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
+
+export { takeSnapshot };

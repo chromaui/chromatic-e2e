@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.10.1
+
+### Patch Changes
+
+- 4acea24: Include missing packages in embedded directory
+
 ## 0.10.0
 
 ### Minor Changes

@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext"
+  },
+  "include": ["src", "test", "vitest.config.unit.ts", "vitest.config.browser.ts"]
+}

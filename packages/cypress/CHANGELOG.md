@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.12.1
+
+### Patch Changes
+
+- 4acea24: Include missing packages in embedded directory
+
 ## 0.12.0
 
 ### Minor Changes

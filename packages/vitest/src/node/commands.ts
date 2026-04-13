@@ -6,14 +6,24 @@ import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, writeTestResult } from '@chromatic-com/shared-e2e';
 import { type ChromaticNamespace, type ResolvedOptions } from '../types';
+import { NetworkIdleTracker } from './NetworkIdleTracker';
 
 type TestID = Task['id'];
 
 export function createCommands(options: ResolvedOptions) {
   const resourceArchivers = new Map<TestID, ResourceArchiver>();
+  const networkIdleTrackers = new Map<TestID, NetworkIdleTracker>();
   const snapshots = new Map<TestID, Map<string, serializedNodeWithId>>();
 
   return {
+    /**
+     * Get resolved options on the client side.
+     * All options must be serializable at this point.
+     */
+    async __chromatic_getOptions() {
+      return options;
+    },
+
     /**
      * Store a `@rrweb` generated DOM snapshot for the test.
      * Can be called multiple times during a single test case.
@@ -37,6 +47,17 @@ export function createCommands(options: ResolvedOptions) {
     },
 
     /**
+     * Wait for network to be idle, meaning no new network requests for at least `idleNetworkInterval` ms.
+     * Use `timeout` argument to reject if network doesn't become idle within given time.
+     */
+    async __chromatic_waitForIdleNetwork(_, id: TestID, timeout: number): Promise<void> {
+      const networkIdleTracker = networkIdleTrackers.get(id);
+      assert(networkIdleTracker, `No network idle tracker found for test ${id}`);
+
+      await networkIdleTracker.waitForIdle(timeout);
+    },
+
+    /**
      * Start recording HTTP resources and network activity for given test.
      */
     async __chromatic_interceptFetch(context, id: TestID) {
@@ -54,6 +75,11 @@ export function createCommands(options: ResolvedOptions) {
       resourceArchivers.set(id, resourceArchiver);
 
       await resourceArchiver.watch();
+
+      networkIdleTrackers.set(
+        id,
+        await NetworkIdleTracker.create(cdp, options.idleNetworkInterval)
+      );
     },
 
     /**
@@ -103,6 +129,7 @@ export function createCommands(options: ResolvedOptions) {
      */
     async __chromatic_reset() {
       resourceArchivers.clear();
+      networkIdleTrackers.clear();
       snapshots.clear();
     },
 
@@ -121,6 +148,10 @@ export function createCommands(options: ResolvedOptions) {
 
     resourceArchivers.delete(id);
     await resourceArchiver.unwatch();
+
+    const networkIdleTracker = networkIdleTrackers.get(id);
+    networkIdleTrackers.delete(id);
+    await networkIdleTracker?.off();
 
     const sessionSnapshots = snapshots.get(id);
     snapshots.delete(id);

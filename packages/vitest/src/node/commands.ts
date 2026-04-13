@@ -105,6 +105,14 @@ export function createCommands(options: ResolvedOptions) {
       resourceArchivers.clear();
       snapshots.clear();
     },
+
+    /**
+     * Get currently save snapshots. Used only during testing.
+     * @internal
+     */
+    async __chromatic_getSnapshots(_, id: string) {
+      return Object.fromEntries(snapshots.get(id) || []);
+    },
   } satisfies Record<ChromaticNamespace, BrowserCommand<any>>;
 
   async function onTestCleanup(id: TestID) {

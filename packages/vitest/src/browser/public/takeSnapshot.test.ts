@@ -1,0 +1,87 @@
+import { expect, test } from 'vitest';
+import { runFixture } from '../../../test/utils/node';
+
+/** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
+const include = ['take-snapshot.test.ts'];
+
+test('provides descriptive error when called in non-registered test', async () => {
+  const { stderr } = await runFixture(
+    {
+      include,
+      provide: { testName: 'one' },
+    },
+    { disabled: true }
+  );
+
+  expect(stderr).toMatchInlineSnapshot(`
+    "
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+     FAIL   chromium  take-snapshot.test.ts > test #1
+    TypeError: takeSnapshot() cannot be called in a test that is not registered for Chromatic plugin.
+    Make sure chromium project has chromaticPlugin() enabled.
+     ❯ take-snapshot.test.ts:7:8
+          5|   document.body.innerHTML = '<h1>Example heading</h1>';
+          6|
+          7|   await takeSnapshot();
+           |        ^
+          8|
+          9|   expect.fail('Should not reach this point');
+
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
+  `);
+});
+
+test('provides descriptive error when called outside of a test()', async () => {
+  const { stderr } = await runFixture({ include, provide: { testName: 'two' } });
+
+  expect(stderr).toMatchInlineSnapshot(`
+    "
+    ⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+     FAIL   chromium  take-snapshot.test.ts > suite
+    TypeError: takeSnapshot() must be called within a test()
+     ❯ take-snapshot.test.ts:14:10
+         12| describe.runIf(inject('testName') === 'two')('suite', async () => {
+         13|   beforeAll(async () => {
+         14|     await takeSnapshot();
+           |          ^
+         15|   });
+         16|
+
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
+  `);
+});
+
+test('provides descriptive error when not awaited', async () => {
+  const { stderr } = await runFixture({ include, provide: { testName: 'three' } });
+
+  expect(stderr).toMatchInlineSnapshot(`
+    "
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+     FAIL   chromium  take-snapshot.test.ts > test #3
+    Error: takeSnapshot() call was not awaited!
+     ❯ take-snapshot.test.ts:23:2
+         21|   document.body.innerHTML = '<h1>Example heading</h1>';
+         22|
+         23|   takeSnapshot(); // Leave the promise floating, no await
+           |  ^
+         24|
+         25|   // another
+
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+     FAIL   chromium  take-snapshot.test.ts > test #3
+    Error: takeSnapshot() call was not awaited!
+     ❯ take-snapshot.test.ts:26:2
+         24|
+         25|   // another
+         26|   takeSnapshot();
+           |  ^
+         27| });
+         28|
+
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯"
+  `);
+});

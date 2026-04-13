@@ -2,11 +2,11 @@
 <html>
   <body>
     <h1>Constructable Stylesheets in Web Components (I should be blue)</h1>
-    <styled-component></styled-component>
+    <styled-component-2></styled-component-2>
     <p>Paragraph outside the Web Component. I should be <strong>green</strong>.</p>
 
     <script type="text/javascript">
-      class StyledComponent extends HTMLElement {
+      class StyledComponent2 extends HTMLElement {
         connectedCallback() {
           const container = document.createElement('div');
           this.appendChild(container);
@@ -36,7 +36,7 @@
           document.adoptedStyleSheets = [stylesheet];
         }
       }
-      customElements.define('styled-component', StyledComponent);
+      customElements.define('styled-component-2', StyledComponent2);
     </script>
   </body>
 </html>

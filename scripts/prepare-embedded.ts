@@ -16,7 +16,7 @@ const PACKAGES_TO_EMBED = [
   '@storybook/server-webpack5',
 ];
 
-const DEFAULT_PACKAGE_NAMES = ['playwright', 'cypress'];
+const DEFAULT_PACKAGE_NAMES = ['playwright', 'cypress', 'vitest'];
 
 function resolvePackagePath(req: NodeRequire, packageId: string): string | null {
   try {

@@ -45,6 +45,9 @@ type InternalMeta = Record<ChromaticNamespace, unknown> & {
   /** Indicates whether Visual Regression tracking is registered */
   __chromatic_isRegistered?: boolean;
 
+  /** Indicates whether automatic snapshotting is enabled */
+  __chromatic_autoSnapshot?: boolean;
+
   /** Indicates whether `takeSnapshot()` has been called */
   __chromatic_isTakeSnapshotCalled?: boolean;
 

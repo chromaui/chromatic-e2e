@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.13.1
+
+### Patch Changes
+
+- 4acea24: Include missing packages in embedded directory
+
 ## 0.13.0
 
 ### Minor Changes

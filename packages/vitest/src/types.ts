@@ -46,8 +46,7 @@ type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;
 
 /** @internal */
 export interface ResolvedOptions
-  extends Required<Pick<Options, ResolvedOptionKeys>>,
-    Pick<Options, UnresolvedOptionKeys> {}
+  extends Required<Pick<Options, ResolvedOptionKeys>>, Pick<Options, UnresolvedOptionKeys> {}
 
 /** @internal */
 type InternalMeta = Record<ChromaticNamespace, unknown> & {

@@ -8,6 +8,8 @@ import { createCommands } from './commands';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 import { type ResolvedOptions, type Options } from '../types';
 
+const DEFAULT_TAG_DESCRIPTION = 'Visual Regression Tests for `@chromatic-com/vitest`';
+
 /**
  * Vitest plugin for integrating with Chromatic's visual regression testing.
  */
@@ -42,6 +44,28 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
     configureVitest(context) {
       const project = context.project;
+
+      // We support Vitest 4.0.0, but tags were introduced in 4.1.0
+      if (options.tags && context.vitest.version.startsWith('4.0')) {
+        context.vitest.logger.warn(
+          colors.bgYellow(colors.black(' chromatic ')),
+          colors.yellow(
+            `Tags cannot be used with Vitest ${context.vitest.version}. Please upgrade to Vitest 4.1 or later to use this feature.`
+          )
+        );
+      }
+
+      if (options.tags) {
+        project.config.tags ||= [];
+
+        for (const tag of options.tags) {
+          const exists = project.config.tags.find((userTag) => userTag.name === tag);
+
+          if (!exists) {
+            project.config.tags.push({ name: tag, description: DEFAULT_TAG_DESCRIPTION });
+          }
+        }
+      }
 
       clean();
 

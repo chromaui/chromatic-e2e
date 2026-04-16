@@ -44,7 +44,6 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
     configureVitest(context) {
       const project = context.project;
-      const resolvedTags = project.config.tags || [];
 
       // We support Vitest 4.0.0, but tags were introduced in 4.1.0
       if (options.tags && context.vitest.version.startsWith('4.0')) {
@@ -56,11 +55,15 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         );
       }
 
-      for (const tag of options.tags || []) {
-        const exists = resolvedTags.find((userTag) => userTag.name === tag);
+      if (options.tags) {
+        project.config.tags ||= [];
 
-        if (!exists) {
-          resolvedTags.push({ name: tag, description: DEFAULT_TAG_DESCRIPTION });
+        for (const tag of options.tags) {
+          const exists = project.config.tags.find((userTag) => userTag.name === tag);
+
+          if (!exists) {
+            project.config.tags.push({ name: tag, description: DEFAULT_TAG_DESCRIPTION });
+          }
         }
       }
 

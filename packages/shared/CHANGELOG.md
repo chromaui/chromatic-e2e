@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.10.2
+
+### Patch Changes
+
+- 35ded1d: Add Vitest integration package
+
 ## 0.10.1
 
 ### Patch Changes

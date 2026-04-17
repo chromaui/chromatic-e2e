@@ -110,15 +110,15 @@ test('viewports are correct when --browser.ui=true', async () => {
       {
         "title": "default viewport",
         "viewport": {
-          "height": 1080,
-          "width": 1920,
+          "height": 720,
+          "width": 1280,
         },
       },
       {
         "title": "calls page.viewport(480, 320)",
         "viewport": {
-          "height": 1080,
-          "width": 1920,
+          "height": 320,
+          "width": 480,
         },
       },
     ]
@@ -143,8 +143,8 @@ test('viewports are correct when --browser.ui=false', async () => {
       {
         "title": "calls page.viewport(480, 320)",
         "viewport": {
-          "height": 720,
-          "width": 1280,
+          "height": 320,
+          "width": 480,
         },
       },
     ]

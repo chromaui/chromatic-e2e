@@ -102,12 +102,19 @@ export function createCommands(options: ResolvedOptions) {
         snapshotBuffers[name] = Buffer.from(JSON.stringify(domSnapshot));
       }
 
+      const frame = await context.frame();
+
+      const viewport = await frame.evaluate(() => ({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }));
+
       await writeTestResult(
         {
           outputDir: resolve(context.project.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
           titlePath: getNames(entity),
-          viewport: context.page.viewportSize() || { width: 1920, height: 1080 },
+          viewport,
         },
         snapshotBuffers,
         archive,

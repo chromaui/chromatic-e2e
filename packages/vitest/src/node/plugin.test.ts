@@ -17,9 +17,9 @@ test.each([
 
   const result = config.setupFiles.map((s) => s.replace(process.cwd(), '<process-cwd>'));
 
-  expect(result).toHaveLength(2);
-  expect(result[0]).toBe('<process-cwd>/some-user-defined-setup.ts');
-  expect(result[1]).toBe('<process-cwd>/packages/vitest/src/browser/setupFile.ts');
+  expect.soft(result).toHaveLength(2);
+  expect.soft(result[0]).toBe('<process-cwd>/some-user-defined-setup.ts');
+  expect.soft(result[1]).toBe('<process-cwd>/packages/vitest/src/browser/setupFile.ts');
 });
 
 test('adds browser commands', async () => {
@@ -81,10 +81,14 @@ test('warns if tags are used with Vitest 4.0', async () => {
   );
   onTestFinished(() => vitest.close());
 
+  const project = vitest.projects[0];
+  project.config.browser.enabled = true;
+
   // @ts-expect-error -- intentional
   vitest.version = '4.0.1';
 
-  plugin.configureVitest?.({ vitest, project: vitest.getRootProject() } as any);
+  // @ts-expect-error -- intentional
+  plugin.configureVitest?.({ vitest, project });
 
   expect(getOutput().stderr).toContain(
     'chromatic  Tags cannot be used with Vitest 4.0.1. Please upgrade to Vitest 4.1 or later to use this feature.'
@@ -127,13 +131,10 @@ test('can be scoped to a Vitest project', async () => {
   expect(tests[1].state()).toBe('passed');
 });
 
-test('warns when used on non-browser context', async () => {
-  const { stderr } = await runFixture({
-    browser: undefined,
-    /** See {@link file://./../../test/fixtures/node-environment.test.ts} */
-    include: ['**/node-environment.test.ts'],
-    root: resolve(import.meta.dirname, '../../test/fixtures'),
+test('skips configuration when used on non-browser context', async () => {
+  const config = await getResolvedConfig({
+    browser: { enabled: false },
   });
 
-  expect(stderr).toContain('chromatic  Plugin is used in a non-browser context.');
+  expect(config.setupFiles).toHaveLength(0);
 });

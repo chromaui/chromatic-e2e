@@ -82,11 +82,8 @@ export const performChromaticSnapshot = async (
     // we want to write one level above that
     const outputDir = join(testInfo.outputDir, '..');
     await writeTestResult(
-      { ...testInfo, outputDir, pageUrl: page.url(), viewport: page.viewportSize() },
-      // TODO: Pass as-is once shared-e2e supports snapshot specific viewports
-      Object.fromEntries(
-        Array.from(snapshots.entries()).map(([name, entry]) => [name, entry.snapshot])
-      ),
+      { ...testInfo, outputDir, pageUrl: page.url() },
+      Object.fromEntries(snapshots),
       resourceArchive,
       chromaticStorybookParams
     );

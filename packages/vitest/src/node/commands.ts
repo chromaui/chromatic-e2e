@@ -49,11 +49,9 @@ export function createCommands(options: ResolvedOptions) {
       name ||= `Snapshot #${sessionSnapshots.size + 1}`;
 
       const frame = await context.frame();
-      const frameElement = await frame.frameElement();
-
-      const viewport = await frameElement.evaluate((iframe) => ({
-        width: iframe.parentElement?.clientWidth || 1920,
-        height: iframe.parentElement?.clientHeight || 1080,
+      const viewport = await frame.evaluate(() => ({
+        width: window.innerWidth,
+        height: window.innerHeight,
       }));
 
       sessionSnapshots.set(name, { snapshot, viewport });
@@ -111,23 +109,15 @@ export function createCommands(options: ResolvedOptions) {
 
       const snapshotBuffers: Parameters<typeof writeTestResult>[1] = {};
 
-      for (const [name, { snapshot }] of sessionSnapshots) {
-        snapshotBuffers[name] = Buffer.from(JSON.stringify(snapshot));
+      for (const [name, { snapshot, viewport }] of sessionSnapshots) {
+        snapshotBuffers[name] = { snapshot: Buffer.from(JSON.stringify(snapshot)), viewport };
       }
-
-      const frame = await context.frame();
-
-      const viewport = await frame.evaluate(() => ({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }));
 
       await writeTestResult(
         {
           outputDir: resolve(context.project.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
           titlePath: getNames(entity),
-          viewport,
         },
         snapshotBuffers,
         archive,

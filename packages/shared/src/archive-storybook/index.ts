@@ -3,7 +3,6 @@ import { resolve, dirname } from 'path';
 import { readFileSync } from 'fs';
 import { createRequire } from 'module';
 import { checkArchivesDirExists } from '../utils/filePaths';
-import { addViewportsToStoriesFiles } from './viewports';
 
 const req = require.resolve ? require : createRequire(import.meta.url);
 
@@ -13,9 +12,7 @@ export function archiveStorybook(
   defaultOutputDir: string
 ) {
   checkArchivesDirExists(defaultOutputDir);
-  addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    execFileSync('node', [binPath(), 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
-  });
+  execFileSync('node', [binPath(), 'dev', ...processArgs, '-c', configDir], { stdio: 'inherit' });
 }
 
 export function buildArchiveStorybook(
@@ -24,11 +21,7 @@ export function buildArchiveStorybook(
   defaultOutputDir: string
 ) {
   checkArchivesDirExists(defaultOutputDir);
-  addViewportsToStoriesFiles(defaultOutputDir).then(() => {
-    execFileSync('node', [binPath(), 'build', ...processArgs, '-c', configDir], {
-      stdio: 'inherit',
-    });
-  });
+  execFileSync('node', [binPath(), 'build', ...processArgs, '-c', configDir], { stdio: 'inherit' });
 }
 
 function binPath() {

@@ -1,5 +1,5 @@
 import { readdir } from 'fs/promises';
-import { ChromaticStorybookParameters } from '../types';
+import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
 import { snapshotId } from './snapshot-files';
 import { sanitize } from './storybook-sanitize';
 import { Viewport, viewportToString } from '../utils/viewport';
@@ -18,17 +18,22 @@ export function storiesFileName(testTitle: string) {
 // Converts the DOM snapshots into a JSON stories file.
 export function createStories(
   title: string,
-  domSnapshots: Record<string, Buffer>,
+  domSnapshots: DOMSnapshots,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   return {
     title,
-    stories: Object.keys(domSnapshots).map((name) => ({
+    stories: Object.entries(domSnapshots).map(([name, { viewport }]) => ({
       name,
       parameters: {
         server: { id: snapshotId(title, name) },
         chromatic: {
           ...chromaticStorybookParams,
+          modes: buildStoryModesConfig([viewport]),
+        },
+        viewport: {
+          viewports: buildStoryViewportsConfig([viewport]),
+          defaultViewport: viewportToString(findDefaultViewport([viewport])),
         },
       },
     })),

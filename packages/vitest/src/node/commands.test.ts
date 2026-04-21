@@ -40,7 +40,7 @@ test('writes test results with DOM snapshot', async () => {
 
   expect(snapshots[0]).toHaveProperty('Snapshot #1');
 
-  const snapshot = snapshots[0]['Snapshot #1'];
+  const { snapshot } = snapshots[0]['Snapshot #1'];
   const json = JSON.parse(Buffer.from(snapshot).toString());
 
   expect(json).toMatchInlineSnapshot(`

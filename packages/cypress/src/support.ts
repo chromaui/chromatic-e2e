@@ -61,15 +61,17 @@ afterEach(() => {
             cy.task('prepareArchives', {
               action: 'save-archives',
               payload: {
-                // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
-                testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
-                domSnapshots: [...manualSnapshots, ...(automaticSnapshot ? [automaticSnapshot] : [])],
+                testTitlePath: [
+                  // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
+                  Cypress.spec.relativeToCommonRoot,
+                  ...Cypress.currentTest.titlePath,
+                ],
+                domSnapshots: [
+                  ...manualSnapshots,
+                  ...(automaticSnapshot ? [automaticSnapshot] : []),
+                ],
                 chromaticStorybookParams: buildChromaticParams(Cypress.env),
                 pageUrl: url,
-                viewport: {
-                  height: Cypress.config('viewportHeight'),
-                  width: Cypress.config('viewportWidth'),
-                },
                 outputDir: Cypress.config('downloadsFolder'),
               },
             });

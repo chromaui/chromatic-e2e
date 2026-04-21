@@ -109,8 +109,8 @@ test('viewports are correct when --browser.ui=true', async () => {
     {
       "calls page.viewport multiple times in one test": {
         "1280 x 1024": "width=1280, height=1024",
-        "480 x 320": "width=1280, height=1024",
-        "720 x 680": "width=1280, height=1024",
+        "480 x 320": "width=480, height=320",
+        "720 x 680": "width=720, height=680",
         "Snapshot #4": "width=1280, height=1024",
       },
       "calls page.viewport(480, 320)": {
@@ -133,8 +133,8 @@ test('viewports are correct when --browser.ui=false', async () => {
     {
       "calls page.viewport multiple times in one test": {
         "1280 x 1024": "width=1280, height=1024",
-        "480 x 320": "width=1280, height=1024",
-        "720 x 680": "width=1280, height=1024",
+        "480 x 320": "width=480, height=320",
+        "720 x 680": "width=720, height=680",
         "Snapshot #4": "width=1280, height=1024",
       },
       "calls page.viewport(480, 320)": {
@@ -151,10 +151,9 @@ function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.reduce((all, call) => {
     const [e2eTestInfo, domSnapshots] = call;
     const title = e2eTestInfo.titlePath.pop()!;
-    const viewport = e2eTestInfo.viewport;
 
     const snapshots = Object.fromEntries(
-      Object.entries(domSnapshots).map(([name]) => [
+      Object.entries(domSnapshots).map(([name, { viewport }]) => [
         name,
         `width=${viewport.width}, height=${viewport.height}`,
       ])

@@ -4,6 +4,7 @@ import type { serializedNodeWithId } from '@rrweb/types';
 
 export const takeSnapshot = (
   doc: Document,
+  viewport: { width: number; height: number },
   isManualSnapshot?: boolean
 ): Promise<CypressSnapshot | null> => {
   return new Promise((resolve) => {
@@ -43,7 +44,7 @@ export const takeSnapshot = (
     };
 
     replaceBlobUrls(domSnapshot).then(() => {
-      resolve({ snapshot: domSnapshot });
+      resolve({ snapshot: domSnapshot, viewport });
     });
   });
 };

@@ -1,4 +1,3 @@
-import { readdir } from 'fs/promises';
 import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
 import { snapshotId } from './snapshot-files';
 import { sanitize } from './storybook-sanitize';
@@ -38,41 +37,6 @@ export function createStories(
       },
     })),
   };
-}
-
-export function addViewportsToStories(
-  storiesFileJson: any,
-  viewportsStoriesLookup: Record<string, Viewport[]>
-) {
-  const { stories } = storiesFileJson;
-  const storiesWithViewports = stories.map((story: any) => {
-    const storyId = story.parameters.server.id;
-    const viewports = viewportsStoriesLookup[storyId];
-    return {
-      ...story,
-      parameters: {
-        ...story.parameters,
-        chromatic: {
-          ...story.parameters.chromatic,
-          modes: buildStoryModesConfig(viewports),
-        },
-        viewport: {
-          viewports: buildStoryViewportsConfig(viewports),
-          defaultViewport: viewportToString(findDefaultViewport(viewports)),
-        },
-      },
-    };
-  });
-
-  return {
-    ...storiesFileJson,
-    stories: storiesWithViewports,
-  };
-}
-
-export async function listStoriesFiles(storiesDir: string) {
-  const files = await readdir(storiesDir);
-  return files.filter((file) => file.endsWith(`.${STORIES_FILE_EXT}`));
 }
 
 // Converts the given list of viewports into the modes

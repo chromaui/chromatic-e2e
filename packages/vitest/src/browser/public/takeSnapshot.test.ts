@@ -106,22 +106,20 @@ test('viewports are correct when --browser.ui=true', async () => {
   });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
-    [
-      {
-        "title": "default viewport",
-        "viewport": {
-          "height": 720,
-          "width": 1280,
-        },
+    {
+      "calls page.viewport multiple times in one test": {
+        "1280 x 1024": "width=1280, height=1024",
+        "480 x 320": "width=1280, height=1024",
+        "720 x 680": "width=1280, height=1024",
+        "Snapshot #4": "width=1280, height=1024",
       },
-      {
-        "title": "calls page.viewport(480, 320)",
-        "viewport": {
-          "height": 320,
-          "width": 480,
-        },
+      "calls page.viewport(480, 320)": {
+        "Snapshot #1": "width=480, height=320",
       },
-    ]
+      "default viewport": {
+        "Snapshot #1": "width=1280, height=720",
+      },
+    }
   `);
 });
 
@@ -132,27 +130,36 @@ test('viewports are correct when --browser.ui=false', async () => {
   });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
-    [
-      {
-        "title": "default viewport",
-        "viewport": {
-          "height": 720,
-          "width": 1280,
-        },
+    {
+      "calls page.viewport multiple times in one test": {
+        "1280 x 1024": "width=1280, height=1024",
+        "480 x 320": "width=1280, height=1024",
+        "720 x 680": "width=1280, height=1024",
+        "Snapshot #4": "width=1280, height=1024",
       },
-      {
-        "title": "calls page.viewport(480, 320)",
-        "viewport": {
-          "height": 320,
-          "width": 480,
-        },
+      "calls page.viewport(480, 320)": {
+        "Snapshot #1": "width=480, height=320",
       },
-    ]
+      "default viewport": {
+        "Snapshot #1": "width=1280, height=720",
+      },
+    }
   `);
 });
 
 function getSnapshottedTests() {
-  return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-    return { title: call[0].titlePath.pop(), viewport: call[0].viewport };
-  });
+  return vi.mocked(shared.writeTestResult).mock.calls.reduce((all, call) => {
+    const [e2eTestInfo, domSnapshots] = call;
+    const title = e2eTestInfo.titlePath.pop()!;
+    const viewport = e2eTestInfo.viewport;
+
+    const snapshots = Object.fromEntries(
+      Object.entries(domSnapshots).map(([name]) => [
+        name,
+        `width=${viewport.width}, height=${viewport.height}`,
+      ])
+    );
+
+    return { ...all, [title]: snapshots };
+  }, {});
 }

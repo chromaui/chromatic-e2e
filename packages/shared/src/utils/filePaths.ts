@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'fs';
-import { readFile, writeFile } from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'path';
 
@@ -15,10 +15,6 @@ function outputDirOverride() {
 export function archivesDir(defaultOutputDir: string) {
   const outputDir = outputDirOverride() || defaultOutputDir;
   return path.resolve(rootDir(), outputDir, 'chromatic-archives');
-}
-
-export function assetsDir(defaultOutputDir: string) {
-  return path.resolve(archivesDir(defaultOutputDir), 'archive');
 }
 
 export function checkArchivesDirExists(defaultOutputDir: string) {
@@ -43,11 +39,6 @@ export async function outputFile(filePath: string, data: Parameters<typeof write
 
 export async function outputJSONFile(filePath: string, data: any) {
   return outputFile(filePath, JSON.stringify(data));
-}
-
-export async function readJSONFile(filePath: string) {
-  const data = await readFile(filePath);
-  return JSON.parse(data.toString());
 }
 
 // Generates a fixed length hash for the given `data`

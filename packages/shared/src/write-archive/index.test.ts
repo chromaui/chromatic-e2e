@@ -40,9 +40,13 @@ describe('writeTestResult', () => {
         titlePath: ['file.spec.ts', 'Test Story'],
         outputDir: resolve('test-results'),
         pageUrl: 'http://localhost:3000/',
-        viewport: { height: 800, width: 800 },
       },
-      { home: Buffer.from(JSON.stringify(snapshotJson)) },
+      {
+        home: {
+          snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+          viewport: { height: 800, width: 800 },
+        },
+      },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
       {
         diffThreshold: 5,
@@ -59,8 +63,18 @@ describe('writeTestResult', () => {
           {
             name: 'home',
             parameters: {
-              chromatic: { diffThreshold: 5, pauseAnimationAtEnd: true },
+              chromatic: {
+                diffThreshold: 5,
+                pauseAnimationAtEnd: true,
+                modes: { w800h800: { viewport: 'w800h800' } },
+              },
               server: { id: 'file-test-story-home' },
+              viewport: {
+                defaultViewport: 'w800h800',
+                viewports: {
+                  w800h800: { name: 'w800h800', styles: { height: '800px', width: '800px' } },
+                },
+              },
             },
           },
         ],
@@ -93,9 +107,13 @@ describe('writeTestResult', () => {
         titlePath: ['file.spec.ts', 'Toy Story'],
         outputDir: resolve('test-results'),
         pageUrl: 'http://localhost:3000/',
-        viewport: { height: 800, width: 800 },
       },
-      { home: Buffer.from(JSON.stringify(snapshotJson)) },
+      {
+        home: {
+          snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+          viewport: { height: 800, width: 800 },
+        },
+      },
       {
         'http://localhost:3000/home/': {
           statusCode: 200,
@@ -128,9 +146,13 @@ describe('writeTestResult', () => {
         // simulates setting a custom output directory in Playwright
         outputDir: resolve('some-custom-directory/directory'),
         pageUrl: 'http://localhost:3000/',
-        viewport: { height: 800, width: 800 },
       },
-      { home: Buffer.from(JSON.stringify(snapshotJson)) },
+      {
+        home: {
+          snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+          viewport: { height: 800, width: 800 },
+        },
+      },
       { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
       {}
     );
@@ -152,9 +174,13 @@ describe('writeTestResult', () => {
           outputDir:
             'C:/Users/testuser/dev/test-results/dist/.playwright/apps/web-react-demo/test-output/',
           pageUrl: 'http://localhost:3000/',
-          viewport: { height: 800, width: 800 },
         },
-        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        {
+          home: {
+            snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+            viewport: { height: 800, width: 800 },
+          },
+        },
         {
           'http://localhost:3000/@fs/C:/Users/testuser/dev/test-results/node_modules/vite/dist/client/index.html':
             {
@@ -179,9 +205,13 @@ describe('writeTestResult', () => {
           titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
           outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
-          viewport: { height: 800, width: 800 },
         },
-        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        {
+          home: {
+            snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+            viewport: { height: 800, width: 800 },
+          },
+        },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
@@ -203,9 +233,13 @@ describe('writeTestResult', () => {
           ],
           outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
-          viewport: { height: 800, width: 800 },
         },
-        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        {
+          home: {
+            snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+            viewport: { height: 800, width: 800 },
+          },
+        },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
@@ -223,9 +257,13 @@ describe('writeTestResult', () => {
           titlePath: ['some.file.spec.ts', 'Test Story'],
           outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
-          viewport: { height: 800, width: 800 },
         },
-        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        {
+          home: {
+            snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+            viewport: { height: 800, width: 800 },
+          },
+        },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
@@ -243,9 +281,13 @@ describe('writeTestResult', () => {
           titlePath: ['some.file.cy.ts', 'Test Story'],
           outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
-          viewport: { height: 800, width: 800 },
         },
-        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        {
+          home: {
+            snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+            viewport: { height: 800, width: 800 },
+          },
+        },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );
@@ -263,9 +305,13 @@ describe('writeTestResult', () => {
           titlePath: ['file.ts', 'Test Story'],
           outputDir: resolve('test-results'),
           pageUrl: 'http://localhost:3000/',
-          viewport: { height: 800, width: 800 },
         },
-        { home: Buffer.from(JSON.stringify(snapshotJson)) },
+        {
+          home: {
+            snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+            viewport: { height: 800, width: 800 },
+          },
+        },
         { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
         {}
       );

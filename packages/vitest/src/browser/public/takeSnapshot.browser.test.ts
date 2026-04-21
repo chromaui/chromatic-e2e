@@ -16,7 +16,7 @@ test('saves snapshot on server', async ({ task }) => {
   const snapshots = await commands.__chromatic_getSnapshots(task.id);
   expect(snapshots).toHaveProperty('example');
 
-  expect(snapshots.example).toMatchInlineSnapshot(`
+  expect(snapshots.example.snapshot).toMatchInlineSnapshot(`
     {
       "attributes": {},
       "childNodes": [
@@ -80,7 +80,7 @@ test('blob URLs are replaced with data URLs', async ({ task }) => {
   const snapshots = await commands.__chromatic_getSnapshots(task.id);
   expect(snapshots).toHaveProperty('example');
 
-  const snapshot = snapshots.example;
+  const { snapshot } = snapshots.example;
   expect(snapshot).toMatchInlineSnapshot(`
     {
       "attributes": {

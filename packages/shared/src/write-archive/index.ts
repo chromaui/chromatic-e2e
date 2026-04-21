@@ -4,8 +4,7 @@ import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
 import { DOMSnapshot } from './dom-snapshot';
 import type { ResourceArchive } from '../resource-archiver';
-import type { ChromaticStorybookParameters } from '../types';
-import { Viewport } from '../utils/viewport';
+import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
 import { snapshotFileName, snapshotId } from './snapshot-files';
 import { createStories, storiesFileName } from './stories-files';
 
@@ -18,16 +17,15 @@ interface E2ETestInfo {
   titlePath: string[];
   outputDir: string;
   pageUrl: string;
-  viewport: Viewport;
 }
 
 export async function writeTestResult(
   e2eTestInfo: E2ETestInfo,
-  domSnapshots: Record<string, Buffer>,
+  domSnapshots: DOMSnapshots,
   archive: ResourceArchive,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
-  const { titlePath, outputDir, pageUrl, viewport } = e2eTestInfo;
+  const { titlePath, outputDir, pageUrl } = e2eTestInfo;
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
   const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
     // make sure we remove file extensions, even if the file name doesn't have .spec or .test or.cy
@@ -67,7 +65,7 @@ export async function writeTestResult(
   );
 
   await Promise.all(
-    await Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
+    Object.entries(domSnapshots).map(async ([name, { snapshot: domSnapshot, viewport }]) => {
       // XXX_jwir3: We go through our stories here and map any instances that are found in
       //            the keys of the source map to their respective values.
       const snapshot = new DOMSnapshot(domSnapshot);

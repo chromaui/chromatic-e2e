@@ -22,17 +22,23 @@ Cypress.Commands.add('takeSnapshot', (name?: string) => {
     return;
   }
 
-  cy.document().then((doc) => {
-    // here, handle the source map
+  cy.window().then((win) => {
+    const viewport = { width: win.innerWidth, height: win.innerHeight };
 
-    cy.wrap(takeChromaticSnapshot(doc, true)).then((manualSnapshot: CypressSnapshot) => {
-      // reassign manualSnapshots so it includes this new snapshot
-      cy.get('@manualSnapshots')
-        // @ts-expect-error will fix when Cypress has its own package
-        .then((snapshots: CypressSnapshot[]) => {
-          return [...snapshots, { ...manualSnapshot, name }];
-        })
-        .as('manualSnapshots');
+    cy.document().then((doc) => {
+      // here, handle the source map
+
+      cy.wrap(takeChromaticSnapshot(doc, viewport, true)).then(
+        (manualSnapshot: CypressSnapshot) => {
+          // reassign manualSnapshots so it includes this new snapshot
+          cy.get('@manualSnapshots')
+            // @ts-expect-error will fix when Cypress has its own package
+            .then((snapshots: CypressSnapshot[]) => {
+              return [...snapshots, { ...manualSnapshot, name }];
+            })
+            .as('manualSnapshots');
+        }
+      );
     });
   });
 });

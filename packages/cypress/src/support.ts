@@ -49,27 +49,32 @@ afterEach(() => {
   if (!Cypress.config('isTextTerminal')) {
     return;
   }
-  // can we be sure this always fires after all the requests are back?
-  cy.document().then((doc) => {
-    cy.wrap(takeSnapshot(doc)).then((automaticSnapshot: CypressSnapshot) => {
-      // @ts-expect-error will fix when Cypress has its own package
-      cy.get('@manualSnapshots').then((manualSnapshots = []) => {
-        cy.url().then((url) => {
-          // pass the snapshot to the server to write to disk
-          cy.task('prepareArchives', {
-            action: 'save-archives',
-            payload: {
-              // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
-              testTitlePath: [Cypress.spec.relativeToCommonRoot, ...Cypress.currentTest.titlePath],
-              domSnapshots: [...manualSnapshots, ...(automaticSnapshot ? [automaticSnapshot] : [])],
-              chromaticStorybookParams: buildChromaticParams(Cypress.env),
-              pageUrl: url,
-              viewport: {
-                height: Cypress.config('viewportHeight'),
-                width: Cypress.config('viewportWidth'),
+  cy.window().then((win) => {
+    const viewport = { width: win.innerWidth, height: win.innerHeight };
+    // can we be sure this always fires after all the requests are back?
+    cy.document().then((doc) => {
+      cy.wrap(takeSnapshot(doc, viewport)).then((automaticSnapshot: CypressSnapshot) => {
+        // @ts-expect-error will fix when Cypress has its own package
+        cy.get('@manualSnapshots').then((manualSnapshots = []) => {
+          cy.url().then((url) => {
+            // pass the snapshot to the server to write to disk
+            cy.task('prepareArchives', {
+              action: 'save-archives',
+              payload: {
+                testTitlePath: [
+                  // @ts-expect-error relativeToCommonRoot is on spec (but undocumented)
+                  Cypress.spec.relativeToCommonRoot,
+                  ...Cypress.currentTest.titlePath,
+                ],
+                domSnapshots: [
+                  ...manualSnapshots,
+                  ...(automaticSnapshot ? [automaticSnapshot] : []),
+                ],
+                chromaticStorybookParams: buildChromaticParams(Cypress.env),
+                pageUrl: url,
+                outputDir: Cypress.config('downloadsFolder'),
               },
-              outputDir: Cypress.config('downloadsFolder'),
-            },
+            });
           });
         });
       });

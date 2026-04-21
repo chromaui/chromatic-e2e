@@ -7,9 +7,8 @@ import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 // (where page is probably too tied up into takeSnapshot anyway)
 const fakePage = {
   on: () => {},
-  // @ts-expect-error return type of evaluate isn't a concern to us here as we test
-  // in the Chromatic snapshots that the snapshot actually captures what we want
   evaluate: () => null,
+  viewportSize: () => ({ width: 100, height: 200 }),
 } as Page;
 
 describe('Snapshot storage', () => {
@@ -28,7 +27,11 @@ describe('Snapshot storage', () => {
     await takeSnapshot(fakePage, fakeTestInfo as TestInfo);
 
     expect(chromaticSnapshots.get('a').has('Snapshot #1')).toBe(true);
-    expect(Buffer.isBuffer(chromaticSnapshots.get('a').get('Snapshot #1'))).toBe(true);
+    expect(Buffer.isBuffer(chromaticSnapshots.get('a').get('Snapshot #1')?.snapshot)).toBe(true);
+    expect(chromaticSnapshots.get('a').get('Snapshot #1')?.viewport).toEqual({
+      width: 100,
+      height: 200,
+    });
   });
 
   it('creates multiple entries when multiple snapshots are taken', async () => {

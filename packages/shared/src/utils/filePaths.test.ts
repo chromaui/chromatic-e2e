@@ -1,15 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import fsPromises from 'fs/promises';
 import fs from 'fs';
-import {
-  archivesDir,
-  assetsDir,
-  ensureDir,
-  outputFile,
-  outputJSONFile,
-  readJSONFile,
-  truncateFileName,
-} from './filePaths';
+import { archivesDir, ensureDir, outputFile, outputJSONFile, truncateFileName } from './filePaths';
 import { removeLocalhostFromBaseUrl } from './filePaths';
 
 vi.mock('fs');
@@ -37,13 +29,6 @@ describe('default output dir', () => {
       expect(fullPath).toEqual('/base/dir/default/dir/chromatic-archives');
     });
   });
-
-  describe('assetsDir', () => {
-    it('returns a full path to the assets dir', async () => {
-      const fullPath = assetsDir('default/dir');
-      expect(fullPath).toEqual('/base/dir/default/dir/chromatic-archives/archive');
-    });
-  });
 });
 
 describe('overridden output dir', () => {
@@ -62,13 +47,6 @@ describe('overridden output dir', () => {
     it('returns a full path to the archives dir', async () => {
       const fullPath = archivesDir('default/dir');
       expect(fullPath).toEqual('/base/dir/overridden/dir/chromatic-archives');
-    });
-  });
-
-  describe('assetsDir', () => {
-    it('returns a full path to the assets dir', async () => {
-      const fullPath = assetsDir('default/dir');
-      expect(fullPath).toEqual('/base/dir/overridden/dir/chromatic-archives/archive');
     });
   });
 });
@@ -104,16 +82,6 @@ describe('outputJSONFile', () => {
       JSON.stringify({ data: 'some data ' }),
       { mode: 511 }
     );
-  });
-});
-
-describe('readJSONFile', () => {
-  it('returns the contents of the file parsed as JSON', async () => {
-    vi.mocked(fsPromises.readFile).mockResolvedValueOnce(
-      Buffer.from(JSON.stringify({ filePath: '/some/path' }))
-    );
-    const json = await readJSONFile('/some/path');
-    expect(json).toEqual({ filePath: '/some/path' });
   });
 });
 

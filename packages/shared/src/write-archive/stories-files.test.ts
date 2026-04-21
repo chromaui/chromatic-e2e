@@ -1,7 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import fs from 'fs/promises';
 import { ChromaticStorybookParameters } from '../types';
-import { Viewport } from '../utils/viewport';
 import * as storiesFiles from './stories-files';
 
 vi.mock('fs/promises');
@@ -44,8 +42,8 @@ describe('createStories', () => {
   it('creates stories file JSON from DOM snapshots', () => {
     const title = 'some test title';
     const domSnapshots = {
-      'snapshot 1': Buffer.from('n/a'),
-      'another snapshot': Buffer.from('n/a'),
+      'snapshot 1': { snapshot: Buffer.from('n/a'), viewport: { width: 100, height: 200 } },
+      'another snapshot': { snapshot: Buffer.from('n/a'), viewport: { width: 300, height: 400 } },
     };
     const chromaticParams: ChromaticStorybookParameters = {
       delay: 200,
@@ -64,92 +62,23 @@ describe('createStories', () => {
             chromatic: {
               delay: 200,
               pauseAnimationAtEnd: true,
-            },
-          },
-        },
-        {
-          name: 'another snapshot',
-          parameters: {
-            server: { id: 'some-test-title-another-snapshot' },
-            chromatic: {
-              delay: 200,
-              pauseAnimationAtEnd: true,
-            },
-          },
-        },
-      ],
-    });
-  });
-});
-
-describe('addViewportsToStories', () => {
-  it('decorates stories JSON with viewport and modes story parameters', () => {
-    const storiesFileJson = {
-      title: 'some test title',
-      stories: [
-        {
-          name: 'snapshot 1',
-          parameters: {
-            server: { id: 'some-test-title-snapshot-1' },
-            chromatic: {
-              delay: 200,
-              pauseAnimationAtEnd: true,
-            },
-          },
-        },
-        {
-          name: 'another snapshot',
-          parameters: {
-            server: { id: 'some-test-title-another-snapshot' },
-            chromatic: {
-              delay: 200,
-              pauseAnimationAtEnd: true,
-            },
-          },
-        },
-      ],
-    };
-
-    const viewportsLookup: Record<string, Viewport[]> = {
-      'some-test-title-snapshot-1': [
-        { width: 500, height: 500 },
-        { width: 1200, height: 700 },
-      ],
-      'some-test-title-another-snapshot': [{ width: 600, height: 600 }],
-    };
-
-    const storiesWithViewports = storiesFiles.addViewportsToStories(
-      storiesFileJson,
-      viewportsLookup
-    );
-
-    expect(storiesWithViewports).toEqual({
-      title: 'some test title',
-      stories: [
-        {
-          name: 'snapshot 1',
-          parameters: {
-            server: { id: 'some-test-title-snapshot-1' },
-            chromatic: {
-              delay: 200,
-              pauseAnimationAtEnd: true,
               modes: {
-                w500h500: { viewport: 'w500h500' },
-                w1200h700: { viewport: 'w1200h700' },
+                w100h200: {
+                  viewport: 'w100h200',
+                },
               },
             },
             viewport: {
+              defaultViewport: 'w100h200',
               viewports: {
-                w500h500: {
-                  name: 'w500h500',
-                  styles: { width: '500px', height: '500px' },
-                },
-                w1200h700: {
-                  name: 'w1200h700',
-                  styles: { width: '1200px', height: '700px' },
+                w100h200: {
+                  name: 'w100h200',
+                  styles: {
+                    height: '200px',
+                    width: '100px',
+                  },
                 },
               },
-              defaultViewport: 'w1200h700',
             },
           },
         },
@@ -161,38 +90,27 @@ describe('addViewportsToStories', () => {
               delay: 200,
               pauseAnimationAtEnd: true,
               modes: {
-                w600h600: { viewport: 'w600h600' },
+                w300h400: {
+                  viewport: 'w300h400',
+                },
               },
             },
             viewport: {
+              defaultViewport: 'w300h400',
               viewports: {
-                w600h600: {
-                  name: 'w600h600',
-                  styles: { width: '600px', height: '600px' },
+                w300h400: {
+                  name: 'w300h400',
+                  styles: {
+                    height: '400px',
+                    width: '300px',
+                  },
                 },
               },
-              defaultViewport: 'w600h600',
             },
           },
         },
       ],
     });
-  });
-});
-
-describe('listStoriesFiles', () => {
-  it('lists stories files in a given directory', async () => {
-    const allFiles = [
-      'some-id.stories.json',
-      'not-a-snap.txt',
-      'some-id.stories.json',
-      'not-a-snapshot.json',
-    ];
-    // @ts-expect-error - Intentionally handling only single function override
-    vi.mocked(fs.readdir).mockResolvedValueOnce(allFiles);
-    const files = await storiesFiles.listStoriesFiles('some-dir');
-
-    expect(files).toEqual(['some-id.stories.json', 'some-id.stories.json']);
   });
 });
 

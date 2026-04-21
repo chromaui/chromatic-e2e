@@ -4,16 +4,21 @@ import type { TestCase, TestModule, TestSuite, BrowserCommand } from 'vitest/nod
 import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
-import { ResourceArchiver, writeTestResult } from '@chromatic-com/shared-e2e';
+import { ResourceArchiver, Viewport, writeTestResult } from '@chromatic-com/shared-e2e';
 import { type ChromaticNamespace, type ResolvedOptions } from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 
 type TestID = Task['id'];
+type DOMSnapshots = Parameters<typeof writeTestResult>[1];
+type SnapshotName = keyof DOMSnapshots;
 
 export function createCommands(options: ResolvedOptions) {
   const resourceArchivers = new Map<TestID, ResourceArchiver>();
   const networkIdleTrackers = new Map<TestID, NetworkIdleTracker>();
-  const snapshots = new Map<TestID, Map<string, serializedNodeWithId>>();
+  const snapshots = new Map<
+    TestID,
+    Map<SnapshotName, { snapshot: serializedNodeWithId; viewport: Viewport }>
+  >();
 
   return {
     /**
@@ -29,7 +34,7 @@ export function createCommands(options: ResolvedOptions) {
      * Can be called multiple times during a single test case.
      */
     async __chromatic_uploadDOMSnapshot(
-      _,
+      context,
       id: TestID,
       snapshot: serializedNodeWithId,
       name?: string
@@ -43,7 +48,15 @@ export function createCommands(options: ResolvedOptions) {
 
       name ||= `Snapshot #${sessionSnapshots.size + 1}`;
 
-      sessionSnapshots.set(name, snapshot);
+      const frame = await context.frame();
+      const frameElement = await frame.frameElement();
+
+      const viewport = await frameElement.evaluate((iframe) => ({
+        width: iframe.parentElement?.clientWidth || 1920,
+        height: iframe.parentElement?.clientHeight || 1080,
+      }));
+
+      sessionSnapshots.set(name, { snapshot, viewport });
     },
 
     /**
@@ -98,8 +111,8 @@ export function createCommands(options: ResolvedOptions) {
 
       const snapshotBuffers: Parameters<typeof writeTestResult>[1] = {};
 
-      for (const [name, domSnapshot] of sessionSnapshots) {
-        snapshotBuffers[name] = Buffer.from(JSON.stringify(domSnapshot));
+      for (const [name, { snapshot }] of sessionSnapshots) {
+        snapshotBuffers[name] = Buffer.from(JSON.stringify(snapshot));
       }
 
       const frame = await context.frame();

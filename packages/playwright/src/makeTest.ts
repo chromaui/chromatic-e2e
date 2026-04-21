@@ -64,7 +64,8 @@ export const performChromaticSnapshot = async (
     }
 
     const resourceArchive = await completeArchive();
-    const snapshots: Map<string, Buffer> = chromaticSnapshots.get(testId) || new Map();
+    const snapshots: NonNullable<ReturnType<typeof chromaticSnapshots.get>> =
+      chromaticSnapshots.get(testId) || new Map();
 
     const chromaticStorybookParams = {
       ...(delay && { delay }),
@@ -82,7 +83,10 @@ export const performChromaticSnapshot = async (
     const outputDir = join(testInfo.outputDir, '..');
     await writeTestResult(
       { ...testInfo, outputDir, pageUrl: page.url(), viewport: page.viewportSize() },
-      Object.fromEntries(snapshots),
+      // TODO: Pass as-is once shared-e2e supports snapshot specific viewports
+      Object.fromEntries(
+        Array.from(snapshots.entries()).map(([name, entry]) => [name, entry.snapshot])
+      ),
       resourceArchive,
       chromaticStorybookParams
     );

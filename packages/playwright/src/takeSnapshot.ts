@@ -2,12 +2,15 @@ import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { dedent } from 'ts-dedent';
 import type { serializedNodeWithId } from '@rrweb/types';
-import { logger } from '@chromatic-com/shared-e2e';
+import { logger, type Viewport } from '@chromatic-com/shared-e2e';
 
 const rrweb = readFileSync(require.resolve('@chromaui/rrweb-snapshot'), 'utf8');
 
 // top-level key is the test ID, next level key is the name of the snapshot (which we expect to be unique)
-export const chromaticSnapshots: Map<string, Map<string, Buffer>> = new Map();
+export const chromaticSnapshots: Map<
+  string,
+  Map<string, { snapshot: Buffer; viewport: Viewport }>
+> = new Map();
 
 async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
 async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
@@ -104,7 +107,9 @@ async function takeSnapshot(
     // map used so the snapshots are always in order
     chromaticSnapshots.set(testId, new Map());
   }
-  chromaticSnapshots.get(testId).set(name, bufferedSnapshot);
+  chromaticSnapshots
+    .get(testId)
+    .set(name, { snapshot: bufferedSnapshot, viewport: page.viewportSize() });
 }
 
 export { takeSnapshot };

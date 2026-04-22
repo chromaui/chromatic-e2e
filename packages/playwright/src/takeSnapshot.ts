@@ -97,9 +97,9 @@ async function takeSnapshot(
       new Promise((resolve) => {
         doPostProcessing(rrwebSnapshot, document).then((domSnapshot) => {
           resolve(domSnapshot);
-        });    
+        });
       });
-    }    
+    }
   `);
 
   const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
@@ -109,7 +109,10 @@ async function takeSnapshot(
   }
   chromaticSnapshots
     .get(testId)
-    .set(name, { snapshot: bufferedSnapshot, viewport: page.viewportSize() });
+    .set(name, {
+      snapshot: bufferedSnapshot,
+      viewport: page.viewportSize() || { width: 1280, height: 720 },
+    });
 }
 
 export { takeSnapshot };

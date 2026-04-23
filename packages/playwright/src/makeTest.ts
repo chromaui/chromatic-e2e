@@ -64,7 +64,8 @@ export const performChromaticSnapshot = async (
     }
 
     const resourceArchive = await completeArchive();
-    const snapshots: Map<string, Buffer> = chromaticSnapshots.get(testId) || new Map();
+    const snapshots: NonNullable<ReturnType<typeof chromaticSnapshots.get>> =
+      chromaticSnapshots.get(testId) || new Map();
 
     const chromaticStorybookParams = {
       ...(delay && { delay }),
@@ -81,7 +82,7 @@ export const performChromaticSnapshot = async (
     // we want to write one level above that
     const outputDir = join(testInfo.outputDir, '..');
     await writeTestResult(
-      { ...testInfo, outputDir, pageUrl: page.url(), viewport: page.viewportSize() },
+      { ...testInfo, outputDir, pageUrl: page.url() },
       Object.fromEntries(snapshots),
       resourceArchive,
       chromaticStorybookParams

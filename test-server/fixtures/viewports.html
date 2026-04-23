@@ -3,10 +3,36 @@
   <head>
     <title>Viewports</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      #large,
+      #medium,
+      #small {
+        display: none;
+      }
+
+      @media (min-width: 1000px) and (max-width: 1100px) {
+        #large {
+          display: block;
+        }
+      }
+
+      @media (min-width: 800px) and (max-width: 900px) {
+        #medium {
+          display: block;
+        }
+      }
+
+      @media (max-width: 500px) {
+        #small {
+          display: block;
+        }
+      }
+    </style>
   </head>
   <body>
-    <p id="gt1100" style="display: none">I'm rendered when the page width is &gt; 1100</p>
-    <p id="lt600" style="display: none">I'm rendered when the page width is &lt; 600></p>
+    <p id="large">I'm rendered when the page width is between 1100-1000</p>
+    <p id="medium">I'm rendered when the page width is between 900-800</p>
+    <p id="small">I'm rendered when the page width is between 500-0</p>
     <p>I'm always rendered</p>
     <p>Window width: <span id="width"></span></p>
     <p>Window height: <span id="height"></span></p>
@@ -16,12 +42,6 @@
     function updateSize() {
       document.getElementById('height').textContent = window.innerHeight;
       document.getElementById('width').textContent = window.innerWidth;
-
-      if (window.innerWidth > 1100) {
-        document.getElementById('gt1100').style.display = 'inline';
-      } else if (window.innerWidth < 600) {
-        document.getElementById('lt600').style.display = 'inline';
-      }
     }
 
     updateSize();

@@ -27,14 +27,13 @@ const writeArchives = async ({
   resourceArchive,
   chromaticStorybookParams,
   pageUrl,
-  viewport,
   outputDir,
 }: WriteArchivesParams) => {
   const allSnapshots = Object.fromEntries(
     // manual snapshots can be given a name; otherwise, just use the snapshot's place in line as the name
-    domSnapshots.map(({ name, snapshot }, index) => [
+    domSnapshots.map(({ name, snapshot, viewport }, index) => [
       name ?? `Snapshot #${index + 1}`,
-      Buffer.from(JSON.stringify(snapshot)),
+      { snapshot: Buffer.from(JSON.stringify(snapshot)), viewport },
     ])
   );
 
@@ -43,7 +42,6 @@ const writeArchives = async ({
       titlePath: testTitlePath,
       outputDir,
       pageUrl,
-      viewport,
     },
     allSnapshots,
     resourceArchive,

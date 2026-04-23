@@ -1,3 +1,5 @@
+import { Viewport } from './utils/viewport';
+
 export interface ChromaticConfig {
   // https://www.chromatic.com/docs/delay/
   delay?: number;
@@ -37,3 +39,11 @@ export interface ChromaticConfig {
 }
 
 export type ChromaticStorybookParameters = Omit<ChromaticConfig, 'disableAutoSnapshot'>;
+
+export type DOMSnapshots = Record<
+  string,
+  {
+    snapshot: Buffer;
+    viewport: Viewport;
+  }
+>;

@@ -1,13 +1,20 @@
-import { expect, test } from 'vitest';
-import { runFixture } from '../../../test/utils/node';
+import { expect, test, vi } from 'vitest';
+import * as shared from '@chromatic-com/shared-e2e';
+import { getBrowserConfig, runFixture } from '../../../test/utils/node';
+
+vi.mock('@chromatic-com/shared-e2e');
+vi.mocked(shared.writeTestResult).mockImplementation(() => Promise.resolve());
 
 /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
-const include = ['take-snapshot.test.ts'];
+const takeSnapshotTest = 'take-snapshot.test.ts';
+
+/** See {@link file://./../../../test/fixtures/viewports.test.ts} */
+const viewportsTest = 'viewports.test.ts';
 
 test('provides descriptive error when called in non-registered test', async () => {
   const { stderr } = await runFixture(
     {
-      include,
+      include: [takeSnapshotTest],
       provide: { testName: 'one' },
     },
     { disabled: true }
@@ -33,7 +40,10 @@ test('provides descriptive error when called in non-registered test', async () =
 });
 
 test('provides descriptive error when called outside of a test()', async () => {
-  const { stderr } = await runFixture({ include, provide: { testName: 'two' } });
+  const { stderr } = await runFixture({
+    include: [takeSnapshotTest],
+    provide: { testName: 'two' },
+  });
 
   expect(stderr).toMatchInlineSnapshot(`
     "
@@ -54,7 +64,10 @@ test('provides descriptive error when called outside of a test()', async () => {
 });
 
 test('provides descriptive error when not awaited', async () => {
-  const { stderr } = await runFixture({ include, provide: { testName: 'three' } });
+  const { stderr } = await runFixture({
+    include: [takeSnapshotTest],
+    provide: { testName: 'three' },
+  });
 
   expect(stderr).toMatchInlineSnapshot(`
     "
@@ -85,3 +98,61 @@ test('provides descriptive error when not awaited', async () => {
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯"
   `);
 });
+
+test('viewports are correct when --browser.ui=true', async () => {
+  await runFixture({
+    include: [viewportsTest],
+    browser: { ...getBrowserConfig(), ui: true, viewport: { width: 1280, height: 720 } },
+  });
+
+  expect(getSnapshottedTests()).toMatchInlineSnapshot(`
+    [
+      {
+        "title": "default viewport",
+        "viewport": {
+          "height": 720,
+          "width": 1280,
+        },
+      },
+      {
+        "title": "calls page.viewport(480, 320)",
+        "viewport": {
+          "height": 320,
+          "width": 480,
+        },
+      },
+    ]
+  `);
+});
+
+test('viewports are correct when --browser.ui=false', async () => {
+  await runFixture({
+    include: [viewportsTest],
+    browser: { ...getBrowserConfig(), ui: false, viewport: { width: 1280, height: 720 } },
+  });
+
+  expect(getSnapshottedTests()).toMatchInlineSnapshot(`
+    [
+      {
+        "title": "default viewport",
+        "viewport": {
+          "height": 720,
+          "width": 1280,
+        },
+      },
+      {
+        "title": "calls page.viewport(480, 320)",
+        "viewport": {
+          "height": 320,
+          "width": 480,
+        },
+      },
+    ]
+  `);
+});
+
+function getSnapshottedTests() {
+  return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
+    return { title: call[0].titlePath.pop(), viewport: call[0].viewport };
+  });
+}

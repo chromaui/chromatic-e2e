@@ -1,7 +1,8 @@
 import { assert } from 'vitest';
 import { commands } from 'vitest/browser';
-import { snapshot } from '@chromaui/rrweb-snapshot';
+import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
 import { serializedNodeWithId } from '@rrweb/types';
+import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { getCurrentTest } from '../getCurrentTest';
 import type {} from '../../node/commands';
 
@@ -33,12 +34,21 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
 
   test.meta.__chromatic_isTakeSnapshotCalled = true;
 
-  const domSnapshot = snapshot(document, { recordCanvas: true });
+  const mirror = createMirror();
+  const domSnapshot = snapshot(document, { recordCanvas: true, mirror });
   assert(domSnapshot, 'Failed to capture DOM snapshot');
+
+  const pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'] = {};
+
+  for (const className of [':hover', ':focus', ':focus-visible', ':active']) {
+    const elements = document.querySelectorAll(className);
+    const ids = Array.from(elements, (el) => mirror.getId(el)).filter((id) => id !== -1);
+    pseudoClassIds[className] = ids;
+  }
 
   const save = async () => {
     await replaceBlobUrls(domSnapshot);
-    await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, name);
+    await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, pseudoClassIds, name);
   };
 
   // Ignore is set when called by automatic snapshots

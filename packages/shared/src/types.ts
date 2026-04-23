@@ -1,3 +1,4 @@
+import { serializedNodeWithId } from '@rrweb/types';
 import { Viewport } from './utils/viewport';
 
 export interface ChromaticConfig {
@@ -45,5 +46,12 @@ export type DOMSnapshots = Record<
   {
     snapshot: Buffer;
     viewport: Viewport;
+    pseudoClassIds: Record<string, number[]>;
   }
 >;
+
+/** Shape of the snapshot that is written to the file system */
+export interface SavedSnapshot {
+  snapshot: serializedNodeWithId;
+  pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+}

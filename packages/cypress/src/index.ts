@@ -31,9 +31,9 @@ const writeArchives = async ({
 }: WriteArchivesParams) => {
   const allSnapshots = Object.fromEntries(
     // manual snapshots can be given a name; otherwise, just use the snapshot's place in line as the name
-    domSnapshots.map(({ name, snapshot, viewport }, index) => [
+    domSnapshots.map(({ name, snapshot, viewport, pseudoClassIds }, index) => [
       name ?? `Snapshot #${index + 1}`,
-      { snapshot: Buffer.from(JSON.stringify(snapshot)), viewport },
+      { snapshot: Buffer.from(JSON.stringify(snapshot)), viewport, pseudoClassIds },
     ])
   );
 

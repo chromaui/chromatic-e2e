@@ -2,6 +2,7 @@ import type { serializedElementNodeWithId, serializedNodeWithId } from '@rrweb/t
 import { NodeType } from '@rrweb/types';
 import srcset from 'srcset';
 import { removeLocalhostFromBaseUrl } from '../utils/filePaths';
+import type { DOMSnapshots, SavedSnapshot } from '../types';
 
 // Matches `url(...)` function in CSS text, excluding data URLs
 const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
@@ -11,19 +12,32 @@ const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
  */
 export class DOMSnapshot {
   snapshot: serializedNodeWithId;
+  pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
 
-  constructor(snapshot: Buffer | string) {
+  constructor({
+    snapshot,
+    pseudoClassIds,
+  }: {
+    snapshot: DOMSnapshots[string]['snapshot'] | string;
+    pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+  }) {
     if (Buffer.isBuffer(snapshot)) {
       const bufferAsString = snapshot.toString('utf-8');
       this.snapshot = JSON.parse(bufferAsString);
     } else {
       this.snapshot = JSON.parse(snapshot);
     }
+
+    this.pseudoClassIds = pseudoClassIds;
   }
 
   async mapAssetPaths(sourceMap: Map<string, string>) {
-    const transformedSnapshot = await this.mapNode(this.snapshot, sourceMap);
-    return JSON.stringify(transformedSnapshot);
+    const savedSnapshot: SavedSnapshot = {
+      snapshot: await this.mapNode(this.snapshot, sourceMap),
+      pseudoClassIds: this.pseudoClassIds,
+    };
+
+    return JSON.stringify(savedSnapshot);
   }
 
   private async mapNode(node: serializedNodeWithId, sourceMap: Map<string, string>) {

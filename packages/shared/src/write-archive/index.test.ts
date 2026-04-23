@@ -135,7 +135,7 @@ describe('writeTestResult', () => {
       resolve(
         './test-results/chromatic-archives/archive/file-toy-story-home.w800h800.snapshot.json'
       ),
-      JSON.stringify(expectedMappedJson)
+      JSON.stringify({ snapshot: expectedMappedJson })
     );
   });
 

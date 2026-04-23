@@ -25,6 +25,20 @@ export default defineConfig({
       screenshotFailures: false,
       viewport: { width: 1280, height: 720 },
 
+      commands: {
+        async mousedown(context, selector: string) {
+          const frame = await context.frame();
+          const box = await frame.locator(selector).boundingBox();
+
+          if (!box) {
+            throw new Error(`Could not find element with selector: ${selector}`);
+          }
+
+          await context.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+          await context.page.mouse.down();
+        },
+      },
+
       provider: playwright({
         contextOptions: {
           httpCredentials: {
@@ -68,6 +82,7 @@ function testServerProxy() {
     'createObjectUrl',
     'canvas',
     'amd',
+    'css-pseudo-states',
     '@fz',
   ];
 

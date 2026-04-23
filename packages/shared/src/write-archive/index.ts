@@ -65,13 +65,13 @@ export async function writeTestResult(
   );
 
   await Promise.all(
-    Object.entries(domSnapshots).map(async ([name, { snapshot: domSnapshot, viewport }]) => {
+    Object.entries(domSnapshots).map(async ([name, domSnapshot]) => {
       // XXX_jwir3: We go through our stories here and map any instances that are found in
       //            the keys of the source map to their respective values.
       const snapshot = new DOMSnapshot(domSnapshot);
       const mappedSnapshot = await snapshot.mapAssetPaths(sourceMap);
 
-      const snapshotFile = snapshotFileName(snapshotId(title, name), viewport);
+      const snapshotFile = snapshotFileName(snapshotId(title, name), domSnapshot.viewport);
       await outputFile(join(archiveDir, snapshotFile), mappedSnapshot);
     })
   );

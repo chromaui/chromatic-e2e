@@ -1,4 +1,4 @@
-import { snapshot } from '@chromaui/rrweb-snapshot';
+import { createMirror, snapshot } from '@chromaui/rrweb-snapshot';
 import { CypressSnapshot } from './types';
 import type { serializedNodeWithId } from '@rrweb/types';
 
@@ -12,7 +12,17 @@ export const takeSnapshot = (
       resolve(null);
     }
 
-    const domSnapshot = snapshot(doc, { recordCanvas: true });
+    const mirror = createMirror();
+    const domSnapshot = snapshot(doc, { recordCanvas: true, mirror })!;
+
+    const pseudoClassIds: CypressSnapshot['pseudoClassIds'] = {};
+
+    for (const className of [':hover', ':focus', ':focus-visible', ':active']) {
+      const elements = doc.querySelectorAll(className);
+      const ids = Array.from(elements, (el) => mirror.getId(el)).filter((id) => id !== -1);
+      pseudoClassIds[className] = ids;
+    }
+
     // do some post-processing on the snapshot
     const toDataURL = async (url: string) => {
       // read contents of the blob URL
@@ -44,7 +54,7 @@ export const takeSnapshot = (
     };
 
     replaceBlobUrls(domSnapshot).then(() => {
-      resolve({ snapshot: domSnapshot, viewport });
+      resolve({ snapshot: domSnapshot, viewport, pseudoClassIds });
     });
   });
 };

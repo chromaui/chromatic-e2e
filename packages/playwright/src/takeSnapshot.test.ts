@@ -7,7 +7,7 @@ import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 // (where page is probably too tied up into takeSnapshot anyway)
 const fakePage = {
   on: () => {},
-  evaluate: () => null,
+  evaluate: () => ({ domSnapshot: null, pseudoClassIds: {} }),
   viewportSize: () => ({ width: 100, height: 200 }),
 } as Page;
 

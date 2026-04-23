@@ -262,40 +262,44 @@ sourceMap.set(queryUrl, queryUrlTransformed);
 describe('DOMSnapshot', () => {
   describe('mapAssetPaths', () => {
     it('maps asset paths in src attrs, style attrs, and external style sheets, and inline style elements', async () => {
-      const domSnapshot = new DOMSnapshot(snapshot);
+      const domSnapshot = new DOMSnapshot({ snapshot, pseudoClassIds: {} });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(mappedSnapshot).toEqual(expectedMappedSnapshot);
+      expect(mappedSnapshot).toEqual(`{"snapshot":${expectedMappedSnapshot},"pseudoClassIds":{}}`);
     });
 
     it('does not change paths that are not in the source map', async () => {
-      const domSnapshot = new DOMSnapshot(snapshot);
+      const domSnapshot = new DOMSnapshot({ snapshot, pseudoClassIds: {} });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map<string, string>());
 
-      expect(mappedSnapshot).toEqual(snapshot);
+      expect(mappedSnapshot).toEqual(`{"snapshot":${snapshot},"pseudoClassIds":{}}`);
     });
 
     it('maps img srcsets', async () => {
-      const domSnapshot = new DOMSnapshot(
-        createImgSrcsetSnapshot({
+      const domSnapshot = new DOMSnapshot({
+        snapshot: createImgSrcsetSnapshot({
           backupUrl: relativeUrl,
           smallUrl: externalUrl,
           largeUrl: queryUrl,
-        })
-      );
+        }),
+        pseudoClassIds: {},
+      });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
       expect(JSON.parse(mappedSnapshot)).toEqual({
-        type: 2,
-        tagName: 'img',
-        attributes: {
-          src: `${queryUrlTransformed}`,
+        snapshot: {
+          type: 2,
+          tagName: 'img',
+          attributes: {
+            src: `${queryUrlTransformed}`,
+          },
+          childNodes: [],
+          id: 61,
         },
-        childNodes: [],
-        id: 61,
+        pseudoClassIds: {},
       });
     });
 
@@ -305,49 +309,55 @@ describe('DOMSnapshot', () => {
         smallUrl: externalUrl,
         largeUrl: queryUrl,
       });
-      const domSnapshot = new DOMSnapshot(originalSnapshot);
+      const domSnapshot = new DOMSnapshot({ snapshot: originalSnapshot, pseudoClassIds: {} });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map<string, string>());
 
-      expect(mappedSnapshot).toEqual(originalSnapshot);
+      expect(mappedSnapshot).toEqual(`{"snapshot":${originalSnapshot},"pseudoClassIds":{}}`);
     });
 
     it('maps picture srcsets, single <source>', async () => {
-      const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSource({ backupUrl: relativeUrl, matchingUrl: queryUrl })
-      );
+      const domSnapshot = new DOMSnapshot({
+        snapshot: createPictureSrcsetSnapshotSingleSource({
+          backupUrl: relativeUrl,
+          matchingUrl: queryUrl,
+        }),
+        pseudoClassIds: {},
+      });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(JSON.parse(mappedSnapshot)).toEqual(pictureWithJustImageTag);
+      expect(JSON.parse(mappedSnapshot).snapshot).toEqual(pictureWithJustImageTag);
     });
 
     it('maps picture srcsets, multiple <source>s', async () => {
-      const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotMultipleSources({
+      const domSnapshot = new DOMSnapshot({
+        snapshot: createPictureSrcsetSnapshotMultipleSources({
           backupUrl: relativeUrl,
           wrongUrl: externalUrl,
           matchingUrl: queryUrl,
-        })
-      );
+        }),
+        pseudoClassIds: {},
+      });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(JSON.parse(mappedSnapshot)).toEqual(pictureWithJustImageTag);
+      expect(JSON.parse(mappedSnapshot).snapshot).toEqual(pictureWithJustImageTag);
     });
 
     it('maps picture srcsets, single <source> with multiple srcset values', async () => {
-      const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSourceMultipleSrcsets({
+      const domSnapshot = new DOMSnapshot({
+        snapshot: createPictureSrcsetSnapshotSingleSourceMultipleSrcsets({
           backupUrl: relativeUrl,
           wrongUrl: externalUrl,
           matchingUrl: queryUrl,
-        })
-      );
+        }),
+        pseudoClassIds: {},
+      });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(JSON.parse(mappedSnapshot)).toEqual(pictureWithJustImageTag);
+      expect(JSON.parse(mappedSnapshot).snapshot).toEqual(pictureWithJustImageTag);
     });
 
     it('maps picture srcsets, <picture> and children left untouched if there is no URL match', async () => {
@@ -355,26 +365,27 @@ describe('DOMSnapshot', () => {
         wrongUrl: '/totally-bogus-url.png',
         alsoWrongUrl: 'https://another-totally-bogus.com/url.png',
       });
-      const domSnapshot = new DOMSnapshot(originalSnapshot);
+      const domSnapshot = new DOMSnapshot({ snapshot: originalSnapshot, pseudoClassIds: {} });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(JSON.parse(mappedSnapshot)).toEqual(JSON.parse(originalSnapshot));
+      expect(JSON.parse(mappedSnapshot).snapshot).toEqual(JSON.parse(originalSnapshot));
     });
 
     // important that we only blow away what we need to; since <picture> contents are styled by their <img> tag,
     // we don't want to get rid of any existing <img> attributes (like class for example)
     it('maps picture srcsets, preserves existing <img> attributes', async () => {
-      const domSnapshot = new DOMSnapshot(
-        createPictureSrcsetSnapshotSingleSourceImageHasAttributes({
+      const domSnapshot = new DOMSnapshot({
+        snapshot: createPictureSrcsetSnapshotSingleSourceImageHasAttributes({
           backupUrl: relativeUrl,
           matchingUrl: queryUrl,
-        })
-      );
+        }),
+        pseudoClassIds: {},
+      });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
-      expect(JSON.parse(mappedSnapshot)).toEqual({
+      expect(JSON.parse(mappedSnapshot).snapshot).toEqual({
         ...pictureWithJustImageTag,
         childNodes: [
           {
@@ -390,23 +401,38 @@ describe('DOMSnapshot', () => {
 
     it('does change base tag href when there is a localhost', async () => {
       const originalSnapshot = createBaseTagSnapshot('http://localhost:3000/');
-      const domSnapshot = new DOMSnapshot(originalSnapshot);
+      const domSnapshot = new DOMSnapshot({ snapshot: originalSnapshot, pseudoClassIds: {} });
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map());
-      expect(mappedSnapshot).toEqual(createBaseTagSnapshot('/'));
+      expect(mappedSnapshot).toEqual(
+        `{"snapshot":${createBaseTagSnapshot('/')},"pseudoClassIds":{}}`
+      );
     });
 
     it('does not change base tag href when not localhost', async () => {
       const originalSnapshot = createBaseTagSnapshot('https://example.com/app/');
-      const domSnapshot = new DOMSnapshot(originalSnapshot);
+      const domSnapshot = new DOMSnapshot({ snapshot: originalSnapshot, pseudoClassIds: {} });
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map());
-      expect(mappedSnapshot).toEqual(originalSnapshot);
+      expect(mappedSnapshot).toEqual(`{"snapshot":${originalSnapshot},"pseudoClassIds":{}}`);
     });
 
     it('does not change base tag href when already relative', async () => {
       const originalSnapshot = createBaseTagSnapshot('/app/');
-      const domSnapshot = new DOMSnapshot(originalSnapshot);
+      const domSnapshot = new DOMSnapshot({ snapshot: originalSnapshot, pseudoClassIds: {} });
       const mappedSnapshot = await domSnapshot.mapAssetPaths(new Map());
-      expect(mappedSnapshot).toEqual(originalSnapshot);
+      expect(mappedSnapshot).toEqual(`{"snapshot":${originalSnapshot},"pseudoClassIds":{}}`);
+    });
+
+    it('maps pseudoClassIds', async () => {
+      const domSnapshot = new DOMSnapshot({
+        snapshot,
+        pseudoClassIds: { hover: [2, 3, 4], focus: [5, 6, 7], active: [8, 9, 10] },
+      });
+
+      const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
+
+      expect(mappedSnapshot).toEqual(
+        `{"snapshot":${expectedMappedSnapshot},"pseudoClassIds":{"hover":[2,3,4],"focus":[5,6,7],"active":[8,9,10]}}`
+      );
     });
   });
 });

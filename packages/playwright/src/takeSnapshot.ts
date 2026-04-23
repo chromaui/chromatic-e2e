@@ -2,14 +2,15 @@ import type { Page, TestInfo } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { dedent } from 'ts-dedent';
 import type { serializedNodeWithId } from '@rrweb/types';
-import { logger, type Viewport } from '@chromatic-com/shared-e2e';
+import { type DOMSnapshots, logger } from '@chromatic-com/shared-e2e';
 
 const rrweb = readFileSync(require.resolve('@chromaui/rrweb-snapshot'), 'utf8');
 
-// top-level key is the test ID, next level key is the name of the snapshot (which we expect to be unique)
+type TestID = TestInfo['testId'];
+type SnapshotName = keyof DOMSnapshots;
 export const chromaticSnapshots: Map<
-  string,
-  Map<string, { snapshot: Buffer; viewport: Viewport }>
+  TestID,
+  Map<SnapshotName, DOMSnapshots[SnapshotName]>
 > = new Map();
 
 async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
@@ -36,14 +37,28 @@ async function takeSnapshot(
   });
 
   // Serialize and capture the DOM
-  const domSnapshot: serializedNodeWithId = await page.evaluate(dedent`
+  const {
+    domSnapshot,
+    pseudoClassIds,
+  }: { domSnapshot: serializedNodeWithId; pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'] } =
+    await page.evaluate(dedent`
     ${rrweb};
 
     // this code was erroring the page.evaluate() when it was passed as a function to page.evaluate(),
     // so for now it is being passed as a string until that can be resolved.
     const doPostProcessing = (rrwebSnapshotInstance, documentToSnapshot) => {
       return new Promise((resolve) => {
-        const domSnapshot = rrwebSnapshotInstance.snapshot(documentToSnapshot, { recordCanvas: true });
+        const mirror = rrwebSnapshotInstance.createMirror();
+        const domSnapshot = rrwebSnapshotInstance.snapshot(documentToSnapshot, { recordCanvas: true, mirror });
+
+        const pseudoClassIds = {};
+
+        for (const className of [':hover', ':focus', ':focus-visible', ':active']) {
+          const elements = documentToSnapshot.querySelectorAll(className);
+          const ids = Array.from(elements, (el) => mirror.getId(el)).filter((id) => id !== -1);
+          pseudoClassIds[className] = ids;
+        }
+
         // do some post-processing on the snapshot
         const toDataURL = async (url) => {
           // read contents of the blob URL
@@ -75,7 +90,7 @@ async function takeSnapshot(
         };
 
         replaceBlobUrls(domSnapshot).then(() => {
-          resolve(domSnapshot);
+          resolve({ domSnapshot, pseudoClassIds });
         });
       });
     };
@@ -107,12 +122,11 @@ async function takeSnapshot(
     // map used so the snapshots are always in order
     chromaticSnapshots.set(testId, new Map());
   }
-  chromaticSnapshots
-    .get(testId)
-    .set(name, {
-      snapshot: bufferedSnapshot,
-      viewport: page.viewportSize() || { width: 1280, height: 720 },
-    });
+  chromaticSnapshots.get(testId).set(name, {
+    snapshot: bufferedSnapshot,
+    viewport: page.viewportSize() || { width: 1280, height: 720 },
+    pseudoClassIds,
+  });
 }
 
 export { takeSnapshot };

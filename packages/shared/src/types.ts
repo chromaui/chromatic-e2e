@@ -1,3 +1,4 @@
+import { serializedNodeWithId } from '@rrweb/types';
 import { Viewport } from './utils/viewport';
 
 export interface ChromaticConfig {
@@ -43,7 +44,21 @@ export type ChromaticStorybookParameters = Omit<ChromaticConfig, 'disableAutoSna
 export type DOMSnapshots = Record<
   string,
   {
+    /** Buffer of stringified rrweb-snapshot `serializedNodeWithId` JSON */
     snapshot: Buffer;
+
+    /** Viewport dimensions from the exact time the snapshot was taken */
     viewport: Viewport;
+
+    /** Mapping of pseudo-class names to their corresponding rrweb-snapshot element IDs */
+    pseudoClassIds: Partial<
+      Record<':active' | ':focus' | ':focus-visible' | ':hover', serializedNodeWithId['id'][]>
+    >;
   }
 >;
+
+/** Shape of the snapshot that is written to **the file system** */
+export interface SavedSnapshot {
+  snapshot: serializedNodeWithId;
+  pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+}

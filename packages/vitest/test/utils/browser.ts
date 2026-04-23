@@ -24,7 +24,10 @@ async function goTo(url: string): Promise<void> {
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch "${url}": ${response.statusText}`);
+    /** Proxy is set in {@link file://./../vitest.config.e2e.ts} */
+    throw new Error(
+      `Failed to fetch "${url}": ${response.statusText}. Does test/vitest.config.ts have proxy set for this?`
+    );
   }
 
   const html = await response.text();

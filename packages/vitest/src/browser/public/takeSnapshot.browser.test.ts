@@ -1,5 +1,5 @@
 import { beforeEach, expect, test } from 'vitest';
-import { commands } from 'vitest/browser';
+import { commands, page } from 'vitest/browser';
 import { takeSnapshot } from './takeSnapshot';
 
 beforeEach(() => {
@@ -29,6 +29,39 @@ test('saves snapshot on server', async ({ task }) => {
       "id": "number",
       "tagName": "h1",
       "type": 2,
+    }
+  `);
+});
+
+test('saves pseudo class ids on server', async ({ task }) => {
+  const hovered = document.createElement('button');
+  hovered.textContent = 'Hover here';
+  document.body.appendChild(hovered);
+
+  const focused = document.createElement('button');
+  focused.textContent = 'Focus here';
+  document.body.appendChild(focused);
+
+  await page.getByRole('button', { name: 'Focus here' }).click();
+  await page.getByRole('button', { name: 'Hover here' }).hover();
+
+  await takeSnapshot('example');
+
+  const snapshots = await commands.__chromatic_getSnapshots(task.id);
+  expect(snapshots).toHaveProperty('example');
+
+  expect(snapshots.example.pseudoClassIds).toMatchInlineSnapshot(`
+    {
+      ":active": [],
+      ":focus": [
+        118,
+      ],
+      ":focus-visible": [],
+      ":hover": [
+        81,
+        115,
+        116,
+      ],
     }
   `);
 });
@@ -88,7 +121,7 @@ test('blob URLs are replaced with data URLs', async ({ task }) => {
       },
       "childNodes": [],
       "id": "number",
-      "rootId": 301,
+      "rootId": 383,
       "tagName": "img",
       "type": 2,
     }

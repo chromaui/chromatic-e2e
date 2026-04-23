@@ -436,7 +436,7 @@ __metadata:
   resolution: "@chromatic-com/cypress@workspace:packages/cypress"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.19-noAbsolute"
     "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:2.1.3"
     "@storybook/builder-webpack5": "npm:10.2.13"
@@ -457,7 +457,7 @@ __metadata:
   resolution: "@chromatic-com/playwright@workspace:packages/playwright"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.19-noAbsolute"
     "@playwright/test": "npm:^1.46.1"
     "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:2.1.3"
@@ -481,7 +481,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@chromatic-com/shared-e2e@workspace:packages/shared"
   dependencies:
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.19-noAbsolute"
     "@playwright/test": "npm:^1.46.1"
     "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:2.1.3"
@@ -510,7 +510,7 @@ __metadata:
   resolution: "@chromatic-com/vitest@workspace:packages/vitest"
   dependencies:
     "@chromatic-com/shared-e2e": "workspace:*"
-    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.18-noAbsolute"
+    "@chromaui/rrweb-snapshot": "npm:2.0.0-alpha.19-noAbsolute"
     "@rrweb/types": "npm:^2.0.0-alpha.18"
     "@segment/analytics-node": "npm:2.1.3"
     "@storybook/builder-webpack5": "npm:10.2.13"
@@ -568,12 +568,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.18-noAbsolute":
-  version: 2.0.0-alpha.18-noAbsolute
-  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.18-noAbsolute"
+"@chromaui/rrweb-snapshot@npm:2.0.0-alpha.19-noAbsolute":
+  version: 2.0.0-alpha.19-noAbsolute
+  resolution: "@chromaui/rrweb-snapshot@npm:2.0.0-alpha.19-noAbsolute"
   dependencies:
     postcss: "npm:^8.4.38"
-  checksum: a405c6cf4229bc06a1d0e6fe56ceb3ac9bdf73df57f6a95704586b87059bf05a8954ecbf479a6d02059e7e9eb04f789982ce323432fd937bb79e4735929c1ec8
+  checksum: 286c30cc7c6fe3488e19438b827b530da74143d903a9ba81ff27d823c51290276fb72c63f6ef3b67ab1b77d055b5f46ef949a3f193cc14817ea1dfdee6586d36
   languageName: node
   linkType: hard
 

@@ -5,4 +5,9 @@ export * from './utils/logger';
 export * from './constants';
 export * from './utils/viewport';
 
-export type { ChromaticConfig, ChromaticStorybookParameters } from './types';
+export type {
+  ChromaticConfig,
+  ChromaticStorybookParameters,
+  DOMSnapshots,
+  SavedSnapshot,
+} from './types';

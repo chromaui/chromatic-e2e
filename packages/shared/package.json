@@ -65,7 +65,7 @@
     "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Shared"
   },
   "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.18-noAbsolute",
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
     "@segment/analytics-node": "2.1.3",
     "@storybook/builder-webpack5": "10.2.13",
     "@storybook/server": "10.2.13",

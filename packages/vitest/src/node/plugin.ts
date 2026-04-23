@@ -23,18 +23,21 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     ...userOptions,
   };
 
+  const isDist = import.meta.url.includes('dist/plugin.js');
+
+  const setupFile = resolve(
+    import.meta.dirname,
+    isDist ? './setupFile.js' : '../browser/setupFile.ts'
+  );
+
   return {
     name: 'vitest:chromatic',
     config() {
-      const isDist = import.meta.url.includes('dist/plugin.js');
-      const setupFile = resolve(
-        import.meta.dirname,
-        isDist ? './setupFile.js' : '../browser/setupFile.ts'
-      );
-
       return {
+        optimizeDeps: {
+          entries: [setupFile],
+        },
         test: {
-          setupFiles: [setupFile],
           browser: {
             commands: createCommands(options),
           },
@@ -44,6 +47,12 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
     configureVitest(context) {
       const project = context.project;
+
+      if (!project.config.browser.enabled) {
+        return;
+      }
+
+      project.config.setupFiles.push(setupFile);
 
       // We support Vitest 4.0.0, but tags were introduced in 4.1.0
       if (options.tags && context.vitest.version.startsWith('4.0')) {
@@ -67,13 +76,8 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         }
       }
 
-      clean();
-
-      if (!project.config.browser.enabled) {
-        context.vitest.logger.warn(
-          colors.bgYellow(colors.black(' chromatic ')),
-          colors.yellow('Plugin is used in a non-browser context.')
-        );
+      if (!project.globalConfig.mergeReports) {
+        clean();
       }
 
       project.onTestsRerun(async () => {

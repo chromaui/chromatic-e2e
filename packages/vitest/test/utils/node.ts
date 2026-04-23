@@ -3,7 +3,7 @@
 import { resolve } from 'node:path';
 import { Writable } from 'node:stream';
 import { stripVTControlCharacters } from 'node:util';
-import { type Mock, onTestFinished, vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
 import { type CliOptions, createVitest, type InlineConfig, startVitest } from 'vitest/node';
 import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from '../../src/node/plugin';
@@ -39,7 +39,7 @@ export async function runFixture(
     },
     streams
   );
-  vitest.close();
+  await vitest.close();
 
   return getOutput();
 }
@@ -50,13 +50,13 @@ export async function getResolvedConfig(
 ) {
   const vitest = await createVitest(
     'test',
-    { config: false, watch: false },
+    { config: false, watch: false, browser: options.browser || getBrowserConfig() },
     { plugins: [chromaticPlugin(pluginOptions)], test: options },
     createOutputStreams().streams
   );
-  onTestFinished(() => vitest.close());
+  await vitest.close();
 
-  return vitest.config;
+  return vitest.projects[0].config;
 }
 
 export function createOutputStreams() {

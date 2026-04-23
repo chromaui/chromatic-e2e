@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { readdir } from 'node:fs/promises';
 import { expect, onTestFinished, test } from 'vitest';
 import { createVitest, type TestModule } from 'vitest/node';
 import { chromaticPlugin } from './plugin';
@@ -136,4 +137,34 @@ test('warns when used on non-browser context', async () => {
   });
 
   expect(stderr).toContain('chromatic  Plugin is used in a non-browser context.');
+});
+
+test('does not clean existing output directory when "vitest --merge-reports" is run', async () => {
+  const options = {
+    /** See {@link file://./../../test/fixtures/dom.test.ts} */
+    include: ['**/dom.test.ts'],
+    root: resolve(import.meta.dirname, '../../test/fixtures'),
+  };
+
+  const outputDir = resolve(options.root, '.vitest-reports');
+  const outputFile = resolve(outputDir, 'blob.json');
+
+  // First run to generate blob
+  await runFixture({ reporters: [['blob', { outputFile }]], ...options });
+
+  // Second with --merge-reports to see if .vitest/chromatic is accidentally removed
+  const { stdout, stderr } = await runFixture({ mergeReports: outputDir, ...options });
+
+  expect(stdout).toContain('Test Files  1 passed (1)\n');
+  expect(stdout).toContain('Tests  1 passed (1)\n');
+  expect(stderr).toBe('');
+
+  // Chromatic results should preserve on file system
+  const archives = resolve(options.root, '.vitest/chromatic/chromatic-archives');
+  await expect(readdir(archives)).resolves.toMatchInlineSnapshot(`
+    [
+      "archive",
+      "dom-mount-some-elements.stories.json",
+    ]
+  `);
 });

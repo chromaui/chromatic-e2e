@@ -67,7 +67,9 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         }
       }
 
-      clean();
+      if (!project.globalConfig.mergeReports) {
+        clean();
+      }
 
       if (!project.config.browser.enabled) {
         context.vitest.logger.warn(

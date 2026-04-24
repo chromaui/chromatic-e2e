@@ -3,7 +3,7 @@ import { Options, defineConfig } from 'tsup';
 const common: Partial<Options> = {
   splitting: false,
   dts: {
-    resolve: true,
+    resolve: [/^@chromatic-com\//],
   },
   treeshake: true,
   minify: false,

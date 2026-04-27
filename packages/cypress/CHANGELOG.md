@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.12.2
+
+### Patch Changes
+
+- 3c5f422: Fix: Resolve viewport from when snapshot is taken
+
 ## 0.12.1
 
 ### Patch Changes

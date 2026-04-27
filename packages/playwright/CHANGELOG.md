@@ -1,5 +1,12 @@
 # chromatic-playwright
 
+## 0.13.2
+
+### Patch Changes
+
+- 3c5f422: Fix: Resolve viewport from when snapshot is taken
+- 95c1b23: Fix: don't inline playwright types
+
 ## 0.13.1
 
 ### Patch Changes

@@ -86,7 +86,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       });
 
       function clean() {
-        rmSync(resolve(project.config.root, options.outputDirectory, 'chromatic-archives'), {
+        rmSync(resolve(project.vitest.config.root, options.outputDirectory, 'chromatic-archives'), {
           recursive: true,
           force: true,
         });

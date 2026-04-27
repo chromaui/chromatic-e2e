@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.10.3
+
+### Patch Changes
+
+- 3c5f422: Fix: Resolve viewport from when snapshot is taken
+
 ## 0.10.2
 
 ### Patch Changes

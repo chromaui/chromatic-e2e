@@ -11,3 +11,11 @@ test.describe('hardcoded viewport', () => {
     await page.goto('/viewports');
   });
 });
+
+test.describe('narrow viewport', () => {
+  test.use({ viewport: { width: 400, height: 720 } });
+
+  test('snapshots capture the correct viewport size', async ({ page }) => {
+    await page.goto('/viewports');
+  });
+});

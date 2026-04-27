@@ -27,3 +27,13 @@ context('using cy.viewport', () => {
     cy.visit('/viewports');
   });
 });
+
+context('narrow viewport', () => {
+  beforeEach(() => {
+    cy.viewport(400, 720);
+  });
+
+  it('does not correctly set the viewport for Chromatic snapshots', () => {
+    cy.visit('/viewports');
+  });
+});

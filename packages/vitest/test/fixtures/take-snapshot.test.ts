@@ -25,3 +25,7 @@ test.runIf(inject('testName') === 'three')('test #3', async () => {
   // another
   takeSnapshot();
 });
+
+test.runIf(inject('testName') === 'four')('test #4', async () => {
+  document.body.innerHTML = '<h1>Example heading</h1>';
+});

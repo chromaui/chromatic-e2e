@@ -1,4 +1,4 @@
-import { beforeEach } from 'vitest';
+import { afterEach, beforeEach } from 'vitest';
 import { commands } from 'vitest/browser';
 import { takeSnapshot } from './public/takeSnapshot';
 import { waitForIdleNetwork } from './public/waitForIdleNetwork';
@@ -15,7 +15,7 @@ beforeEach<InternalTestContext>(async ({ task }) => {
 
     if (!hasMatchingTag) {
       task.meta.__chromatic_isRegistered = false;
-      return cleanup;
+      return;
     }
   }
 
@@ -26,41 +26,48 @@ beforeEach<InternalTestContext>(async ({ task }) => {
   task.meta.__chromatic_autoSnapshot ??= !options.disableAutoSnapshot;
 
   await commands.__chromatic_interceptFetch(task.id);
+});
 
-  return async function afterEach() {
-    // These can be overriden during test run too
-    const {
-      __chromatic_autoSnapshot: autoSnapshot,
-      __chromatic_isTakeSnapshotCalled: isTakeSnapshotCalled,
-      __chromatic_pendingTakeSnapshots: pendingTakeSnapshots,
-    } = task.meta;
+afterEach<InternalTestContext>(async ({ task }) => {
+  // These can be overriden during test run too
+  const {
+    __chromatic_autoSnapshot: autoSnapshot,
+    __chromatic_isTakeSnapshotCalled: isTakeSnapshotCalled,
+    __chromatic_pendingTakeSnapshots: pendingTakeSnapshots,
+    __chromatic_isRegistered: isRegistered,
+  } = task.meta;
 
-    if (pendingTakeSnapshots?.length) {
-      throw new AggregateError(
-        pendingTakeSnapshots.map((call) => call.error),
-        `${pendingTakeSnapshots.length} unawaited takeSnapshot() call(s)`
-      );
-    }
+  if (!isRegistered) {
+    return cleanup();
+  }
 
-    // Bail out early if it's detected that no snapshots are needed
-    if (!autoSnapshot && !isTakeSnapshotCalled) {
-      await commands.__chromatic_stopWithoutSnapshots(task.id);
+  if (pendingTakeSnapshots?.length) {
+    throw new AggregateError(
+      pendingTakeSnapshots.map((call) => call.error),
+      `${pendingTakeSnapshots.length} unawaited takeSnapshot() call(s)`
+    );
+  }
 
-      return cleanup();
-    }
-
-    if (options.resourceArchiveTimeout !== 0) {
-      await waitForIdleNetwork(options.resourceArchiveTimeout);
-    }
-
-    if (autoSnapshot) {
-      await takeSnapshot(undefined, { ignoreUnawaited: true });
-    }
-
-    await commands.__chromatic_writeTestResult(task.id);
+  // Bail out early if it's detected that no snapshots are needed
+  if (!autoSnapshot && !isTakeSnapshotCalled) {
+    await commands.__chromatic_stopWithoutSnapshots(task.id);
 
     return cleanup();
-  };
+  }
+
+  const options = await commands.__chromatic_getOptions();
+
+  if (options.resourceArchiveTimeout !== 0) {
+    await waitForIdleNetwork(options.resourceArchiveTimeout);
+  }
+
+  if (autoSnapshot) {
+    await takeSnapshot(undefined, { ignoreUnawaited: true });
+  }
+
+  await commands.__chromatic_writeTestResult(task.id);
+
+  return cleanup();
 
   /**
    * Clean internal task meta so that it doesn't show up on Vitest's reporters

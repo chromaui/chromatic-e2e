@@ -47,12 +47,27 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
     configureVitest(context) {
       const project = context.project;
+      const sequence = context.vitest.config.sequence;
 
       if (!project.config.browser.enabled) {
         return;
       }
 
-      project.config.setupFiles.push(setupFile);
+      // Ensure our setup file is registered first so that afterEach runs before any user-defined hooks.
+      if (sequence.hooks === 'stack') {
+        project.config.setupFiles.push(setupFile);
+      } else if (sequence.hooks === 'list') {
+        project.config.setupFiles.unshift(setupFile);
+      } else {
+        project.config.setupFiles.push(setupFile);
+
+        context.vitest.logger.warn(
+          colors.bgYellow(colors.black(' chromatic ')),
+          colors.yellow(
+            `Using { sequence.hooks: 'parallel' } may cause unstable snapshots. Please set 'sequence.hooks' to 'list' or 'stack' to ensure reliable snapshot ordering.`
+          )
+        );
+      }
 
       // We support Vitest 4.0.0, but tags were introduced in 4.1.0
       if (options.tags && context.vitest.version.startsWith('4.0')) {

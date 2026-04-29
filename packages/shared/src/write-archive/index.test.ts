@@ -165,6 +165,24 @@ describe('writeTestResult', () => {
     );
   });
 
+  it('sanitizes story titles', async () => {
+    await writeTestResult(
+      {
+        titlePath: ['src/components/accordion.test.tsx', '<Accordion />', 'opens and closes'],
+        outputDir: resolve('test-results'),
+        pageUrl: 'http://localhost:3000/',
+      },
+      {
+        home: { snapshot: Buffer.from(JSON.stringify({})), viewport: { height: 800, width: 800 } },
+      },
+      {},
+      {}
+    );
+
+    const { title } = vi.mocked(filePaths.outputJSONFile).mock.calls[0][1];
+    expect(title).toBe('src/components/accordion/<Accordion >/opens and closes');
+  });
+
   describe('archive file system path windows', () => {
     it('handles system paths', async () => {
       await writeTestResult(

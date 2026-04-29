@@ -35,7 +35,13 @@ export async function writeTestResult(
     pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '').replace(/\.(spec|test|cy)$/, '')
   );
   // in Storybook, `/` splits the title out into hierarchies (folders)
-  const title = titlePathWithoutFileExtensions.join('/');
+  const title = titlePathWithoutFileExtensions
+    .join('/')
+    // Make sure we don't end up with folders with just special characters
+    // Transforms paths like "src/components/accordion/<Accordion/>/opens and closes" to "src/components/accordion/<Accordion>/opens and closes "
+    // eslint-disable-next-line no-useless-escape
+    .replace(/\/([ ’–—―′¿'`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\]+)\//gi, '$1/');
+
   const finalOutputDir = join(outputDir, 'chromatic-archives');
 
   const archiveDir = join(finalOutputDir, 'archive');

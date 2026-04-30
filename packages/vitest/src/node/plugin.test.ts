@@ -1,5 +1,5 @@
 import { resolve } from 'node:path';
-import { readdir } from 'node:fs/promises';
+import { mkdir, readdir, rm } from 'node:fs/promises';
 import { expect, onTestFinished, test } from 'vitest';
 import { createVitest, type TestModule } from 'vitest/node';
 import { chromaticPlugin } from './plugin';
@@ -130,6 +130,52 @@ test('can be scoped to a Vitest project', async () => {
   expect(tests).toHaveLength(2);
   expect(tests[0].state()).toBe('passed');
   expect(tests[1].state()).toBe('passed');
+});
+
+test('writes results to root when in Vitest projects setup', async () => {
+  const root = resolve(import.meta.dirname, '../../test/custom-root');
+  await mkdir(root, { recursive: true });
+  onTestFinished(() => rm(root, { recursive: true, force: true }));
+
+  await runFixture(
+    {
+      root,
+      projects: [
+        {
+          plugins: [chromaticPlugin()],
+          test: {
+            name: 'first-project',
+            browser: getBrowserConfig('first-browser'),
+            include: ['**/dom.test.ts'],
+            root: resolve(import.meta.dirname, '../../test/fixtures'),
+          },
+        },
+        {
+          plugins: [chromaticPlugin()],
+          test: {
+            name: 'second-project',
+            browser: getBrowserConfig('second-browser'),
+            include: ['**/dom.test.ts'],
+            root: resolve(import.meta.dirname, '../../test/fixtures'),
+          },
+        },
+      ],
+    },
+    { disabled: true }
+  );
+
+  const results = await readdir(resolve(root, '.vitest/chromatic/chromatic-archives'));
+
+  // 1 for "archive" directory and 2 for each project's "*.stories.json" files
+  expect.soft(results).toHaveLength(3);
+
+  expect(results).toMatchInlineSnapshot(`
+    [
+      "archive",
+      "first-browser-dom-mount-some-elements.stories.json",
+      "second-browser-dom-mount-some-elements.stories.json",
+    ]
+  `);
 });
 
 test('skips configuration when used on non-browser context', async () => {

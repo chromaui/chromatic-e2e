@@ -115,7 +115,7 @@ export function createCommands(options: ResolvedOptions) {
 
       await writeTestResult(
         {
-          outputDir: resolve(context.project.config.root, options.outputDirectory),
+          outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
           titlePath: getNames(entity),
         },
@@ -191,6 +191,13 @@ function getNames(test: TestCase): string[] {
 
   if (current.type === 'module') {
     names.unshift(current.relativeModuleId);
+  }
+
+  // If Vitest was configured with multiple projects, namespace the results with project name
+  const hasManyProjects = test.project.vitest.projects.length > 1;
+
+  if (hasManyProjects && test.project.name) {
+    names.unshift(test.project.name);
   }
 
   return names;

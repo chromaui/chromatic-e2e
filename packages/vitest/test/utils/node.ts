@@ -8,13 +8,13 @@ import { type CliOptions, createVitest, type InlineConfig, startVitest } from 'v
 import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from '../../src/node/plugin';
 
-export function getBrowserConfig() {
+export function getBrowserConfig(name = 'chromium') {
   return {
     enabled: true,
     headless: true,
     screenshotFailures: false,
     provider: playwright(),
-    instances: [{ browser: 'chromium', name: 'chromium' }],
+    instances: [{ browser: 'chromium', name }],
   } satisfies NonNullable<InlineConfig['browser']>;
 }
 

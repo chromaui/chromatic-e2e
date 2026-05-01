@@ -147,6 +147,56 @@ test('viewports are correct when --browser.ui=false', async () => {
   `);
 });
 
+test.each(['list', 'stack'] as const)(
+  "autosnapshot is taken before user registered afterEach runs when {sequence.hooks: '%s'}",
+  async (hooks) => {
+    await runFixture({
+      include: [takeSnapshotTest],
+      provide: { testName: 'four' },
+      setupFiles: ['custom-setup-file.ts'],
+      sequence: { hooks },
+    });
+
+    expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
+
+    const [, snapshots] = vi.mocked(shared.writeTestResult).mock.calls[0];
+    expect(snapshots).toHaveProperty('Snapshot #1');
+
+    const { snapshot } = snapshots['Snapshot #1'];
+
+    expect(JSON.parse(snapshot.toString())).toMatchInlineSnapshot(`
+    {
+      "attributes": {},
+      "childNodes": [
+        {
+          "id": "number",
+          "textContent": "Example heading",
+          "type": 3,
+        },
+      ],
+      "id": "number",
+      "tagName": "h1",
+      "type": 2,
+    }
+  `);
+  }
+);
+
+test("warns when {sequence.hooks: 'parallel'} is used", async () => {
+  const { stderr } = await runFixture({
+    include: [takeSnapshotTest],
+    provide: { testName: 'four' },
+    setupFiles: ['custom-setup-file.ts'],
+    sequence: { hooks: 'parallel' },
+  });
+
+  expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
+
+  expect(stderr).toMatchInlineSnapshot(
+    `" chromatic  Using { sequence.hooks: 'parallel' } may cause unstable snapshots. Please set 'sequence.hooks' to 'list' or 'stack' to ensure reliable snapshot ordering."`
+  );
+});
+
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.reduce((all, call) => {
     const [e2eTestInfo, domSnapshots] = call;

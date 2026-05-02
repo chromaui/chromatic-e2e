@@ -38,12 +38,12 @@ export interface Options extends ChromaticConfig {
   idleNetworkInterval?: number;
 
   /**
-   * Emit manual snapshots as Chromatic modes instead of separate Storybook stories.
-   * This maps Vitest's hierarchy to Chromatic as file -> test -> snapshot mode.
+   * Group named snapshots under a component title derived from the test file and test name.
+   * This maps Vitest's hierarchy to Chromatic as "file -> test" -> snapshot story.
    *
    * @default false
    */
-  snapshotsAsModes?: boolean;
+  groupSnapshotsByTest?: boolean;
 }
 
 /** Options that don't have internal default values */

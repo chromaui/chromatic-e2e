@@ -9,7 +9,6 @@ vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
   ensureDir: vi.fn(),
   outputFile: vi.fn(),
   outputJSONFile: vi.fn(),
-  readJSONFile: vi.fn().mockResolvedValue(undefined),
 }));
 
 const snapshotJson = {
@@ -81,107 +80,6 @@ describe('writeTestResult', () => {
         ],
         title: 'file/Test Story',
       }
-    );
-  });
-
-  it('can write snapshots as modes under one story', async () => {
-    await writeTestResult(
-      {
-        titlePath: ['file.spec.ts'],
-        storyName: 'A grouping / Test Story',
-        outputDir: resolve('test-results'),
-        pageUrl: 'http://localhost:3000/',
-      },
-      {
-        'Light mobile': {
-          snapshot: Buffer.from(JSON.stringify(snapshotJson)),
-          viewport: { height: 800, width: 400 },
-        },
-        'Dark mobile': {
-          snapshot: Buffer.from(JSON.stringify(snapshotJson)),
-          viewport: { height: 800, width: 400 },
-        },
-      },
-      { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      {
-        diffThreshold: 5,
-      }
-    );
-
-    expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/file.stories.json'),
-      {
-        stories: [
-          {
-            name: 'A grouping / Test Story',
-            parameters: {
-              chromatic: {
-                diffThreshold: 5,
-                modes: {
-                  '"Light mobile"': {
-                    viewport: 'w400h800',
-                    __chromatic_snapshotId: 'file-a-grouping-test-story-light-mobile',
-                  },
-                  '"Dark mobile"': {
-                    viewport: 'w400h800',
-                    __chromatic_snapshotId: 'file-a-grouping-test-story-dark-mobile',
-                  },
-                },
-              },
-              server: { id: 'file-a-grouping-test-story-light-mobile' },
-              viewport: {
-                defaultViewport: 'w400h800',
-                viewports: {
-                  w400h800: { name: 'w400h800', styles: { height: '800px', width: '400px' } },
-                },
-              },
-            },
-          },
-        ],
-        title: 'file',
-      }
-    );
-  });
-
-  it('merges stories when snapshots are written as modes', async () => {
-    vi.mocked(filePaths.readJSONFile).mockResolvedValueOnce({
-      title: 'file',
-      stories: [
-        {
-          name: 'Existing Story',
-          parameters: {},
-        },
-      ],
-    });
-
-    await writeTestResult(
-      {
-        titlePath: ['file.spec.ts'],
-        storyName: 'Test Story',
-        outputDir: resolve('test-results'),
-        pageUrl: 'http://localhost:3000/',
-      },
-      {
-        home: {
-          snapshot: Buffer.from(JSON.stringify(snapshotJson)),
-          viewport: { height: 800, width: 800 },
-        },
-      },
-      {},
-      {}
-    );
-
-    expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/file.stories.json'),
-      expect.objectContaining({
-        stories: [
-          {
-            name: 'Existing Story',
-            parameters: {},
-          },
-          expect.objectContaining({ name: 'Test Story' }),
-        ],
-      })
     );
   });
 

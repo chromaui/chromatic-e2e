@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'fs';
-import { readFile, writeFile } from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'path';
 
@@ -39,15 +39,6 @@ export async function outputFile(filePath: string, data: Parameters<typeof write
 
 export async function outputJSONFile(filePath: string, data: any) {
   return outputFile(filePath, JSON.stringify(data));
-}
-
-export async function readJSONFile<T = any>(filePath: string): Promise<T | undefined> {
-  try {
-    return JSON.parse(await readFile(filePath, 'utf8')) as T;
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
-    throw err;
-  }
 }
 
 // Generates a fixed length hash for the given `data`

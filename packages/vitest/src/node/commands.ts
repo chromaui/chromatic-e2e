@@ -117,7 +117,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          ...getStoryInfo(entity, options.snapshotsAsModes),
+          titlePath: getTitlePath(entity, options.groupSnapshotsByTest),
         },
         snapshotBuffers,
         archive,
@@ -203,21 +203,25 @@ function getNames(test: TestCase): string[] {
   return names;
 }
 
-function getStoryInfo(test: TestCase, snapshotsAsModes: boolean) {
+function getTitlePath(test: TestCase, groupSnapshotsByTest: boolean) {
   const names = getNames(test);
 
-  if (!snapshotsAsModes) {
-    return { titlePath: names };
-  }
+  if (!groupSnapshotsByTest) return names;
 
   const projectOffset = test.project.vitest.projects.length > 1 && test.project.name ? 1 : 0;
-  const componentPath = [
-    ...names.slice(0, projectOffset),
-    names[projectOffset].replaceAll('/', '∕'),
-  ];
-  const storyName = names.slice(projectOffset + 1).join(' / ');
+  const fileName = withoutTestExtension(names[projectOffset]).replaceAll('/', '∕');
+  const testName = names.slice(projectOffset + 1).join(' / ');
 
-  return { titlePath: componentPath, storyName };
+  return [
+    ...names.slice(0, projectOffset),
+    `${fileName} -> ${testName}`,
+  ];
+}
+
+function withoutTestExtension(fileName: string) {
+  return fileName
+    .replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '')
+    .replace(/\.(spec|test|cy)$/, '');
 }
 
 /** @internal */

@@ -112,65 +112,6 @@ describe('createStories', () => {
       ],
     });
   });
-
-  it('creates one story with snapshots as modes', () => {
-    const title = 'some test title';
-    const domSnapshots = {
-      'Light mobile': { snapshot: Buffer.from('n/a'), viewport: { width: 100, height: 200 } },
-      'Dark mobile': { snapshot: Buffer.from('n/a'), viewport: { width: 100, height: 200 } },
-    };
-    const chromaticParams: ChromaticStorybookParameters = {
-      delay: 200,
-      pauseAnimationAtEnd: true,
-    };
-
-    const storiesFileJSON = storiesFiles.createStories(
-      title,
-      domSnapshots,
-      chromaticParams,
-      'renders the sign in page'
-    );
-
-    expect(storiesFileJSON).toEqual({
-      title,
-      stories: [
-        {
-          name: 'renders the sign in page',
-          parameters: {
-            server: { id: 'some-test-title-renders-the-sign-in-page-light-mobile' },
-            chromatic: {
-              delay: 200,
-              pauseAnimationAtEnd: true,
-              modes: {
-                '"Light mobile"': {
-                  viewport: 'w100h200',
-                  [storiesFiles.SNAPSHOT_ID_GLOBAL]:
-                    'some-test-title-renders-the-sign-in-page-light-mobile',
-                },
-                '"Dark mobile"': {
-                  viewport: 'w100h200',
-                  [storiesFiles.SNAPSHOT_ID_GLOBAL]:
-                    'some-test-title-renders-the-sign-in-page-dark-mobile',
-                },
-              },
-            },
-            viewport: {
-              defaultViewport: 'w100h200',
-              viewports: {
-                w100h200: {
-                  name: 'w100h200',
-                  styles: {
-                    height: '200px',
-                    width: '100px',
-                  },
-                },
-              },
-            },
-          },
-        },
-      ],
-    });
-  });
 });
 
 describe('buildStoryModesConfig', () => {

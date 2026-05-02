@@ -20,7 +20,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     outputDirectory: DEFAULT_OUTPUT_DIR,
     resourceArchiveTimeout: DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     idleNetworkInterval: 100,
-    snapshotsAsModes: false,
+    groupSnapshotsByTest: false,
     ...userOptions,
   };
 

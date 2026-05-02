@@ -13,7 +13,6 @@ type DOMSnapshots = Parameters<typeof writeTestResult>[1];
 type SnapshotName = keyof DOMSnapshots;
 
 export function createCommands(options: ResolvedOptions) {
-  const { formatTitlePath, ...browserOptions } = options;
   const resourceArchivers = new Map<TestID, ResourceArchiver>();
   const networkIdleTrackers = new Map<TestID, NetworkIdleTracker>();
   const snapshots = new Map<
@@ -27,7 +26,7 @@ export function createCommands(options: ResolvedOptions) {
      * All options must be serializable at this point.
      */
     async __chromatic_getOptions() {
-      return browserOptions;
+      return options;
     },
 
     /**
@@ -118,7 +117,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: getTitlePath(entity, formatTitlePath),
+          titlePath: getTitlePath(entity, options.formatTitlePath),
         },
         snapshotBuffers,
         archive,

@@ -207,7 +207,11 @@ function getTitlePathContext(test: TestCase): TitlePathFormatterContext {
   const hasManyProjects = test.project.vitest.projects.length > 1;
   const projectName = hasManyProjects ? test.project.name : undefined;
   const filePath = current.type === 'module' ? current.relativeModuleId : '';
-  const defaultTitlePath = [...(projectName ? [projectName] : []), filePath, ...testPath];
+  const defaultTitlePath = [
+    ...(projectName ? [projectName] : []),
+    ...(filePath ? [filePath] : []),
+    ...testPath,
+  ];
 
   return { filePath, testPath, projectName, defaultTitlePath };
 }

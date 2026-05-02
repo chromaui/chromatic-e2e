@@ -32,6 +32,39 @@ test('writes test results with full test name', async () => {
   `);
 });
 
+test('can write Vitest tests as stories with snapshots as modes', async () => {
+  /** See {@link file://./../../test/fixtures/test-names.test.ts} */
+  await runFixture({ include: ['test-names.test.ts'] }, { snapshotsAsModes: true });
+
+  const storyInfo = vi.mocked(shared.writeTestResult).mock.calls.map((call) => ({
+    titlePath: call[0].titlePath,
+    storyName: call[0].storyName,
+  }));
+
+  expect(storyInfo).toMatchInlineSnapshot(`
+    [
+      {
+        "storyName": "test #1",
+        "titlePath": [
+          "test-names.test.ts",
+        ],
+      },
+      {
+        "storyName": "suite #2 / test #2",
+        "titlePath": [
+          "test-names.test.ts",
+        ],
+      },
+      {
+        "storyName": "suite #3 / nested suite #3 / test #3",
+        "titlePath": [
+          "test-names.test.ts",
+        ],
+      },
+    ]
+  `);
+});
+
 test('writes test results with DOM snapshot', async () => {
   /** See {@link file://./../../test/fixtures/dom.test.ts} */
   await runFixture({ include: ['dom.test.ts'] });

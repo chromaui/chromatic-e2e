@@ -117,7 +117,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: getNames(entity),
+          ...getStoryInfo(entity, options.snapshotsAsModes),
         },
         snapshotBuffers,
         archive,
@@ -201,6 +201,23 @@ function getNames(test: TestCase): string[] {
   }
 
   return names;
+}
+
+function getStoryInfo(test: TestCase, snapshotsAsModes: boolean) {
+  const names = getNames(test);
+
+  if (!snapshotsAsModes) {
+    return { titlePath: names };
+  }
+
+  const projectOffset = test.project.vitest.projects.length > 1 && test.project.name ? 1 : 0;
+  const componentPath = [
+    ...names.slice(0, projectOffset),
+    names[projectOffset].replaceAll('/', '∕'),
+  ];
+  const storyName = names.slice(projectOffset + 1).join(' / ');
+
+  return { titlePath: componentPath, storyName };
 }
 
 /** @internal */

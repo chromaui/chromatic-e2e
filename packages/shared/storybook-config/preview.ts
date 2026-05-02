@@ -3,6 +3,7 @@ import type { serializedNodeWithId } from '@rrweb/types';
 import { NodeType } from '@rrweb/types';
 import { rebuild } from '@chromaui/rrweb-snapshot';
 
+const SNAPSHOT_ID_GLOBAL = '__chromatic_snapshotId';
 const pageUrl = new URL(window.location.href);
 pageUrl.pathname = '';
 pageUrl.search = '';
@@ -36,6 +37,7 @@ function snapshotFileName(snapshotId: string, viewport: string) {
 async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   const { url, id } = context.storyContext.parameters.server;
   const { viewport } = context.storyContext.globals;
+  const snapshotId = context.storyContext.globals[SNAPSHOT_ID_GLOBAL] || id;
 
   // Viewport seems to be a string or an object
   let viewportName;
@@ -46,12 +48,12 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
     viewportName = `w${viewport.width}h${viewport.height}`;
   }
 
-  let response = await fetch(`${url}/${snapshotFileName(id, viewportName)}`);
+  let response = await fetch(`${url}/${snapshotFileName(snapshotId, viewportName)}`);
   if (!response.ok) {
     // Possibly a viewport was specified that we haven't captured, or it's the addon's
     // default of `reset`, so we'll load the default viewport snapshot instead.
     const { defaultViewport } = context.storyContext.parameters.viewport;
-    response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
+    response = await fetch(`${url}/${snapshotFileName(snapshotId, defaultViewport)}`);
   }
 
   return response.json();

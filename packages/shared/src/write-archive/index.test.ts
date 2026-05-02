@@ -62,7 +62,7 @@ describe('writeTestResult', () => {
         stories: [
           {
             name: 'home',
-            globals: { viewport: { value: '800-800', isRotated: false } },
+            globals: { viewport: '800-800' },
             parameters: {
               chromatic: {
                 diffThreshold: 5,

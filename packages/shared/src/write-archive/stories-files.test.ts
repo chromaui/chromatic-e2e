@@ -57,7 +57,7 @@ describe('createStories', () => {
       stories: [
         {
           name: 'snapshot 1',
-          globals: { viewport: { value: '100-200', isRotated: false } },
+          globals: { viewport: '100-200' },
           parameters: {
             server: { id: 'some-test-title-snapshot-1' },
             chromatic: {
@@ -73,7 +73,7 @@ describe('createStories', () => {
         },
         {
           name: 'another snapshot',
-          globals: { viewport: { value: '300-400', isRotated: false } },
+          globals: { viewport: '300-400' },
           parameters: {
             server: { id: 'some-test-title-another-snapshot' },
             chromatic: {

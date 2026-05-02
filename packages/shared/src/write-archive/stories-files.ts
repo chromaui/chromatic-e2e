@@ -24,7 +24,7 @@ export function createStories(
     title,
     stories: Object.entries(domSnapshots).map(([name, { viewport }]) => ({
       name,
-      globals: { viewport: { value: viewportToGlobalValue(viewport), isRotated: false } },
+      globals: { viewport: viewportToGlobalValue(viewport) },
       parameters: {
         server: { id: snapshotId(title, name) },
         chromatic: {

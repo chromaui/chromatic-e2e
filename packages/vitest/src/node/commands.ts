@@ -5,7 +5,11 @@ import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, Viewport, writeTestResult } from '@chromatic-com/shared-e2e';
-import { type ChromaticNamespace, type ResolvedOptions } from '../types';
+import {
+  type ChromaticNamespace,
+  type ResolvedOptions,
+  type TitlePathFormatterContext,
+} from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 
 type TestID = Task['id'];
@@ -13,6 +17,7 @@ type DOMSnapshots = Parameters<typeof writeTestResult>[1];
 type SnapshotName = keyof DOMSnapshots;
 
 export function createCommands(options: ResolvedOptions) {
+  const { formatTitlePath, ...browserOptions } = options;
   const resourceArchivers = new Map<TestID, ResourceArchiver>();
   const networkIdleTrackers = new Map<TestID, NetworkIdleTracker>();
   const snapshots = new Map<
@@ -26,7 +31,7 @@ export function createCommands(options: ResolvedOptions) {
      * All options must be serializable at this point.
      */
     async __chromatic_getOptions() {
-      return options;
+      return browserOptions;
     },
 
     /**
@@ -117,7 +122,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: getTitlePath(entity, options.groupSnapshotsByTest),
+          titlePath: getTitlePath(entity, formatTitlePath),
         },
         snapshotBuffers,
         archive,
@@ -177,51 +182,34 @@ export function createCommands(options: ResolvedOptions) {
   }
 }
 
-function getNames(test: TestCase): string[] {
-  const names = [test.name];
+function getTitlePath(
+  test: TestCase,
+  formatTitlePath?: ResolvedOptions['formatTitlePath']
+): string[] {
+  const context = getTitlePathContext(test);
+
+  return formatTitlePath?.(context) || context.defaultTitlePath;
+}
+
+function getTitlePathContext(test: TestCase): TitlePathFormatterContext {
+  const testPath = [test.name];
   let current: TestCase | TestSuite | TestModule = test;
 
   while ('parent' in current && current.parent) {
     current = current.parent;
 
     if ('name' in current && current.name) {
-      names.unshift(current.name);
+      testPath.unshift(current.name);
     }
-  }
-
-  if (current.type === 'module') {
-    names.unshift(current.relativeModuleId);
   }
 
   // If Vitest was configured with multiple projects, namespace the results with project name
   const hasManyProjects = test.project.vitest.projects.length > 1;
+  const projectName = hasManyProjects ? test.project.name : undefined;
+  const filePath = current.type === 'module' ? current.relativeModuleId : '';
+  const defaultTitlePath = [...(projectName ? [projectName] : []), filePath, ...testPath];
 
-  if (hasManyProjects && test.project.name) {
-    names.unshift(test.project.name);
-  }
-
-  return names;
-}
-
-function getTitlePath(test: TestCase, groupSnapshotsByTest: boolean) {
-  const names = getNames(test);
-
-  if (!groupSnapshotsByTest) return names;
-
-  const projectOffset = test.project.vitest.projects.length > 1 && test.project.name ? 1 : 0;
-  const fileName = withoutTestExtension(names[projectOffset]).replaceAll('/', '∕');
-  const testName = names.slice(projectOffset + 1).join(' / ');
-
-  return [
-    ...names.slice(0, projectOffset),
-    `${fileName} -> ${testName}`,
-  ];
-}
-
-function withoutTestExtension(fileName: string) {
-  return fileName
-    .replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '')
-    .replace(/\.(spec|test|cy)$/, '');
+  return { filePath, testPath, projectName, defaultTitlePath };
 }
 
 /** @internal */

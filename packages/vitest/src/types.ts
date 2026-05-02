@@ -8,6 +8,28 @@ import { type ChromaticConfig } from '@chromatic-com/shared-e2e';
  */
 export type ChromaticNamespace = `__chromatic_${string}`;
 
+export interface TitlePathFormatterContext {
+  /**
+   * The test file path relative to the Vitest root.
+   */
+  filePath: string;
+
+  /**
+   * The suite and test names for this test, excluding the file path and project name.
+   */
+  testPath: string[];
+
+  /**
+   * The project name when multiple Vitest projects are configured.
+   */
+  projectName?: string;
+
+  /**
+   * The title path Chromatic would use without custom formatting.
+   */
+  defaultTitlePath: string[];
+}
+
 /**
  * Options for the Chromatic Vitest plugin
  */
@@ -38,16 +60,17 @@ export interface Options extends ChromaticConfig {
   idleNetworkInterval?: number;
 
   /**
-   * Group named snapshots under a component title derived from the test file and test name.
-   * This maps Vitest's hierarchy to Chromatic as "file -> test" -> snapshot story.
-   *
-   * @default false
+   * Format the Storybook title path used for this test's snapshots.
+   * By default this is `[projectName?, filePath, ...testPath]`.
    */
-  groupSnapshotsByTest?: boolean;
+  formatTitlePath?: (context: TitlePathFormatterContext) => string[];
 }
 
 /** Options that don't have internal default values */
-type UnresolvedOptionKeys = 'tags' | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
+type UnresolvedOptionKeys =
+  | 'tags'
+  | 'formatTitlePath'
+  | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
 
 /** Options with resolved values - derived from internal default values when not passed by user. */
 type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;

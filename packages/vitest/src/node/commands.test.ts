@@ -32,9 +32,16 @@ test('writes test results with full test name', async () => {
   `);
 });
 
-test('can group named snapshots by test', async () => {
+test('can format test title paths', async () => {
   /** See {@link file://./../../test/fixtures/test-names.test.ts} */
-  await runFixture({ include: ['test-names.test.ts'] }, { groupSnapshotsByTest: true });
+  await runFixture(
+    { include: ['test-names.test.ts'] },
+    {
+      formatTitlePath: ({ filePath, testPath }) => [
+        `${filePath.replace(/\.test\.ts$/, '')} -> ${testPath.join(' / ')}`,
+      ],
+    }
+  );
 
   const titlePaths = vi.mocked(shared.writeTestResult).mock.calls.map((call) => call[0].titlePath);
 

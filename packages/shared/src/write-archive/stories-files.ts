@@ -24,7 +24,7 @@ export function createStories(
     title,
     stories: Object.entries(domSnapshots).map(([name, { viewport }]) => ({
       name,
-      globals: { viewport: viewportToGlobalValue(viewport) },
+      globals: { viewport: viewportToString(viewport) },
       parameters: {
         server: { id: snapshotId(title, name) },
         chromatic: {
@@ -38,10 +38,6 @@ export function createStories(
       },
     })),
   };
-}
-
-function viewportToGlobalValue(viewport: Viewport) {
-  return `${viewport.width}-${viewport.height}`;
 }
 
 // Converts the given list of viewports into the modes

@@ -117,7 +117,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: getTitlePath(entity, options.formatTitlePath),
+          titlePath: getTitlePath(entity, options.formatTitle),
         },
         snapshotBuffers,
         archive,
@@ -177,23 +177,21 @@ export function createCommands(options: ResolvedOptions) {
   }
 }
 
-function getTitlePath(
-  test: TestCase,
-  formatTitlePath?: ResolvedOptions['formatTitlePath']
-): string[] {
+function getTitlePath(test: TestCase, formatTitle?: ResolvedOptions['formatTitle']): string[] {
   const defaultTitlePath = getNames(test);
-  if (!formatTitlePath) return defaultTitlePath;
+  if (!formatTitle) return defaultTitlePath;
 
   const projectName =
     test.project.vitest.projects.length > 1 && test.project.name ? test.project.name : undefined;
   const projectOffset = projectName ? 1 : 0;
 
-  return formatTitlePath({
-    filePath: defaultTitlePath[projectOffset] ?? '',
-    testPath: defaultTitlePath.slice(projectOffset + 1),
-    projectName,
-    defaultTitlePath,
-  });
+  return [
+    formatTitle({
+      filePath: defaultTitlePath[projectOffset] ?? '',
+      testPath: defaultTitlePath.slice(projectOffset + 1),
+      projectName,
+    }),
+  ];
 }
 
 function getNames(test: TestCase): string[] {

@@ -38,21 +38,16 @@ export interface Options extends ChromaticConfig {
   idleNetworkInterval?: number;
 
   /**
-   * Format the Storybook title path used for this test's snapshots.
-   * By default this is `[projectName?, filePath, ...testPath]`.
+   * Format the title used for this test's snapshots.
+   * Return `/`-separated title segments to create grouping.
    */
-  formatTitlePath?: (context: {
-    filePath: string;
-    testPath: string[];
-    projectName?: string;
-    defaultTitlePath: string[];
-  }) => string[];
+  formatTitle?: (context: { filePath: string; testPath: string[]; projectName?: string }) => string;
 }
 
 /** Options that don't have internal default values */
 type UnresolvedOptionKeys =
   | 'tags'
-  | 'formatTitlePath'
+  | 'formatTitle'
   | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
 
 /** Options with resolved values - derived from internal default values when not passed by user. */

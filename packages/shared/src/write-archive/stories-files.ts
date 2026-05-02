@@ -31,6 +31,10 @@ export function createStories(
           ...chromaticStorybookParams,
           modes: buildStoryModesConfig([viewport]),
         },
+        viewport: {
+          viewports: buildStoryViewportsConfig([viewport]),
+          defaultViewport: viewportToString(findDefaultViewport([viewport])),
+        },
       },
     })),
   };

@@ -38,8 +38,8 @@ export interface Options extends ChromaticConfig {
   idleNetworkInterval?: number;
 
   /**
-   * Format the title used for this test's snapshots.
-   * Return `/`-separated title segments to create grouping.
+   * Optional formatter for the archive story title (Storybook `title` path).
+   * Return a single string; include `/` if you want folder-style grouping in Storybook/Chromatic.
    */
   formatTitle?: (context: { filePath: string; testPath: string[]; projectName?: string }) => string;
 }

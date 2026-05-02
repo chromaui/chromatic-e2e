@@ -69,6 +69,18 @@ describe('createStories', () => {
                 },
               },
             },
+            viewport: {
+              defaultViewport: 'w100h200',
+              viewports: {
+                w100h200: {
+                  name: 'w100h200',
+                  styles: {
+                    height: '200px',
+                    width: '100px',
+                  },
+                },
+              },
+            },
           },
         },
         {
@@ -82,6 +94,18 @@ describe('createStories', () => {
               modes: {
                 w300h400: {
                   viewport: 'w300h400',
+                },
+              },
+            },
+            viewport: {
+              defaultViewport: 'w300h400',
+              viewports: {
+                w300h400: {
+                  name: 'w300h400',
+                  styles: {
+                    height: '400px',
+                    width: '300px',
+                  },
                 },
               },
             },

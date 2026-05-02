@@ -46,7 +46,13 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
     viewportName = `w${viewport.width}h${viewport.height}`;
   }
 
-  const response = await fetch(`${url}/${snapshotFileName(id, viewportName)}`);
+  let response = await fetch(`${url}/${snapshotFileName(id, viewportName)}`);
+  if (!response.ok) {
+    const { defaultViewport } = context.storyContext.parameters.viewport ?? {};
+    if (defaultViewport) {
+      response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
+    }
+  }
 
   return response.json();
 }

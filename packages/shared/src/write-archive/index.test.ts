@@ -70,6 +70,12 @@ describe('writeTestResult', () => {
                 modes: { w800h800: { viewport: 'w800h800' } },
               },
               server: { id: 'file-test-story-home' },
+              viewport: {
+                defaultViewport: 'w800h800',
+                viewports: {
+                  w800h800: { name: 'w800h800', styles: { height: '800px', width: '800px' } },
+                },
+              },
             },
           },
         ],

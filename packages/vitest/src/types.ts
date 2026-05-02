@@ -8,13 +8,6 @@ import { type ChromaticConfig } from '@chromatic-com/shared-e2e';
  */
 export type ChromaticNamespace = `__chromatic_${string}`;
 
-export interface TitlePathFormatterContext {
-  filePath: string;
-  testPath: string[];
-  projectName?: string;
-  defaultTitlePath: string[];
-}
-
 /**
  * Options for the Chromatic Vitest plugin
  */
@@ -48,7 +41,12 @@ export interface Options extends ChromaticConfig {
    * Format the Storybook title path used for this test's snapshots.
    * By default this is `[projectName?, filePath, ...testPath]`.
    */
-  formatTitlePath?: (context: TitlePathFormatterContext) => string[];
+  formatTitlePath?: (context: {
+    filePath: string;
+    testPath: string[];
+    projectName?: string;
+    defaultTitlePath: string[];
+  }) => string[];
 }
 
 /** Options that don't have internal default values */

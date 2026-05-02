@@ -51,3 +51,36 @@ export function buildStoryModesConfig(viewports: Viewport[]) {
   }, {});
 }
 
+// Converts the given list of viewports into the viewports
+// config object needed for the Storybook parameters.
+export function buildStoryViewportsConfig(viewports: Viewport[]) {
+  return viewports.reduce((viewportsConfig: any, viewport: Viewport) => {
+    const viewportName = viewportToString(viewport);
+
+    viewportsConfig[viewportName] = {
+      name: viewportName,
+      styles: {
+        width: `${viewport.width}px`,
+        height: `${viewport.height}px`,
+      },
+    };
+    return viewportsConfig;
+  }, {});
+}
+
+// Finds a viewport to use as the default.
+export function findDefaultViewport(viewports: Viewport[]) {
+  // It's hard to know which to use as the default,
+  // so let's just go with the widest for now.
+  const compareFn = (vp1: Viewport, vp2: Viewport) => {
+    if (vp1.width < vp2.width) {
+      return 1;
+    }
+    if (vp1.width > vp2.width) {
+      return -1;
+    }
+    return 0;
+  };
+
+  return viewports.sort(compareFn)[0];
+}

@@ -36,25 +36,24 @@ function snapshotFileName(snapshotId: string, viewport: string) {
 async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   const { url, id } = context.storyContext.parameters.server;
   const { viewport } = context.storyContext.globals;
-
-  // Viewport seems to be a string or an object
-  let viewportName;
-  if (typeof viewport === 'string') {
-    viewportName = viewport;
-  } else {
-    // NOTE: This is duplicated in the shared package due to bundling issues
-    viewportName = `w${viewport.width}h${viewport.height}`;
-  }
+  const viewportName = viewportToSnapshotViewport(viewport);
+  if (!viewportName) throw new Error(`No viewport global found for story ${id}`);
 
   let response = await fetch(`${url}/${snapshotFileName(id, viewportName)}`);
-  if (!response.ok) {
-    // Possibly a viewport was specified that we haven't captured, or it's the addon's
-    // default of `reset`, so we'll load the default viewport snapshot instead.
-    const { defaultViewport } = context.storyContext.parameters.viewport;
-    response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
-  }
 
   return response.json();
+}
+
+function viewportToSnapshotViewport(viewport: any) {
+  // Viewport seems to be a string or an object
+  if (typeof viewport === 'string') return viewportGlobalToSnapshotViewport(viewport);
+  if (typeof viewport?.value === 'string') return viewportGlobalToSnapshotViewport(viewport.value);
+  if (viewport?.width && viewport?.height) return `w${viewport.width}h${viewport.height}`;
+}
+
+function viewportGlobalToSnapshotViewport(viewport: string) {
+  const [, width, height] = viewport.match(/^(\d+)(?:px)?-(\d+)(?:px)?$/) || [];
+  return width && height ? `w${width}h${height}` : viewport;
 }
 
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {

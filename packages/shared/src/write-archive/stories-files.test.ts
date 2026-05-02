@@ -57,7 +57,7 @@ describe('createStories', () => {
       stories: [
         {
           name: 'snapshot 1',
-          globals: { viewport: 'w100h200' },
+          globals: { viewport: { value: '100-200', isRotated: false } },
           parameters: {
             server: { id: 'some-test-title-snapshot-1' },
             chromatic: {
@@ -69,23 +69,11 @@ describe('createStories', () => {
                 },
               },
             },
-            viewport: {
-              defaultViewport: 'w100h200',
-              viewports: {
-                w100h200: {
-                  name: 'w100h200',
-                  styles: {
-                    height: '200px',
-                    width: '100px',
-                  },
-                },
-              },
-            },
           },
         },
         {
           name: 'another snapshot',
-          globals: { viewport: 'w300h400' },
+          globals: { viewport: { value: '300-400', isRotated: false } },
           parameters: {
             server: { id: 'some-test-title-another-snapshot' },
             chromatic: {
@@ -94,18 +82,6 @@ describe('createStories', () => {
               modes: {
                 w300h400: {
                   viewport: 'w300h400',
-                },
-              },
-            },
-            viewport: {
-              defaultViewport: 'w300h400',
-              viewports: {
-                w300h400: {
-                  name: 'w300h400',
-                  styles: {
-                    height: '400px',
-                    width: '300px',
-                  },
                 },
               },
             },
@@ -127,38 +103,3 @@ describe('buildStoryModesConfig', () => {
   });
 });
 
-describe('buildStoryViewportsConfig', () => {
-  it('builds viewports config for storybook parameters', () => {
-    const viewportsConfig = storiesFiles.buildStoryViewportsConfig(vports);
-    expect(viewportsConfig).toEqual({
-      w100h1000: {
-        name: 'w100h1000',
-        styles: {
-          width: '100px',
-          height: '1000px',
-        },
-      },
-      w1200h100: {
-        name: 'w1200h100',
-        styles: {
-          width: '1200px',
-          height: '100px',
-        },
-      },
-      w500h500: {
-        name: 'w500h500',
-        styles: {
-          width: '500px',
-          height: '500px',
-        },
-      },
-    });
-  });
-});
-
-describe('findDefaultViewport', () => {
-  it('returns the default viewport given a list', () => {
-    const defaultViewport = storiesFiles.findDefaultViewport(vports);
-    expect(defaultViewport).toEqual({ width: 1200, height: 100 });
-  });
-});

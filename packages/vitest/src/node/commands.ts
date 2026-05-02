@@ -5,11 +5,7 @@ import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, Viewport, writeTestResult } from '@chromatic-com/shared-e2e';
-import {
-  type ChromaticNamespace,
-  type ResolvedOptions,
-  type TitlePathFormatterContext,
-} from '../types';
+import { type ChromaticNamespace, type ResolvedOptions } from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 
 type TestID = Task['id'];
@@ -186,34 +182,45 @@ function getTitlePath(
   test: TestCase,
   formatTitlePath?: ResolvedOptions['formatTitlePath']
 ): string[] {
-  const context = getTitlePathContext(test);
+  const defaultTitlePath = getNames(test);
+  if (!formatTitlePath) return defaultTitlePath;
 
-  return formatTitlePath?.(context) || context.defaultTitlePath;
+  const projectName =
+    test.project.vitest.projects.length > 1 && test.project.name ? test.project.name : undefined;
+  const projectOffset = projectName ? 1 : 0;
+
+  return formatTitlePath({
+    filePath: defaultTitlePath[projectOffset] ?? '',
+    testPath: defaultTitlePath.slice(projectOffset + 1),
+    projectName,
+    defaultTitlePath,
+  });
 }
 
-function getTitlePathContext(test: TestCase): TitlePathFormatterContext {
-  const testPath = [test.name];
+function getNames(test: TestCase): string[] {
+  const names = [test.name];
   let current: TestCase | TestSuite | TestModule = test;
 
   while ('parent' in current && current.parent) {
     current = current.parent;
 
     if ('name' in current && current.name) {
-      testPath.unshift(current.name);
+      names.unshift(current.name);
     }
+  }
+
+  if (current.type === 'module') {
+    names.unshift(current.relativeModuleId);
   }
 
   // If Vitest was configured with multiple projects, namespace the results with project name
   const hasManyProjects = test.project.vitest.projects.length > 1;
-  const projectName = hasManyProjects ? test.project.name : undefined;
-  const filePath = current.type === 'module' ? current.relativeModuleId : '';
-  const defaultTitlePath = [
-    ...(projectName ? [projectName] : []),
-    ...(filePath ? [filePath] : []),
-    ...testPath,
-  ];
 
-  return { filePath, testPath, projectName, defaultTitlePath };
+  if (hasManyProjects && test.project.name) {
+    names.unshift(test.project.name);
+  }
+
+  return names;
 }
 
 /** @internal */

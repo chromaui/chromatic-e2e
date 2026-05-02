@@ -9,24 +9,9 @@ import { type ChromaticConfig } from '@chromatic-com/shared-e2e';
 export type ChromaticNamespace = `__chromatic_${string}`;
 
 export interface TitlePathFormatterContext {
-  /**
-   * The test file path relative to the Vitest root.
-   */
   filePath: string;
-
-  /**
-   * The suite and test names for this test, excluding the file path and project name.
-   */
   testPath: string[];
-
-  /**
-   * The project name when multiple Vitest projects are configured.
-   */
   projectName?: string;
-
-  /**
-   * The title path Chromatic would use without custom formatting.
-   */
   defaultTitlePath: string[];
 }
 

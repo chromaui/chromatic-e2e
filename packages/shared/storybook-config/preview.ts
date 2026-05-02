@@ -40,7 +40,7 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   // Viewport seems to be a string or an object
   let viewportName;
   if (typeof viewport === 'string') {
-    viewportName = viewportGlobalToSnapshotViewport(viewport);
+    viewportName = storybookViewportToArchiveViewport(viewport);
   } else {
     // NOTE: This is duplicated in the shared package due to bundling issues
     viewportName = `w${viewport.width}h${viewport.height}`;
@@ -57,7 +57,7 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   return response.json();
 }
 
-function viewportGlobalToSnapshotViewport(viewport: string) {
+function storybookViewportToArchiveViewport(viewport: string) {
   const [, width, height] = viewport.match(/^(\d+)(?:px)?-(\d+)(?:px)?$/) || [];
   return width && height ? `w${width}h${height}` : viewport;
 }

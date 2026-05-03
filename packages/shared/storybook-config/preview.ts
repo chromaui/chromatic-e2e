@@ -48,10 +48,10 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
 
   let response = await fetch(`${url}/${snapshotFileName(id, viewportName)}`);
   if (!response.ok) {
-    const { defaultViewport } = context.storyContext.parameters.viewport ?? {};
-    if (defaultViewport) {
-      response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
-    }
+    // Possibly a viewport was specified that we haven't captured, or it's the addon's
+    // default of `reset`, so we'll load the default viewport snapshot instead.
+    const { defaultViewport } = context.storyContext.parameters.viewport;
+    response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
   }
 
   return response.json();

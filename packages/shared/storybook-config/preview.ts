@@ -37,8 +37,8 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
   const { url, id } = context.storyContext.parameters.server;
   const { viewport } = context.storyContext.globals;
 
-  // String globals match archive keys (e.g. w1280h720); object is Storybook viewport shape.
-  let viewportName: string;
+  // Viewport seems to be a string or an object
+  let viewportName;
   if (typeof viewport === 'string') {
     viewportName = viewport;
   } else {

@@ -24,6 +24,9 @@ export function createStories(
     title,
     stories: Object.entries(domSnapshots).map(([name, { viewport }]) => ({
       name,
+      // Viewport addon (Storybook 10+): per-story iframe size via `globals.viewport` together with
+      // `parameters.viewport` (available sizes / default). See:
+      // https://storybook.js.org/docs/essentials/viewport#defining-the-viewport-for-a-story
       globals: { viewport: viewportToString(viewport) },
       parameters: {
         server: { id: snapshotId(title, name) },

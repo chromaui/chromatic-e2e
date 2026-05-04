@@ -1,5 +1,12 @@
 # @chromatic-com/vitest
 
+## 0.0.3
+
+### Patch Changes
+
+- 8b326f5: Fix: Resolve root from root config
+- 8b326f5: Fix: Preserve CSS pseudo states in snapshots
+
 ## 0.0.2
 
 ### Patch Changes

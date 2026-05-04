@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.13.3
+
+### Patch Changes
+
+- 8b326f5: Fix: Preserve CSS pseudo states in snapshots
+
 ## 0.13.2
 
 ### Patch Changes

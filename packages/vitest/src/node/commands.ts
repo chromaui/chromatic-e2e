@@ -4,12 +4,11 @@ import type { TestCase, TestModule, TestSuite, BrowserCommand } from 'vitest/nod
 import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
-import { ResourceArchiver, Viewport, writeTestResult } from '@chromatic-com/shared-e2e';
+import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { type ChromaticNamespace, type ResolvedOptions } from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 
 type TestID = Task['id'];
-type DOMSnapshots = Parameters<typeof writeTestResult>[1];
 type SnapshotName = keyof DOMSnapshots;
 
 export function createCommands(options: ResolvedOptions) {
@@ -17,7 +16,14 @@ export function createCommands(options: ResolvedOptions) {
   const networkIdleTrackers = new Map<TestID, NetworkIdleTracker>();
   const snapshots = new Map<
     TestID,
-    Map<SnapshotName, { snapshot: serializedNodeWithId; viewport: Viewport }>
+    Map<
+      SnapshotName,
+      {
+        snapshot: serializedNodeWithId;
+        viewport: DOMSnapshots[string]['viewport'];
+        pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+      }
+    >
   >();
 
   return {
@@ -37,6 +43,7 @@ export function createCommands(options: ResolvedOptions) {
       context,
       id: TestID,
       snapshot: serializedNodeWithId,
+      pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'],
       name?: string
     ) {
       let sessionSnapshots = snapshots.get(id);
@@ -54,7 +61,7 @@ export function createCommands(options: ResolvedOptions) {
         height: window.innerHeight,
       }));
 
-      sessionSnapshots.set(name, { snapshot, viewport });
+      sessionSnapshots.set(name, { snapshot, viewport, pseudoClassIds });
     },
 
     /**
@@ -107,10 +114,14 @@ export function createCommands(options: ResolvedOptions) {
       const { archive, sessionSnapshots } = await onTestCleanup(id);
       assert(sessionSnapshots, `No snapshots found for test ${id}`);
 
-      const snapshotBuffers: Parameters<typeof writeTestResult>[1] = {};
+      const snapshotBuffers: DOMSnapshots = {};
 
-      for (const [name, { snapshot, viewport }] of sessionSnapshots) {
-        snapshotBuffers[name] = { snapshot: Buffer.from(JSON.stringify(snapshot)), viewport };
+      for (const [name, { snapshot, viewport, pseudoClassIds }] of sessionSnapshots) {
+        snapshotBuffers[name] = {
+          snapshot: Buffer.from(JSON.stringify(snapshot)),
+          viewport,
+          pseudoClassIds,
+        };
       }
 
       await writeTestResult(

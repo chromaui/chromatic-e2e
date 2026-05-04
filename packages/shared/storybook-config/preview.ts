@@ -1,7 +1,8 @@
 import type { RenderContext, RenderToCanvas, WebRenderer } from 'storybook/internal/types';
 import type { serializedNodeWithId } from '@rrweb/types';
 import { NodeType } from '@rrweb/types';
-import { rebuild } from '@chromaui/rrweb-snapshot';
+import { rebuild, createMirror, createCache } from '@chromaui/rrweb-snapshot';
+import { type SavedSnapshot } from '@chromatic-com/shared-e2e';
 
 const pageUrl = new URL(window.location.href);
 pageUrl.pathname = '';
@@ -33,7 +34,7 @@ function snapshotFileName(snapshotId: string, viewport: string) {
   return fileNameParts.join('.');
 }
 
-async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
+async function fetchSnapshot(context: RenderContext<RRWebFramework>): Promise<SavedSnapshot> {
   const { url, id } = context.storyContext.parameters.server;
   const { viewport } = context.storyContext.globals;
 
@@ -58,7 +59,7 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>) {
 }
 
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {
-  const snapshot = await fetchSnapshot(context);
+  const { snapshot, pseudoClassIds } = await fetchSnapshot(context);
 
   // The snapshot is a representation of a complete HTML document
   const htmlNode = findHtmlNode(snapshot);
@@ -68,8 +69,18 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {
   // (and breaks Storybook).
   // However, if you just rebuild the html element part, it will recreate but not attempt to
   // insert it in the DOM.
-  // @ts-expect-error rebuild is typed incorreclty, cache and mirror are optional
-  const html = (await rebuild(htmlNode, { doc: document })) as HTMLElement;
+  const mirror = createMirror();
+  const html = rebuild(htmlNode!, { doc: document, mirror, cache: createCache() }) as HTMLElement;
+
+  for (const [className, ids] of Object.entries(pseudoClassIds)) {
+    for (const id of ids) {
+      const el = mirror.getNode(id) as Element | null;
+
+      if (el?.classList) {
+        el.classList.add(className);
+      }
+    }
+  }
 
   // Now we insert the rebuilt html element in the DOM
   document.replaceChild(html, document.children[0]);

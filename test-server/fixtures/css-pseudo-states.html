@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+
+      button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        background: black;
+        color: white;
+        border: 2px solid #333;
+        text-decoration: none;
+      }
+
+      .label {
+        padding: 5px 10px;
+        margin: 2px;
+        display: inline-block;
+        color: white;
+      }
+
+      #tab-cycle {
+        font-size: 10px;
+        padding: 0;
+        margin: 0;
+      }
+
+      #target {
+        display: block;
+      }
+
+      #target:hover {
+        background: blue;
+      }
+
+      #target:focus {
+        background: red;
+      }
+
+      #target:focus-visible {
+        background: orange;
+      }
+
+      #target:active {
+        background: green;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li><span>Hover:</span> <span class="label" style="background-color: blue">Blue</span></li>
+      <li><span>Active:</span> <span class="label" style="background-color: green">Green</span></li>
+      <li><span>Focus:</span> <span class="label" style="background-color: red">Red</span></li>
+      <li>
+        <span>Focus Visible:</span>
+        <span class="label" style="background-color: orange">Orange</span>
+      </li>
+    </ul>
+    <button id="tab-cycle">Focus this before tab</button>
+
+    <button id="target">target</button>
+  </body>
+</html>

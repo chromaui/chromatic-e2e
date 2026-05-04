@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.10.4
+
+### Patch Changes
+
+- 8b326f5: Fix: Preserve CSS pseudo states in snapshots
+
 ## 0.10.3
 
 ### Patch Changes

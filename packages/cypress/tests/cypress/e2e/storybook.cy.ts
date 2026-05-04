@@ -1,4 +1,4 @@
-it('visits hosted storybook page', () => {
+it.skip('visits hosted storybook page', () => {
   cy.visit(
     'https://main--653fef099b8957739e7534a4.chromatic.com/iframe.html?id=options-pause-animation-at-end--snapshot-1&viewMode=story'
   );

@@ -1,5 +1,6 @@
 import { beforeAll } from 'vitest';
 import { getCurrentTest, type Test } from '../getCurrentTest';
+import { isChromium } from '../isChromium';
 
 /**
  * Disable automatic test snapshotting for specific scope.
@@ -62,6 +63,10 @@ import { getCurrentTest, type Test } from '../getCurrentTest';
  *
  */
 export function disableAutoSnapshot() {
+  if (!isChromium()) {
+    return;
+  }
+
   const test = getCurrentTest();
 
   // Called within test()

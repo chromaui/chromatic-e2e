@@ -47,9 +47,11 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
     configureVitest(context) {
       const project = context.project;
+      const browser = project.config.browser;
       const sequence = context.vitest.config.sequence;
 
-      if (!project.config.browser.enabled) {
+      // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
+      if (!browser.enabled || browser.name !== 'chromium') {
         return;
       }
 

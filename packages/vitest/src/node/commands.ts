@@ -205,7 +205,9 @@ function getNames(test: TestCase): string[] {
   }
 
   // If Vitest was configured with multiple projects, namespace the results with project name
-  const hasManyProjects = test.project.vitest.projects.length > 1;
+  const hasManyProjects =
+    test.project.vitest.projects.filter((project) => project.config.browser.name === 'chromium')
+      .length > 1;
 
   if (hasManyProjects && test.project.name) {
     names.unshift(test.project.name);

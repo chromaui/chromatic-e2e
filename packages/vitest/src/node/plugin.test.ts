@@ -84,6 +84,7 @@ test('warns if tags are used with Vitest 4.0', async () => {
 
   const project = vitest.projects[0];
   project.config.browser.enabled = true;
+  project.config.browser.name = 'chromium';
 
   // @ts-expect-error -- intentional
   vitest.version = '4.0.1';
@@ -212,6 +213,44 @@ test('does not clean existing output directory when "vitest --merge-reports" is 
     [
       "archive",
       "dom-mount-some-elements.stories.json",
+    ]
+  `);
+});
+
+test('works in multi project instance setup', async () => {
+  const root = resolve(import.meta.dirname, '../../test/fixtures');
+  const tests: TestModule[] = [];
+
+  await runFixture({
+    name: 'custom-project-name',
+    browser: {
+      ...getBrowserConfig(),
+      instances: [
+        { browser: 'chromium', name: 'custom-name-for-chromium-browser' },
+        { browser: 'webkit', name: 'custom-name-for-webkit-browser' },
+        { browser: 'firefox', name: 'custom-name-for-firefox-browser' },
+      ],
+    },
+    reporters: ['default', { onTestRunEnd: (testModules) => void tests.push(...testModules) }],
+    /** See {@link file://./../../test/fixtures/public-apis.test.ts} */
+    include: ['**/public-apis.test.ts'],
+    root,
+  });
+
+  // Non-Chromium browsers should not crash
+  expect.soft(tests).toHaveLength(3);
+  expect.soft(tests[0].state()).toBe('passed');
+  expect.soft(tests[1].state()).toBe('passed');
+  expect.soft(tests[2].state()).toBe('passed');
+
+  // Results for Chromium should still be written to disk
+  const results = await readdir(resolve(root, '.vitest/chromatic/chromatic-archives'));
+
+  expect(results).toMatchInlineSnapshot(`
+    [
+      "archive",
+      "public-apis-calls-takesnapshot.stories.json",
+      "public-apis-calls-waitforidlenetwork.stories.json",
     ]
   `);
 });

@@ -1,5 +1,6 @@
 import { commands } from 'vitest/browser';
 import { getCurrentTest } from '../getCurrentTest';
+import { isChromium } from '../isChromium';
 import type {} from '../../node/commands';
 
 /**
@@ -16,6 +17,10 @@ import type {} from '../../node/commands';
  * Use `timeout` argument to reject if network doesn't become idle within given time.
  */
 export async function waitForIdleNetwork(timeout: number) {
+  if (!isChromium()) {
+    return;
+  }
+
   const test = getCurrentTest();
 
   if (!test) {

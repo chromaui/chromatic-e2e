@@ -197,6 +197,58 @@ test("warns when {sequence.hooks: 'parallel'} is used", async () => {
   );
 });
 
+test('user defined afterEach can call takeSnapshot()', async () => {
+  await runFixture({
+    include: [takeSnapshotTest],
+    provide: { testName: 'four' },
+    setupFiles: ['takesnapshot-setup-file.ts'],
+  });
+
+  expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
+
+  const [, snapshots] = vi.mocked(shared.writeTestResult).mock.calls[0];
+
+  expect.soft(snapshots).toHaveProperty('Snapshot #1');
+  expect.soft(snapshots).toHaveProperty("user's after each snapshot!");
+
+  const autoSnapshot = snapshots['Snapshot #1'].snapshot;
+  const userSnapshot = snapshots["user's after each snapshot!"].snapshot;
+
+  expect(JSON.parse(autoSnapshot.toString())).toMatchInlineSnapshot(`
+    {
+      "attributes": {},
+      "childNodes": [
+        {
+          "id": "number",
+          "textContent": "Example heading",
+          "type": 3,
+        },
+      ],
+      "id": "number",
+      "tagName": "h1",
+      "type": 2,
+    }
+  `);
+
+  expect(JSON.parse(userSnapshot.toString())).toMatchInlineSnapshot(`
+    {
+      "attributes": {},
+      "childNodes": [
+        {
+          "id": "number",
+          "rootId": 40,
+          "textContent": "This should be in user snapshot",
+          "type": 3,
+        },
+      ],
+      "id": "number",
+      "rootId": 40,
+      "tagName": "h1",
+      "type": 2,
+    }
+  `);
+});
+
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.reduce((all, call) => {
     const [e2eTestInfo, domSnapshots] = call;

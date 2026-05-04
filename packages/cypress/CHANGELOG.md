@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.12.3
+
+### Patch Changes
+
+- e4d404d: Fix: Preserve CSS pseudo states in snapshots
+
 ## 0.12.2
 
 ### Patch Changes

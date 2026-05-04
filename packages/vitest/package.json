@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-com/vitest",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Chromatic Visual Regression Testing for Vitest",
   "repository": {
     "type": "git",

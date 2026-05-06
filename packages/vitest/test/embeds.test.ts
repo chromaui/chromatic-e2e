@@ -15,5 +15,5 @@ test('cross-origin embed page loads', async ({ goTo }) => {
   const res = await fetch('/embed-server-root/');
   expect(res.ok).toBe(true);
   const body = await res.text();
-  expect(body).toContain('Testing testing just a basic page');
+  expect(body).toContain('Embedded page');
 });

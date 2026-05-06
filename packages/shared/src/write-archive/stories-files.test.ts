@@ -57,6 +57,7 @@ describe('createStories', () => {
       stories: [
         {
           name: 'snapshot 1',
+          globals: { viewport: 'w100h200' },
           parameters: {
             server: { id: 'some-test-title-snapshot-1' },
             chromatic: {
@@ -70,9 +71,10 @@ describe('createStories', () => {
             },
             viewport: {
               defaultViewport: 'w100h200',
-              viewports: {
+              options: {
                 w100h200: {
                   name: 'w100h200',
+                  type: 'mobile',
                   styles: {
                     height: '200px',
                     width: '100px',
@@ -84,6 +86,7 @@ describe('createStories', () => {
         },
         {
           name: 'another snapshot',
+          globals: { viewport: 'w300h400' },
           parameters: {
             server: { id: 'some-test-title-another-snapshot' },
             chromatic: {
@@ -97,9 +100,10 @@ describe('createStories', () => {
             },
             viewport: {
               defaultViewport: 'w300h400',
-              viewports: {
+              options: {
                 w300h400: {
                   name: 'w300h400',
+                  type: 'mobile',
                   styles: {
                     height: '400px',
                     width: '300px',
@@ -131,6 +135,7 @@ describe('buildStoryViewportsConfig', () => {
     expect(viewportsConfig).toEqual({
       w100h1000: {
         name: 'w100h1000',
+        type: 'mobile',
         styles: {
           width: '100px',
           height: '1000px',
@@ -138,6 +143,7 @@ describe('buildStoryViewportsConfig', () => {
       },
       w1200h100: {
         name: 'w1200h100',
+        type: 'desktop',
         styles: {
           width: '1200px',
           height: '100px',
@@ -145,6 +151,7 @@ describe('buildStoryViewportsConfig', () => {
       },
       w500h500: {
         name: 'w500h500',
+        type: 'mobile',
         styles: {
           width: '500px',
           height: '500px',

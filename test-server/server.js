@@ -2,11 +2,19 @@ const path = require('path');
 const express = require('express');
 const basicAuth = require('express-basic-auth');
 
-const app = express();
-const port = 3000;
-
 const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
+const rootPageHtml = `${htmlIntro}<body>Testing testing just a basic page</body>${htmlOutro}`;
+
+const app = express();
+// Minimal second origin for cross-origin iframe embed tests (same document as `/` on this app).
+const embedApp = express();
+embedApp.get('/', (req, res) => {
+  res.send(rootPageHtml);
+});
+
+const port = 3000;
+const embedPort = 3001;
 
 app.use(
   '/protected',
@@ -89,7 +97,7 @@ app.use(express.static(path.join(__dirname, 'fixtures/assets')));
 
 // Pages
 app.get('/', (req, res) => {
-  res.send(`${htmlIntro}<body>Testing testing just a basic page</body>${htmlOutro}`);
+  res.send(rootPageHtml);
 });
 
 // Asset path pages
@@ -163,4 +171,8 @@ const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-module.exports = { server };
+const embedServer = embedApp.listen(embedPort, () => {
+  console.log(`Embed origin listening on port ${embedPort}`);
+});
+
+module.exports = { server, embedServer };

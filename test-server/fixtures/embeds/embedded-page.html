@@ -14,9 +14,36 @@
         max-width: 36rem;
         height: 10rem;
       }
+
+      .button-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      .button-bar button {
+        font: inherit;
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
     <h1>Embedded page</h1>
+    <div class="button-bar" role="toolbar" aria-label="Page background">
+      <button type="button" onclick="document.body.style.backgroundColor='red'">
+        Red
+      </button>
+      <button type="button" onclick="document.body.style.backgroundColor='yellow'">
+        Yellow
+      </button>
+      <button type="button" onclick="document.body.style.backgroundColor='blue'">
+        Blue
+      </button>
+      <button type="button" onclick="document.body.style.removeProperty('background-color')">
+        Reset
+      </button>
+    </div>
   </body>
 </html>

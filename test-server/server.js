@@ -143,6 +143,10 @@ app.get('/constructable-stylesheets/:page', (req, res) => {
   res.sendFile(path.join(__dirname, `fixtures/constructable-stylesheets/${page}.html`));
 });
 
+app.get('/embeds/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/embeds/${req.params.page}.html`));
+});
+
 app.get('/amd', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/amd.html'));
 });

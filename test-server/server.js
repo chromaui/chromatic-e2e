@@ -10,7 +10,7 @@ const app = express();
 // Minimal second origin for cross-origin iframe embed tests (same document as `/` on this app).
 const embedApp = express();
 embedApp.get('/', (req, res) => {
-  res.send(rootPageHtml);
+  res.sendFile(path.join(__dirname, `fixtures/embeds/embedded-page.html`));
 });
 
 const port = 3000;

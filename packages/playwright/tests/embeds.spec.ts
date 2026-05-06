@@ -11,8 +11,6 @@ test('cross-origin embed page loads', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Embeds' })).toBeVisible();
   await expect(page.locator('iframe[title="Cross-origin iframe"]')).toBeVisible();
   await expect(
-    page
-      .frameLocator('iframe[title="Cross-origin iframe"]')
-      .getByText('Testing testing just a basic page')
+    page.frameLocator('iframe[title="Cross-origin iframe"]').getByText('Embedded page')
   ).toBeVisible();
 });

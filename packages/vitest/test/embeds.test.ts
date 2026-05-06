@@ -1,7 +1,27 @@
-import { expect } from 'vitest';
+import { expect, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { test } from './utils/browser';
-import { takeSnapshot } from '../dist';
+import { takeSnapshot, disableAutoSnapshot } from '../dist';
+
+function embeddedDocument(): Document {
+  const iframe = document.querySelector<HTMLIFrameElement>('iframe[title="Same-origin iframe"]');
+  const doc = iframe?.contentDocument;
+  if (!doc) {
+    throw new Error('Expected same-origin iframe with a loaded document');
+  }
+  return doc;
+}
+
+function clickEmbeddedButton(label: string): void {
+  const doc = embeddedDocument();
+  const button = Array.from(doc.querySelectorAll('button')).find(
+    (b) => b.textContent?.trim() === label
+  );
+  if (!button) {
+    throw new Error(`Button "${label}" not found in embedded document`);
+  }
+  button.click();
+}
 
 test('same-origin embed page loads', async ({ goTo }) => {
   await goTo('/embeds/same-origin');
@@ -20,22 +40,32 @@ test('cross-origin embed page loads', async ({ goTo }) => {
 });
 
 test('embedded page background color can be changed', async ({ goTo }) => {
-  await goTo('/embeds/embedded-page');
-  expect(page.getByRole('heading', { name: 'Embedded page' })).toBeVisible();
+  disableAutoSnapshot();
 
-  await page.getByRole('button', { name: 'Red' }).click();
-  expect(getComputedStyle(document.body).backgroundColor).toBe('rgb(255, 0, 0)');
+  await goTo('/embeds/same-origin');
+  expect(page.getByRole('heading', { name: 'Embeds' })).toBeVisible();
+
+  await vi.waitUntil(() => {
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe[title="Same-origin iframe"]');
+    const h1 = iframe?.contentDocument?.querySelector('h1');
+    return h1?.textContent?.includes('Embedded page') === true;
+  });
+
+  const embeddedBody = () => embeddedDocument().body;
+
+  clickEmbeddedButton('Red');
+  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgb(255, 0, 0)');
   await takeSnapshot('Red background');
 
-  await page.getByRole('button', { name: 'Yellow' }).click();
-  expect(getComputedStyle(document.body).backgroundColor).toBe('rgb(255, 255, 0)');
+  clickEmbeddedButton('Yellow');
+  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgb(255, 255, 0)');
   await takeSnapshot('Yellow background');
 
-  await page.getByRole('button', { name: 'Blue' }).click();
-  expect(getComputedStyle(document.body).backgroundColor).toBe('rgb(0, 0, 255)');
+  clickEmbeddedButton('Blue');
+  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgb(0, 0, 255)');
   await takeSnapshot('Blue background');
 
-  await page.getByRole('button', { name: 'Reset' }).click();
-  expect(getComputedStyle(document.body).backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  clickEmbeddedButton('Reset');
+  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgba(0, 0, 0, 0)');
   await takeSnapshot('Reset background');
 });

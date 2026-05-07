@@ -1,42 +1,31 @@
-import { expect, vi } from 'vitest';
-import { page } from 'vitest/browser';
+import { expect } from 'vitest';
+import { Locator, locators, page } from 'vitest/browser';
 import { test } from './utils/browser';
 import { takeSnapshot, disableAutoSnapshot } from '../dist';
-
-function embeddedDocument(): Document {
-  const iframe = document.querySelector<HTMLIFrameElement>('iframe[title="Same-origin iframe"]');
-  const doc = iframe?.contentDocument;
-  if (!doc) {
-    throw new Error('Expected same-origin iframe with a loaded document');
-  }
-  return doc;
-}
-
-function clickEmbeddedButton(label: string): void {
-  const doc = embeddedDocument();
-  const button = Array.from(doc.querySelectorAll('button')).find(
-    (b) => b.textContent?.trim() === label
-  );
-  if (!button) {
-    throw new Error(`Button "${label}" not found in embedded document`);
-  }
-  button.click();
-}
 
 test('same-origin embed page loads', async ({ goTo }) => {
   await goTo('/embeds/same-origin');
   expect(page.getByRole('heading', { name: 'Embeds' })).toBeVisible();
-  expect(page.getByTitle('Same-origin iframe')).toBeVisible();
+
+  await expect
+    .element(
+      page
+        .frameLocator(page.getByTitle('Same-origin iframe'))
+        .getByRole('heading', { level: 1, name: 'Embedded page' })
+    )
+    .toBeVisible();
 });
 
 test('cross-origin embed page loads', async ({ goTo }) => {
   await goTo('/embeds/cross-origin');
+
   expect(page.getByRole('heading', { name: 'Embeds' })).toBeVisible();
   expect(page.getByTitle('Cross-origin iframe')).toBeVisible();
+
+  // As we don't use --disable-web-security, we cannot query the cross-origin iframes contents.
+  // Verify that their content is expected with separate fetch.
   const res = await fetch('/embed-server-root/');
-  expect(res.ok).toBe(true);
-  const body = await res.text();
-  expect(body).toContain('Embedded page');
+  await expect(res.text()).resolves.toContain('Embedded page');
 });
 
 test('embedded page background color can be changed', async ({ goTo }) => {
@@ -45,27 +34,47 @@ test('embedded page background color can be changed', async ({ goTo }) => {
   await goTo('/embeds/same-origin');
   expect(page.getByRole('heading', { name: 'Embeds' })).toBeVisible();
 
-  await vi.waitUntil(() => {
-    const iframe = document.querySelector<HTMLIFrameElement>('iframe[title="Same-origin iframe"]');
-    const h1 = iframe?.contentDocument?.querySelector('h1');
-    return h1?.textContent?.includes('Embedded page') === true;
-  });
+  const frame = page.frameLocator(page.getByTitle('Same-origin iframe'));
 
-  const embeddedBody = () => embeddedDocument().body;
+  await expect
+    .element(frame.getByRole('heading', { level: 1, name: 'Embedded page' }))
+    .toBeVisible();
 
-  clickEmbeddedButton('Red');
-  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgb(255, 0, 0)');
+  await frame.getByRole('button', { name: 'Red' }).click();
+
+  expect(frame.getBodyCSS()).toEqual({ 'background-color': 'rgb(255, 0, 0)' });
   await takeSnapshot('Red background');
 
-  clickEmbeddedButton('Yellow');
-  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgb(255, 255, 0)');
+  await frame.getByRole('button', { name: 'Yellow' }).click();
+  expect(frame.getBodyCSS()).toEqual({ 'background-color': 'rgb(255, 255, 0)' });
   await takeSnapshot('Yellow background');
 
-  clickEmbeddedButton('Blue');
-  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgb(0, 0, 255)');
+  await frame.getByRole('button', { name: 'Blue' }).click();
+  expect(frame.getBodyCSS()).toEqual({ 'background-color': 'rgb(0, 0, 255)' });
   await takeSnapshot('Blue background');
 
-  clickEmbeddedButton('Reset');
-  expect(getComputedStyle(embeddedBody()).backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  await frame.getByRole('button', { name: 'Reset' }).click();
+  expect(frame.getBodyCSS()).toEqual({ 'background-color': 'rgba(0, 0, 0, 0)' });
   await takeSnapshot('Reset background');
 });
+
+locators.extend({
+  __getBody: () => 'body',
+  getBodyCSS() {
+    return {
+      // Pick just background-color for now
+      'background-color': this.__getBody()
+        .element()
+        .computedStyleMap()
+        .get('background-color')
+        .toString(),
+    };
+  },
+});
+
+declare module 'vitest/browser' {
+  interface LocatorSelectors {
+    getBodyCSS(): { 'background-color': string };
+    __getBody(): Locator;
+  }
+}

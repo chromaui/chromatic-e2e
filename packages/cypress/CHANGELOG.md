@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.12.4
+
+### Patch Changes
+
+- 5a0b4e4: Fix: Use Storybook viewport globals (#339)
+
 ## 0.12.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.10.5
+
+### Patch Changes
+
+- 5a0b4e4: Fix: Use Storybook viewport globals (#339)
+
 ## 0.10.4
 
 ### Patch Changes

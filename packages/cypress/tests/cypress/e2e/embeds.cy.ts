@@ -7,6 +7,9 @@ it('same-origin embed page loads', () => {
 it('cross-origin embed page loads', () => {
   cy.visit('/embeds/cross-origin');
   cy.contains('h1', 'Embeds').should('be.visible');
+
+  // As we don't use --disable-web-security, we cannot query the cross-origin iframes contents.
+  // Verify that their content is expected with separate fetch.
   cy.get('iframe[title="Cross-origin iframe"]').should('be.visible');
   cy.request('http://localhost:3001/').its('body').should('include', 'Embedded page');
 });

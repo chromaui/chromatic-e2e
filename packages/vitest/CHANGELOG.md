@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.0.4
+
+### Patch Changes
+
+- 63b6deb: Fix: Split autosnapshot and cleanups in different test lifecycle phases
+
 ## 0.0.3
 
 ### Patch Changes

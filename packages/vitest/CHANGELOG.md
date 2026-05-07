@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.0.5
+
+### Patch Changes
+
+- 5a0b4e4: Fix: Use Storybook viewport globals (#339)
+
 ## 0.0.4
 
 ### Patch Changes

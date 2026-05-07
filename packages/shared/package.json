@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-com/shared-e2e",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "private": true,
   "description": "Shared Chromatic E2E",
   "repository": {

@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.13.4
+
+### Patch Changes
+
+- 5a0b4e4: Fix: Use Storybook viewport globals (#339)
+
 ## 0.13.3
 
 ### Patch Changes

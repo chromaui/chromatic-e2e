@@ -95,7 +95,7 @@ afterEach<InternalTestContext>(async ({ task }) => {
   }
 
   // Take automatic snapshot
-  await takeSnapshot(undefined, { ignoreUnawaited: true });
+  await takeSnapshot(undefined, { isAutoSnapshot: true });
 });
 
 class PendingSnapshotsError extends AggregateError {

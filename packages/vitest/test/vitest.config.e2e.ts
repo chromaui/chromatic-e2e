@@ -22,6 +22,7 @@ export default defineConfig({
     browser: {
       enabled: true,
       headless: true,
+      traceView: true,
       screenshotFailures: false,
       viewport: { width: 1280, height: 720 },
 

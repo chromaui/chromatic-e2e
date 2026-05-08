@@ -1,5 +1,5 @@
 import { assert } from 'vitest';
-import { commands } from 'vitest/browser';
+import { commands, page } from 'vitest/browser';
 import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
 import { serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
@@ -7,7 +7,7 @@ import { getCurrentTest } from '../getCurrentTest';
 import type {} from '../../node/commands';
 
 interface Options {
-  ignoreUnawaited?: boolean;
+  isAutoSnapshot?: boolean;
 }
 
 /**
@@ -46,13 +46,17 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
     pseudoClassIds[className] = ids;
   }
 
+  const marker = ['chromatic', options?.isAutoSnapshot ? 'autoSnapshot' : 'takeSnapshot', name]
+    .filter(Boolean)
+    .join(':');
+
   const save = async () => {
+    await page.mark(marker);
     await replaceBlobUrls(domSnapshot);
     await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, pseudoClassIds, name);
   };
 
-  // Ignore is set when called by automatic snapshots
-  if (options?.ignoreUnawaited) {
+  if (options?.isAutoSnapshot) {
     return await save();
   }
 

@@ -51,9 +51,16 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
     .join(':');
 
   const save = async () => {
-    await page.mark(marker);
-    await replaceBlobUrls(domSnapshot);
-    await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, pseudoClassIds, name);
+    await page.mark(
+      marker,
+      async () => {
+        await replaceBlobUrls(domSnapshot);
+        await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, pseudoClassIds, name);
+      },
+      {
+        kind: 'action',
+      }
+    );
   };
 
   if (options?.isAutoSnapshot) {

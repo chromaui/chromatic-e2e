@@ -37,11 +37,25 @@ async function takeSnapshot(
   });
 
   // Serialize and capture the DOM
-  const {
-    domSnapshot,
+  const { domSnapshot, pseudoClassIds } = await executeSnapshotScript(page);
+
+  const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
+  if (!chromaticSnapshots.has(testId)) {
+    // map used so the snapshots are always in order
+    chromaticSnapshots.set(testId, new Map());
+  }
+  chromaticSnapshots.get(testId).set(name, {
+    snapshot: bufferedSnapshot,
+    viewport: page.viewportSize() || { width: 1280, height: 720 },
     pseudoClassIds,
-  }: { domSnapshot: serializedNodeWithId; pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'] } =
-    await page.evaluate(dedent`
+  });
+}
+
+async function executeSnapshotScript(context: Page): Promise<{
+  domSnapshot: serializedNodeWithId;
+  pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+}> {
+  return await context.evaluate(dedent`
     ${rrweb};
 
     // this code was erroring the page.evaluate() when it was passed as a function to page.evaluate(),
@@ -116,17 +130,6 @@ async function takeSnapshot(
       });
     }
   `);
-
-  const bufferedSnapshot = Buffer.from(JSON.stringify(domSnapshot));
-  if (!chromaticSnapshots.has(testId)) {
-    // map used so the snapshots are always in order
-    chromaticSnapshots.set(testId, new Map());
-  }
-  chromaticSnapshots.get(testId).set(name, {
-    snapshot: bufferedSnapshot,
-    viewport: page.viewportSize() || { width: 1280, height: 720 },
-    pseudoClassIds,
-  });
 }
 
 export { takeSnapshot };

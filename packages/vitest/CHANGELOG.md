@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.0.6
+
+### Patch Changes
+
+- c5a74bb: Fix: support multi browser instance setups
+
 ## 0.0.5
 
 ### Patch Changes

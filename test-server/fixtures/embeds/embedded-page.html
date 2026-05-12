@@ -11,8 +11,8 @@
       iframe {
         border: 1px solid #ccc;
         width: 100%;
-        max-width: 36rem;
-        height: 10rem;
+        max-width: 45rem;
+        height: 25rem;
       }
 
       .button-bar {
@@ -27,23 +27,28 @@
         padding: 0.4rem 0.75rem;
         cursor: pointer;
       }
+
+      body:has(#hover-target:hover) {
+        background-color: green !important;
+      }
     </style>
   </head>
   <body>
     <h1>Embedded page</h1>
     <div class="button-bar" role="toolbar" aria-label="Page background">
-      <button type="button" onclick="document.body.style.backgroundColor='red'">
-        Red
-      </button>
-      <button type="button" onclick="document.body.style.backgroundColor='yellow'">
-        Yellow
-      </button>
-      <button type="button" onclick="document.body.style.backgroundColor='blue'">
-        Blue
-      </button>
+      <button type="button" onclick="document.body.style.backgroundColor = 'red'">Red</button>
+      <button type="button" onclick="document.body.style.backgroundColor = 'yellow'">Yellow</button>
+      <button type="button" onclick="document.body.style.backgroundColor = 'blue'">Blue</button>
       <button type="button" onclick="document.body.style.removeProperty('background-color')">
         Reset
       </button>
+      <button type="button" id="hover-target">Green on Hover</button>
+    </div>
+
+    <div style="display: flex; gap: 1rem">
+      <div><img src="/img?url=fixtures/blue.png" /></div>
+      <div><img src="/img?url=fixtures/pink.png" /></div>
+      <div><img src="/img?url=fixtures/purple.png" /></div>
     </div>
   </body>
 </html>

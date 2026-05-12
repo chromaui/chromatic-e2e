@@ -1,7 +1,12 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig((options) => ({
-  entry: ['src/index.ts', 'src/archive-storybook/index.ts', 'src/utils/filePaths.ts'],
+  entry: [
+    'src/index.ts',
+    'src/archive-storybook/index.ts',
+    'src/utils/filePaths.ts',
+    'src/utils/nodes.ts',
+  ],
   splitting: false,
   minify: false,
   format: ['esm', 'cjs'],

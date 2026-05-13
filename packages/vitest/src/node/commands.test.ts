@@ -32,6 +32,38 @@ test('writes test results with full test name', async () => {
   `);
 });
 
+test('can format test titles', async () => {
+  const formatTitle = vi.fn(
+    ({ filePath, testPath }: { filePath: string; testPath: string[] }) =>
+      `${filePath.replace(/\.test\.ts$/, '')} -> ${testPath.join(' / ')}`
+  );
+
+  /** See {@link file://./../../test/fixtures/test-names.test.ts} */
+  await runFixture({ include: ['test-names.test.ts'] }, { formatTitle });
+
+  const titlePaths = vi.mocked(shared.writeTestResult).mock.calls.map((call) => call[0].titlePath);
+
+  expect(formatTitle).toHaveBeenCalledWith({
+    filePath: 'test-names.test.ts',
+    testPath: ['test #1'],
+    projectName: undefined,
+  });
+
+  expect(titlePaths).toMatchInlineSnapshot(`
+    [
+      [
+        "test-names -> test #1",
+      ],
+      [
+        "test-names -> suite #2 / test #2",
+      ],
+      [
+        "test-names -> suite #3 / nested suite #3 / test #3",
+      ],
+    ]
+  `);
+});
+
 test('writes test results with DOM snapshot', async () => {
   /** See {@link file://./../../test/fixtures/dom.test.ts} */
   await runFixture({ include: ['dom.test.ts'] });

@@ -36,10 +36,19 @@ export interface Options extends ChromaticConfig {
    * @default 100
    */
   idleNetworkInterval?: number;
+
+  /**
+   * Optional formatter for the archive story title (Storybook `title` path).
+   * Return a single string; include `/` if you want folder-style grouping in Storybook/Chromatic.
+   */
+  formatTitle?: (context: { filePath: string; testPath: string[]; projectName?: string }) => string;
 }
 
 /** Options that don't have internal default values */
-type UnresolvedOptionKeys = 'tags' | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
+type UnresolvedOptionKeys =
+  | 'tags'
+  | 'formatTitle'
+  | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
 
 /** Options with resolved values - derived from internal default values when not passed by user. */
 type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;

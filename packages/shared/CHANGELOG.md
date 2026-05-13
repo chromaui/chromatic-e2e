@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.11.0
+
+### Minor Changes
+
+- f16ce4e: Feat: Capture contents of iframes
+
 ## 0.10.5
 
 ### Patch Changes

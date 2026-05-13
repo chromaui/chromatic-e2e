@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.0
+
+### Minor Changes
+
+- f16ce4e: Feat: Capture contents of iframes
+
 ## 0.13.4
 
 ### Patch Changes

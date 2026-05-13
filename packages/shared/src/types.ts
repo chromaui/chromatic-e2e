@@ -1,4 +1,4 @@
-import { serializedNodeWithId } from '@rrweb/types';
+import { NodeType, serializedNodeWithId } from '@rrweb/types';
 import { Viewport } from './utils/viewport';
 
 export interface ChromaticConfig {
@@ -62,3 +62,10 @@ export interface SavedSnapshot {
   snapshot: serializedNodeWithId;
   pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
 }
+
+export type SerializedIframeNode = serializedNodeWithId & {
+  type: NodeType.Element;
+  tagName: 'iframe';
+  contentDocument?: serializedNodeWithId;
+  pseudoClassIds?: DOMSnapshots[string]['pseudoClassIds'];
+};

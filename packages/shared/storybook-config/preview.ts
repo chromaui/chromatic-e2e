@@ -3,6 +3,11 @@ import type { serializedNodeWithId } from '@rrweb/types';
 import { NodeType } from '@rrweb/types';
 import { rebuild, createMirror, createCache } from '@chromaui/rrweb-snapshot';
 import { type SavedSnapshot } from '@chromatic-com/shared-e2e';
+import {
+  isElement,
+  isIframeElement,
+  isIframeSerializedNode,
+} from '@chromatic-com/shared-e2e/utils/nodes';
 
 const pageUrl = new URL(window.location.href);
 pageUrl.pathname = '';
@@ -23,6 +28,24 @@ const findHtmlNode = (node: serializedNodeWithId): serializedNodeWithId | undefi
     return node.childNodes.find((childNode) => {
       return findHtmlNode(childNode);
     });
+  }
+
+  return undefined;
+};
+
+const findNodeById = (node: serializedNodeWithId, id: number): serializedNodeWithId | undefined => {
+  if (node.id === id) {
+    return node;
+  }
+
+  if ('childNodes' in node) {
+    for (const childNode of node.childNodes) {
+      const match = findNodeById(childNode, id);
+
+      if (match) {
+        return match;
+      }
+    }
   }
 
   return undefined;
@@ -70,13 +93,18 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {
   // However, if you just rebuild the html element part, it will recreate but not attempt to
   // insert it in the DOM.
   const mirror = createMirror();
-  const html = rebuild(htmlNode!, { doc: document, mirror, cache: createCache() }) as HTMLElement;
+  const html = rebuild(htmlNode!, {
+    doc: document,
+    mirror,
+    cache: createCache(),
+    afterAppend: afterAppendIframes(snapshot),
+  }) as HTMLElement;
 
   for (const [className, ids] of Object.entries(pseudoClassIds)) {
     for (const id of ids) {
-      const el = mirror.getNode(id) as Element | null;
+      const el = mirror.getNode(id);
 
-      if (el?.classList) {
+      if (isElement(el)) {
         el.classList.add(className);
       }
     }
@@ -96,6 +124,43 @@ const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {
   context.showMain();
   return () => {}; // We can't really cleanup
 };
+
+function afterAppendIframes(snapshot: serializedNodeWithId) {
+  return function afterAppend(node: Node, id: number) {
+    if (!isIframeElement(node)) {
+      return;
+    }
+
+    const serializedNode = findNodeById(snapshot, id);
+
+    if (!isIframeSerializedNode(serializedNode)) {
+      return;
+    }
+
+    node.onload = () => {
+      const mirror = createMirror();
+
+      rebuild(serializedNode.contentDocument, {
+        doc: node.contentDocument,
+        mirror,
+        cache: createCache(),
+
+        // Recursively build iframes within iframes
+        afterAppend: afterAppendIframes(serializedNode.contentDocument),
+      });
+
+      for (const [className, ids] of Object.entries(serializedNode.pseudoClassIds)) {
+        for (const id of ids) {
+          const el = mirror.getNode(id);
+
+          if (isElement(el)) {
+            el.classList.add(className);
+          }
+        }
+      }
+    };
+  };
+}
 
 export default {
   renderToCanvas,

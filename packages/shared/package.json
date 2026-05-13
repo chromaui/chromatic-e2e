@@ -40,6 +40,16 @@
         "types": "./dist/utils/filePaths.d.ts",
         "default": "./dist/utils/filePaths.js"
       }
+    },
+    "./utils/nodes": {
+      "import": {
+        "types": "./dist/utils/nodes.d.mts",
+        "default": "./dist/utils/nodes.mjs"
+      },
+      "require": {
+        "types": "./dist/utils/nodes.d.ts",
+        "default": "./dist/utils/nodes.js"
+      }
     }
   },
   "main": "dist/index.js",

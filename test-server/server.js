@@ -7,10 +7,14 @@ const htmlOutro = `</html>`;
 const rootPageHtml = `${htmlIntro}<body>Testing testing just a basic page</body>${htmlOutro}`;
 
 const app = express();
+
 // Minimal second origin for cross-origin iframe embed tests (same document as `/` on this app).
 const embedApp = express();
 embedApp.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, `fixtures/embeds/embedded-page.html`));
+});
+embedApp.get('/img', (req, res) => {
+  res.sendFile(path.join(__dirname, req.query.url));
 });
 
 const port = 3000;
@@ -168,11 +172,11 @@ app.get('/canvas', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Example app port http://localhost:${port}`);
 });
 
 const embedServer = embedApp.listen(embedPort, () => {
-  console.log(`Embed origin listening on port ${embedPort}`);
+  console.log(`Embed origin port http://localhost:${embedPort}`);
 });
 
 module.exports = { server, embedServer };

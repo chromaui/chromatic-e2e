@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 1rem;
+      }
+
+      iframe {
+        border: 1px solid #ccc;
+        width: 45rem;
+        height: 30rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Top page</h1>
+
+    <section>
+      <h2>First (red, same-origin)</h2>
+      <iframe src="/embeds/same-origin?color=red" title="First iframe"></iframe>
+    </section>
+
+    <section>
+      <h2>Second (blue, cross-origin)</h2>
+      <iframe src="/embeds/cross-origin?color=blue" title="Second iframe"></iframe>
+    </section>
+  </body>
+</html>

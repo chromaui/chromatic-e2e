@@ -49,12 +49,13 @@
     "@storybook/builder-webpack5": "10.2.13",
     "@storybook/server": "10.2.13",
     "@storybook/server-webpack5": "10.2.13",
-    "@vitest/browser-playwright": "^4.1.0",
+    "@vitest/browser-playwright": "https://pkg.pr.new/@vitest/browser-playwright@10302",
     "msw": "^2.12.10",
-    "vitest": "^4.1.0"
+    "vite": "latest",
+    "vitest": "https://pkg.pr.new/vitest@10302"
   },
   "peerDependencies": {
-    "vitest": "^4"
+    "vitest": "^4 || ^5.0.0-beta.2"
   },
   "publishConfig": {
     "access": "public"

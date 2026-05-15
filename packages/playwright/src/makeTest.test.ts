@@ -21,6 +21,18 @@ describe('makeTest', () => {
     browser = await chromium.launch();
     page = await browser.newPage();
     pageTwo = await browser.newPage();
+
+    // Vite SSR transforms import() that's meant for browsers
+    await Promise.all(
+      [page, pageTwo].map((ctx) =>
+        ctx.evaluate(() => {
+          // @ts-expect-error -- untyped
+          window.__vite_ssr_dynamic_import__ = () => ({
+            takeSnapshot: () => ({ domSnapshot: {} }),
+          });
+        })
+      )
+    );
   });
 
   afterEach(async () => {

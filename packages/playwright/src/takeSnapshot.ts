@@ -1,10 +1,10 @@
 import type { Frame, Page, TestInfo } from '@playwright/test';
-import { readFileSync } from 'fs';
-import { dedent } from 'ts-dedent';
+import { readFileSync } from 'node:fs';
 import { NodeType, type serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots, type SerializedIframeNode, logger } from '@chromatic-com/shared-e2e';
 
-const rrweb = readFileSync(require.resolve('@chromaui/rrweb-snapshot'), 'utf8');
+const browserEntry = require.resolve('@chromatic-com/playwright/browser');
+const browserScript = readFileSync(browserEntry, 'base64');
 
 type TestID = TestInfo['testId'];
 type SnapshotName = keyof DOMSnapshots;
@@ -85,81 +85,13 @@ async function executeSnapshotScript(context: Page | Frame): Promise<{
   domSnapshot: serializedNodeWithId;
   pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
 }> {
-  return await context.evaluate(dedent`
-    ${rrweb};
-
-    // this code was erroring the page.evaluate() when it was passed as a function to page.evaluate(),
-    // so for now it is being passed as a string until that can be resolved.
-    const doPostProcessing = (rrwebSnapshotInstance, documentToSnapshot) => {
-      return new Promise((resolve) => {
-        const mirror = rrwebSnapshotInstance.createMirror();
-        const domSnapshot = rrwebSnapshotInstance.snapshot(documentToSnapshot, { recordCanvas: true, mirror });
-
-        const pseudoClassIds = {};
-
-        for (const className of [':hover', ':focus', ':focus-visible', ':active']) {
-          const elements = documentToSnapshot.querySelectorAll(className);
-          const ids = Array.from(elements, (el) => mirror.getId(el)).filter((id) => id !== -1);
-          pseudoClassIds[className] = ids;
-        }
-
-        // do some post-processing on the snapshot
-        const toDataURL = async (url) => {
-          // read contents of the blob URL
-          const response = await fetch(url);
-          const blob = await response.blob();
-          return new Promise((resolveFileRead, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolveFileRead(reader.result);
-            reader.onerror = reject;
-            // convert the blob to base64 string
-            reader.readAsDataURL(blob);
-          });
-        };
-
-        const replaceBlobUrls = async (node) => {
-          await Promise.all(
-            node.childNodes.map(async (childNode) => {
-              if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
-                const base64Url = await toDataURL(childNode.attributes.src);
-                // eslint-disable-next-line no-param-reassign
-                childNode.attributes.src = base64Url;
-              }
-
-              if (childNode.childNodes?.length) {
-                await replaceBlobUrls(childNode);
-              }
-            })
-          );
-        };
-
-        replaceBlobUrls(domSnapshot).then(() => {
-          resolve({ domSnapshot, pseudoClassIds });
-        });
-      });
-    };
-
-    // page.evaluate returns the value of the function being evaluated. In this case, it means that
-    // it is returning either the resolved value of the Promise or the return value of the call to
-    // the snapshot function. See https://playwright.dev/docs/api/class-page#page-evaluate.
-    if (typeof define === 'function' && define.amd) {
-      // AMD support is detected, so we need to load rrwebSnapshot asynchronously
-      new Promise((resolve) => {
-        // eslint-disable-next-line import/no-dynamic-require, global-require
-        require(['rrwebSnapshot'], (rrwebSnapshot) => {
-          doPostProcessing(rrwebSnapshot, document).then((domSnapshot) => {
-            resolve(domSnapshot);
-          });
-        });
-      });
-    } else {
-      new Promise((resolve) => {
-        doPostProcessing(rrwebSnapshot, document).then((domSnapshot) => {
-          resolve(domSnapshot);
-        });
-      });
-    }
-  `);
+  return await context.evaluate(
+    async ({ moduleURL }) => {
+      const mod = await import(moduleURL);
+      return mod.takeSnapshot();
+    },
+    { moduleURL: `data:text/javascript;base64,${browserScript}` }
+  );
 }
 
 function findIframes(

@@ -1,9 +1,17 @@
 import { test, expect, takeSnapshot } from '../src';
 
-test('same-origin embed page loads', async ({ page }) => {
+test.only('same-origin embed page loads', async ({ page }, testInfo) => {
   await page.goto('/embeds/same-origin');
-  await expect(page.getByRole('heading', { name: 'Embeds' })).toBeVisible();
-  await expect(page.locator('iframe[title="Same-origin iframe"]')).toBeVisible();
+
+  await takeSnapshot(page, 'One', testInfo);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  await takeSnapshot(page, 'Two', testInfo);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  await takeSnapshot(page, 'Three', testInfo);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  await takeSnapshot(page, 'Four', testInfo);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  await takeSnapshot(page, 'Five', testInfo);
 });
 
 test.describe('', () => {

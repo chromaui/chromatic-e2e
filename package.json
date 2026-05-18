@@ -29,7 +29,7 @@
     "prepare": "husky install",
     "prettier": "prettier",
     "release": "yarn build && yarn changeset publish",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run --configLoader=runner"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"

@@ -3,6 +3,7 @@ import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from './src/node/plugin';
 
 export default defineProject({
+  resolve: { tsconfigPaths: true },
   plugins: [chromaticPlugin()],
 
   // To always catch errors that happen on first test run

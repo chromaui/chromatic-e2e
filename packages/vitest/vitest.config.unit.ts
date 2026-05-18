@@ -12,5 +12,11 @@ export default defineProject({
     sequence: { groupOrder: 2 },
     fileParallelism: false,
     retry: 2,
+
+    typecheck: {
+      enabled: true,
+      include: ['src/*.test-d.ts'],
+      ignoreSourceErrors: true,
+    },
   },
 });

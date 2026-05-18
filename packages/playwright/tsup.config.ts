@@ -70,6 +70,7 @@ export default defineConfig((options) => [
   },
   {
     ...common,
+    dts: false,
     entry: {
       browser: 'src/browser.ts',
     },

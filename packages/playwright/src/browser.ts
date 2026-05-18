@@ -1,8 +1,14 @@
 import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
 import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
-import { serializedNodeWithId } from '@rrweb/types';
+import { type serializedNodeWithId } from '@rrweb/types';
 
-export async function takeSnapshot() {
+export type WindowContext = Window & {
+  __chromatic_takeSnapshot: typeof takeSnapshot;
+};
+
+(window as unknown as WindowContext).__chromatic_takeSnapshot = takeSnapshot;
+
+async function takeSnapshot() {
   const mirror = createMirror();
   const domSnapshot = snapshot(document, { recordCanvas: true, mirror });
 

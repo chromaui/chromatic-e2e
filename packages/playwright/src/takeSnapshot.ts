@@ -1,10 +1,7 @@
 import type { Frame, Page, TestInfo } from '@playwright/test';
-import { readFileSync } from 'node:fs';
 import { NodeType, type serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots, type SerializedIframeNode, logger } from '@chromatic-com/shared-e2e';
-
-const browserEntry = require.resolve('@chromatic-com/playwright/browser');
-const browserScript = readFileSync(browserEntry, 'base64');
+import type { WindowContext } from './browser';
 
 type TestID = TestInfo['testId'];
 type SnapshotName = keyof DOMSnapshots;
@@ -81,17 +78,15 @@ async function takeSnapshot(
   });
 }
 
-async function executeSnapshotScript(context: Page | Frame): Promise<{
-  domSnapshot: serializedNodeWithId;
-  pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
-}> {
-  return await context.evaluate(
-    async ({ moduleURL }) => {
-      const mod = await import(moduleURL);
-      return mod.takeSnapshot();
-    },
-    { moduleURL: `data:text/javascript;base64,${browserScript}` }
-  );
+async function executeSnapshotScript(context: Page | Frame) {
+  await context.addScriptTag({
+    type: 'module',
+    path: require.resolve('@chromatic-com/playwright/browser'),
+  });
+
+  return await context.evaluate(async () => {
+    return await (window as unknown as WindowContext).__chromatic_takeSnapshot();
+  });
 }
 
 function findIframes(

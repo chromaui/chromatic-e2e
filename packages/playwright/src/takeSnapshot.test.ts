@@ -11,6 +11,7 @@ const fakePage = {
   evaluate: () => ({ domSnapshot: {}, pseudoClassIds: {} }),
   viewportSize: () => ({ width: 100, height: 200 }),
   frames: () => [],
+  addScriptTag: () => {},
 } as Page;
 
 describe('Snapshot storage', () => {
@@ -87,6 +88,7 @@ describe('Snapshot storage', () => {
         },
         pseudoClassIds: {},
       }),
+      addScriptTag: () => {},
       viewportSize: () => ({ width: 100, height: 200 }),
       frames: () => [
         fakePage,
@@ -96,6 +98,7 @@ describe('Snapshot storage', () => {
             pseudoClassIds: { ':hover': [10] },
           }),
           url: () => iframes[0].attributes.src,
+          addScriptTag: () => {},
         },
         {
           evaluate: () => ({
@@ -103,6 +106,7 @@ describe('Snapshot storage', () => {
             pseudoClassIds: { ':focus': [20] },
           }),
           url: () => iframes[1].attributes.src,
+          addScriptTag: () => {},
         },
       ],
     } as unknown as Page;

@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.1
+
+### Patch Changes
+
+- 9da7ecc: Fix: Proper browser entrypoint
+
 ## 0.14.0
 
 ### Minor Changes

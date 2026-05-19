@@ -21,9 +21,10 @@ beforeEach<InternalTestContext>(async ({ task }) => {
 
   task.meta.__chromatic_isRegistered = true;
   task.meta.__chromatic_isTakeSnapshotCalled = false;
+  task.meta.__chromatic_options ||= {};
 
-  // This may have been initialized by module or suite level disableAutoSnapshot() call already
-  task.meta.__chromatic_autoSnapshot ??= !options.disableAutoSnapshot;
+  // This may have been initialized by module or suite level configure({ disableAutoSnapshot }) call already
+  task.meta.__chromatic_options.autoSnapshot ??= !options.disableAutoSnapshot;
 
   await commands.__chromatic_interceptFetch(task.id);
 
@@ -60,7 +61,7 @@ beforeEach<InternalTestContext>(async ({ task }) => {
    * Clean internal task meta so that it doesn't show up on Vitest's reporters
    */
   function cleanup() {
-    task.meta.__chromatic_autoSnapshot = undefined;
+    task.meta.__chromatic_options = undefined;
     task.meta.__chromatic_isTakeSnapshotCalled = undefined;
     task.meta.__chromatic_isRegistered = undefined;
     task.meta.__chromatic_pendingTakeSnapshots = undefined;
@@ -71,7 +72,7 @@ beforeEach<InternalTestContext>(async ({ task }) => {
 afterEach<InternalTestContext>(async ({ task }) => {
   // These can be overriden during test run too
   const {
-    __chromatic_autoSnapshot: autoSnapshot,
+    __chromatic_options: options,
     __chromatic_pendingTakeSnapshots: pendingTakeSnapshots,
     __chromatic_isRegistered: isRegistered,
   } = task.meta;
@@ -84,14 +85,14 @@ afterEach<InternalTestContext>(async ({ task }) => {
     throw new PendingSnapshotsError(pendingTakeSnapshots);
   }
 
-  if (!autoSnapshot) {
+  if (!options.autoSnapshot) {
     return;
   }
 
-  const options = await commands.__chromatic_getOptions();
+  const globals = await commands.__chromatic_getOptions();
 
-  if (options.resourceArchiveTimeout !== 0) {
-    await waitForIdleNetwork(options.resourceArchiveTimeout);
+  if (globals.resourceArchiveTimeout !== 0) {
+    await waitForIdleNetwork(globals.resourceArchiveTimeout);
   }
 
   // Take automatic snapshot

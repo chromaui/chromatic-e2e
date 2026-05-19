@@ -1,6 +1,6 @@
 import { expectTypeOf, test } from 'vitest';
 
-import { takeSnapshot, waitForIdleNetwork, disableAutoSnapshot } from '../dist';
+import { takeSnapshot, waitForIdleNetwork, configure } from '../dist';
 import { chromaticPlugin } from '../dist/plugin';
 
 test('takeSnapshot', () => {
@@ -13,8 +13,10 @@ test('waitForIdleNetwork', () => {
   expectTypeOf(waitForIdleNetwork).parameter(0).toEqualTypeOf<number>();
 });
 
-test('disableAutoSnapshot', () => {
-  expectTypeOf(disableAutoSnapshot).toBeFunction();
+test('configure', () => {
+  expectTypeOf(configure).toBeFunction();
+
+  expectTypeOf(configure).parameter(0).toHaveProperty('disableAutoSnapshot');
 });
 
 test('chromaticPlugin', () => {

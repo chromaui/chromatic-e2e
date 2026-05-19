@@ -1,5 +1,5 @@
 import { beforeEach, test } from 'vitest';
-import { takeSnapshot, waitForIdleNetwork, disableAutoSnapshot } from '../../src';
+import { takeSnapshot, waitForIdleNetwork, configure } from '../../src';
 
 beforeEach(() => {
   document.body.innerHTML = '<h1>Example heading</h1>';
@@ -9,8 +9,8 @@ beforeEach(() => {
   };
 });
 
-test('calls disableAutoSnapshot()', async () => {
-  disableAutoSnapshot();
+test('calls configure({ disableAutoSnapshot: true })', async () => {
+  configure({ disableAutoSnapshot: true });
 });
 
 test('calls waitForIdleNetwork()', async () => {

@@ -1,9 +1,9 @@
 import { assert, expect } from 'vitest';
 import { commands, page, userEvent } from 'vitest/browser';
 import { test } from './utils/browser';
-import { disableAutoSnapshot, takeSnapshot } from '../dist';
+import { configure, takeSnapshot } from '../dist';
 
-disableAutoSnapshot();
+configure({ disableAutoSnapshot: true });
 
 test.override({ url: '/css-pseudo-states' });
 

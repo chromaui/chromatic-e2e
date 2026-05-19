@@ -55,8 +55,8 @@ type InternalMeta = Record<ChromaticNamespace, unknown> & {
 
   /** Options for the current test */
   __chromatic_options?: {
-    /** Indicates whether automatic snapshotting is enabled */
-    autoSnapshot?: boolean;
+    /** Indicates whether automatic snapshotting is disabled */
+    disableAutoSnapshot?: boolean;
   };
 
   /** Indicates whether `takeSnapshot()` has been called */

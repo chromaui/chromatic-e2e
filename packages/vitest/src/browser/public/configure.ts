@@ -78,11 +78,6 @@ export function configure(options: Options) {
     test.meta.__chromatic_options = {
       ...test.meta.__chromatic_options,
       ...options,
-
-      autoSnapshot:
-        options.disableAutoSnapshot != null
-          ? !options.disableAutoSnapshot
-          : test.meta.__chromatic_options.autoSnapshot,
     };
     return;
   }
@@ -100,10 +95,6 @@ export function configure(options: Options) {
         test.meta.__chromatic_options = {
           ...test.meta.__chromatic_options,
           ...options,
-          autoSnapshot:
-            options.disableAutoSnapshot != null
-              ? !options.disableAutoSnapshot
-              : test.meta.__chromatic_options.autoSnapshot,
         };
 
         return;

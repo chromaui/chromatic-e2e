@@ -24,7 +24,7 @@ beforeEach<InternalTestContext>(async ({ task }) => {
   task.meta.__chromatic_options ||= {};
 
   // This may have been initialized by module or suite level configure({ disableAutoSnapshot }) call already
-  task.meta.__chromatic_options.autoSnapshot ??= !options.disableAutoSnapshot;
+  task.meta.__chromatic_options.disableAutoSnapshot ??= options.disableAutoSnapshot;
 
   await commands.__chromatic_interceptFetch(task.id);
 
@@ -85,7 +85,7 @@ afterEach<InternalTestContext>(async ({ task }) => {
     throw new PendingSnapshotsError(pendingTakeSnapshots);
   }
 
-  if (!options.autoSnapshot) {
+  if (options.disableAutoSnapshot) {
     return;
   }
 

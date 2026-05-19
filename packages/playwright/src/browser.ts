@@ -2,14 +2,21 @@ import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
 import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { type serializedNodeWithId } from '@rrweb/types';
 
-export type WindowContext = Window & {
-  __chromatic_takeSnapshot: typeof takeSnapshot;
-};
+/** Function in global `Window` that is used to report the snapshot results */
+export type ResultFunctionName = '__chromatic_report_results__';
 
-/**
- * Expose a function that server side will call. See {@link file://./takeSnapshot.ts}
- */
-(window as unknown as WindowContext).__chromatic_takeSnapshot = takeSnapshot;
+/** Shape of the {@link ResultFunctionName} report callback */
+export type SnapshotOutput = Awaited<ReturnType<typeof takeSnapshot>>;
+
+/** Server side is expected to expose this function in {@link file://./takeSnapshot.ts} */
+if (!isWindowWithReportFunction(window)) {
+  throw new Error(
+    'Missing __chromatic_report_results__ function on window. Was exposeFunction called?'
+  );
+}
+
+const results = await takeSnapshot();
+window.__chromatic_report_results__(results);
 
 async function takeSnapshot() {
   const mirror = createMirror();
@@ -63,4 +70,13 @@ async function toDataURL(url: string): Promise<string> {
     // convert the blob to base64 string
     reader.readAsDataURL(blob);
   });
+}
+
+function isWindowWithReportFunction(
+  win: object
+): win is Record<ResultFunctionName, (result: SnapshotOutput) => void> {
+  return (
+    ('__chromatic_report_results__' satisfies ResultFunctionName) in win &&
+    typeof win.__chromatic_report_results__ === 'function'
+  );
 }

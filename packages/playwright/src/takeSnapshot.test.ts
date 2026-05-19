@@ -8,11 +8,23 @@ import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 // (where page is probably too tied up into takeSnapshot anyway)
 const fakePage = {
   on: () => {},
-  evaluate: () => ({ domSnapshot: {}, pseudoClassIds: {} }),
   viewportSize: () => ({ width: 100, height: 200 }),
   frames: () => [],
-  addScriptTag: () => {},
+  addScriptTag: onAddScriptTag({ domSnapshot: {}, pseudoClassIds: {} }),
+  exposeFunction,
 } as Page;
+
+const listeners: ((..._: unknown[]) => void)[] = [];
+
+function exposeFunction(name: string, fn: (typeof listeners)[number]) {
+  if (name === '__chromatic_report_results__') {
+    listeners.push(fn);
+  }
+}
+
+function onAddScriptTag(snapshot: unknown) {
+  return () => listeners.forEach((listener) => listener(snapshot));
+}
 
 describe('Snapshot storage', () => {
   beforeEach(async () => {
@@ -80,7 +92,7 @@ describe('Snapshot storage', () => {
 
     const pageWithIframes = {
       on: () => {},
-      evaluate: () => ({
+      addScriptTag: onAddScriptTag({
         domSnapshot: {
           type: NodeType.Document,
           childNodes: [{ type: NodeType.Element, tagName: 'html', childNodes: iframes, id: 1 }],
@@ -88,25 +100,25 @@ describe('Snapshot storage', () => {
         },
         pseudoClassIds: {},
       }),
-      addScriptTag: () => {},
+      exposeFunction,
       viewportSize: () => ({ width: 100, height: 200 }),
       frames: () => [
         fakePage,
         {
-          evaluate: () => ({
+          addScriptTag: onAddScriptTag({
             domSnapshot: { type: NodeType.Element, tagName: 'div', textContent: 'One', id: 10 },
             pseudoClassIds: { ':hover': [10] },
           }),
           url: () => iframes[0].attributes.src,
-          addScriptTag: () => {},
+          exposeFunction,
         },
         {
-          evaluate: () => ({
+          addScriptTag: onAddScriptTag({
             domSnapshot: { type: NodeType.Element, tagName: 'span', textContent: 'Two', id: 20 },
             pseudoClassIds: { ':focus': [20] },
           }),
           url: () => iframes[1].attributes.src,
-          addScriptTag: () => {},
+          exposeFunction,
         },
       ],
     } as unknown as Page;

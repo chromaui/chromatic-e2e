@@ -75,6 +75,7 @@ export default defineConfig((options) => [
       browser: 'src/browser.ts',
     },
     format: ['esm'],
+    target: 'esnext',
     bundle: true,
     noExternal: ['@chromaui/rrweb-snapshot'],
     platform: 'browser',

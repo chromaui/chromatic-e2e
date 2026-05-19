@@ -1,7 +1,7 @@
 import type { Frame, Page, TestInfo } from '@playwright/test';
 import { NodeType, type serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots, type SerializedIframeNode, logger } from '@chromatic-com/shared-e2e';
-import type { WindowContext } from './browser';
+import type { SnapshotOutput, ResultFunctionName } from './browser';
 
 type TestID = TestInfo['testId'];
 type SnapshotName = keyof DOMSnapshots;
@@ -9,6 +9,13 @@ export const chromaticSnapshots: Map<
   TestID,
   Map<SnapshotName, DOMSnapshots[SnapshotName]>
 > = new Map();
+
+type ResultCallback = (result: SnapshotOutput) => void;
+
+const pageToResultHandler = new WeakMap<
+  Page,
+  { listeners: ResultCallback[]; onResult: ResultCallback }
+>();
 
 async function takeSnapshot(page: Page, testInfo: TestInfo): Promise<void>;
 async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promise<void>;
@@ -78,15 +85,43 @@ async function takeSnapshot(
   });
 }
 
+async function getResultHandler(context: Page | Frame) {
+  const page = 'page' in context ? context.page() : context;
+
+  // exposeFunction can be called once per page so we'll need caching
+  let handler = pageToResultHandler.get(page);
+
+  if (!handler) {
+    handler = {
+      listeners: [],
+
+      // Handlers are consumed once - use .splice() to empty previous listeners
+      onResult: (result) => handler.listeners.splice(0).forEach((listener) => listener(result)),
+    };
+
+    /** Expose reporting function for {@link file://./browser.ts} */
+    await page.exposeFunction(
+      '__chromatic_report_results__' satisfies ResultFunctionName,
+      handler.onResult
+    );
+
+    pageToResultHandler.set(page, handler);
+  }
+
+  return {
+    waitForResult: new Promise<SnapshotOutput>((resolve) => handler.listeners.push(resolve)),
+  };
+}
+
 async function executeSnapshotScript(context: Page | Frame) {
+  const { waitForResult } = await getResultHandler(context);
+
   await context.addScriptTag({
     type: 'module',
     path: require.resolve('@chromatic-com/playwright/browser'),
   });
 
-  return await context.evaluate(async () => {
-    return await (window as unknown as WindowContext).__chromatic_takeSnapshot();
-  });
+  return await waitForResult;
 }
 
 function findIframes(

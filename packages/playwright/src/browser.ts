@@ -6,6 +6,9 @@ export type WindowContext = Window & {
   __chromatic_takeSnapshot: typeof takeSnapshot;
 };
 
+/**
+ * Expose a function that server side will call. See {@link file://./takeSnapshot.ts}
+ */
 (window as unknown as WindowContext).__chromatic_takeSnapshot = takeSnapshot;
 
 async function takeSnapshot() {

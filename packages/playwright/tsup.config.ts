@@ -68,4 +68,15 @@ export default defineConfig((options) => [
       options.conditions = ['module'];
     },
   },
+  {
+    ...common,
+    dts: false,
+    entry: {
+      browser: 'src/browser.ts',
+    },
+    format: ['esm'],
+    bundle: true,
+    noExternal: ['@chromaui/rrweb-snapshot'],
+    platform: 'browser',
+  },
 ]);

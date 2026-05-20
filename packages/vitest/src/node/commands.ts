@@ -132,21 +132,17 @@ export function createCommands(options: ResolvedOptions) {
         },
         snapshotBuffers,
         archive,
-
-        // Remove undefined options with stringify/parse
-        JSON.parse(
-          JSON.stringify({
-            delay: testOptions.delay ?? options.delay,
-            diffIncludeAntiAliasing:
-              testOptions.diffIncludeAntiAliasing ?? options.diffIncludeAntiAliasing,
-            diffThreshold: testOptions.diffThreshold ?? options.diffThreshold,
-            forcedColors: testOptions.forcedColors ?? options.forcedColors,
-            pauseAnimationAtEnd: testOptions.pauseAnimationAtEnd ?? options.pauseAnimationAtEnd,
-            prefersReducedMotion: testOptions.prefersReducedMotion ?? options.prefersReducedMotion,
-            cropToViewport: testOptions.cropToViewport ?? options.cropToViewport,
-            ignoreSelectors: testOptions.ignoreSelectors ?? options.ignoreSelectors,
-          })
-        )
+        {
+          delay: testOptions.delay ?? options.delay,
+          diffIncludeAntiAliasing:
+            testOptions.diffIncludeAntiAliasing ?? options.diffIncludeAntiAliasing,
+          diffThreshold: testOptions.diffThreshold ?? options.diffThreshold,
+          forcedColors: testOptions.forcedColors ?? options.forcedColors,
+          pauseAnimationAtEnd: testOptions.pauseAnimationAtEnd ?? options.pauseAnimationAtEnd,
+          prefersReducedMotion: testOptions.prefersReducedMotion ?? options.prefersReducedMotion,
+          cropToViewport: testOptions.cropToViewport ?? options.cropToViewport,
+          ignoreSelectors: testOptions.ignoreSelectors ?? options.ignoreSelectors,
+        }
       );
     },
 

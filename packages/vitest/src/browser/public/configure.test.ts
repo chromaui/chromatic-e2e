@@ -306,6 +306,13 @@ function getSnapshottedTests() {
 
 function getChromaticOptions() {
   return Object.fromEntries(
-    vi.mocked(shared.writeTestResult).mock.calls.map((call) => [call[0].titlePath.pop(), call[3]])
+    vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
+      const title = call[0].titlePath.pop();
+
+      // Options are written to file system as JSON, simulate that in mocked writeTestResult stub:
+      const options = JSON.parse(JSON.stringify(call[3]));
+
+      return [title, options];
+    })
   );
 }

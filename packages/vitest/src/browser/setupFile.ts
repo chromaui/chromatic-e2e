@@ -23,9 +23,6 @@ beforeEach<InternalTestContext>(async ({ task }) => {
   task.meta.__chromatic_isTakeSnapshotCalled = false;
   task.meta.__chromatic_options ||= {};
 
-  // This may have been initialized by module or suite level configure({ disableAutoSnapshot }) call already
-  task.meta.__chromatic_options.disableAutoSnapshot ??= options.disableAutoSnapshot;
-
   await commands.__chromatic_interceptFetch(task.id);
 
   // This runs after any user-defined afterEach hooks
@@ -52,7 +49,7 @@ beforeEach<InternalTestContext>(async ({ task }) => {
       return cleanup();
     }
 
-    await commands.__chromatic_writeTestResult(task.id);
+    await commands.__chromatic_writeTestResult(task.id, task.meta.__chromatic_options);
 
     return cleanup();
   };
@@ -91,8 +88,11 @@ afterEach<InternalTestContext>(async ({ task }) => {
 
   const globals = await commands.__chromatic_getOptions();
 
-  if (globals.resourceArchiveTimeout !== 0) {
-    await waitForIdleNetwork(globals.resourceArchiveTimeout);
+  // Per-test configure() can override the global resourceArchiveTimeout
+  const resourceArchiveTimeout = options.resourceArchiveTimeout ?? globals.resourceArchiveTimeout;
+
+  if (resourceArchiveTimeout !== 0) {
+    await waitForIdleNetwork(resourceArchiveTimeout);
   }
 
   // Take automatic snapshot

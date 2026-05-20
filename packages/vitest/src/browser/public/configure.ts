@@ -1,11 +1,7 @@
 import { beforeAll } from 'vitest';
 import { getCurrentTest, type Test } from '../getCurrentTest';
 import { isChromium } from '../isChromium';
-import type { ChromaticConfig } from '@chromatic-com/shared-e2e';
-
-interface Options {
-  disableAutoSnapshot?: ChromaticConfig['disableAutoSnapshot'];
-}
+import type { ConfigureOptions } from '../../types';
 
 /**
  * Configure options for the current scope.
@@ -66,7 +62,7 @@ interface Options {
  * });
  * ```
  */
-export function configure(options: Options) {
+export function configure(options: ConfigureOptions) {
   if (!isChromium()) {
     return;
   }

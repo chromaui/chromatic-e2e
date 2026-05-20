@@ -5,7 +5,7 @@ import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
-import { type ChromaticNamespace, type ResolvedOptions } from '../types';
+import { type ChromaticNamespace, type ConfigureOptions, type ResolvedOptions } from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 
 type TestID = Task['id'];
@@ -104,7 +104,7 @@ export function createCommands(options: ResolvedOptions) {
      * Write captured snapshots and network resources to disk.
      * Should be called only once per test as it also clears resources.
      */
-    async __chromatic_writeTestResult(context, id: TestID) {
+    async __chromatic_writeTestResult(context, id: TestID, testOptions: ConfigureOptions = {}) {
       const entity = context.project.vitest.state.getReportedEntityById(id);
       assert(
         entity?.type === 'test',
@@ -132,16 +132,21 @@ export function createCommands(options: ResolvedOptions) {
         },
         snapshotBuffers,
         archive,
-        {
-          delay: options.delay,
-          diffIncludeAntiAliasing: options.diffIncludeAntiAliasing,
-          diffThreshold: options.diffThreshold,
-          forcedColors: options.forcedColors,
-          pauseAnimationAtEnd: options.pauseAnimationAtEnd,
-          prefersReducedMotion: options.prefersReducedMotion,
-          cropToViewport: options.cropToViewport,
-          ignoreSelectors: options.ignoreSelectors,
-        }
+
+        // Remove undefined options with stringify/parse
+        JSON.parse(
+          JSON.stringify({
+            delay: testOptions.delay ?? options.delay,
+            diffIncludeAntiAliasing:
+              testOptions.diffIncludeAntiAliasing ?? options.diffIncludeAntiAliasing,
+            diffThreshold: testOptions.diffThreshold ?? options.diffThreshold,
+            forcedColors: testOptions.forcedColors ?? options.forcedColors,
+            pauseAnimationAtEnd: testOptions.pauseAnimationAtEnd ?? options.pauseAnimationAtEnd,
+            prefersReducedMotion: testOptions.prefersReducedMotion ?? options.prefersReducedMotion,
+            cropToViewport: testOptions.cropToViewport ?? options.cropToViewport,
+            ignoreSelectors: testOptions.ignoreSelectors ?? options.ignoreSelectors,
+          })
+        )
       );
     },
 

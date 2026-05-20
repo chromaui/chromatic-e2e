@@ -48,16 +48,19 @@ type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;
 export interface ResolvedOptions
   extends Required<Pick<Options, ResolvedOptionKeys>>, Pick<Options, UnresolvedOptionKeys> {}
 
+/**
+ * Options that can be set per test, suite or module via `configure()`
+ * - `assetDomains` is excluded as it can only be configured globally on the plugin
+ */
+export type ConfigureOptions = Omit<ChromaticConfig, 'assetDomains'>;
+
 /** @internal */
 type InternalMeta = Record<ChromaticNamespace, unknown> & {
   /** Indicates whether Visual Regression tracking is registered */
   __chromatic_isRegistered?: boolean;
 
-  /** Options for the current test */
-  __chromatic_options?: {
-    /** Indicates whether automatic snapshotting is disabled */
-    disableAutoSnapshot?: boolean;
-  };
+  /** Options for the current test, set via `configure()` */
+  __chromatic_options?: ConfigureOptions;
 
   /** Indicates whether `takeSnapshot()` has been called */
   __chromatic_isTakeSnapshotCalled?: boolean;

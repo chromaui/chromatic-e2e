@@ -10,68 +10,8 @@
   },
   "license": "MIT",
   "author": "Chromatic <tom@chromatic.com>",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
-    },
-    "./archive-storybook": {
-      "import": {
-        "types": "./dist/archive-storybook/index.d.mts",
-        "default": "./dist/archive-storybook/index.mjs"
-      },
-      "require": {
-        "types": "./dist/archive-storybook/index.d.ts",
-        "default": "./dist/archive-storybook/index.js"
-      }
-    },
-    "./utils/filePaths": {
-      "import": {
-        "types": "./dist/utils/filePaths.d.mts",
-        "default": "./dist/utils/filePaths.mjs"
-      },
-      "require": {
-        "types": "./dist/utils/filePaths.d.ts",
-        "default": "./dist/utils/filePaths.js"
-      }
-    },
-    "./utils/nodes": {
-      "import": {
-        "types": "./dist/utils/nodes.d.mts",
-        "default": "./dist/utils/nodes.mjs"
-      },
-      "require": {
-        "types": "./dist/utils/nodes.d.ts",
-        "default": "./dist/utils/nodes.js"
-      }
-    }
-  },
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      ".": [
-        "index.d.ts"
-      ],
-      "archive-storybook": [
-        "dist/archive-storybook/index.d.ts"
-      ],
-      "utils/filePaths": [
-        "dist/utils/filePaths.d.ts"
-      ]
-    }
-  },
+  "exports": "./src/index",
   "scripts": {
-    "prebuild": "yarn clean",
-    "build": "yarn prebuild && tsup",
-    "clean": "rimraf ./dist",
     "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Shared"
   },
   "dependencies": {
@@ -94,7 +34,6 @@
     "playwright": "^1.46.1",
     "playwright-core": "^1.46.1",
     "prompts": "^2.4.2",
-    "rimraf": "^3.0.2",
     "srcset": "^4.0.0",
     "ts-dedent": "^2.2.0",
     "typescript": "^5.9.3"

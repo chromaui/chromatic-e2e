@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.11.1
+
+### Patch Changes
+
+- 6fa75b9: Fix: Public API typings
+
 ## 0.11.0
 
 ### Minor Changes

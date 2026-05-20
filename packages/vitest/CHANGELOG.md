@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.0.7
+
+### Patch Changes
+
+- 6fa75b9: Fix: Public API typings
+
 ## 0.0.6
 
 ### Patch Changes

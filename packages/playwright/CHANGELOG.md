@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.2
+
+### Patch Changes
+
+- 6fa75b9: Fix: Public API typings
+
 ## 0.14.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import { expectTypeOf, test } from 'vitest';
 
-import { takeSnapshot, waitForIdleNetwork, disableAutoSnapshot } from '../dist';
+import { takeSnapshot, waitForIdleNetwork, configure } from '../dist';
 import { chromaticPlugin } from '../dist/plugin';
 
 test('takeSnapshot', () => {
@@ -13,8 +13,25 @@ test('waitForIdleNetwork', () => {
   expectTypeOf(waitForIdleNetwork).parameter(0).toEqualTypeOf<number>();
 });
 
-test('disableAutoSnapshot', () => {
-  expectTypeOf(disableAutoSnapshot).toBeFunction();
+test('configure', () => {
+  expectTypeOf(configure).toBeFunction();
+
+  expectTypeOf(configure).parameter(0).toHaveProperty('delay');
+  expectTypeOf(configure).parameter(0).toHaveProperty('diffIncludeAntiAliasing');
+  expectTypeOf(configure).parameter(0).toHaveProperty('diffThreshold');
+  expectTypeOf(configure).parameter(0).toHaveProperty('disableAutoSnapshot');
+  expectTypeOf(configure).parameter(0).toHaveProperty('forcedColors');
+  expectTypeOf(configure).parameter(0).toHaveProperty('pauseAnimationAtEnd');
+  expectTypeOf(configure).parameter(0).toHaveProperty('prefersReducedMotion');
+  expectTypeOf(configure).parameter(0).toHaveProperty('resourceArchiveTimeout');
+  expectTypeOf(configure).parameter(0).toHaveProperty('cropToViewport');
+  expectTypeOf(configure).parameter(0).toHaveProperty('ignoreSelectors');
+
+  // Options that are only available globally in plugin options
+  expectTypeOf(configure).parameter(0).not.toHaveProperty('assetDomains');
+  expectTypeOf(configure).parameter(0).not.toHaveProperty('tags');
+  expectTypeOf(configure).parameter(0).not.toHaveProperty('outputDirectory');
+  expectTypeOf(configure).parameter(0).not.toHaveProperty('idleNetworkInterval');
 });
 
 test('chromaticPlugin', () => {

@@ -1,16 +1,17 @@
 import { beforeAll } from 'vitest';
 import { getCurrentTest, type Test } from '../getCurrentTest';
 import { isChromium } from '../isChromium';
+import type { ConfigureOptions } from '../../types';
 
 /**
- * Disable automatic test snapshotting for specific scope.
+ * Configure options for the current scope.
  *
- * When called within `test()`, it disables snapshotting for that test:
+ * When called within `test()`, the configuration applies only to that test:
  * ```jsx
- * import { disableAutoSnapshot } from "@chromatic-com/vitest";
+ * import { configure } from "@chromatic-com/vitest";
  *
  * test("accordion", async () => { // ❌ Not snapshotted
- *   disableAutoSnapshot(); // Scopes to this test only
+ *   configure({ disableAutoSnapshot: true }); // Scopes to this test only
  *   await render(<Accordion />);
  * });
  *
@@ -19,16 +20,16 @@ import { isChromium } from '../isChromium';
  * });
  * ```
  *
- * When called within `describe()`, it disables snapshotting for all tests and suites within that describe block.
+ * When called within `describe()`, the configuration applies to all tests and suites within that describe block.
  * ```
- * import { disableAutoSnapshot } from "@chromatic-com/vitest";
+ * import { configure } from "@chromatic-com/vitest";
  *
  * test("accordion", async () => { // ✅ Snapshotted automatically
  *   await render(<Accordion />);
  * });
  *
  * describe("button", () => {
- *   disableAutoSnapshot(); // Scopes to all tests (and nested suites) in this suite
+ *   configure({ disableAutoSnapshot: true }); // Scopes to all tests (and nested suites) in this suite
  *
  *   test("default", async () => { // ❌ Not snapshotted
  *     await render(<Button />);
@@ -42,13 +43,13 @@ import { isChromium } from '../isChromium';
  * });
  * ```
  *
- * When called at the top level, it disables snapshotting for all tests in the file:
+ * When called at the top level, the configuration applies to all tests in the file:
  * ```jsx
  * import { describe, test } from "vitest";
- * import { disableAutoSnapshot } from "@chromatic-com/vitest";
+ * import { configure } from "@chromatic-com/vitest";
  *
  * // Scoped to whole test module (file), affects all tests and suites in this file
- * disableAutoSnapshot();
+ * configure({ disableAutoSnapshot: true });
  *
  * test("accordion", async () => { // ❌ Not snapshotted
  *   await render(<Accordion />);
@@ -60,9 +61,8 @@ import { isChromium } from '../isChromium';
  *   });
  * });
  * ```
- *
  */
-export function disableAutoSnapshot() {
+export function configure(options: ConfigureOptions) {
   if (!isChromium()) {
     return;
   }
@@ -71,7 +71,10 @@ export function disableAutoSnapshot() {
 
   // Called within test()
   if (test) {
-    test.meta.__chromatic_autoSnapshot = false;
+    test.meta.__chromatic_options = {
+      ...test.meta.__chromatic_options,
+      ...options,
+    };
     return;
   }
 
@@ -83,7 +86,13 @@ export function disableAutoSnapshot() {
 
     function traverseTests(task: (typeof suite.tasks)[0]) {
       if (task.type === 'test') {
-        (task as Test).meta.__chromatic_autoSnapshot = false;
+        const test = task as Test;
+
+        test.meta.__chromatic_options = {
+          ...test.meta.__chromatic_options,
+          ...options,
+        };
+
         return;
       }
 

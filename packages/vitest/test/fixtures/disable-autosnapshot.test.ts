@@ -1,11 +1,11 @@
 import { describe, test, inject } from 'vitest';
-import { disableAutoSnapshot } from '../../src';
+import { configure } from '../../src';
 
 const disable = inject('disableAutoSnapshot');
 
 function disableIf(condition: boolean) {
   if (condition) {
-    disableAutoSnapshot();
+    configure({ disableAutoSnapshot: true });
   }
 }
 

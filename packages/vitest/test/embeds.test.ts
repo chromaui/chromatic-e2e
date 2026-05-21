@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 import { Locator, locators, page } from 'vitest/browser';
 import { test } from './utils/browser';
-import { takeSnapshot, disableAutoSnapshot } from '../dist';
+import { takeSnapshot, configure } from '../dist';
 
 test('same-origin embed page loads', async ({ goTo }) => {
   await goTo('/embeds/same-origin');
@@ -29,7 +29,7 @@ test('cross-origin embed page loads', async ({ goTo }) => {
 });
 
 test('embedded page background color can be changed', async ({ goTo }) => {
-  disableAutoSnapshot();
+  configure({ disableAutoSnapshot: true });
 
   await goTo('/embeds/same-origin');
   expect(page.getByRole('heading', { name: 'Embeds' })).toBeVisible();

@@ -1,4 +1,5 @@
 import { test } from './utils/browser';
+import { configure } from '../dist';
 
 test('query params determine which asset is served', async ({ goTo }) => {
   await goTo('/asset-paths/query-params');
@@ -62,6 +63,9 @@ test('picture captures fallback image', async ({ goTo }) => {
 });
 
 test('external CSS files are inlined', async ({ goTo }) => {
+  // Flaky CSS loading
+  configure({ delay: 1_000 });
+
   await goTo('/asset-paths/external-css-files');
 });
 

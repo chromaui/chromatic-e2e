@@ -12,8 +12,6 @@ on:
 jobs:
   test:
     uses: ./.github/workflows/test-base.yml
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   test_cypress:
     uses: ./.github/workflows/test-cypress.yml
     secrets:

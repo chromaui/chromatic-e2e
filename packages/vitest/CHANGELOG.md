@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.0.8
+
+### Patch Changes
+
+- dd68890: Feat: Add configure() API, remove disableAutoSnapshot()
+
 ## 0.0.7
 
 ### Patch Changes

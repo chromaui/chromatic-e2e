@@ -11,7 +11,7 @@ import { CypressSnapshot } from './types';
 interface WriteParams {
   testTitlePath: string[];
   domSnapshots: CypressSnapshot[];
-  chromaticStorybookParams: ChromaticStorybookParameters;
+  chromaticStorybookParams: Required<ChromaticStorybookParameters>;
   pageUrl: string;
   viewport: Viewport;
   outputDir: string;

@@ -300,14 +300,14 @@ describe('configure(ChromaticConfig)', () => {
 
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-    return call[0].titlePath.pop();
+    return Object.keys(call[1])[0].split(' / ')[0];
   });
 }
 
 function getChromaticOptions() {
   return Object.fromEntries(
     vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-      const title = call[0].titlePath.pop();
+      const title = Object.keys(call[1])[0].split(' / ')[0];
 
       // Options are written to file system as JSON, simulate that in mocked writeTestResult stub:
       const options = JSON.parse(JSON.stringify(call[3]));

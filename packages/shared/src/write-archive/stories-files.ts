@@ -7,9 +7,11 @@ import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from '../utils/filePaths'
 
 const STORIES_FILE_EXT = 'stories.json';
 
+export const uniqueId = { value: 1 };
+
 // Generates a file-system-safe file name from a story title
 export function storiesFileName(testTitle: string) {
-  const fileName = [sanitize(testTitle), STORIES_FILE_EXT].join('.');
+  const fileName = [sanitize(testTitle) + '-' + uniqueId.value++, STORIES_FILE_EXT].join('.');
   // Leave room for built storybook extensions that may be added (like `-stories.iframe.bundle.js`)
   const maxByteLength = MAX_FILE_NAME_BYTE_LENGTH - 25;
   return truncateFileName(fileName, maxByteLength);

@@ -117,7 +117,9 @@ export function createCommands(options: ResolvedOptions) {
       const snapshotBuffers: DOMSnapshots = {};
 
       for (const [name, { snapshot, viewport, pseudoClassIds }] of sessionSnapshots) {
-        snapshotBuffers[name] = {
+        const names = getSnapshotPrefix(entity).concat(name).join(' / ');
+
+        snapshotBuffers[names] = {
           snapshot: Buffer.from(JSON.stringify(snapshot)),
           viewport,
           pseudoClassIds,
@@ -128,7 +130,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: getNames(entity),
+          titlePath: getTitle(entity),
         },
         snapshotBuffers,
         archive,
@@ -189,7 +191,22 @@ export function createCommands(options: ResolvedOptions) {
   }
 }
 
-function getNames(test: TestCase): string[] {
+function getTitle(test: TestCase): string[] {
+  const names = [test.module.relativeModuleId];
+
+  // If Vitest was configured with multiple projects, namespace the results with project name
+  const hasManyProjects =
+    test.project.vitest.projects.filter((project) => project.config.browser.name === 'chromium')
+      .length > 1;
+
+  if (hasManyProjects && test.project.name) {
+    names.unshift(test.project.name);
+  }
+
+  return names;
+}
+
+function getSnapshotPrefix(test: TestCase): string[] {
   const names = [test.name];
   let current: TestCase | TestSuite | TestModule = test;
 
@@ -199,19 +216,6 @@ function getNames(test: TestCase): string[] {
     if ('name' in current && current.name) {
       names.unshift(current.name);
     }
-  }
-
-  if (current.type === 'module') {
-    names.unshift(current.relativeModuleId);
-  }
-
-  // If Vitest was configured with multiple projects, namespace the results with project name
-  const hasManyProjects =
-    test.project.vitest.projects.filter((project) => project.config.browser.name === 'chromium')
-      .length > 1;
-
-  if (hasManyProjects && test.project.name) {
-    names.unshift(test.project.name);
   }
 
   return names;

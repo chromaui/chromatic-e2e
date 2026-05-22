@@ -8,7 +8,7 @@ import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 // (where page is probably too tied up into takeSnapshot anyway)
 const fakePage = {
   on: () => {},
-  evaluate: () => ({ domSnapshot: {}, pseudoClassIds: {} }),
+  evaluate: () => JSON.stringify({ domSnapshot: {}, pseudoClassIds: {} }),
   viewportSize: () => ({ width: 100, height: 200 }),
   frames: () => [],
   addScriptTag: () => {},
@@ -80,31 +80,34 @@ describe('Snapshot storage', () => {
 
     const pageWithIframes = {
       on: () => {},
-      evaluate: () => ({
-        domSnapshot: {
-          type: NodeType.Document,
-          childNodes: [{ type: NodeType.Element, tagName: 'html', childNodes: iframes, id: 1 }],
-          id: 0,
-        },
-        pseudoClassIds: {},
-      }),
+      evaluate: () =>
+        JSON.stringify({
+          domSnapshot: {
+            type: NodeType.Document,
+            childNodes: [{ type: NodeType.Element, tagName: 'html', childNodes: iframes, id: 1 }],
+            id: 0,
+          },
+          pseudoClassIds: {},
+        }),
       addScriptTag: () => {},
       viewportSize: () => ({ width: 100, height: 200 }),
       frames: () => [
         fakePage,
         {
-          evaluate: () => ({
-            domSnapshot: { type: NodeType.Element, tagName: 'div', textContent: 'One', id: 10 },
-            pseudoClassIds: { ':hover': [10] },
-          }),
+          evaluate: () =>
+            JSON.stringify({
+              domSnapshot: { type: NodeType.Element, tagName: 'div', textContent: 'One', id: 10 },
+              pseudoClassIds: { ':hover': [10] },
+            }),
           url: () => iframes[0].attributes.src,
           addScriptTag: () => {},
         },
         {
-          evaluate: () => ({
-            domSnapshot: { type: NodeType.Element, tagName: 'span', textContent: 'Two', id: 20 },
-            pseudoClassIds: { ':focus': [20] },
-          }),
+          evaluate: () =>
+            JSON.stringify({
+              domSnapshot: { type: NodeType.Element, tagName: 'span', textContent: 'Two', id: 20 },
+              pseudoClassIds: { ':focus': [20] },
+            }),
           url: () => iframes[1].attributes.src,
           addScriptTag: () => {},
         },

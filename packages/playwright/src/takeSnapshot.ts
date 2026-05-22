@@ -84,9 +84,12 @@ async function executeSnapshotScript(context: Page | Frame) {
     path: require.resolve('@chromatic-com/playwright/browser'),
   });
 
-  return await context.evaluate(async () => {
-    return await (window as unknown as WindowContext).__chromatic_takeSnapshot();
+  const snapshot = await context.evaluate(async () => {
+    // Additional JSON.stringify + parse needed for deeply nested DOMs: https://github.com/chromaui/chromatic-e2e/issues/307
+    return JSON.stringify(await (window as unknown as WindowContext).__chromatic_takeSnapshot());
   });
+
+  return JSON.parse(snapshot) as ReturnType<WindowContext['__chromatic_takeSnapshot']>;
 }
 
 function findIframes(

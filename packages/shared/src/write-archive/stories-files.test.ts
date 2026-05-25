@@ -59,6 +59,7 @@ describe('createStories', () => {
           name: 'snapshot 1',
           globals: { viewport: 'w100h200' },
           parameters: {
+            __id: 'some-test-title--snapshot-1',
             server: { id: 'some-test-title-snapshot-1' },
             chromatic: {
               delay: 200,
@@ -88,6 +89,7 @@ describe('createStories', () => {
           name: 'another snapshot',
           globals: { viewport: 'w300h400' },
           parameters: {
+            __id: 'some-test-title--another-snapshot',
             server: { id: 'some-test-title-another-snapshot' },
             chromatic: {
               delay: 200,

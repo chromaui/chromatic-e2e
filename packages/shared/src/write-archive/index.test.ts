@@ -64,6 +64,7 @@ describe('writeTestResult', () => {
             name: 'home',
             globals: { viewport: 'w800h800' },
             parameters: {
+              __id: 'file-test-story--home',
               chromatic: {
                 diffThreshold: 5,
                 pauseAnimationAtEnd: true,

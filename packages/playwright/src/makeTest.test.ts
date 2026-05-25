@@ -31,7 +31,7 @@ describe('makeTest', () => {
   });
 
   const mockTestInfo: Partial<TestInfo> = {
-    titlePath: [],
+    titlePath: ['example'],
     outputDir: '',
     testId: 'a',
   };

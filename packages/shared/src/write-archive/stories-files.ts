@@ -1,3 +1,4 @@
+import { storyNameFromExport, toId } from 'storybook/internal/csf';
 import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
 import { snapshotId } from './snapshot-files';
 import { collapseNewlines, sanitize } from './storybook-sanitize';
@@ -29,6 +30,9 @@ export function createStories(
       // `defaultViewport` is not read by SB 10's types but our archive preview uses it as a fetch fallback.
       globals: { viewport: viewportToString(viewport) },
       parameters: {
+        // Work-around for cases where "あ" in story name would cause Storybook to fail to load the story due to an invalid story ID.
+        // See https://github.com/chromaui/chromatic-e2e/issues/365
+        __id: toId(title, storyNameFromExport(name)),
         server: { id: snapshotId(title, name) },
         chromatic: {
           ...chromaticStorybookParams,

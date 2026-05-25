@@ -126,6 +126,10 @@ app.get('/no-doctype', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/no-doctype.html'));
 });
 
+app.get('/deeply-nested-dom', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/deeply-nested-dom.html'));
+});
+
 app.get('/viewports', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/viewports.html'));
 });

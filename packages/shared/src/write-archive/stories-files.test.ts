@@ -116,6 +116,16 @@ describe('createStories', () => {
       ],
     });
   });
+
+  it('collapses newlines in title', () => {
+    const storiesFileJSON = storiesFiles.createStories(
+      '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n',
+      {},
+      {}
+    );
+
+    expect(storiesFileJSON.title).toEqual(' There Should Be No Newlines ');
+  });
 });
 
 describe('buildStoryModesConfig', () => {

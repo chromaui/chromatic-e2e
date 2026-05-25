@@ -21,7 +21,7 @@ export function createStories(
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   return {
-    title,
+    title: title.replace(/[\r\n]+/g, ' '),
     stories: Object.entries(domSnapshots).map(([name, { viewport }]) => ({
       name,
       // Viewport addon (Storybook 10+): `parameters.viewport.options` registers sizes; `globals.viewport`

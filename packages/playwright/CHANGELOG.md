@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.3
+
+### Patch Changes
+
+- c7d8eab: Fix: Avoid crashing on deeply nested DOMs
+
 ## 0.14.2
 
 ### Patch Changes

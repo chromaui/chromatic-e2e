@@ -130,7 +130,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: getTitle(entity),
+          titlePath: testOptions.title ? [testOptions.title] : getTitle(entity),
         },
         snapshotBuffers,
         archive,

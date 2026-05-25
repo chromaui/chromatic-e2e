@@ -296,6 +296,30 @@ describe('configure(ChromaticConfig)', () => {
       }
     `);
   });
+
+  test('configure({ title })', async () => {
+    await runFixture({
+      include,
+      provide: {
+        configureScope: 'module',
+        configureOptions: { title: 'Components/Accordion' },
+      },
+    });
+
+    const titles = vi
+      .mocked(shared.writeTestResult)
+      .mock.calls.flatMap((call) => call[0].titlePath);
+
+    expect(titles).toMatchInlineSnapshot(`
+      [
+        "Components/Accordion",
+        "Components/Accordion",
+        "Components/Accordion",
+        "Components/Accordion",
+        "Components/Accordion",
+      ]
+    `);
+  });
 });
 
 function getSnapshottedTests() {

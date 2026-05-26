@@ -124,7 +124,22 @@ describe('createStories', () => {
       {}
     );
 
-    expect(storiesFileJSON.title).toEqual(' There Should Be No Newlines ');
+    expect(storiesFileJSON.title).toEqual('There Should Be No Newlines');
+  });
+
+  it('collapses newlines in story names', () => {
+    const storiesFileJSON = storiesFiles.createStories(
+      'Some Title',
+      {
+        '\n\n\r\rSnapshot\nName\rWith\r\nNewlines\n\r\r\n': {
+          snapshot: Buffer.from('n/a'),
+          viewport: { width: 100, height: 200 },
+        },
+      },
+      {}
+    );
+
+    expect(storiesFileJSON.stories[0].name).toEqual('Snapshot Name With Newlines');
   });
 });
 

@@ -1,6 +1,6 @@
 import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
 import { snapshotId } from './snapshot-files';
-import { sanitize } from './storybook-sanitize';
+import { collapseNewlines, sanitize } from './storybook-sanitize';
 import { Viewport, viewportToString } from '../utils/viewport';
 import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from '../utils/filePaths';
 
@@ -21,9 +21,9 @@ export function createStories(
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
   return {
-    title: title.replace(/[\r\n]+/g, ' '),
+    title: collapseNewlines(title),
     stories: Object.entries(domSnapshots).map(([name, { viewport }]) => ({
-      name,
+      name: collapseNewlines(name),
       // Viewport addon (Storybook 10+): `parameters.viewport.options` registers sizes; `globals.viewport`
       // selects the active one. See https://storybook.js.org/docs/essentials/viewport#defining-the-viewport-for-a-story
       // `defaultViewport` is not read by SB 10's types but our archive preview uses it as a fetch fallback.

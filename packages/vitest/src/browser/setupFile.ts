@@ -21,7 +21,10 @@ beforeEach<InternalTestContext>(async ({ task }) => {
 
   task.meta.__chromatic_isRegistered = true;
   task.meta.__chromatic_isTakeSnapshotCalled = false;
+
+  // disableAutoSnapshot may already be defined by module or suite level configure()
   task.meta.__chromatic_options ||= {};
+  task.meta.__chromatic_options.disableAutoSnapshot ??= options.disableAutoSnapshot;
 
   await commands.__chromatic_interceptFetch(task.id);
 

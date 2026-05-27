@@ -116,6 +116,31 @@ describe('createStories', () => {
       ],
     });
   });
+
+  it('collapses newlines in title', () => {
+    const storiesFileJSON = storiesFiles.createStories(
+      '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n',
+      {},
+      {}
+    );
+
+    expect(storiesFileJSON.title).toEqual('There Should Be No Newlines');
+  });
+
+  it('collapses newlines in story names', () => {
+    const storiesFileJSON = storiesFiles.createStories(
+      'Some Title',
+      {
+        '\n\n\r\rSnapshot\nName\rWith\r\nNewlines\n\r\r\n': {
+          snapshot: Buffer.from('n/a'),
+          viewport: { width: 100, height: 200 },
+        },
+      },
+      {}
+    );
+
+    expect(storiesFileJSON.stories[0].name).toEqual('Snapshot Name With Newlines');
+  });
 });
 
 describe('buildStoryModesConfig', () => {

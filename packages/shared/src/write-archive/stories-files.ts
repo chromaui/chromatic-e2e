@@ -1,3 +1,4 @@
+import { storyNameFromExport, toId } from 'storybook/internal/csf';
 import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
 import { snapshotId } from './snapshot-files';
 import { collapseNewlines, sanitize } from './storybook-sanitize';
@@ -16,30 +17,39 @@ export function storiesFileName(testTitle: string) {
 
 // Converts the DOM snapshots into a JSON stories file.
 export function createStories(
-  title: string,
+  storyTitle: string,
   domSnapshots: DOMSnapshots,
   chromaticStorybookParams: ChromaticStorybookParameters
 ) {
+  const title = collapseNewlines(storyTitle);
+
   return {
-    title: collapseNewlines(title),
-    stories: Object.entries(domSnapshots).map(([name, { viewport }]) => ({
-      name: collapseNewlines(name),
-      // Viewport addon (Storybook 10+): `parameters.viewport.options` registers sizes; `globals.viewport`
-      // selects the active one. See https://storybook.js.org/docs/essentials/viewport#defining-the-viewport-for-a-story
-      // `defaultViewport` is not read by SB 10's types but our archive preview uses it as a fetch fallback.
-      globals: { viewport: viewportToString(viewport) },
-      parameters: {
-        server: { id: snapshotId(title, name) },
-        chromatic: {
-          ...chromaticStorybookParams,
-          modes: buildStoryModesConfig([viewport]),
+    title,
+    stories: Object.entries(domSnapshots).map(([snapshotName, { viewport }]) => {
+      const name = collapseNewlines(snapshotName);
+
+      return {
+        name,
+        // Viewport addon (Storybook 10+): `parameters.viewport.options` registers sizes; `globals.viewport`
+        // selects the active one. See https://storybook.js.org/docs/essentials/viewport#defining-the-viewport-for-a-story
+        // `defaultViewport` is not read by SB 10's types but our archive preview uses it as a fetch fallback.
+        globals: { viewport: viewportToString(viewport) },
+        parameters: {
+          // Work-around for cases where "あ" in story name would cause Storybook to fail to load the story due to an invalid story ID.
+          // See https://github.com/chromaui/chromatic-e2e/issues/365
+          __id: toId(title, storyNameFromExport(name)),
+          server: { id: snapshotId(title, name) },
+          chromatic: {
+            ...chromaticStorybookParams,
+            modes: buildStoryModesConfig([viewport]),
+          },
+          viewport: {
+            options: buildStoryViewportsConfig([viewport]),
+            defaultViewport: viewportToString(findDefaultViewport([viewport])),
+          },
         },
-        viewport: {
-          options: buildStoryViewportsConfig([viewport]),
-          defaultViewport: viewportToString(findDefaultViewport([viewport])),
-        },
-      },
-    })),
+      };
+    }),
   };
 }
 

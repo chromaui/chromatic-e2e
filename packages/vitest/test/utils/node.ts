@@ -4,7 +4,14 @@ import { resolve } from 'node:path';
 import { Writable } from 'node:stream';
 import { stripVTControlCharacters } from 'node:util';
 import { type Mock, vi } from 'vitest';
-import { type CliOptions, createVitest, type InlineConfig, startVitest } from 'vitest/node';
+import {
+  type CliOptions,
+  createVitest,
+  type InlineConfig,
+  startVitest,
+  TestSequencer,
+  type TestSpecification,
+} from 'vitest/node';
 import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from '../../src/node/plugin';
 
@@ -71,4 +78,15 @@ export function createOutputStreams() {
 
 function formatStreamCalls({ mock }: Mock) {
   return stripVTControlCharacters(mock.calls.map(([chunk]) => chunk).join('')).trimEnd();
+}
+
+/** Run test files in stable order */
+export class StableTestFileOrderSorter implements TestSequencer {
+  sort(files: TestSpecification[]) {
+    return files.sort((a, b) => a.moduleId.localeCompare(b.moduleId));
+  }
+
+  shard(files: TestSpecification[]) {
+    return files;
+  }
 }

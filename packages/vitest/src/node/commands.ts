@@ -7,6 +7,7 @@ import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { type ChromaticNamespace, type ConfigureOptions, type ResolvedOptions } from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
+import { ChromaticReporter } from './reporter';
 
 type TestID = Task['id'];
 type SnapshotName = keyof DOMSnapshots;
@@ -46,6 +47,12 @@ export function createCommands(options: ResolvedOptions) {
       pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'],
       name?: string
     ) {
+      const entity = context.project.vitest.state.getReportedEntityById(id);
+      assert(
+        entity?.type === 'test',
+        `Expected entity with id ${id} to be a test, found ${entity?.type}`
+      );
+
       let sessionSnapshots = snapshots.get(id);
 
       if (!sessionSnapshots) {
@@ -62,6 +69,8 @@ export function createCommands(options: ResolvedOptions) {
       }));
 
       sessionSnapshots.set(name, { snapshot, viewport, pseudoClassIds });
+
+      ChromaticReporter.onSnapshot(context.project.vitest, entity);
     },
 
     /**

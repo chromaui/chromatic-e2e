@@ -5,6 +5,7 @@ import type { Vite } from 'vitest/node';
 import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
+import { ChromaticReporter } from './reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 import { type ResolvedOptions, type Options } from '../types';
 
@@ -21,6 +22,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     resourceArchiveTimeout: DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     idleNetworkInterval: 100,
     ...userOptions,
+    reporter: resolveReporterOptions(userOptions.reporter),
   };
 
   const isDist = import.meta.url.includes('dist/plugin.js');
@@ -53,6 +55,10 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
       if (!browser.enabled || browser.name !== 'chromium') {
         return clean();
+      }
+
+      if (options.reporter.enabled) {
+        ChromaticReporter.apply(context.vitest, options);
       }
 
       // Ensure our setup file is registered first so that afterEach runs before any user-defined hooks.
@@ -109,5 +115,20 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         });
       }
     },
+  };
+}
+
+function resolveReporterOptions(reporter: Options['reporter']): ResolvedOptions['reporter'] {
+  if (reporter == undefined || reporter === true) {
+    return { enabled: true, verbose: true };
+  }
+
+  if (reporter === false) {
+    return { enabled: false, verbose: false };
+  }
+
+  return {
+    enabled: reporter.enabled ?? true,
+    verbose: reporter.verbose ?? false,
   };
 }

@@ -1,5 +1,14 @@
 # @chromatic-com/vitest
 
+## 0.0.9
+
+### Patch Changes
+
+- 235a8b1: Fix: Trim newlines from story titles
+- 5a0c64d: Fix: Rework story naming logic
+- d7656e7: Fix: Prevent Storybook load failure for non-ASCII story names
+- 5b06595: Fix: Inherit plugin level `disableAutoSnapshot`
+
 ## 0.0.8
 
 ### Patch Changes

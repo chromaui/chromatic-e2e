@@ -30,6 +30,46 @@ test('by default all tests are snapshotted', async () => {
   `);
 });
 
+test('plugin level disableAutoSnapshot', async () => {
+  await runFixture({ include, tags }, { disableAutoSnapshot: true });
+
+  expect(getSnapshottedTests()).toMatchInlineSnapshot(`[]`);
+});
+
+test('plugin level options', async () => {
+  await runFixture({ include, tags }, { delay: 1234, forcedColors: 'hover', diffThreshold: 0.7 });
+
+  expect(getChromaticOptions()).toMatchInlineSnapshot(`
+    {
+      "test #1": {
+        "delay": 1234,
+        "diffThreshold": 0.7,
+        "forcedColors": "hover",
+      },
+      "test #2": {
+        "delay": 1234,
+        "diffThreshold": 0.7,
+        "forcedColors": "hover",
+      },
+      "test #3": {
+        "delay": 1234,
+        "diffThreshold": 0.7,
+        "forcedColors": "hover",
+      },
+      "test #4": {
+        "delay": 1234,
+        "diffThreshold": 0.7,
+        "forcedColors": "hover",
+      },
+      "test #5": {
+        "delay": 1234,
+        "diffThreshold": 0.7,
+        "forcedColors": "hover",
+      },
+    }
+  `);
+});
+
 test("does not require user to define Vitest's tags", async () => {
   await runFixture({ include }, { tags: tags.map((tag) => tag.name) });
 
@@ -137,4 +177,17 @@ function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
     return call[0].titlePath.pop();
   });
+}
+
+function getChromaticOptions() {
+  return Object.fromEntries(
+    vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
+      const title = call[0].titlePath.pop();
+
+      // Options are written to file system as JSON, simulate that in mocked writeTestResult stub:
+      const options = JSON.parse(JSON.stringify(call[3]));
+
+      return [title, options];
+    })
+  );
 }

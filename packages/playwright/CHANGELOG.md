@@ -1,5 +1,12 @@
 # chromatic-playwright
 
+## 0.14.4
+
+### Patch Changes
+
+- 235a8b1: Fix: Trim newlines from story titles
+- d7656e7: Fix: Prevent Storybook load failure for non-ASCII story names
+
 ## 0.14.3
 
 ### Patch Changes

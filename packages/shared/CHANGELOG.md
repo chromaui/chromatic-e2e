@@ -1,5 +1,12 @@
 # @chromaui/shared-e2e
 
+## 0.11.2
+
+### Patch Changes
+
+- 235a8b1: Fix: Trim newlines from story titles
+- d7656e7: Fix: Prevent Storybook load failure for non-ASCII story names
+
 ## 0.11.1
 
 ### Patch Changes

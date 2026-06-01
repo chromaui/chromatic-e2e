@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import { NodeType } from '@rrweb/types';
 import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
+import { uniqueId } from './stories-files';
 
 vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
   ...(await importOriginal()),
@@ -30,6 +31,7 @@ const snapshotJson = {
 
 afterEach(() => {
   vi.resetAllMocks();
+  uniqueId.value = 1;
 });
 
 describe('writeTestResult', () => {
@@ -57,7 +59,7 @@ describe('writeTestResult', () => {
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/file-test-story.stories.json'),
+      resolve('./test-results/chromatic-archives/file-test-story-1.stories.json'),
       {
         stories: [
           {
@@ -166,7 +168,9 @@ describe('writeTestResult', () => {
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json'),
+      resolve(
+        './some-custom-directory/directory/chromatic-archives/file-test-story-1.stories.json'
+      ),
       expect.anything()
     );
   });

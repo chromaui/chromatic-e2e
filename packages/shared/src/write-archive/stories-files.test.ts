@@ -12,12 +12,13 @@ const vports = [
 
 beforeEach(() => {
   vi.resetAllMocks();
+  storiesFiles.uniqueId.value = 1;
 });
 
 describe('storiesFileName', () => {
   it('sanitizes the file name', () => {
     const fileName = storiesFiles.storiesFileName('--a title *() with $%& chars---');
-    expect(fileName).toEqual('a-title-with-chars.stories.json');
+    expect(fileName).toEqual(`a-title-with-chars-1.stories.json`);
   });
 
   it('truncates long file names', () => {
@@ -34,7 +35,7 @@ describe('storiesFileName', () => {
     const title = '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n';
 
     const filename = storiesFiles.storiesFileName(title);
-    expect(filename).toEqual('there-should-be-no-newlines.stories.json');
+    expect(filename).toEqual('there-should-be-no-newlines-1.stories.json');
   });
 });
 

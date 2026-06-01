@@ -296,18 +296,42 @@ describe('configure(ChromaticConfig)', () => {
       }
     `);
   });
+
+  test('configure({ title })', async () => {
+    await runFixture({
+      include,
+      provide: {
+        configureScope: 'module',
+        configureOptions: { title: 'Components/Accordion' },
+      },
+    });
+
+    const titles = vi
+      .mocked(shared.writeTestResult)
+      .mock.calls.flatMap((call) => call[0].titlePath);
+
+    expect(titles).toMatchInlineSnapshot(`
+      [
+        "Components/Accordion",
+        "Components/Accordion",
+        "Components/Accordion",
+        "Components/Accordion",
+        "Components/Accordion",
+      ]
+    `);
+  });
 });
 
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-    return call[0].titlePath.pop();
+    return Object.keys(call[1])[0].split(' / ')[0];
   });
 }
 
 function getChromaticOptions() {
   return Object.fromEntries(
     vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-      const title = call[0].titlePath.pop();
+      const title = Object.keys(call[1])[0].split(' / ')[0];
 
       // Options are written to file system as JSON, simulate that in mocked writeTestResult stub:
       const options = JSON.parse(JSON.stringify(call[3]));

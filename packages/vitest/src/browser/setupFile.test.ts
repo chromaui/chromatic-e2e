@@ -175,7 +175,7 @@ test('cleans up internal test meta properties', async () => {
 
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-    return call[0].titlePath.pop();
+    return Object.keys(call[1])[0].split(' / ')[0];
   });
 }
 

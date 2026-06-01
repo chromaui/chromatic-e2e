@@ -107,18 +107,12 @@ test('viewports are correct when --browser.ui=true', async () => {
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
     {
-      "calls page.viewport multiple times in one test": {
-        "1280 x 1024": "width=1280, height=1024",
-        "480 x 320": "width=480, height=320",
-        "720 x 680": "width=720, height=680",
-        "Snapshot #4": "width=1280, height=1024",
-      },
-      "calls page.viewport(480, 320)": {
-        "Snapshot #1": "width=480, height=320",
-      },
-      "default viewport": {
-        "Snapshot #1": "width=1280, height=720",
-      },
+      "calls page.viewport multiple times in one test / 1280 x 1024": "width=1280, height=1024",
+      "calls page.viewport multiple times in one test / 480 x 320": "width=480, height=320",
+      "calls page.viewport multiple times in one test / 720 x 680": "width=720, height=680",
+      "calls page.viewport multiple times in one test / Snapshot #4": "width=1280, height=1024",
+      "calls page.viewport(480, 320) / Snapshot #1": "width=480, height=320",
+      "default viewport / Snapshot #1": "width=1280, height=720",
     }
   `);
 });
@@ -131,18 +125,12 @@ test('viewports are correct when --browser.ui=false', async () => {
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
     {
-      "calls page.viewport multiple times in one test": {
-        "1280 x 1024": "width=1280, height=1024",
-        "480 x 320": "width=480, height=320",
-        "720 x 680": "width=720, height=680",
-        "Snapshot #4": "width=1280, height=1024",
-      },
-      "calls page.viewport(480, 320)": {
-        "Snapshot #1": "width=480, height=320",
-      },
-      "default viewport": {
-        "Snapshot #1": "width=1280, height=720",
-      },
+      "calls page.viewport multiple times in one test / 1280 x 1024": "width=1280, height=1024",
+      "calls page.viewport multiple times in one test / 480 x 320": "width=480, height=320",
+      "calls page.viewport multiple times in one test / 720 x 680": "width=720, height=680",
+      "calls page.viewport multiple times in one test / Snapshot #4": "width=1280, height=1024",
+      "calls page.viewport(480, 320) / Snapshot #1": "width=480, height=320",
+      "default viewport / Snapshot #1": "width=1280, height=720",
     }
   `);
 });
@@ -160,9 +148,9 @@ test.each(['list', 'stack'] as const)(
     expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
 
     const [, snapshots] = vi.mocked(shared.writeTestResult).mock.calls[0];
-    expect(snapshots).toHaveProperty('Snapshot #1');
+    expect(snapshots).toHaveProperty('test #4 / Snapshot #1');
 
-    const { snapshot } = snapshots['Snapshot #1'];
+    const { snapshot } = snapshots['test #4 / Snapshot #1'];
 
     expect(JSON.parse(snapshot.toString())).toMatchInlineSnapshot(`
     {
@@ -208,11 +196,11 @@ test('user defined afterEach can call takeSnapshot()', async () => {
 
   const [, snapshots] = vi.mocked(shared.writeTestResult).mock.calls[0];
 
-  expect.soft(snapshots).toHaveProperty('Snapshot #1');
-  expect.soft(snapshots).toHaveProperty("user's after each snapshot!");
+  expect.soft(snapshots).toHaveProperty('test #4 / Snapshot #1');
+  expect.soft(snapshots).toHaveProperty("test #4 / user's after each snapshot!");
 
-  const autoSnapshot = snapshots['Snapshot #1'].snapshot;
-  const userSnapshot = snapshots["user's after each snapshot!"].snapshot;
+  const autoSnapshot = snapshots['test #4 / Snapshot #1'].snapshot;
+  const userSnapshot = snapshots["test #4 / user's after each snapshot!"].snapshot;
 
   expect(JSON.parse(autoSnapshot.toString())).toMatchInlineSnapshot(`
     {
@@ -251,8 +239,7 @@ test('user defined afterEach can call takeSnapshot()', async () => {
 
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.reduce((all, call) => {
-    const [e2eTestInfo, domSnapshots] = call;
-    const title = e2eTestInfo.titlePath.pop()!;
+    const [, domSnapshots] = call;
 
     const snapshots = Object.fromEntries(
       Object.entries(domSnapshots).map(([name, { viewport }]) => [
@@ -261,6 +248,6 @@ function getSnapshottedTests() {
       ])
     );
 
-    return { ...all, [title]: snapshots };
+    return { ...all, ...snapshots };
   }, {});
 }

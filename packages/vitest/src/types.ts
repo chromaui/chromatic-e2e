@@ -52,7 +52,10 @@ export interface ResolvedOptions
  * Options that can be set per test, suite or module via `configure()`
  * - `assetDomains` is excluded as it can only be configured globally on the plugin
  */
-export type ConfigureOptions = Omit<ChromaticConfig, 'assetDomains'>;
+export type ConfigureOptions = {
+  /** Custom title to be shown in Chromatic. Default is derived from test file name. */
+  title?: string;
+} & Omit<ChromaticConfig, 'assetDomains'>;
 
 /** @internal */
 type InternalMeta = Record<ChromaticNamespace, unknown> & {

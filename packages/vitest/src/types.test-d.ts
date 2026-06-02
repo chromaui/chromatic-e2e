@@ -1,4 +1,4 @@
-import { expectTypeOf, test } from 'vitest';
+import { assertType, expectTypeOf, test } from 'vitest';
 
 import { takeSnapshot, waitForIdleNetwork, configure } from '../dist';
 import { chromaticPlugin } from '../dist/plugin';
@@ -32,6 +32,7 @@ test('configure', () => {
   expectTypeOf(configure).parameter(0).not.toHaveProperty('tags');
   expectTypeOf(configure).parameter(0).not.toHaveProperty('outputDirectory');
   expectTypeOf(configure).parameter(0).not.toHaveProperty('idleNetworkInterval');
+  expectTypeOf(configure).parameter(0).not.toHaveProperty('reporter');
 });
 
 test('chromaticPlugin', () => {
@@ -42,6 +43,7 @@ test('chromaticPlugin', () => {
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('tags');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('outputDirectory');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('idleNetworkInterval');
+  expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('reporter');
 
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('delay');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('diffIncludeAntiAliasing');
@@ -54,4 +56,15 @@ test('chromaticPlugin', () => {
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('assetDomains');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('cropToViewport');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('ignoreSelectors');
+});
+
+test('chromaticPlugin({ reporter })', () => {
+  type Reporter = Parameters<typeof chromaticPlugin>[0]['reporter'];
+
+  assertType<Reporter>(true);
+  assertType<Reporter>(false);
+  assertType<Reporter>({ verbose: false });
+  assertType<Reporter>({ enabled: true });
+  assertType<Reporter>({ verbose: true, enabled: true });
+  assertType<Reporter>({ verbose: false, enabled: false });
 });

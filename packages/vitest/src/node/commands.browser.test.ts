@@ -1,4 +1,4 @@
-import { test, expect, inject } from 'vitest';
+import { test, expect } from 'vitest';
 import { commands } from 'vitest/browser';
 import { InternalTestContext } from '../types';
 
@@ -27,15 +27,16 @@ test('browser commands are available', () => {
 });
 
 test('getOptions', async () => {
-  const options = await commands.__chromatic_getOptions();
-  options.outputDirectory = options.outputDirectory.replace(inject('processCwd'), '<process-cwd>');
-
-  expect(options).toMatchInlineSnapshot(`
+  await expect(commands.__chromatic_getOptions()).resolves.toMatchInlineSnapshot(`
     {
       "assetDomains": [],
       "disableAutoSnapshot": false,
       "idleNetworkInterval": 100,
       "outputDirectory": ".vitest/chromatic",
+      "reporter": {
+        "enabled": true,
+        "verbose": true,
+      },
       "resourceArchiveTimeout": 10000,
     }
   `);

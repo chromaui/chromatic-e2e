@@ -36,6 +36,29 @@ export interface Options extends ChromaticConfig {
    * @default 100
    */
   idleNetworkInterval?: number;
+
+  /**
+   * Logger used to report status of captured archives.
+   *
+   * @default true
+   */
+  reporter?:
+    | boolean
+    | {
+        /**
+         * Whether the reporter is enabled.
+         *
+         * @default true
+         */
+        enabled?: boolean;
+
+        /**
+         * Log information about captured archives during test run.
+         *
+         * @default true
+         */
+        verbose?: boolean;
+      };
 }
 
 /** Options that don't have internal default values */
@@ -46,7 +69,12 @@ type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;
 
 /** @internal */
 export interface ResolvedOptions
-  extends Required<Pick<Options, ResolvedOptionKeys>>, Pick<Options, UnresolvedOptionKeys> {}
+  extends
+    Required<Pick<Options, ResolvedOptionKeys>>,
+    Pick<Options, UnresolvedOptionKeys | 'reporter'> {
+  //
+  reporter: Required<Exclude<Options['reporter'], boolean>>;
+}
 
 /**
  * Options that can be set per test, suite or module via `configure()`

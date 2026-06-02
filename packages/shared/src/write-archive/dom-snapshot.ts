@@ -110,11 +110,7 @@ export class DOMSnapshot {
         const currentSrc = this.mapSrcsetUrls(srcsetValue, sourceMap);
         if (currentSrc) {
           node.attributes.src = currentSrc;
-
-          // Remove srcset attributes since we'll only have the one that
-          // loaded on render archived
-          delete node.attributes.srcset;
-          delete node.attributes.sizes;
+          this.removeResponsiveImageAttributes(node.attributes);
         }
       }
 
@@ -164,6 +160,7 @@ export class DOMSnapshot {
         // this should be the case (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source#srcset),
         // but noting it here as it'a an assumption
         imageElement.attributes.src = sourceMap.get(matchingUrl);
+        this.removeResponsiveImageAttributes(imageElement.attributes);
       }
     }
   }
@@ -203,5 +200,12 @@ export class DOMSnapshot {
     });
 
     return currentSrc;
+  }
+
+  private removeResponsiveImageAttributes(attributes: serializedElementNodeWithId['attributes']) {
+    // Remove srcset attributes since we'll only have the one that
+    // loaded on render archived
+    delete attributes.srcset;
+    delete attributes.sizes;
   }
 }

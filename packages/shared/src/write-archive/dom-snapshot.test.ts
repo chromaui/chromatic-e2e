@@ -135,7 +135,9 @@ function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets({
         tagName: 'source',
         attributes: {
           expectedMappedSnapshot,
+          // source typically has multiple sizes of .webp (or other modern format)
           srcset: `${wrongUrl} 2000w, ${matchingUrl} 900w`,
+          sizes: '(min-width: 768px) 768px, 192px',
         },
         childNodes: [],
         id: 63,
@@ -144,6 +146,10 @@ function createPictureSrcsetSnapshotSingleSourceMultipleSrcsets({
         type: 2,
         tagName: 'img',
         attributes: {
+          // image typically has multiple sizes of .jpg (or other highly-compatible format)
+          srcset: `${backupUrl} 384w, ${backupUrl} 1920w`,
+          sizes: '(min-width: 768px) 768px, 192px',
+          // src is the final fallback for browsers that don't support srcset
           src: backupUrl,
         },
         childNodes: [],
@@ -374,7 +380,7 @@ describe('DOMSnapshot', () => {
 
     // important that we only blow away what we need to; since <picture> contents are styled by their <img> tag,
     // we don't want to get rid of any existing <img> attributes (like class for example)
-    it('maps picture srcsets, preserves existing <img> attributes', async () => {
+    it('maps picture srcsets, preserves existing <img> attributes while stripping srcset and sizes', async () => {
       const domSnapshot = new DOMSnapshot({
         snapshot: createPictureSrcsetSnapshotSingleSourceImageHasAttributes({
           backupUrl: relativeUrl,

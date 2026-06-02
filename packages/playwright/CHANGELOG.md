@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.5
+
+### Patch Changes
+
+- 6ad0961: Fix archived responsive image replay by stripping stale `img.srcset` and `img.sizes` after the captured image asset has been resolved.
+
 ## 0.14.4
 
 ### Patch Changes

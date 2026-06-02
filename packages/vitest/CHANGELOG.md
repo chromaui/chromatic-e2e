@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.0.10
+
+### Patch Changes
+
+- 8056d0a: Feat: Add test reporter
+
 ## 0.0.9
 
 ### Patch Changes

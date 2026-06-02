@@ -1,5 +1,24 @@
 # chromatic-cypress
 
+## 0.12.6
+
+### Patch Changes
+
+- 235a8b1: Fix: Trim newlines from story titles
+- d7656e7: Fix: Prevent Storybook load failure for non-ASCII story names
+
+## 0.12.5
+
+### Patch Changes
+
+- 6fa75b9: Fix: Public API typings
+
+## 0.12.4
+
+### Patch Changes
+
+- 5a0b4e4: Fix: Use Storybook viewport globals (#339)
+
 ## 0.12.3
 
 ### Patch Changes

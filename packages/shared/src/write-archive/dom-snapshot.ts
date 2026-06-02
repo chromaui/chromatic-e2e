@@ -2,6 +2,7 @@ import type { serializedElementNodeWithId, serializedNodeWithId } from '@rrweb/t
 import { NodeType } from '@rrweb/types';
 import srcset from 'srcset';
 import { removeLocalhostFromBaseUrl } from '../utils/filePaths';
+import { isIframeSerializedNode } from '../utils/nodes';
 import type { DOMSnapshots, SavedSnapshot } from '../types';
 
 // Matches `url(...)` function in CSS text, excluding data URLs
@@ -50,6 +51,10 @@ export class DOMSnapshot {
           return this.mapNode(childNode, sourceMap);
         })
       );
+    }
+
+    if (isIframeSerializedNode(node)) {
+      node.contentDocument = await this.mapNode(node.contentDocument, sourceMap);
     }
 
     return node;

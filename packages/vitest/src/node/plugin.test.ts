@@ -1,7 +1,8 @@
 import { resolve } from 'node:path';
 import { mkdir, readdir, rm } from 'node:fs/promises';
-import { expect, onTestFinished, test } from 'vitest';
+import { beforeEach, expect, onTestFinished, test } from 'vitest';
 import { createVitest, type TestModule } from 'vitest/node';
+import { uniqueId } from '@chromatic-com/shared-e2e/write-archive/stories-files';
 import { chromaticPlugin } from './plugin';
 import {
   createOutputStreams,
@@ -9,6 +10,10 @@ import {
   getResolvedConfig,
   runFixture,
 } from '../../test/utils/node';
+
+beforeEach(() => {
+  uniqueId.value = 1;
+});
 
 test.each([
   { name: 'string', setupFiles: 'some-user-defined-setup.ts' },
@@ -84,6 +89,7 @@ test('warns if tags are used with Vitest 4.0', async () => {
 
   const project = vitest.projects[0];
   project.config.browser.enabled = true;
+  project.config.browser.name = 'chromium';
 
   // @ts-expect-error -- intentional
   vitest.version = '4.0.1';
@@ -140,6 +146,7 @@ test('writes results to root when in Vitest projects setup', async () => {
   await runFixture(
     {
       root,
+      fileParallelism: false,
       projects: [
         {
           plugins: [chromaticPlugin()],
@@ -148,6 +155,7 @@ test('writes results to root when in Vitest projects setup', async () => {
             browser: getBrowserConfig('first-browser'),
             include: ['**/dom.test.ts'],
             root: resolve(import.meta.dirname, '../../test/fixtures'),
+            sequence: { groupOrder: 1 },
           },
         },
         {
@@ -157,6 +165,7 @@ test('writes results to root when in Vitest projects setup', async () => {
             browser: getBrowserConfig('second-browser'),
             include: ['**/dom.test.ts'],
             root: resolve(import.meta.dirname, '../../test/fixtures'),
+            sequence: { groupOrder: 2 },
           },
         },
       ],
@@ -172,8 +181,8 @@ test('writes results to root when in Vitest projects setup', async () => {
   expect(results).toMatchInlineSnapshot(`
     [
       "archive",
-      "first-browser-dom-mount-some-elements.stories.json",
-      "second-browser-dom-mount-some-elements.stories.json",
+      "first-browser-dom-1.stories.json",
+      "second-browser-dom-2.stories.json",
     ]
   `);
 });
@@ -211,7 +220,47 @@ test('does not clean existing output directory when "vitest --merge-reports" is 
   await expect(readdir(archives)).resolves.toMatchInlineSnapshot(`
     [
       "archive",
-      "dom-mount-some-elements.stories.json",
+      "dom-1.stories.json",
+    ]
+  `);
+});
+
+test('works in multi project instance setup', { timeout: 30_000 }, async () => {
+  const root = resolve(import.meta.dirname, '../../test/fixtures');
+  const tests: TestModule[] = [];
+
+  await expect(
+    runFixture({
+      name: 'custom-project-name',
+      browser: {
+        ...getBrowserConfig(),
+        instances: [
+          { browser: 'chromium', name: 'custom-name-for-chromium-browser' },
+          { browser: 'webkit', name: 'custom-name-for-webkit-browser' },
+          { browser: 'firefox', name: 'custom-name-for-firefox-browser' },
+        ],
+      },
+      reporters: ['default', { onTestRunEnd: (testModules) => void tests.push(...testModules) }],
+      /** See {@link file://./../../test/fixtures/public-apis.test.ts} */
+      include: ['**/public-apis.test.ts'],
+      root,
+    })
+  ).resolves.not.toThrow();
+
+  // Non-Chromium browsers should not crash
+  expect.soft(tests).toHaveLength(3);
+  expect.soft(tests[0].state()).toBe('passed');
+  expect.soft(tests[1].state()).toBe('passed');
+  expect.soft(tests[2].state()).toBe('passed');
+
+  // Results for Chromium should still be written to disk
+  const results = await readdir(resolve(root, '.vitest/chromatic/chromatic-archives'));
+
+  expect(results).toMatchInlineSnapshot(`
+    [
+      "archive",
+      "public-apis-1.stories.json",
+      "public-apis-2.stories.json",
     ]
   `);
 });

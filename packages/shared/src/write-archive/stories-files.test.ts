@@ -12,12 +12,13 @@ const vports = [
 
 beforeEach(() => {
   vi.resetAllMocks();
+  storiesFiles.uniqueId.value = 1;
 });
 
 describe('storiesFileName', () => {
   it('sanitizes the file name', () => {
     const fileName = storiesFiles.storiesFileName('--a title *() with $%& chars---');
-    expect(fileName).toEqual('a-title-with-chars.stories.json');
+    expect(fileName).toEqual(`a-title-with-chars-1.stories.json`);
   });
 
   it('truncates long file names', () => {
@@ -34,7 +35,7 @@ describe('storiesFileName', () => {
     const title = '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n';
 
     const filename = storiesFiles.storiesFileName(title);
-    expect(filename).toEqual('there-should-be-no-newlines.stories.json');
+    expect(filename).toEqual('there-should-be-no-newlines-1.stories.json');
   });
 });
 
@@ -57,7 +58,9 @@ describe('createStories', () => {
       stories: [
         {
           name: 'snapshot 1',
+          globals: { viewport: 'w100h200' },
           parameters: {
+            __id: 'some-test-title--snapshot-1',
             server: { id: 'some-test-title-snapshot-1' },
             chromatic: {
               delay: 200,
@@ -70,9 +73,10 @@ describe('createStories', () => {
             },
             viewport: {
               defaultViewport: 'w100h200',
-              viewports: {
+              options: {
                 w100h200: {
                   name: 'w100h200',
+                  type: 'mobile',
                   styles: {
                     height: '200px',
                     width: '100px',
@@ -84,7 +88,9 @@ describe('createStories', () => {
         },
         {
           name: 'another snapshot',
+          globals: { viewport: 'w300h400' },
           parameters: {
+            __id: 'some-test-title--another-snapshot',
             server: { id: 'some-test-title-another-snapshot' },
             chromatic: {
               delay: 200,
@@ -97,9 +103,10 @@ describe('createStories', () => {
             },
             viewport: {
               defaultViewport: 'w300h400',
-              viewports: {
+              options: {
                 w300h400: {
                   name: 'w300h400',
+                  type: 'mobile',
                   styles: {
                     height: '400px',
                     width: '300px',
@@ -111,6 +118,31 @@ describe('createStories', () => {
         },
       ],
     });
+  });
+
+  it('collapses newlines in title', () => {
+    const storiesFileJSON = storiesFiles.createStories(
+      '\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n',
+      {},
+      {}
+    );
+
+    expect(storiesFileJSON.title).toEqual('There Should Be No Newlines');
+  });
+
+  it('collapses newlines in story names', () => {
+    const storiesFileJSON = storiesFiles.createStories(
+      'Some Title',
+      {
+        '\n\n\r\rSnapshot\nName\rWith\r\nNewlines\n\r\r\n': {
+          snapshot: Buffer.from('n/a'),
+          viewport: { width: 100, height: 200 },
+        },
+      },
+      {}
+    );
+
+    expect(storiesFileJSON.stories[0].name).toEqual('Snapshot Name With Newlines');
   });
 });
 
@@ -131,6 +163,7 @@ describe('buildStoryViewportsConfig', () => {
     expect(viewportsConfig).toEqual({
       w100h1000: {
         name: 'w100h1000',
+        type: 'mobile',
         styles: {
           width: '100px',
           height: '1000px',
@@ -138,6 +171,7 @@ describe('buildStoryViewportsConfig', () => {
       },
       w1200h100: {
         name: 'w1200h100',
+        type: 'desktop',
         styles: {
           width: '1200px',
           height: '100px',
@@ -145,6 +179,7 @@ describe('buildStoryViewportsConfig', () => {
       },
       w500h500: {
         name: 'w500h500',
+        type: 'mobile',
         styles: {
           width: '500px',
           height: '500px',

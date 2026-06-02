@@ -5,8 +5,9 @@ import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
-import { type ChromaticNamespace, type ResolvedOptions } from '../types';
+import { type ChromaticNamespace, type ConfigureOptions, type ResolvedOptions } from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
+import { ChromaticReporter } from './reporter';
 
 type TestID = Task['id'];
 type SnapshotName = keyof DOMSnapshots;
@@ -46,6 +47,12 @@ export function createCommands(options: ResolvedOptions) {
       pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'],
       name?: string
     ) {
+      const entity = context.project.vitest.state.getReportedEntityById(id);
+      assert(
+        entity?.type === 'test',
+        `Expected entity with id ${id} to be a test, found ${entity?.type}`
+      );
+
       let sessionSnapshots = snapshots.get(id);
 
       if (!sessionSnapshots) {
@@ -62,6 +69,8 @@ export function createCommands(options: ResolvedOptions) {
       }));
 
       sessionSnapshots.set(name, { snapshot, viewport, pseudoClassIds });
+
+      ChromaticReporter.onSnapshot(context.project.vitest, entity);
     },
 
     /**
@@ -104,7 +113,7 @@ export function createCommands(options: ResolvedOptions) {
      * Write captured snapshots and network resources to disk.
      * Should be called only once per test as it also clears resources.
      */
-    async __chromatic_writeTestResult(context, id: TestID) {
+    async __chromatic_writeTestResult(context, id: TestID, testOptions: ConfigureOptions = {}) {
       const entity = context.project.vitest.state.getReportedEntityById(id);
       assert(
         entity?.type === 'test',
@@ -117,7 +126,9 @@ export function createCommands(options: ResolvedOptions) {
       const snapshotBuffers: DOMSnapshots = {};
 
       for (const [name, { snapshot, viewport, pseudoClassIds }] of sessionSnapshots) {
-        snapshotBuffers[name] = {
+        const names = getSnapshotPrefix(entity).concat(name).join(' / ');
+
+        snapshotBuffers[names] = {
           snapshot: Buffer.from(JSON.stringify(snapshot)),
           viewport,
           pseudoClassIds,
@@ -128,19 +139,20 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: getNames(entity),
+          titlePath: testOptions.title ? [testOptions.title] : getTitle(entity),
         },
         snapshotBuffers,
         archive,
         {
-          delay: options.delay,
-          diffIncludeAntiAliasing: options.diffIncludeAntiAliasing,
-          diffThreshold: options.diffThreshold,
-          forcedColors: options.forcedColors,
-          pauseAnimationAtEnd: options.pauseAnimationAtEnd,
-          prefersReducedMotion: options.prefersReducedMotion,
-          cropToViewport: options.cropToViewport,
-          ignoreSelectors: options.ignoreSelectors,
+          delay: testOptions.delay ?? options.delay,
+          diffIncludeAntiAliasing:
+            testOptions.diffIncludeAntiAliasing ?? options.diffIncludeAntiAliasing,
+          diffThreshold: testOptions.diffThreshold ?? options.diffThreshold,
+          forcedColors: testOptions.forcedColors ?? options.forcedColors,
+          pauseAnimationAtEnd: testOptions.pauseAnimationAtEnd ?? options.pauseAnimationAtEnd,
+          prefersReducedMotion: testOptions.prefersReducedMotion ?? options.prefersReducedMotion,
+          cropToViewport: testOptions.cropToViewport ?? options.cropToViewport,
+          ignoreSelectors: testOptions.ignoreSelectors ?? options.ignoreSelectors,
         }
       );
     },
@@ -188,7 +200,22 @@ export function createCommands(options: ResolvedOptions) {
   }
 }
 
-function getNames(test: TestCase): string[] {
+function getTitle(test: TestCase): string[] {
+  const names = [test.module.relativeModuleId];
+
+  // If Vitest was configured with multiple projects, namespace the results with project name
+  const hasManyProjects =
+    test.project.vitest.projects.filter((project) => project.config.browser.name === 'chromium')
+      .length > 1;
+
+  if (hasManyProjects && test.project.name) {
+    names.unshift(test.project.name);
+  }
+
+  return names;
+}
+
+function getSnapshotPrefix(test: TestCase): string[] {
   const names = [test.name];
   let current: TestCase | TestSuite | TestModule = test;
 
@@ -198,17 +225,6 @@ function getNames(test: TestCase): string[] {
     if ('name' in current && current.name) {
       names.unshift(current.name);
     }
-  }
-
-  if (current.type === 'module') {
-    names.unshift(current.relativeModuleId);
-  }
-
-  // If Vitest was configured with multiple projects, namespace the results with project name
-  const hasManyProjects = test.project.vitest.projects.length > 1;
-
-  if (hasManyProjects && test.project.name) {
-    names.unshift(test.project.name);
   }
 
   return names;

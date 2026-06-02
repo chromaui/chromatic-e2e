@@ -10,4 +10,5 @@ export type {
   ChromaticStorybookParameters,
   DOMSnapshots,
   SavedSnapshot,
+  SerializedIframeNode,
 } from './types';

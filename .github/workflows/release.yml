@@ -6,11 +6,10 @@
 # This file must be merged to main before Release will run; it will not run from a PR.
 #
 # - On main (after "Test and Release Main"): changeset version PR or publish (stable).
-# - On PRs (after "Test and Release PR"): snapshot version + publish with tag canary.
 #
 # Re-running the test workflow triggers this again. Concurrency ensures we don't run
 # two release jobs for the same commit at once (later trigger cancels in-progress).
-# Stable: republish is safe (npm rejects existing versions). Canary: may publish again.
+# Stable: republish is safe (npm rejects existing versions).
 concurrency:
   group: release-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: true
@@ -19,7 +18,7 @@ name: Release
 
 on:
   workflow_run:
-    workflows: ['Test and Release Main', 'Test and Release PR']
+    workflows: ['Test and Release Main']
     types: [completed]
 
 permissions:
@@ -35,16 +34,17 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Test and Release Main' && github.repository == 'chromaui/chromatic-e2e'
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
+
       - name: Install Dependencies
         run: yarn install
 
@@ -56,47 +56,8 @@ jobs:
           npm --version
 
       - name: Stable release (main)
-        uses: changesets/action@v1
+        uses: changesets/action@63a615b9cd06ba9a3e6d13796c7fbcb080a60a0b # v1.8.0
         with:
           publish: yarn run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-canary:
-    name: Release (canary)
-    runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Test and Release PR'
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Install Dependencies
-        run: yarn install
-
-      - name: Build (canary)
-        run: yarn run build
-
-      - name: Set canary snapshot hash
-        run: |
-          echo "GIT_HASH=$(git rev-parse --short ${{ github.event.workflow_run.head_sha }})" >> "$GITHUB_ENV"
-
-      - name: Update npm
-        run: |
-          npm --version
-          npm install -g npm@~11.10.0 # Work-around for https://github.com/npm/cli/issues/9151#issuecomment-4131466208
-          npm install -g npm@latest
-          npm --version
-
-      - name: Publish canary
-        run: |
-          yarn run changeset version --snapshot $GIT_HASH
-          yarn run changeset publish --no-git-tag --tag canary

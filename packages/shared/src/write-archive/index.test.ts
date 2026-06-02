@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import { NodeType } from '@rrweb/types';
 import * as filePaths from '../utils/filePaths';
 import { writeTestResult } from '.';
+import { uniqueId } from './stories-files';
 
 vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
   ...(await importOriginal()),
@@ -30,6 +31,7 @@ const snapshotJson = {
 
 afterEach(() => {
   vi.resetAllMocks();
+  uniqueId.value = 1;
 });
 
 describe('writeTestResult', () => {
@@ -57,12 +59,14 @@ describe('writeTestResult', () => {
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/file-test-story.stories.json'),
+      resolve('./test-results/chromatic-archives/file-test-story-1.stories.json'),
       {
         stories: [
           {
             name: 'home',
+            globals: { viewport: 'w800h800' },
             parameters: {
+              __id: 'file-test-story--home',
               chromatic: {
                 diffThreshold: 5,
                 pauseAnimationAtEnd: true,
@@ -71,8 +75,12 @@ describe('writeTestResult', () => {
               server: { id: 'file-test-story-home' },
               viewport: {
                 defaultViewport: 'w800h800',
-                viewports: {
-                  w800h800: { name: 'w800h800', styles: { height: '800px', width: '800px' } },
+                options: {
+                  w800h800: {
+                    name: 'w800h800',
+                    type: 'tablet',
+                    styles: { height: '800px', width: '800px' },
+                  },
                 },
               },
             },
@@ -160,7 +168,9 @@ describe('writeTestResult', () => {
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json'),
+      resolve(
+        './some-custom-directory/directory/chromatic-archives/file-test-story-1.stories.json'
+      ),
       expect.anything()
     );
   });

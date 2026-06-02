@@ -58,9 +58,17 @@ export class ResourceArchiver {
 
   constructor(cdpClient: CDPClient, allowedDomains?: string[], httpCredentials?: HttpCredentials) {
     this.client = cdpClient;
-    // tack on the protocol so we can properly check if requests are cross-origin
-    this.assetDomains = (allowedDomains || []).map((domain) => `https://${domain}`);
     this.httpCredentials = httpCredentials;
+
+    // tack on the protocol so we can properly check if requests are cross-origin
+    this.assetDomains = (allowedDomains || []).map((domain) => {
+      if (domain.startsWith('http')) {
+        return domain;
+      }
+
+      // Default to https, unless protocol is already set
+      return `https://${domain}`;
+    });
   }
 
   async watch() {

@@ -84,6 +84,7 @@ function testServerProxy() {
     'amd',
     'css-pseudo-states',
     '@fz',
+    'embeds',
   ];
 
   return {
@@ -93,6 +94,10 @@ function testServerProxy() {
     '/test-server-root': {
       target: 'http://localhost:3000',
       rewrite: (path: string) => path.replace('/test-server-root', ''),
+    },
+    '/embed-server-root': {
+      target: 'http://localhost:3001',
+      rewrite: (path: string) => path.replace('/embed-server-root', ''),
     },
   };
 }

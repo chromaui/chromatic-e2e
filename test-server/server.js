@@ -2,11 +2,23 @@ const path = require('path');
 const express = require('express');
 const basicAuth = require('express-basic-auth');
 
-const app = express();
-const port = 3000;
-
 const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
+const rootPageHtml = `${htmlIntro}<body>Testing testing just a basic page</body>${htmlOutro}`;
+
+const app = express();
+
+// Minimal second origin for cross-origin iframe embed tests (same document as `/` on this app).
+const embedApp = express();
+embedApp.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/embeds/embedded-page.html`));
+});
+embedApp.get('/img', (req, res) => {
+  res.sendFile(path.join(__dirname, req.query.url));
+});
+
+const port = 3000;
+const embedPort = 3001;
 
 app.use(
   '/protected',
@@ -89,7 +101,7 @@ app.use(express.static(path.join(__dirname, 'fixtures/assets')));
 
 // Pages
 app.get('/', (req, res) => {
-  res.send(`${htmlIntro}<body>Testing testing just a basic page</body>${htmlOutro}`);
+  res.send(rootPageHtml);
 });
 
 // Asset path pages
@@ -112,6 +124,10 @@ app.get('/forms', (req, res) => {
 
 app.get('/no-doctype', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/no-doctype.html'));
+});
+
+app.get('/deeply-nested-dom', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/deeply-nested-dom.html'));
 });
 
 app.get('/viewports', (req, res) => {
@@ -143,6 +159,10 @@ app.get('/constructable-stylesheets/:page', (req, res) => {
   res.sendFile(path.join(__dirname, `fixtures/constructable-stylesheets/${page}.html`));
 });
 
+app.get('/embeds/:page', (req, res) => {
+  res.sendFile(path.join(__dirname, `fixtures/embeds/${req.params.page}.html`));
+});
+
 app.get('/amd', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/amd.html'));
 });
@@ -156,7 +176,11 @@ app.get('/canvas', (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Example app port http://localhost:${port}`);
 });
 
-module.exports = { server };
+const embedServer = embedApp.listen(embedPort, () => {
+  console.log(`Embed origin port http://localhost:${embedPort}`);
+});
+
+module.exports = { server, embedServer };

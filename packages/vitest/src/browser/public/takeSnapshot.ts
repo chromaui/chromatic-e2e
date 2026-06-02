@@ -4,6 +4,7 @@ import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
 import { serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { getCurrentTest } from '../getCurrentTest';
+import { isChromium } from '../isChromium';
 import type {} from '../../node/commands';
 
 interface Options {
@@ -19,6 +20,10 @@ async function takeSnapshot(name?: string): Promise<void>;
 async function takeSnapshot(name: string | undefined, options: Options): Promise<void>;
 
 async function takeSnapshot(name?: string, options?: Options): Promise<void> {
+  if (!isChromium()) {
+    return;
+  }
+
   const test = getCurrentTest();
 
   if (!test) {

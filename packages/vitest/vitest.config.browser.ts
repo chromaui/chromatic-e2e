@@ -1,8 +1,10 @@
 import { defineProject } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from './src/node/plugin';
+import { type ConfigureOptions } from './src/types';
 
 export default defineProject({
+  resolve: { tsconfigPaths: true },
   plugins: [chromaticPlugin()],
 
   // To always catch errors that happen on first test run
@@ -37,5 +39,7 @@ declare module 'vitest' {
     processCwd: string;
     testName?: string;
     disableAutoSnapshot: 'module' | 'describe' | 'describe-nested' | 'test' | 'test-second';
+    configureScope: 'module' | 'describe' | 'describe-nested' | 'test' | 'test-second';
+    configureOptions: ConfigureOptions;
   }
 }

@@ -36,6 +36,29 @@ export interface Options extends ChromaticConfig {
    * @default 100
    */
   idleNetworkInterval?: number;
+
+  /**
+   * Logger used to report status of captured archives.
+   *
+   * @default true
+   */
+  reporter?:
+    | boolean
+    | {
+        /**
+         * Whether the reporter is enabled.
+         *
+         * @default true
+         */
+        enabled?: boolean;
+
+        /**
+         * Log information about captured archives during test run.
+         *
+         * @default true
+         */
+        verbose?: boolean;
+      };
 }
 
 /** Options that don't have internal default values */
@@ -46,15 +69,29 @@ type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;
 
 /** @internal */
 export interface ResolvedOptions
-  extends Required<Pick<Options, ResolvedOptionKeys>>, Pick<Options, UnresolvedOptionKeys> {}
+  extends
+    Required<Pick<Options, ResolvedOptionKeys>>,
+    Pick<Options, UnresolvedOptionKeys | 'reporter'> {
+  //
+  reporter: Required<Exclude<Options['reporter'], boolean>>;
+}
+
+/**
+ * Options that can be set per test, suite or module via `configure()`
+ * - `assetDomains` is excluded as it can only be configured globally on the plugin
+ */
+export type ConfigureOptions = {
+  /** Custom title to be shown in Chromatic. Default is derived from test file name. */
+  title?: string;
+} & Omit<ChromaticConfig, 'assetDomains'>;
 
 /** @internal */
 type InternalMeta = Record<ChromaticNamespace, unknown> & {
   /** Indicates whether Visual Regression tracking is registered */
   __chromatic_isRegistered?: boolean;
 
-  /** Indicates whether automatic snapshotting is enabled */
-  __chromatic_autoSnapshot?: boolean;
+  /** Options for the current test, set via `configure()` */
+  __chromatic_options?: ConfigureOptions;
 
   /** Indicates whether `takeSnapshot()` has been called */
   __chromatic_isTakeSnapshotCalled?: boolean;

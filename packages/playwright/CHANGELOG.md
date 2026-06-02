@@ -1,5 +1,42 @@
 # chromatic-playwright
 
+## 0.14.4
+
+### Patch Changes
+
+- 235a8b1: Fix: Trim newlines from story titles
+- d7656e7: Fix: Prevent Storybook load failure for non-ASCII story names
+
+## 0.14.3
+
+### Patch Changes
+
+- c7d8eab: Fix: Avoid crashing on deeply nested DOMs
+
+## 0.14.2
+
+### Patch Changes
+
+- 6fa75b9: Fix: Public API typings
+
+## 0.14.1
+
+### Patch Changes
+
+- 9da7ecc: Fix: Proper browser entrypoint
+
+## 0.14.0
+
+### Minor Changes
+
+- f16ce4e: Feat: Capture contents of iframes
+
+## 0.13.4
+
+### Patch Changes
+
+- 5a0b4e4: Fix: Use Storybook viewport globals (#339)
+
 ## 0.13.3
 
 ### Patch Changes

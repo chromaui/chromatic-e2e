@@ -1,6 +1,7 @@
 import { defineProject } from 'vitest/config';
 
 export default defineProject({
+  resolve: { tsconfigPaths: true },
   test: {
     name: { label: 'Vitest Unit', color: 'yellow' },
     include: ['src/**/*.test.ts'],
@@ -12,5 +13,11 @@ export default defineProject({
     sequence: { groupOrder: 2 },
     fileParallelism: false,
     retry: 2,
+
+    typecheck: {
+      enabled: true,
+      include: ['src/*.test-d.ts'],
+      ignoreSourceErrors: true,
+    },
   },
 });

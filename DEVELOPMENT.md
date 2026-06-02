@@ -79,9 +79,9 @@ After your PR is merged, if you included a changeset, the repo will auto-create 
 
 ### Canary Releases
 
-The changeset file on a branch will be used to cut canary releases of the changed packages in the PR.
+When a PR is opened, [`pkg.pr.new`](https://github.com/stackblitz-labs/pkg.pr.new) will automatically create a canary release for the changes. It will post a comment on the PR with published package versions. Whenever new changes are pushed to the PR, it updates the comment automatically with new versions.
 
-At this time you'll need to look at the output of the `Canary Release` job to find the versioned name it was published under.
+As `pkg.pr.new` publishes packages outside the official npm registry there is no need to worry about releasing too many canary releases. All packages in this registry are temporary and are automatically removed after 6 months, or after being inactive for a month.
 
 ### Final Releases
 

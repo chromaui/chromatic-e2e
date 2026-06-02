@@ -12,3 +12,6 @@ export const sanitize = (string: string) => {
       .replace(/-+$/, '')
   );
 };
+
+// Collapses CR/LF in a display title to a single space. Required for https://github.com/chromaui/chromatic-e2e/issues/369.
+export const collapseNewlines = (title: string) => title.replace(/[\r\n]+/g, ' ').trim();

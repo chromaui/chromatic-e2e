@@ -61,6 +61,20 @@ export interface Options extends ChromaticConfig {
       };
 }
 
+/** Additional `parameters` added into the Story JSON file. */
+export interface StoryParameters {
+  vitest: {
+    /** Names of all `describe()` blocks, if any */
+    suites: string[];
+
+    /** Name of the `test()` */
+    test: string;
+
+    /** Name of the snapshot */
+    snapshot: string;
+  };
+}
+
 /** Options that don't have internal default values */
 type UnresolvedOptionKeys = 'tags' | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
 

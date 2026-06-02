@@ -27,7 +27,7 @@ export function createStories(
 
   return {
     title,
-    stories: Object.entries(domSnapshots).map(([snapshotName, { viewport }]) => {
+    stories: Object.entries(domSnapshots).map(([snapshotName, { viewport, parameters }]) => {
       const name = collapseNewlines(snapshotName);
 
       return {
@@ -49,6 +49,8 @@ export function createStories(
             options: buildStoryViewportsConfig([viewport]),
             defaultViewport: viewportToString(findDefaultViewport([viewport])),
           },
+
+          ...parameters,
         },
       };
     }),

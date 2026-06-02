@@ -73,3 +73,61 @@ test('writes test results with DOM snapshot', async () => {
     ]
   `);
 });
+
+test('writes test results with custom parameters', async () => {
+  /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
+  await runFixture({ include: ['take-snapshot.test.ts'], provide: { testName: 'five' } });
+
+  const snapshots = vi.mocked(shared.writeTestResult).mock.calls.map((call) => call[1]);
+  const parameters = snapshots
+    .map((snapshot) => Object.values(snapshot).map((s) => s.parameters.vitest))
+    .flat();
+
+  expect(parameters).toMatchInlineSnapshot(`
+    [
+      {
+        "snapshot": "Named snapshot #1",
+        "suites": [
+          "suite #2",
+          "suite #3",
+          "suite #4",
+        ],
+        "test": "test #5",
+      },
+      {
+        "snapshot": "Named snapshot #2",
+        "suites": [
+          "suite #2",
+          "suite #3",
+          "suite #4",
+        ],
+        "test": "test #5",
+      },
+      {
+        "snapshot": "Snapshot #3",
+        "suites": [
+          "suite #2",
+          "suite #3",
+          "suite #4",
+        ],
+        "test": "test #5",
+      },
+      {
+        "snapshot": "Snapshot #1",
+        "suites": [
+          "suite #2",
+          "suite #3",
+        ],
+        "test": "test #6",
+      },
+      {
+        "snapshot": "Snapshot #2",
+        "suites": [
+          "suite #2",
+          "suite #3",
+        ],
+        "test": "test #6",
+      },
+    ]
+  `);
+});

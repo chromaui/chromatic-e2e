@@ -61,6 +61,9 @@ export type DOMSnapshots = Record<
     pseudoClassIds: Partial<
       Record<':active' | ':focus' | ':focus-visible' | ':hover', serializedNodeWithId['id'][]>
     >;
+
+    /** Optional parameters for the Story JSON */
+    parameters?: Record<string, unknown>;
   }
 >;
 

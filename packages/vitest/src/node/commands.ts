@@ -5,7 +5,12 @@ import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
-import { type ChromaticNamespace, type ConfigureOptions, type ResolvedOptions } from '../types';
+import {
+  type StoryParameters,
+  type ChromaticNamespace,
+  type ConfigureOptions,
+  type ResolvedOptions,
+} from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 import { ChromaticReporter } from './reporter';
 
@@ -133,12 +138,14 @@ export function createCommands(options: ResolvedOptions) {
           viewport,
           pseudoClassIds,
           parameters: {
-            vitest: {
-              suites: getSuiteNames(entity),
-              test: entity.name,
-              snapshot: name,
+            chromatic: {
+              vitest: {
+                suites: getSuiteNames(entity),
+                test: entity.name,
+                snapshot: name,
+              },
             },
-          },
+          } satisfies StoryParameters,
         };
       }
 

@@ -80,7 +80,7 @@ test('writes test results with custom parameters', async () => {
 
   const snapshots = vi.mocked(shared.writeTestResult).mock.calls.map((call) => call[1]);
   const parameters = snapshots
-    .map((snapshot) => Object.values(snapshot).map((s) => s.parameters.vitest))
+    .map((snapshot) => Object.values(snapshot).map((s) => s.parameters.chromatic.vitest))
     .flat();
 
   expect(parameters).toMatchInlineSnapshot(`

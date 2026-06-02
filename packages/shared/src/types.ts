@@ -63,7 +63,7 @@ export type DOMSnapshots = Record<
     >;
 
     /** Optional parameters for the Story JSON */
-    parameters?: Record<string, unknown>;
+    parameters?: Record<string, unknown> & { chromatic?: Record<string, unknown> };
   }
 >;
 

@@ -43,7 +43,10 @@ export interface ChromaticConfig {
   ignoreSelectors?: string[];
 }
 
-export type ChromaticStorybookParameters = Omit<ChromaticConfig, 'disableAutoSnapshot'>;
+export type ChromaticStorybookParameters = Omit<
+  ChromaticConfig,
+  'disableAutoSnapshot' | 'resourceArchiveTimeout' | 'assetDomains'
+>;
 
 export type DOMSnapshots = Record<
   string,

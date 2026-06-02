@@ -67,17 +67,6 @@ export const performChromaticSnapshot = async (
     const snapshots: NonNullable<ReturnType<typeof chromaticSnapshots.get>> =
       chromaticSnapshots.get(testId) || new Map();
 
-    const chromaticStorybookParams = {
-      ...(delay && { delay }),
-      ...(diffIncludeAntiAliasing && { diffIncludeAntiAliasing }),
-      ...(diffThreshold && { diffThreshold }),
-      ...(forcedColors && { forcedColors }),
-      ...(pauseAnimationAtEnd && { pauseAnimationAtEnd }),
-      ...(prefersReducedMotion && { prefersReducedMotion }),
-      ...(cropToViewport && { cropToViewport }),
-      ...(ignoreSelectors && { ignoreSelectors }),
-    };
-
     // TestInfo.outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
     // we want to write one level above that
     const outputDir = join(testInfo.outputDir, '..');
@@ -85,7 +74,16 @@ export const performChromaticSnapshot = async (
       { ...testInfo, outputDir, pageUrl: page.url() },
       Object.fromEntries(snapshots),
       resourceArchive,
-      chromaticStorybookParams
+      {
+        delay,
+        diffIncludeAntiAliasing,
+        diffThreshold,
+        forcedColors,
+        pauseAnimationAtEnd,
+        prefersReducedMotion,
+        cropToViewport,
+        ignoreSelectors,
+      }
     );
 
     trackComplete();

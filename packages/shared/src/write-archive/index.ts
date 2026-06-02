@@ -19,11 +19,16 @@ interface E2ETestInfo {
   pageUrl: string;
 }
 
+// Converts { name?: string } to { name: string | undefined }, so that passing "name" is required
+type RequiredButOptional<T> = {
+  [P in keyof Required<T>]: T[P] | undefined;
+};
+
 export async function writeTestResult(
   e2eTestInfo: E2ETestInfo,
   domSnapshots: DOMSnapshots,
   archive: ResourceArchive,
-  chromaticStorybookParams: ChromaticStorybookParameters
+  chromaticStorybookParams: RequiredButOptional<ChromaticStorybookParameters>
 ) {
   const { titlePath, outputDir, pageUrl } = e2eTestInfo;
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles

@@ -16,17 +16,35 @@ test('writes test results with full test name', async () => {
   expect(tests).toMatchInlineSnapshot(`
     [
       [
-        "test-names.test.ts",
+        "test-names",
         "test #1 / Snapshot #1",
       ],
       [
-        "test-names.test.ts",
+        "test-names",
         "suite #2 / test #2 / Snapshot #1",
       ],
       [
-        "test-names.test.ts",
+        "test-names",
         "suite #3 / nested suite #3 / test #3 / Snapshot #1",
       ],
+    ]
+  `);
+});
+
+test('writes test title without extensions', async () => {
+  /** See {@link file://./../../test/fixtures/nested/directories/expected-name.this-should-be-ignored.and-this.test.ts} */
+  await runFixture({
+    include: ['nested/directories/expected-name.this-should-be-ignored.and-this.test.ts'],
+  });
+
+  expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
+
+  const call = vi.mocked(shared.writeTestResult).mock.calls[0];
+  const titlePath = call[0].titlePath;
+
+  expect(titlePath).toMatchInlineSnapshot(`
+    [
+      "nested/directories/expected-name",
     ]
   `);
 });

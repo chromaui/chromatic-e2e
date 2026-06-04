@@ -3,6 +3,8 @@ import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from './src/node/plugin';
 import { type ConfigureOptions } from './src/types';
 
+const isWatch = process.argv.includes('--watch');
+
 export default defineProject({
   resolve: { tsconfigPaths: true },
   plugins: [chromaticPlugin()],
@@ -18,7 +20,7 @@ export default defineProject({
     // Isolate project into it's own group as we are running multiple projects with browsers
     sequence: { groupOrder: 3 },
     fileParallelism: false,
-    retry: 2,
+    retry: isWatch ? 0 : 2,
 
     browser: {
       enabled: true,

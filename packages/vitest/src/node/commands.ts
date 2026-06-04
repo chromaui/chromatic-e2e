@@ -215,7 +215,7 @@ export function createCommands(options: ResolvedOptions) {
 }
 
 function getTitle(test: TestCase): string[] {
-  const names = [test.module.relativeModuleId];
+  const names = [removeFileExtensions(test.module.relativeModuleId)];
 
   // If Vitest was configured with multiple projects, namespace the results with project name
   const hasManyProjects =
@@ -261,6 +261,18 @@ function getSuiteNames(test: TestCase): string[] {
   }
 
   return names;
+}
+
+function removeFileExtensions(filepath: string) {
+  const parts = filepath.split('/');
+  const filename = parts.pop() || '';
+
+  return parts
+    .concat(
+      // Trim filenames like "src/components/accordion/Accordion.browser.spec.tsx" -> "src/components/accordion/Accordion"
+      filename.split('.')[0]
+    )
+    .join('/');
 }
 
 /** @internal */

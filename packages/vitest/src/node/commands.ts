@@ -5,7 +5,12 @@ import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
-import { type ChromaticNamespace, type ConfigureOptions, type ResolvedOptions } from '../types';
+import {
+  type StoryParameters,
+  type ChromaticNamespace,
+  type ConfigureOptions,
+  type ResolvedOptions,
+} from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 import { ChromaticReporter } from './reporter';
 
@@ -132,6 +137,15 @@ export function createCommands(options: ResolvedOptions) {
           snapshot: Buffer.from(JSON.stringify(snapshot)),
           viewport,
           pseudoClassIds,
+          parameters: {
+            chromatic: {
+              vitest: {
+                suites: getSuiteNames(entity),
+                test: entity.name,
+                snapshot: name,
+              },
+            },
+          } satisfies StoryParameters,
         };
       }
 
@@ -223,6 +237,25 @@ function getSnapshotPrefix(test: TestCase): string[] {
     current = current.parent;
 
     if ('name' in current && current.name) {
+      names.unshift(current.name);
+    }
+  }
+
+  return names;
+}
+
+function getSuiteNames(test: TestCase): string[] {
+  if (test.parent.type !== 'suite') {
+    return [];
+  }
+
+  const names = [];
+  let current: TestCase | TestSuite | TestModule = test;
+
+  while ('parent' in current && current.parent) {
+    current = current.parent;
+
+    if (current.type === 'suite') {
       names.unshift(current.name);
     }
   }

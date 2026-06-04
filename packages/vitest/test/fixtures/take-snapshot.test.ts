@@ -29,3 +29,19 @@ test.runIf(inject('testName') === 'three')('test #3', async () => {
 test.runIf(inject('testName') === 'four')('test #4', async () => {
   document.body.innerHTML = '<h1>Example heading</h1>';
 });
+
+describe.runIf(inject('testName') === 'five')('suite #2', async () => {
+  describe('suite #3', () => {
+    describe('suite #4', () => {
+      test('test #5', async () => {
+        document.body.innerHTML = '<h1>Example heading</h1>';
+        await takeSnapshot('Named snapshot #1');
+        await takeSnapshot('Named snapshot #2');
+      });
+    });
+
+    test('test #6', async () => {
+      await takeSnapshot();
+    });
+  });
+});

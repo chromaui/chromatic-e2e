@@ -226,12 +226,26 @@ export class ResourceArchiver {
     // No need to capture the response of the top level page request
     const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
     if (isRequestFromAllowedDomain && !isFirstRequest) {
+      logger.log('Archiving request', {
+        url: request.url,
+        statusCode: responseStatusCode,
+        statusText: responseStatusText,
+        contentType: contentTypeHeader?.value,
+      });
+
       this.archive[request.url] = {
         statusCode: responseStatusCode,
         statusText: responseStatusText,
         body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
         contentType: contentTypeHeader?.value,
       };
+    } else {
+      logger.log('Skipping archiving of request', {
+        url: request.url,
+        firstUrl: this.firstUrl.toString(),
+        isFirstRequest,
+        isRequestFromAllowedDomain,
+      });
     }
 
     await this.clientSend(request, 'Fetch.continueRequest', { requestId });

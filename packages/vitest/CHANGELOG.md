@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.1.0
+
+### Minor Changes
+
+- b9ff93c: Fix: title auto-infer should ignore all file extensions
+
 ## 0.0.10
 
 ### Patch Changes

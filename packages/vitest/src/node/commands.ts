@@ -102,7 +102,8 @@ export function createCommands(options: ResolvedOptions) {
       const resourceArchiver = new ResourceArchiver(
         cdp,
         options.assetDomains,
-        contextOptions?.httpCredentials
+        contextOptions?.httpCredentials,
+        new URL(context.page.url())
       );
       resourceArchivers.set(id, resourceArchiver);
 

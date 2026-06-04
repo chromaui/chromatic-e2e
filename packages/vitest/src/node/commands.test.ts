@@ -2,7 +2,7 @@ import { expect, test, vi } from 'vitest';
 import * as shared from '@chromatic-com/shared-e2e';
 import { runFixture } from '../../test/utils/node';
 
-vi.mock('@chromatic-com/shared-e2e');
+vi.mock('@chromatic-com/shared-e2e/write-archive/index');
 vi.mocked(shared.writeTestResult).mockImplementation(() => Promise.resolve());
 
 test('writes test results with full test name', async () => {
@@ -147,5 +147,34 @@ test('writes test results with custom parameters', async () => {
         "test": "test #6",
       },
     ]
+  `);
+});
+
+test('writes archived assets even from first URL archiver sees', async () => {
+  /** See {@link file://./../../test/fixtures/external-assets.test.ts} */
+  await runFixture({ include: ['external-assets.test.ts'] });
+
+  const assets = vi.mocked(shared.writeTestResult).mock.calls[0][2];
+
+  const url = Object.keys(assets)[0];
+
+  expect(url, 'Expected to archive assets.external.css').toBeDefined();
+  expect(url).toMatch(/assets\/external.css$/);
+
+  const { body, ...properties } = assets[url] as any;
+
+  expect(properties).toMatchInlineSnapshot(`
+    {
+      "contentType": "text/css",
+      "statusCode": 200,
+      "statusText": "OK",
+    }
+  `);
+
+  expect(body.toString()).toMatchInlineSnapshot(`
+    "body {
+      background-color: red;
+    }
+    "
   `);
 });

@@ -56,9 +56,18 @@ export class ResourceArchiver {
    */
   private pendingRequests = new Set<Protocol.Fetch.requestPausedPayload['requestId']>();
 
-  constructor(cdpClient: CDPClient, allowedDomains?: string[], httpCredentials?: HttpCredentials) {
+  constructor(
+    cdpClient: CDPClient,
+    allowedDomains?: string[],
+    httpCredentials?: HttpCredentials,
+    firstUrl?: URL
+  ) {
     this.client = cdpClient;
     this.httpCredentials = httpCredentials;
+
+    // Initialize firstUrl when it's provided before any navigation happens.
+    // In test runners like Vitest, archiver is started during test run, when runner has already page open.
+    this.firstUrl = firstUrl;
 
     // tack on the protocol so we can properly check if requests are cross-origin
     this.assetDomains = (allowedDomains || []).map((domain) => {
@@ -217,12 +226,26 @@ export class ResourceArchiver {
     // No need to capture the response of the top level page request
     const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
     if (isRequestFromAllowedDomain && !isFirstRequest) {
+      logger.log('Archiving request', {
+        url: request.url,
+        statusCode: responseStatusCode,
+        statusText: responseStatusText,
+        contentType: contentTypeHeader?.value,
+      });
+
       this.archive[request.url] = {
         statusCode: responseStatusCode,
         statusText: responseStatusText,
         body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
         contentType: contentTypeHeader?.value,
       };
+    } else {
+      logger.log('Skipping archiving of request', {
+        url: request.url,
+        firstUrl: this.firstUrl.toString(),
+        isFirstRequest,
+        isRequestFromAllowedDomain,
+      });
     }
 
     await this.clientSend(request, 'Fetch.continueRequest', { requestId });

@@ -26,7 +26,7 @@ beforeEach<InternalTestContext>(async ({ task }) => {
   task.meta.__chromatic_options ||= {};
   task.meta.__chromatic_options.disableAutoSnapshot ??= options.disableAutoSnapshot;
 
-  await commands.__chromatic_interceptFetch(task.id);
+  await commands.__chromatic_interceptFetch();
 
   // This runs after any user-defined afterEach hooks
   return async function beforeEachCleanup() {

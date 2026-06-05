@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import { outputFile, ensureDir, outputJSONFile } from '../utils/filePaths';
 import { logger } from '../utils/logger';
 import { ArchiveFile } from './archive-file';
@@ -66,12 +67,15 @@ export async function writeTestResult(
       const archiveFile = new ArchiveFile(url, response, pageUrl);
       const origSrcPath = archiveFile.originalSrc();
       const fileSystemPath = archiveFile.toFileSystemPath();
+      const responsePath = join(archiveDir, fileSystemPath);
 
       if (origSrcPath !== fileSystemPath) {
         sourceMap.set(origSrcPath, fileSystemPath);
       }
 
-      await outputFile(join(archiveDir, fileSystemPath), response.body);
+      if (!existsSync(responsePath)) {
+        await outputFile(responsePath, response.body);
+      }
     })
   );
 

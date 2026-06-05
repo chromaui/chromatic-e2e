@@ -84,6 +84,13 @@ async function executeSnapshotScript(context: Page | Frame) {
     path: require.resolve('@chromatic-com/playwright/browser'),
   });
 
+  // addScriptTag doesn't await load for inline (path/content) injection, and
+  // module scripts are deferred, so the module may not have run yet. Wait for
+  // the function to avoid `__chromatic_takeSnapshot is not a function`.
+  await context.waitForFunction(
+    () => typeof (window as unknown as WindowContext).__chromatic_takeSnapshot === 'function'
+  );
+
   const snapshot = await context.evaluate(async () => {
     // Additional JSON.stringify + parse needed for deeply nested DOMs: https://github.com/chromaui/chromatic-e2e/issues/307
     return JSON.stringify(await (window as unknown as WindowContext).__chromatic_takeSnapshot());

@@ -1,5 +1,7 @@
 import { defineProject } from 'vitest/config';
 
+const isWatch = process.argv.includes('--watch');
+
 export default defineProject({
   resolve: { tsconfigPaths: true },
   test: {
@@ -12,7 +14,7 @@ export default defineProject({
     // Isolate project into it's own group as we are spawning browser runners during tests
     sequence: { groupOrder: 2 },
     fileParallelism: false,
-    retry: 2,
+    retry: isWatch ? 0 : 2,
 
     typecheck: {
       enabled: true,

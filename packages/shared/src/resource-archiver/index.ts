@@ -160,6 +160,7 @@ export class ResourceArchiver {
     );
 
     // Pausing at response stage with an error, simply ignore
+    // This can be for example when browser network cache serves the request
     if (responseErrorReason) {
       logger.log(`Got response error: ${responseErrorReason}`);
       await this.clientSend(request, 'Fetch.continueRequest', { requestId });

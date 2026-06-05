@@ -34,5 +34,5 @@ export async function waitForIdleNetwork(timeout: number) {
     );
   }
 
-  return await commands.__chromatic_waitForIdleNetwork(test.id, timeout);
+  return await commands.__chromatic_waitForIdleNetwork(timeout);
 }

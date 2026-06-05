@@ -26,7 +26,7 @@ export function getBrowserConfig(name = 'chromium') {
 }
 
 export async function runFixture(
-  options: CliOptions,
+  { stdout, ...options }: CliOptions & { stdout?: 'inherit' },
   pluginOptions: Parameters<typeof chromaticPlugin>[0] | { disabled: true } = {}
 ) {
   const { streams, getOutput } = createOutputStreams();
@@ -44,7 +44,7 @@ export async function runFixture(
         ...options,
       },
     },
-    streams
+    stdout === 'inherit' ? {} : streams
   );
   await vitest.close();
 

@@ -19,11 +19,10 @@ export class NetworkIdleTracker {
 
   static async create(cdp: CDPSession, idleTimeout: number) {
     const tracker = new NetworkIdleTracker(cdp, idleTimeout);
-    await tracker.watch();
     return tracker;
   }
 
-  private async watch() {
+  async watch() {
     this.cdp.on('Network.requestWillBeSent', this.onRequest);
     this.cdp.on('Network.loadingFinished', this.onComplete);
     this.cdp.on('Network.loadingFailed', this.onComplete);
@@ -31,7 +30,7 @@ export class NetworkIdleTracker {
     await this.cdp.send('Network.enable');
   }
 
-  async off() {
+  async unwatch() {
     this.cdp.off('Network.requestWillBeSent', this.onRequest);
     this.cdp.off('Network.loadingFinished', this.onComplete);
     this.cdp.off('Network.loadingFailed', this.onComplete);

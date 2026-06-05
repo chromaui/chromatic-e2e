@@ -1,6 +1,12 @@
 import assert from 'node:assert';
 import { resolve } from 'node:path';
-import type { TestCase, TestModule, TestSuite, BrowserCommand } from 'vitest/node';
+import type {
+  TestCase,
+  TestModule,
+  TestSuite,
+  BrowserCommand,
+  BrowserCommandContext,
+} from 'vitest/node';
 import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
 import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
@@ -15,11 +21,12 @@ import { NetworkIdleTracker } from './NetworkIdleTracker';
 import { ChromaticReporter } from './reporter';
 
 type TestID = Task['id'];
+type SessionId = BrowserCommandContext['sessionId'];
 type SnapshotName = keyof DOMSnapshots;
 
 export function createCommands(options: ResolvedOptions) {
-  const resourceArchivers = new Map<TestID, ResourceArchiver>();
-  const networkIdleTrackers = new Map<TestID, NetworkIdleTracker>();
+  const resourceArchivers = new Map<SessionId, ResourceArchiver>();
+  const networkIdleTrackers = new Map<SessionId, NetworkIdleTracker>();
   const snapshots = new Map<
     TestID,
     Map<
@@ -82,9 +89,9 @@ export function createCommands(options: ResolvedOptions) {
      * Wait for network to be idle, meaning no new network requests for at least `idleNetworkInterval` ms.
      * Use `timeout` argument to reject if network doesn't become idle within given time.
      */
-    async __chromatic_waitForIdleNetwork(_, id: TestID, timeout: number): Promise<void> {
-      const networkIdleTracker = networkIdleTrackers.get(id);
-      assert(networkIdleTracker, `No network idle tracker found for test ${id}`);
+    async __chromatic_waitForIdleNetwork(context, timeout: number): Promise<void> {
+      const networkIdleTracker = networkIdleTrackers.get(context.sessionId);
+      assert(networkIdleTracker, `No network idle tracker found for session ${context.sessionId}`);
 
       await networkIdleTracker.waitForIdle(timeout);
     },
@@ -92,27 +99,39 @@ export function createCommands(options: ResolvedOptions) {
     /**
      * Start recording HTTP resources and network activity for given test.
      */
-    async __chromatic_interceptFetch(context, id: TestID) {
-      const cdp = await context.provider.getCDPSession?.(context.sessionId);
-      assert(cdp, `Unable to get CDP session for session ${context.sessionId}`);
+    async __chromatic_interceptFetch(context) {
+      // Network intercetion is shared per browser context as browser cache
+      // is shared between test cases and test files that run in same browser context.
+      let resourceArchiver = resourceArchivers.get(context.sessionId);
+      let networkIdleTracker = networkIdleTrackers.get(context.sessionId);
+      let cdp;
 
-      const { contextOptions }: PlaywrightProviderOptions =
-        context.project.config.browser.provider?.options ?? {};
+      if (!resourceArchiver || !networkIdleTracker) {
+        cdp = await context.provider.getCDPSession?.(context.sessionId);
+        assert(cdp, `Unable to get CDP session for session ${context.sessionId}`);
+      }
 
-      const resourceArchiver = new ResourceArchiver(
-        cdp,
-        options.assetDomains,
-        contextOptions?.httpCredentials,
-        new URL(context.page.url())
-      );
-      resourceArchivers.set(id, resourceArchiver);
+      if (!resourceArchiver) {
+        const { contextOptions }: PlaywrightProviderOptions =
+          context.project.config.browser.provider?.options ?? {};
 
+        resourceArchiver = new ResourceArchiver(
+          cdp,
+          options.assetDomains,
+          contextOptions?.httpCredentials,
+          new URL(context.page.url())
+        );
+
+        resourceArchivers.set(context.sessionId, resourceArchiver);
+      }
+
+      if (!networkIdleTracker) {
+        networkIdleTracker = await NetworkIdleTracker.create(cdp, options.idleNetworkInterval);
+        networkIdleTrackers.set(context.sessionId, networkIdleTracker);
+      }
+
+      await networkIdleTracker.watch();
       await resourceArchiver.watch();
-
-      networkIdleTrackers.set(
-        id,
-        await NetworkIdleTracker.create(cdp, options.idleNetworkInterval)
-      );
     },
 
     /**
@@ -126,7 +145,7 @@ export function createCommands(options: ResolvedOptions) {
         `Expected entity with id ${id} to be a test, found ${entity?.type}`
       );
 
-      const { archive, sessionSnapshots } = await onTestCleanup(id);
+      const { archive, sessionSnapshots } = await onTestCleanup(context, id);
       assert(sessionSnapshots, `No snapshots found for test ${id}`);
 
       const snapshotBuffers: DOMSnapshots = {};
@@ -175,14 +194,18 @@ export function createCommands(options: ResolvedOptions) {
     /**
      * Clear test state without writing test results.
      */
-    async __chromatic_stopWithoutSnapshots(_, id: TestID) {
-      await onTestCleanup(id);
+    async __chromatic_stopWithoutSnapshots(context, id: TestID) {
+      await onTestCleanup(context, id);
     },
 
     /**
      * Reset all state of the plugin. Should be called between test runs.
      */
     async __chromatic_reset() {
+      for (const resourceArchiver of resourceArchivers.values()) {
+        resourceArchiver.archive = {};
+      }
+
       resourceArchivers.clear();
       networkIdleTrackers.clear();
       snapshots.clear();
@@ -197,17 +220,19 @@ export function createCommands(options: ResolvedOptions) {
     },
   } satisfies Record<ChromaticNamespace, BrowserCommand<any>>;
 
-  async function onTestCleanup(id: TestID) {
-    const resourceArchiver = resourceArchivers.get(id);
+  async function onTestCleanup(context: BrowserCommandContext, id: TestID) {
+    const resourceArchiver = resourceArchivers.get(context.sessionId);
     assert(resourceArchiver, `No resource archiver found for test ${id}`);
 
-    resourceArchivers.delete(id);
+    const networkIdleTracker = networkIdleTrackers.get(context.sessionId);
+    assert(networkIdleTracker, `No network idle tracker found for test ${id}`);
+
+    // Between test runs we only unwatch. Resources are still kept in memory, as same session
+    // shares browser cache between test cases and test files.
     await resourceArchiver.unwatch();
+    await networkIdleTracker.unwatch();
 
-    const networkIdleTracker = networkIdleTrackers.get(id);
-    networkIdleTrackers.delete(id);
-    await networkIdleTracker?.off();
-
+    // Snapshots are per test case:
     const sessionSnapshots = snapshots.get(id);
     snapshots.delete(id);
 

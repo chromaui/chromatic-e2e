@@ -155,26 +155,102 @@ test('writes archived assets even from first URL archiver sees', async () => {
   await runFixture({ include: ['external-assets.test.ts'] });
 
   const assets = vi.mocked(shared.writeTestResult).mock.calls[0][2];
-
   const url = Object.keys(assets)[0];
 
   expect(url, 'Expected to archive assets.external.css').toBeDefined();
   expect(url).toMatch(/assets\/external.css$/);
 
-  const { body, ...properties } = assets[url] as any;
-
-  expect(properties).toMatchInlineSnapshot(`
+  expect(parseArchive(assets[url])).toMatchInlineSnapshot(`
     {
+      "body": "body { background-color: red; }",
       "contentType": "text/css",
       "statusCode": 200,
       "statusText": "OK",
     }
   `);
-
-  expect(body.toString()).toMatchInlineSnapshot(`
-    "body {
-      background-color: red;
-    }
-    "
-  `);
 });
+
+test('writes archived assets even when browser cached them', { timeout: 30_000 }, async () => {
+  await runFixture({
+    include: [
+      /** See {@link file://./../../test/fixtures/external-assets.test.ts} */
+      'external-assets.test.ts',
+
+      /** See {@link file://./../../test/fixtures/external-assets-caching-1.test.ts} */
+      'external-assets-caching-1.test.ts',
+      'external-assets-caching-2.test.ts',
+      'external-assets-caching-3.test.ts',
+      'external-assets-caching-4.test.ts',
+      'external-assets-caching-5.test.ts',
+    ],
+    provide: { testName: 'both' },
+
+    // Run 2 browser contexts parallel, 3 test files in each.
+    // This triggers complex caching case where 3 files share same cache, but the other 3 don't.
+    maxWorkers: 2,
+    fileParallelism: true,
+  });
+
+  const titles = vi
+    .mocked(shared.writeTestResult)
+    .mock.calls.map((call) => call[0].titlePath[0])
+    .sort();
+
+  // Expected files executed
+  expect([...new Set(titles)]).toMatchInlineSnapshot(`
+    [
+      "external-assets",
+      "external-assets-caching-1",
+      "external-assets-caching-2",
+      "external-assets-caching-3",
+      "external-assets-caching-4",
+      "external-assets-caching-5",
+    ]
+  `);
+
+  // Each 6 files should take 2 snapshots
+  expect(shared.writeTestResult).toHaveBeenCalledTimes(2 * 6);
+
+  const assets = vi
+    .mocked(shared.writeTestResult)
+    .mock.calls.map((call) => call[2])
+    .filter((assets) => Object.keys(assets).length > 0);
+
+  expect(
+    assets,
+    `Expected to archive 12 assets, got ${formatResourceArchives(assets)}`
+  ).toHaveLength(2 * 6);
+
+  for (const [index, asset] of assets.entries()) {
+    const url = Object.keys(asset)[0];
+
+    expect(url, `Expected to archive assets.external.css in test #${index + 1}`).toBeDefined();
+    expect(url).toMatch(/assets\/external.css$/);
+
+    expect(parseArchive(asset[url])).toMatchObject({
+      contentType: 'text/css',
+      statusCode: 200,
+      statusText: 'OK',
+      body: 'body { background-color: red; }',
+    });
+  }
+});
+
+function formatResourceArchives(archives: shared.ResourceArchive[]) {
+  return JSON.stringify(
+    archives.map((archive) => Object.keys(archive).map((url) => parseArchive(archive[url]))),
+    null,
+    2
+  );
+}
+
+function parseArchive(asset: shared.ArchiveResponse) {
+  if ('error' in asset) {
+    return asset;
+  }
+
+  return {
+    ...asset,
+    body: Buffer.from(asset.body).toString().trim().replace(/\s+/g, ' '),
+  };
+}

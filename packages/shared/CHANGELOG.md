@@ -1,5 +1,12 @@
 # @chromaui/shared-e2e
 
+## 0.11.3
+
+### Patch Changes
+
+- 37f3b94: Fix: Browser session scoped ResourceArchiver to work-around browser caching
+- ae88adc: Fix: First request's assets not archived
+
 ## 0.11.2
 
 ### Patch Changes

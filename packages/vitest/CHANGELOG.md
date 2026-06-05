@@ -1,5 +1,12 @@
 # @chromatic-com/vitest
 
+## 0.1.1
+
+### Patch Changes
+
+- 37f3b94: Fix: Browser session scoped ResourceArchiver to work-around browser caching
+- ae88adc: Fix: First request's assets not archived
+
 ## 0.1.0
 
 ### Minor Changes

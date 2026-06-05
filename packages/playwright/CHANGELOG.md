@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.6
+
+### Patch Changes
+
+- daa3ffe: Fix: Wait for browser module to define `__chromatic_takeSnapshot` before invoking it
+
 ## 0.14.5
 
 ### Patch Changes

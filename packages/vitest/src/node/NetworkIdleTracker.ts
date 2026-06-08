@@ -36,6 +36,8 @@ export class NetworkIdleTracker {
     this.cdp.off('Network.loadingFailed', this.onComplete);
 
     this.clearTimer();
+    this.pending.clear();
+    this.idleResolvers.splice(0).forEach((fn) => fn());
     await this.cdp.send('Network.disable');
   }
 

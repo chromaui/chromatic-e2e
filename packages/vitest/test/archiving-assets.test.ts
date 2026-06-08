@@ -1,5 +1,8 @@
 import { test } from './utils/browser';
-import { configure } from '../dist';
+
+test('picture captures fallback image', async ({ goTo }) => {
+  await goTo('/asset-paths/picture-no-matching-source');
+});
 
 test('query params determine which asset is served', async ({ goTo }) => {
   await goTo('/asset-paths/query-params');
@@ -58,14 +61,7 @@ test('picture source is captured, single source with srcset', async ({ goTo }) =
   await goTo('/asset-paths/picture-multiple-srcset');
 });
 
-test('picture captures fallback image', async ({ goTo }) => {
-  await goTo('/asset-paths/picture-no-matching-source');
-});
-
 test('external CSS files are inlined', async ({ goTo }) => {
-  // Flaky CSS loading
-  configure({ delay: 1_000 });
-
   await goTo('/asset-paths/external-css-files');
 });
 

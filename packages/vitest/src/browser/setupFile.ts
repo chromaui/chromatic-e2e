@@ -25,6 +25,7 @@ beforeEach<InternalTestContext>(async ({ task }) => {
   // disableAutoSnapshot may already be defined by module or suite level configure()
   task.meta.__chromatic_options ||= {};
   task.meta.__chromatic_options.disableAutoSnapshot ??= options.disableAutoSnapshot;
+  task.meta.__chromatic_options.resourceArchiveTimeout ??= options.resourceArchiveTimeout;
 
   await commands.__chromatic_interceptFetch();
 
@@ -75,6 +76,7 @@ afterEach<InternalTestContext>(async ({ task }) => {
     __chromatic_options: options,
     __chromatic_pendingTakeSnapshots: pendingTakeSnapshots,
     __chromatic_isRegistered: isRegistered,
+    __chromatic_options: testOptions,
   } = task.meta;
 
   if (!isRegistered) {
@@ -85,21 +87,15 @@ afterEach<InternalTestContext>(async ({ task }) => {
     throw new PendingSnapshotsError(pendingTakeSnapshots);
   }
 
-  if (options.disableAutoSnapshot) {
-    return;
-  }
-
-  const globals = await commands.__chromatic_getOptions();
-
-  // Per-test configure() can override the global resourceArchiveTimeout
-  const resourceArchiveTimeout = options.resourceArchiveTimeout ?? globals.resourceArchiveTimeout;
-
-  if (resourceArchiveTimeout !== 0) {
-    await waitForIdleNetwork(resourceArchiveTimeout);
+  if (testOptions.resourceArchiveTimeout !== 0) {
+    await document.fonts.ready;
+    await waitForIdleNetwork(testOptions.resourceArchiveTimeout);
   }
 
   // Take automatic snapshot
-  await takeSnapshot(undefined, { ignoreUnawaited: true });
+  if (!options.disableAutoSnapshot) {
+    await takeSnapshot(undefined, { ignoreUnawaited: true });
+  }
 });
 
 class PendingSnapshotsError extends AggregateError {

@@ -24,6 +24,32 @@ test('default reporter', async () => {
   `);
 });
 
+test('default reporter with slow tests', { timeout: 10_000 }, async () => {
+  const { stdout } = await runFixture({
+    reporters: 'default',
+    provide: { delay: 500 },
+    slowTestThreshold: 499,
+  });
+
+  expect(trimReporterOutput(stdout)).toMatchInlineSnapshot(`
+    " RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
+
+     ✓  chromium  reporter-1.test.ts (3 tests) <time>
+       ✓ test #3  <time>
+       (6 archives captured)
+     ✓  chromium  reporter-2.test.ts (4 tests) <time>
+       ✓ test #3  <time>
+       ✓ test #4  <time>
+       (8 archives captured)
+     ✓  chromium  reporter-3.test.ts (5 tests) <time>
+       ✓ test #3  <time>
+       ✓ test #4  <time>
+       ✓ test #5  <time>
+       (10 archives captured)
+    "
+  `);
+});
+
 test('tree reporter', async () => {
   const { stdout } = await runFixture({ reporters: 'tree' });
 

@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..', '..');
 const embeddedDir = path.join(packageRoot, 'embedded', 'node_modules');
 
-/** @type { import('@storybook/server-webpack5').StorybookConfig } */
+/** @type {import('@storybook/server-webpack5').StorybookConfig} */
 export default {
   stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
   managerEntries: [path.resolve(__dirname, 'manager.js')],
@@ -25,4 +25,7 @@ export default {
     renderer: pathToFileURL(path.join(embeddedDir, '@storybook', 'server', 'preset.js')).href,
   },
   staticDirs: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), 'archive')],
+  features: {
+    sidebarOnboardingChecklist: false,
+  },
 };

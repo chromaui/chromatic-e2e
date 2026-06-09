@@ -51,7 +51,9 @@ async function goTo(url: string): Promise<void> {
   if (document.head.querySelector('script[src*="tailwind"]')) {
     await vi.waitUntil(() => {
       // Tailwind uses MutationObserver, we need to trigger it so that it mounts the style tag
-      document.body.appendChild(document.createElement('div'));
+      const div = document.createElement('div');
+      document.body.appendChild(div);
+      document.body.removeChild(div);
 
       return document.head.querySelector('style');
     });

@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.12.7
+
+### Patch Changes
+
+- f95b82a: Fix: Hide unrelevant Storybook options
+
 ## 0.12.6
 
 ### Patch Changes

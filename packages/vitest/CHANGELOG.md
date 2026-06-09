@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.1.2
+
+### Patch Changes
+
+- f95b82a: Fix: Hide unrelevant Storybook options
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.11.4
+
+### Patch Changes
+
+- f95b82a: Fix: Hide unrelevant Storybook options
+
 ## 0.11.3
 
 ### Patch Changes

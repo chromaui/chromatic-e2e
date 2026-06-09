@@ -25,4 +25,7 @@ export default {
     renderer: pathToFileURL(path.join(embeddedDir, '@storybook', 'server', 'preset.js')).href,
   },
   staticDirs: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), 'archive')],
+  features: {
+    sidebarOnboardingChecklist: false,
+  },
 };

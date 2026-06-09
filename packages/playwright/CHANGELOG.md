@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.7
+
+### Patch Changes
+
+- f95b82a: Fix: Hide unrelevant Storybook options
+
 ## 0.14.6
 
 ### Patch Changes

@@ -79,9 +79,15 @@ export class ChromaticReporter implements Reporter {
       return;
     }
 
-    const noSlowTests = Array.from(testModule.children.allTests()).every(
-      (testCase) => testCase.diagnostic()?.slow !== true
-    );
+    let noSlowTests = true;
+
+    for (const testCase of testModule.children.allTests()) {
+      if (testCase.diagnostic()?.slow) {
+        noSlowTests = false;
+        break;
+      }
+    }
+
     const indentProjectName = noSlowTests && this.options.builtInReporter === 'default';
 
     this.logSnapshots({

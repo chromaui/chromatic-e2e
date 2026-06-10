@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.1.3
+
+### Patch Changes
+
+- e757644: Fix: Reporter output misaligned when Vitest reports slow tests
+
 ## 0.1.2
 
 ### Patch Changes

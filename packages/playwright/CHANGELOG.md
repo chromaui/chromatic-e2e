@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.8
+
+### Patch Changes
+
+- f1ba7f9: Fix: Snapshot script fails when Javascript is disabled
+
 ## 0.14.7
 
 ### Patch Changes

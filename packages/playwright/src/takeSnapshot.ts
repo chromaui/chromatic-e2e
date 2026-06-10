@@ -1,7 +1,11 @@
+import { readFileSync } from 'node:fs';
 import type { Frame, Page, TestInfo } from '@playwright/test';
 import { NodeType, type serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots, type SerializedIframeNode, logger } from '@chromatic-com/shared-e2e';
-import type { WindowContext } from './browser';
+import type { takeSnapshot as browserTakeSnapshot } from './browser';
+
+const browserEntry = require.resolve('@chromatic-com/playwright/browser');
+const browserScript = readFileSync(browserEntry, 'utf-8');
 
 type TestID = TestInfo['testId'];
 type SnapshotName = keyof DOMSnapshots;
@@ -79,24 +83,18 @@ async function takeSnapshot(
 }
 
 async function executeSnapshotScript(context: Page | Frame) {
-  await context.addScriptTag({
-    type: 'module',
-    path: require.resolve('@chromatic-com/playwright/browser'),
-  });
+  const snapshot = await context.evaluate<string>(
+    // Wrapper is needed to scope all inlined definitions of browser script, as
+    // it contains bundled rrweb-snapshot that inlines variables like "const node = ...".
+    `async function wrapper() {
+      ${browserScript}
 
-  // addScriptTag doesn't await load for inline (path/content) injection, and
-  // module scripts are deferred, so the module may not have run yet. Wait for
-  // the function to avoid `__chromatic_takeSnapshot is not a function`.
-  await context.waitForFunction(
-    () => typeof (window as unknown as WindowContext).__chromatic_takeSnapshot === 'function'
+      return JSON.stringify(await takeSnapshot());
+    }()`
   );
 
-  const snapshot = await context.evaluate(async () => {
-    // Additional JSON.stringify + parse needed for deeply nested DOMs: https://github.com/chromaui/chromatic-e2e/issues/307
-    return JSON.stringify(await (window as unknown as WindowContext).__chromatic_takeSnapshot());
-  });
-
-  return JSON.parse(snapshot) as ReturnType<WindowContext['__chromatic_takeSnapshot']>;
+  // Additional JSON.stringify + parse needed for deeply nested DOMs: https://github.com/chromaui/chromatic-e2e/issues/307
+  return JSON.parse(snapshot) as ReturnType<typeof browserTakeSnapshot>;
 }
 
 function findIframes(

@@ -2,14 +2,7 @@ import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
 import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { type serializedNodeWithId } from '@rrweb/types';
 
-export type WindowContext = Window & {
-  __chromatic_takeSnapshot: typeof takeSnapshot;
-};
-
-/**
- * Expose a function that server side will call. See {@link file://./takeSnapshot.ts}
- */
-(window as unknown as WindowContext).__chromatic_takeSnapshot = takeSnapshot;
+export type { takeSnapshot };
 
 async function takeSnapshot() {
   const mirror = createMirror();
@@ -64,3 +57,6 @@ async function toDataURL(url: string): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
+
+// This is never used, but needed to mark takeSnapshot as used to avoid tree-shaking dropping it
+(window as any).__chromatic_takeSnapshot = takeSnapshot;

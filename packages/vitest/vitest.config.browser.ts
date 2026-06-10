@@ -40,6 +40,7 @@ declare module 'vitest' {
   export interface ProvidedContext {
     processCwd: string;
     testName?: string;
+    delay?: number;
     disableAutoSnapshot: 'module' | 'describe' | 'describe-nested' | 'test' | 'test-second';
     configureScope: 'module' | 'describe' | 'describe-nested' | 'test' | 'test-second';
     configureOptions: ConfigureOptions;

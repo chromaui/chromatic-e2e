@@ -1,6 +1,9 @@
 # Runs Vitest E2E test and Chromatic publish
 name: Test Vitest
 
+env:
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright
+
 on:
   workflow_call:
     secrets:
@@ -27,9 +30,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Install Playwright
-        run: |
-          pnpm playwright install
+      - uses: ./.github/actions/setup-playwright
 
       - name: Build
         run: |

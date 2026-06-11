@@ -9,37 +9,34 @@
   },
   "license": "MIT",
   "author": "Chromatic <tom@chromatic.com>",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads yarn workspace @chromatic-com/cypress exec archive-storybook",
-    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results yarn workspace @chromatic-com/playwright archive-storybook",
-    "archive-storybook:vitest": "CHROMATIC_ARCHIVE_LOCATION=test/.vitest/chromatic yarn workspace @chromatic-com/vitest exec archive-storybook",
-    "prebuild": "yarn clean",
-    "build": "yarn prebuild && yarn workspaces foreach --all --topological-dev --parallel run build && jiti scripts/prepare-embedded.ts",
+    "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads pnpm -C packages/cypress exec dist/bin/archive-storybook.js",
+    "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results pnpm -C packages/playwright exec dist/bin/archive-storybook.js",
+    "archive-storybook:vitest": "CHROMATIC_ARCHIVE_LOCATION=test/.vitest/chromatic pnpm -C packages/vitest exec dist/bin/archive-storybook.js",
+    "prebuild": "pnpm clean",
+    "build": "pnpm prebuild && pnpm -r --parallel run build && jiti scripts/prepare-embedded.ts",
     "prepare-embedded": "jiti scripts/prepare-embedded.ts",
-    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads yarn workspace @chromatic-com/cypress exec build-archive-storybook",
-    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results yarn workspace @chromatic-com/playwright build-archive-storybook",
-    "build-archive-storybook:vitest": "CHROMATIC_ARCHIVE_LOCATION=test/.vitest/chromatic yarn workspace @chromatic-com/vitest exec build-archive-storybook",
+    "build-archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads pnpm -C packages/cypress exec dist/bin/build-archive-storybook.js",
+    "build-archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results pnpm -C packages/playwright exec dist/bin/build-archive-storybook.js",
+    "build-archive-storybook:vitest": "CHROMATIC_ARCHIVE_LOCATION=test/.vitest/chromatic pnpm -C packages/vitest exec dist/bin/build-archive-storybook.js",
     "changeset": "changeset",
-    "clean": "yarn workspaces foreach --all --parallel run clean",
+    "clean": "pnpm -r --parallel run clean",
     "dev:server": "node test-server/server",
     "lint": "eslint .",
     "prepare": "husky install",
     "prettier": "prettier",
-    "release": "yarn build && yarn changeset publish",
-    "test:unit": "vitest run --configLoader=runner"
+    "release": "pnpm build && pnpm changeset publish",
+    "test:unit": "vitest run --configLoader=runner",
+    "test:cypress": "pnpm --filter @chromatic-com/cypress test:cypress",
+    "test:playwright": "pnpm --filter @chromatic-com/playwright test:playwright",
+    "test:vitest": "pnpm --filter @chromatic-com/vitest test:vitest"
   },
   "lint-staged": {
     "*.{ts,js,css,md}": "prettier --write"
   },
   "devDependencies": {
-    "@auto-it/released": "^10.32.6",
     "@changesets/cli": "^2.27.1",
     "@eslint/js": "^9.15.0",
-    "@playwright/test": "^1.46.1",
-    "@swc/core": "^1.4.6",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -48,7 +45,6 @@
     "@types/node": "^22.0.0",
     "@types/node-fetch": "^2.6.6",
     "@vitest/coverage-v8": "^4.1.0",
-    "auto": "^10.3.0",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "express": "^4.18.2",
@@ -57,16 +53,10 @@
     "husky": ">=6",
     "jiti": "^2.0.0",
     "lint-staged": ">=10",
-    "node-fetch": "2",
-    "playwright": "^1.46.1",
     "prettier": "^3.5.3",
-    "prompts": "^2.4.2",
-    "rimraf": "^3.0.2",
-    "start-server-and-test": "^2.0.3",
-    "tsup": "^7.3.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.15.0",
     "vitest": "^4.1.0"
   },
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "pnpm@11.5.3"
 }

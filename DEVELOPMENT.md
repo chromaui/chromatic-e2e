@@ -1,6 +1,6 @@
 ## Development
 
-This repository is a Yarn 4 monorepo containing the following packages:
+This repository is a pnpm monorepo containing the following packages:
 
 - [cypress](https://github.com/chromaui/chromatic-e2e/tree/main/packages/cypress)
   - Chromatic E2E Visual Test integration for Cypress
@@ -14,14 +14,14 @@ This repository is a Yarn 4 monorepo containing the following packages:
 ### Requirements
 
 - Node 22
-- Yarn 4
+- pnpm 11
 
 ### Getting Started
 
-- If you have `yarn 1` installed globally, it is recommended that you run `corepack enable` so that the version of yarn set in `packageManager` in `package.json` is used for this project
-- Run `yarn install`
-- Run `yarn build`
-- Run `yarn playwright install`
+- It is recommended that you run `corepack enable` so that the version of pnpm set in `packageManager` in `package.json` is used for this project
+- Run `pnpm install`
+- Run `pnpm build`
+- Run `pnpm playwright install`
 
 ### Testing
 
@@ -29,22 +29,22 @@ Unit tests reside with the code being tested in the `src` directories.
 
 Each E2E integration also has its own suite of E2E tests using the framework it is targeting. These tests import directly from the integration in question and the results are sent to Chromatic to visually test that all is well with archiving and all the various pieces.
 
-These test suites use a basic Express server that's defined in `test-server` and can be run on its own using `yarn dev:server`, but that is not necessary to run the tests.
+These test suites use a basic Express server that's defined in `test-server` and can be run on its own using `pnpm dev:server`, but that is not necessary to run the tests.
 
 The E2E test cases for each integration should match each other as much as possible. Changes or additions made to one should be matched in the others.
 
 #### Running the Tests
 
-First, make sure your changes are built: `yarn build`
+First, make sure your changes are built: `pnpm build`
 
 Then, the test commands are as follows:
 
-- Unit tests: `yarn test:unit`
-- Playwright: `yarn test:playwright`, then `yarn archive-storybook:playwright` to see the archived UI
-- Cypress: `yarn test:cypress`, then `yarn archive-storybook:cypress` to see the archived UI
-- Vitest: `yarn test:vitest`, then `yarn archive-storybook:vitest` to see the archived UI
+- Unit tests: `pnpm test:unit`
+- Playwright: `pnpm test:playwright`, then `pnpm archive-storybook:playwright` to see the archived UI
+- Cypress: `pnpm test:cypress`, then `pnpm archive-storybook:cypress` to see the archived UI
+- Vitest: `pnpm test:vitest`, then `pnpm archive-storybook:vitest` to see the archived UI
 
-If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `yarn dev:server` and visit `http://localhost:3000`.
+If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `pnpm dev:server` and visit `http://localhost:3000`.
 
 ### Linting & formatting
 
@@ -53,9 +53,9 @@ We use `eslint` and `prettier` to ensure code consistency.
 To have all formatting and linting auto-fixed (so much as possible) run this at the project root:
 
 ```
-yarn lint --fix
+pnpm lint --fix
 
-yarn prettier . --write
+pnpm prettier . --write
 ```
 
 ### PR Workflow with Changesets
@@ -64,7 +64,7 @@ Versioning and releasing is done using [changesets](https://github.com/changeset
 
 If a change made in a PR requires any of the integration packages to be published, you must add a changeset to your branch specifying which packages should be published, what version they should be bumped to (we use [Semantic Versioning](https://semver.org/)), and the reason for the change.
 
-This is done by running `yarn changeset`, which will guide you through all of the above.
+This is done by running `pnpm changeset`, which will guide you through all of the above.
 
 Commit the resulting changeset file with your other changes and push it up. This can happen at any time in the lifecycle of the branch.
 

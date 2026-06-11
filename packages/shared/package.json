@@ -12,7 +12,7 @@
   "author": "Chromatic <tom@chromatic.com>",
   "exports": "./src/index",
   "scripts": {
-    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Shared"
+    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Shared"
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",

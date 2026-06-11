@@ -31,9 +31,7 @@
     "embedded"
   ],
   "scripts": {
-    "clean": "rimraf ./dist ./embedded",
-    "prebuild": "pnpm clean",
-    "build": "pnpm prebuild && tsup",
+    "build": "rimraf ./dist ./embedded && tsup",
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project 'Vitest Unit' --project 'Vitest Browser'",
     "test:vitest": "vitest --config test/vitest.config.e2e.ts"
   },

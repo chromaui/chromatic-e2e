@@ -229,23 +229,23 @@ test('works in multi project instance setup', { timeout: 30_000 }, async () => {
   const root = resolve(import.meta.dirname, '../../test/fixtures');
   const tests: TestModule[] = [];
 
-  await expect(
-    runFixture({
-      name: 'custom-project-name',
-      browser: {
-        ...getBrowserConfig(),
-        instances: [
-          { browser: 'chromium', name: 'custom-name-for-chromium-browser' },
-          { browser: 'webkit', name: 'custom-name-for-webkit-browser' },
-          { browser: 'firefox', name: 'custom-name-for-firefox-browser' },
-        ],
-      },
-      reporters: ['default', { onTestRunEnd: (testModules) => void tests.push(...testModules) }],
-      /** See {@link file://./../../test/fixtures/public-apis.test.ts} */
-      include: ['**/public-apis.test.ts'],
-      root,
-    })
-  ).resolves.not.toThrow();
+  const { stderr } = await runFixture({
+    name: 'custom-project-name',
+    browser: {
+      ...getBrowserConfig(),
+      instances: [
+        { browser: 'chromium', name: 'custom-name-for-chromium-browser' },
+        { browser: 'webkit', name: 'custom-name-for-webkit-browser' },
+        { browser: 'firefox', name: 'custom-name-for-firefox-browser' },
+      ],
+    },
+    reporters: ['default', { onTestRunEnd: (testModules) => void tests.push(...testModules) }],
+    /** See {@link file://./../../test/fixtures/public-apis.test.ts} */
+    include: ['**/public-apis.test.ts'],
+    root,
+  });
+
+  expect(stderr).toBe('');
 
   // Non-Chromium browsers should not crash
   expect.soft(tests).toHaveLength(3);

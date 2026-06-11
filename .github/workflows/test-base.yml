@@ -1,6 +1,9 @@
 # Runs linting and unit tests
 name: Test Base
 
+env:
+  PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/ms-playwright
+
 on:
   workflow_call:
 
@@ -31,9 +34,12 @@ jobs:
       - name: Publish canary
         run: pnpm dlx pkg-pr-new publish --commentWithDev --commentWithSha --packageManager pnpm './packages/cypress' './packages/playwright' './packages/vitest'
 
-      - name: Install Playwright
-        run: |
-          pnpm playwright install --with-deps
+      - uses: ./.github/actions/setup-playwright
+
+      # Needed for additional browsers that Vitest unit tests use.
+      # System dependencies cannot be cachced.
+      - name: Playwright deps
+        run: pnpm exec playwright install-deps
 
       - name: Run lint
         run: |

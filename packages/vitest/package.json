@@ -32,9 +32,9 @@
   ],
   "scripts": {
     "clean": "rimraf ./dist ./embedded",
-    "prebuild": "yarn clean",
-    "build": "yarn prebuild && tsup",
-    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project 'Vitest Unit' --project 'Vitest Browser'",
+    "prebuild": "pnpm clean",
+    "build": "pnpm prebuild && tsup",
+    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project 'Vitest Unit' --project 'Vitest Browser'",
     "test:vitest": "vitest --config test/vitest.config.e2e.ts"
   },
   "dependencies": {
@@ -51,6 +51,8 @@
     "@storybook/server-webpack5": "10.2.13",
     "@vitest/browser-playwright": "^4.1.0",
     "msw": "^2.12.10",
+    "rimraf": "^3.0.2",
+    "tsup": "^7.3.0",
     "vitest": "^4.1.0"
   },
   "peerDependencies": {

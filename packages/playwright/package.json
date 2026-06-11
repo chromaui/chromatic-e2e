@@ -40,11 +40,11 @@
     "*.d.ts"
   ],
   "scripts": {
-    "prebuild": "yarn clean",
-    "build": "yarn prebuild && tsup",
+    "prebuild": "pnpm clean",
+    "build": "pnpm prebuild && tsup",
     "clean": "rimraf ./dist ./embedded",
     "test:playwright": "playwright test",
-    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Playwright"
+    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Playwright"
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
@@ -61,6 +61,8 @@
     "express": "^4.18.2",
     "playwright": "^1.46.1",
     "playwright-core": "^1.46.1",
+    "rimraf": "^3.0.2",
+    "tsup": "^7.3.0",
     "ts-dedent": "^2.2.0"
   },
   "peerDependencies": {

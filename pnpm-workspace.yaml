@@ -1,0 +1,7 @@
+packages:
+  - 'packages/*'
+allowBuilds:
+  '@swc/core': true
+  cypress: true
+  esbuild: true
+  msw: true

@@ -183,4 +183,8 @@ const embedServer = embedApp.listen(embedPort, () => {
   console.log(`Embed origin port http://localhost:${embedPort}`);
 });
 
+// To avoid exit code 1 failing test runs: https://github.com/pnpm/pnpm/issues/7374
+process.on('SIGINT', () => process.exit(0));
+process.on('SIGTERM', () => process.exit(0));
+
 module.exports = { server, embedServer };

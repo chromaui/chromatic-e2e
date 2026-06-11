@@ -27,9 +27,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Install Embedded Dependencies
+        run: npm install
+        working-directory: ./embedded
+
       - name: Install Playwright
         run: |
-          pnpm playwright install
+          pnpm exec playwright install
 
       - name: Build
         run: |

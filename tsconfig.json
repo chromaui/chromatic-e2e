@@ -3,7 +3,9 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "playwright-core/types/protocol": ["node_modules/playwright-core/types/protocol.d.ts"],
+      "playwright-core/types/protocol": [
+        "packages/shared/node_modules/playwright-core/types/protocol.d.ts"
+      ],
       "@chromatic-com/shared-e2e": ["packages/shared/src/index.ts"],
       "@chromatic-com/shared-e2e/*": ["packages/shared/src/*"]
     },

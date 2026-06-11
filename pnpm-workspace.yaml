@@ -5,7 +5,3 @@ allowBuilds:
   cypress: true
   esbuild: true
   msw: true
-
-# Required for scripts/prepare-embedded.ts to work
-nodeLinker: hoisted
-hoistingLimits: workspaces

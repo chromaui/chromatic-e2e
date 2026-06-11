@@ -1,0 +1,10 @@
+packages:
+  - 'packages/*'
+allowBuilds:
+  '@swc/core': true
+  cypress: true
+  esbuild: true
+  msw: true
+
+# Required for scripts/prepare-embedded.ts to work
+nodeLinker: hoisted

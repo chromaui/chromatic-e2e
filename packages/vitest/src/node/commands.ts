@@ -187,7 +187,8 @@ export function createCommands(options: ResolvedOptions) {
           prefersReducedMotion: testOptions.prefersReducedMotion ?? options.prefersReducedMotion,
           cropToViewport: testOptions.cropToViewport ?? options.cropToViewport,
           ignoreSelectors: testOptions.ignoreSelectors ?? options.ignoreSelectors,
-        }
+        },
+        'vitest'
       );
     },
 

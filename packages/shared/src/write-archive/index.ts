@@ -29,7 +29,8 @@ export async function writeTestResult(
   e2eTestInfo: E2ETestInfo,
   domSnapshots: DOMSnapshots,
   archive: ResourceArchive,
-  chromaticStorybookParams: RequiredButOptional<ChromaticStorybookParameters>
+  chromaticStorybookParams: RequiredButOptional<ChromaticStorybookParameters>,
+  testRunner?: 'cypress' | 'playwright' | 'vitest'
 ) {
   const { titlePath, outputDir, pageUrl } = e2eTestInfo;
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
@@ -91,7 +92,7 @@ export async function writeTestResult(
     })
   );
 
-  const storiesFile = storiesFileName(title);
+  const storiesFile = storiesFileName(title, testRunner !== 'vitest');
   const storiesJson = createStories(title, domSnapshots, chromaticStorybookParams);
   await outputJSONFile(join(finalOutputDir, storiesFile), storiesJson);
 

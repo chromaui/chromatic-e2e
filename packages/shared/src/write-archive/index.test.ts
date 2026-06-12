@@ -59,7 +59,7 @@ describe('writeTestResult', () => {
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/file-test-story-1.stories.json'),
+      resolve('./test-results/chromatic-archives/file-test-story.stories.json'),
       {
         stories: [
           {
@@ -168,9 +168,7 @@ describe('writeTestResult', () => {
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve(
-        './some-custom-directory/directory/chromatic-archives/file-test-story-1.stories.json'
-      ),
+      resolve('./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json'),
       expect.anything()
     );
   });

@@ -1,0 +1,13 @@
+{
+  "name": "embedded",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
+  "packageManager": "npm@11.15.0",
+  "dependencies": {
+    "@storybook/builder-webpack5": "10.2.13",
+    "@storybook/server": "10.2.13",
+    "@storybook/server-webpack5": "10.2.13"
+  }
+}

@@ -20,6 +20,10 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
+      - name: Install Embedded Dependencies
+        run: npm install
+        working-directory: ./embedded
+
       - name: Build
         run: |
           yarn run build

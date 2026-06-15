@@ -83,7 +83,8 @@ export const performChromaticSnapshot = async (
         prefersReducedMotion,
         cropToViewport,
         ignoreSelectors,
-      }
+      },
+      'playwright'
     );
 
     trackComplete();

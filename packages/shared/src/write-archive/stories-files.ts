@@ -10,8 +10,16 @@ const STORIES_FILE_EXT = 'stories.json';
 export const uniqueId = { value: 1 };
 
 // Generates a file-system-safe file name from a story title
-export function storiesFileName(testTitle: string) {
-  const fileName = [sanitize(testTitle) + '-' + uniqueId.value++, STORIES_FILE_EXT].join('.');
+export function storiesFileName(testTitle: string, overwriteDuplicateNames = true) {
+  let title = sanitize(testTitle);
+
+  // If multiple test runner project generate the same name, it's random which one ends up on file system
+  if (!overwriteDuplicateNames) {
+    title += '-' + uniqueId.value++;
+  }
+
+  const fileName = [title, STORIES_FILE_EXT].join('.');
+
   // Leave room for built storybook extensions that may be added (like `-stories.iframe.bundle.js`)
   const maxByteLength = MAX_FILE_NAME_BYTE_LENGTH - 25;
   return truncateFileName(fileName, maxByteLength);

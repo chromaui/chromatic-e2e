@@ -9,6 +9,7 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/test-results/**',
       '**/dist/**',
+      '**/.cache/**',
       '**/*.d.ts',
       '**/storybook-static/**',
       '**/tsup.config.ts',

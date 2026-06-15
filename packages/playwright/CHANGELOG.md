@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.9
+
+### Patch Changes
+
+- 6837593: Fix: Prevent duplicate story ids by allowing multiple projects to overwrite each others results like before
+
 ## 0.14.8
 
 ### Patch Changes

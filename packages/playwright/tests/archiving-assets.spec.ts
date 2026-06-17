@@ -88,3 +88,12 @@ test('use tags for sprites are archived', async ({ page }) => {
 test('assets from relative css urls with base tag are archived', async ({ page }) => {
   await page.goto('/asset-paths/relative-urls-with-base');
 });
+
+test.describe('', () => {
+  // Test case renders animated .gif
+  test.use({ delay: 2500 });
+
+  test('assets with a query string and extension are archived', async ({ page }) => {
+    await page.goto('/asset-paths/skew-protection-query');
+  });
+});

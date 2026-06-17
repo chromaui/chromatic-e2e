@@ -44,6 +44,22 @@ describe('ArchiveFile', () => {
       expect(filePath).toMatch(new RegExp('/some/directory/img-[a-z0-9]+.png'));
     });
 
+    it('keeps a valid extension when an extensioned asset has a query string', () => {
+      const archiveFile = createArchiveFile(
+        'http://localhost:333/assets/logo-light.somehash.svg?dpl=abc123',
+        {
+          statusCode: 200,
+          statusText: 'ok',
+          body: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'),
+          contentType: 'image/svg+xml',
+        }
+      );
+
+      expect(archiveFile.toFileSystemPath()).toMatchInlineSnapshot(
+        `"/assets/logo-light.somehash-53ba8980be568e19a9248ff35298ebb4.svg"`
+      );
+    });
+
     it('truncates long file names and path parts', () => {
       const archiveFile = createArchiveFile('http://localhost:333/some/directory/ok.jpg');
       archiveFile.shortenedFileNameLength = 5;

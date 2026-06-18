@@ -3,7 +3,9 @@ import * as shared from '@chromatic-com/shared-e2e';
 import { getBrowserConfig, runFixture } from '../../../test/utils/node';
 
 vi.mock('@chromatic-com/shared-e2e');
-vi.mocked(shared.writeTestResult).mockImplementation(() => Promise.resolve());
+vi.mocked(shared.writeTestResult).mockImplementation(() =>
+  Promise.resolve({ storiesFile: 'test.stories.json' })
+);
 
 /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
 const takeSnapshotTest = 'take-snapshot.test.ts';

@@ -8,7 +8,9 @@ import { type ResolvedOptions } from '../types';
 const REPORTER_NAME = 'chromatic-reporter';
 
 interface Options
-  extends Pick<ResolvedOptions, 'outputDirectory'>, Pick<ResolvedOptions['reporter'], 'verbose'> {
+  extends
+    Pick<ResolvedOptions, 'outputDirectory' | 'turboSnap'>,
+    Pick<ResolvedOptions['reporter'], 'verbose'> {
   /** User's Vitest built-in reporter */
   builtInReporter: 'default' | 'verbose' | 'tree';
 }
@@ -29,6 +31,7 @@ export class ChromaticReporter implements Reporter {
     const options: Options = {
       verbose: pluginOptions.reporter.verbose,
       outputDirectory: pluginOptions.outputDirectory,
+      turboSnap: pluginOptions.turboSnap,
       builtInReporter: 'default',
     };
 
@@ -109,6 +112,10 @@ export class ChromaticReporter implements Reporter {
     const separator = colors.dim('─'.repeat(this.ctx.logger.getColumns()));
 
     let uploadCommand = 'chromatic --vitest --project-token=<TOKEN>';
+
+    if (this.options.turboSnap) {
+      uploadCommand += ' --only-changed';
+    }
 
     // If user changed the output directory or Vitest root,
     // they'll need to define custom CHROMATIC_ARCHIVE_LOCATION when uploading archives:

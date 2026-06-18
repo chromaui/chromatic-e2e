@@ -14,7 +14,9 @@ const tags = [
 ];
 
 vi.mock('@chromatic-com/shared-e2e');
-vi.mocked(shared.writeTestResult).mockImplementation(() => Promise.resolve());
+vi.mocked(shared.writeTestResult).mockImplementation(() =>
+  Promise.resolve({ storiesFile: 'test.stories.json' })
+);
 
 test('by default all tests are snapshotted', async () => {
   await runFixture({ include, tags });

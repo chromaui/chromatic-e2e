@@ -34,7 +34,7 @@ export async function runFixture(
   const vitest = await startVitest(
     'test',
     [],
-    { config: false },
+    { config: options.config ?? false },
     {
       plugins: ['disabled' in pluginOptions ? undefined : chromaticPlugin(pluginOptions)],
       test: {

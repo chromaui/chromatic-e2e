@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.10
+
+### Patch Changes
+
+- 161a994: Fix: Preserve asset extension when handling query params
+
 ## 0.14.9
 
 ### Patch Changes

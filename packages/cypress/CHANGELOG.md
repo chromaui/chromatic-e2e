@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.12.8
+
+### Patch Changes
+
+- 161a994: Fix: Preserve asset extension when handling query params
+
 ## 0.12.7
 
 ### Patch Changes

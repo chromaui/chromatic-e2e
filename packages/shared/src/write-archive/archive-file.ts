@@ -75,6 +75,12 @@ export class ArchiveFile {
     if (!queryString) return pathname;
 
     const safeQueryString = this.hash(queryString);
+    const extension = path.extname(pathname);
+
+    if (extension) {
+      return `${pathname.substring(0, pathname.length - extension.length)}-${safeQueryString}${extension}`;
+    }
+
     return `${pathname}-${safeQueryString}`;
   }
 

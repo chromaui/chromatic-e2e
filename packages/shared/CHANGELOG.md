@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.11.5
+
+### Patch Changes
+
+- 161a994: Fix: Preserve asset extension when handling query params
+
 ## 0.11.4
 
 ### Patch Changes

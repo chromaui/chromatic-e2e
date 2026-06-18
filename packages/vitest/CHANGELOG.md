@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.1.4
+
+### Patch Changes
+
+- 161a994: Fix: Preserve asset extension when handling query params
+
 ## 0.1.3
 
 ### Patch Changes

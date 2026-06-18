@@ -48,6 +48,7 @@
     "@storybook/server": "10.2.13",
     "@storybook/server-webpack5": "10.2.13",
     "@vitest/browser-playwright": "^4.1.0",
+    "extend-to-be-announced": "2.0.0",
     "msw": "^2.12.10",
     "rimraf": "^3.0.2",
     "tsup": "^7.3.0",

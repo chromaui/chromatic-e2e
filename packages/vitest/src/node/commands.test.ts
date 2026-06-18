@@ -3,7 +3,9 @@ import * as shared from '@chromatic-com/shared-e2e';
 import { runFixture } from '../../test/utils/node';
 
 vi.mock('@chromatic-com/shared-e2e/write-archive/index');
-vi.mocked(shared.writeTestResult).mockImplementation(() => Promise.resolve());
+vi.mocked(shared.writeTestResult).mockImplementation(() =>
+  Promise.resolve({ storiesFile: 'test.stories.json' })
+);
 
 test('writes test results with full test name', async () => {
   /** See {@link file://./../../test/fixtures/test-names.test.ts} */

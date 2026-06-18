@@ -9,7 +9,6 @@ import type {
   BrowserCommandContext,
 } from 'vitest/node';
 import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
-import { type Task } from '@vitest/runner/types';
 import { type serializedNodeWithId } from '@rrweb/types';
 import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import {
@@ -20,8 +19,9 @@ import {
 } from '../types';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 import { ChromaticReporter } from './reporter';
+import { WebpackStatsReporter } from './webpack-stats-reporter';
 
-type TestID = Task['id'];
+type TestID = TestCase['id'];
 type SessionId = BrowserCommandContext['sessionId'];
 type SnapshotName = keyof DOMSnapshots;
 
@@ -182,7 +182,7 @@ export function createCommands(options: ResolvedOptions) {
         };
       }
 
-      await writeTestResult(
+      const { storiesFile } = await writeTestResult(
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
@@ -203,6 +203,10 @@ export function createCommands(options: ResolvedOptions) {
         },
         'vitest'
       );
+
+      if (options.turboSnap) {
+        WebpackStatsReporter.onStoryFileWrite(context.project.vitest, entity, storiesFile);
+      }
     },
 
     /**

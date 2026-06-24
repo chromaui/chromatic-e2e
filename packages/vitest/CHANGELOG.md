@@ -1,5 +1,12 @@
 # @chromatic-com/vitest
 
+## 0.1.5
+
+### Patch Changes
+
+- a7ffb25: Fix: Prevent `storybook build` from using user's `.browserslistrc`
+- 9351a7d: Fix: Prevent duplicate story names error when test name is identical in same file
+
 ## 0.1.4
 
 ### Patch Changes

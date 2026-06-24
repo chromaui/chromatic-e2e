@@ -1,4 +1,5 @@
 import { describe, test } from 'vitest';
+import { takeSnapshot } from '../../src';
 
 test('test #1', () => {});
 
@@ -10,4 +11,12 @@ describe('suite #3', () => {
   describe('nested suite #3', () => {
     test('test #3', () => {});
   });
+});
+
+test('duplicate test name', () => {});
+test('duplicate test name', () => {});
+
+test('duplicate snapshot names', async () => {
+  await takeSnapshot('example');
+  await takeSnapshot('example');
 });

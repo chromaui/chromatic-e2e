@@ -27,6 +27,34 @@ test('writes test results with full test name', async () => {
         "test-names",
         "suite #3 / nested suite #3 / test #3 / Snapshot #1",
       ],
+      [
+        "test-names",
+        "duplicate test name / Snapshot #1",
+      ],
+      [
+        "test-names",
+        "duplicate test name / Snapshot #1 (2)",
+      ],
+      [
+        "test-names",
+        "duplicate test name / Snapshot #1 (3)",
+      ],
+      [
+        "test-names",
+        "duplicate test name with special character @ / Snapshot #1",
+      ],
+      [
+        "test-names",
+        "duplicate test name with special character * / Snapshot #1 (2)",
+      ],
+      [
+        "test-names",
+        "duplicate test name with special character # / Snapshot #1 (3)",
+      ],
+      [
+        "test-names",
+        "duplicate snapshot names / example",
+      ],
     ]
   `);
 });

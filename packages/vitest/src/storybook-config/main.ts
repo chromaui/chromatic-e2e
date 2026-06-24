@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import type { StorybookConfig } from '@storybook/server-webpack5';
 import { archivesDir } from '@chromatic-com/shared-e2e/utils/filePaths';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
@@ -10,8 +11,7 @@ const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..', '..');
 const embeddedDir = path.join(packageRoot, 'embedded', 'node_modules');
 
-/** @type {import('@storybook/server-webpack5').StorybookConfig} */
-export default {
+export default <StorybookConfig>{
   stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
   managerEntries: [path.resolve(__dirname, 'manager.js')],
   previewAnnotations: [path.resolve(__dirname, 'preview.js')],
@@ -21,11 +21,20 @@ export default {
   },
   core: {
     // ESM does not support directory imports; point to the package entry file.
-    builder: pathToFileURL(path.join(embeddedDir, '@storybook', 'builder-webpack5', 'dist', 'index.js')).href,
+    builder: pathToFileURL(
+      path.join(embeddedDir, '@storybook', 'builder-webpack5', 'dist', 'index.js')
+    ).href,
     renderer: pathToFileURL(path.join(embeddedDir, '@storybook', 'server', 'preset.js')).href,
   },
   staticDirs: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), 'archive')],
   features: {
     sidebarOnboardingChecklist: false,
+  },
+  webpackFinal: async (config) => {
+    // Webpack defaults to `target: 'browserslist'`, which makes 'storybook build' transform
+    // files based on the user's `.browserslistrc`: https://webpack.js.org/configuration/target/
+    config.target = ['web'];
+
+    return config;
   },
 };

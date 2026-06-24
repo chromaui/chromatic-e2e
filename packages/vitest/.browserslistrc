@@ -1,0 +1,16 @@
+# This file should be ignored, https://github.com/chromaui/chromatic-e2e/pull/409
+
+# When 'build-archive-storybook' pulls this file, 'storybook build' fails with:
+# Error: For the selected environment is no default script chunk format available:
+# │  Module ('module') can be chosen when ES modules are available (please set
+# │  'experiments.outputModule' and 'output.module' to `true`)
+# │  JSONP Array push ('array-push') can be chosen when 'document' or 'importScripts'
+# │  is available.
+# │  CommonJs exports ('commonjs') can be chosen when 'require' or node builtins are
+# │  available.
+# │  Make sure that your 'browserslist' includes only platforms that support these
+# │  features or select an appropriate 'target' to allow selecting a chunk format by
+# │  default. Alternatively specify the 'output.chunkFormat' directly.
+
+[stable]
+and_chr 117

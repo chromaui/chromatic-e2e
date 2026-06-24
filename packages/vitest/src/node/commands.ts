@@ -1,5 +1,6 @@
 import assert from 'node:assert';
 import { resolve } from 'node:path';
+import { storyNameFromExport, toId } from 'storybook/internal/csf';
 import type {
   TestCase,
   TestModule,
@@ -27,6 +28,7 @@ type SnapshotName = keyof DOMSnapshots;
 export function createCommands(options: ResolvedOptions) {
   const resourceArchivers = new Map<SessionId, ResourceArchiver>();
   const networkIdleTrackers = new Map<SessionId, NetworkIdleTracker>();
+  const savedResults = new Set<string>();
   const snapshots = new Map<
     TestID,
     Map<
@@ -149,9 +151,13 @@ export function createCommands(options: ResolvedOptions) {
       assert(sessionSnapshots, `No snapshots found for test ${id}`);
 
       const snapshotBuffers: DOMSnapshots = {};
+      const titlePath = testOptions.title ? [testOptions.title] : getTitle(entity);
 
       for (const [name, { snapshot, viewport, pseudoClassIds }] of sessionSnapshots) {
-        const names = getSnapshotPrefix(entity).concat(name).join(' / ');
+        const names = generateUniqueSnapshotName({
+          snapshotName: getSnapshotPrefix(entity).concat(name),
+          titlePath,
+        });
 
         snapshotBuffers[names] = {
           snapshot: Buffer.from(JSON.stringify(snapshot)),
@@ -173,7 +179,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
-          titlePath: testOptions.title ? [testOptions.title] : getTitle(entity),
+          titlePath,
         },
         snapshotBuffers,
         archive,
@@ -210,6 +216,7 @@ export function createCommands(options: ResolvedOptions) {
       resourceArchivers.clear();
       networkIdleTrackers.clear();
       snapshots.clear();
+      savedResults.clear();
     },
 
     /**
@@ -238,6 +245,25 @@ export function createCommands(options: ResolvedOptions) {
     snapshots.delete(id);
 
     return { archive: resourceArchiver.archive, sessionSnapshots };
+  }
+
+  function generateUniqueSnapshotName(options: { snapshotName: string[]; titlePath: string[] }) {
+    const names = options.snapshotName.join(' / ');
+    const base = toId(options.titlePath.join(' / '), storyNameFromExport(names));
+
+    let key = base;
+    let count = 1;
+
+    while (savedResults.has(key)) {
+      key = `${base} (${count++})`;
+    }
+    savedResults.add(key);
+
+    if (count > 1) {
+      return `${names} (${count})`;
+    }
+
+    return names;
   }
 }
 

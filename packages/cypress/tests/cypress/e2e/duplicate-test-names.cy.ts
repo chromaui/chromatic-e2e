@@ -8,7 +8,7 @@ describe('duplicate test names', () => {
   });
 });
 
-it('duplicate snapshot names', { env: { disableAutoSnapshot: true } }, () => {
+it('duplicate snapshot names', { expose: { disableAutoSnapshot: true } }, () => {
   cy.visit('/');
 
   cy.takeSnapshot('example');

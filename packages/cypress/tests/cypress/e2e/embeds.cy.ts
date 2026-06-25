@@ -14,7 +14,7 @@ it('cross-origin embed page loads', () => {
   cy.request('http://localhost:3001/').its('body').should('include', 'Embedded page');
 });
 
-it('embedded page background color can be changed', { env: { disableAutoSnapshot: true } }, () => {
+it('embedded page background color can be changed', { expose: { disableAutoSnapshot: true } }, () => {
   /** Re-query each time; wait until iframe document + body exist (load can lag after parent paint). */
   const inEmbeddedBody = (fn: () => void) => {
     cy.get('iframe[title="Same-origin iframe"]')

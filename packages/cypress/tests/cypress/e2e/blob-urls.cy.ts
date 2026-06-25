@@ -1,4 +1,4 @@
-it('Upload a Single file and Assert blob', { env: { ignoreSelectors: ['#objectUrl'] } }, () => {
+it('Upload a Single file and Assert blob', { expose: { ignoreSelectors: ['#objectUrl'] } }, () => {
   cy.visit('/createObjectUrl');
 
   cy.get('#fileInput').selectFile('../../../test-server/fixtures/blue.png');
@@ -21,7 +21,7 @@ it('Fetch data for blob', () => {
 
 it(
   'Captures blob contents for manual snapshots',
-  { env: { ignoreSelectors: ['#objectUrl'] } },
+  { expose: { ignoreSelectors: ['#objectUrl'] } },
   () => {
     cy.visit('/createObjectUrl');
 

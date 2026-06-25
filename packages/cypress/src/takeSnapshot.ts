@@ -8,7 +8,7 @@ export const takeSnapshot = (
   isManualSnapshot?: boolean
 ): Promise<CypressSnapshot | null> => {
   return new Promise((resolve) => {
-    if (!isManualSnapshot && Cypress.env('disableAutoSnapshot')) {
+    if (!isManualSnapshot && Cypress.expose('disableAutoSnapshot')) {
       resolve(null);
     }
 

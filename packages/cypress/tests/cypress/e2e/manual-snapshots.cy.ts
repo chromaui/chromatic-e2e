@@ -11,7 +11,7 @@ it('multiple snapshots are taken', () => {
 
 it(
   'manual snapshot is taken even when automatic snapshots are turned off',
-  { env: { disableAutoSnapshot: true } },
+  { expose: { disableAutoSnapshot: true } },
   () => {
     cy.visit('/manual-snapshots');
     cy.contains("I'm an accordion, click me!").click();

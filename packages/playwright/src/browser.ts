@@ -8,6 +8,8 @@ async function takeSnapshot() {
   const mirror = createMirror();
   const domSnapshot = snapshot(document, { recordCanvas: true, mirror });
 
+  const colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
   const pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'] = {};
 
   for (const className of [':hover', ':focus', ':focus-visible', ':active'] as const) {
@@ -18,7 +20,7 @@ async function takeSnapshot() {
 
   await replaceBlobUrls(domSnapshot);
 
-  return { domSnapshot, pseudoClassIds };
+  return { domSnapshot, pseudoClassIds, colorScheme } as const;
 }
 
 async function replaceBlobUrls(node: serializedNodeWithId) {

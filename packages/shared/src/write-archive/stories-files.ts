@@ -35,8 +35,10 @@ export function createStories(
 
   return {
     title,
-    stories: Object.entries(domSnapshots).map(([snapshotName, { viewport, parameters }]) => {
+    stories: Object.entries(domSnapshots).map(([snapshotName, snapshotOptions]) => {
       const name = collapseNewlines(snapshotName);
+
+      const { parameters, viewport, colorScheme } = snapshotOptions;
       const { chromatic: chromaticParams, ...restParameters } = parameters || {};
 
       return {
@@ -53,6 +55,7 @@ export function createStories(
           chromatic: {
             ...chromaticStorybookParams,
             ...chromaticParams,
+            colorScheme,
             modes: buildStoryModesConfig([viewport]),
           },
           viewport: {

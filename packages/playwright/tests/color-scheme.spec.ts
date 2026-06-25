@@ -23,12 +23,12 @@ test.describe('dark color scheme', () => {
 });
 
 test('captures both color schemes inside a single test case', async ({ page }, testInfo) => {
-  await page.emulateMedia({ colorScheme: 'light' });
-  await page.goto('/color-scheme');
-  await expect(page.getByText('Only visible in LIGHT mode')).toBeVisible();
-  await takeSnapshot(page, 'light', testInfo);
-
   await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/color-scheme');
   await expect(page.getByText('Only visible in DARK mode')).toBeVisible();
   await takeSnapshot(page, 'dark', testInfo);
+
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect(page.getByText('Only visible in LIGHT mode')).toBeVisible();
+  await takeSnapshot(page, 'light', testInfo);
 });

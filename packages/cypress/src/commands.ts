@@ -24,11 +24,12 @@ Cypress.Commands.add('takeSnapshot', (name?: string) => {
 
   cy.window().then((win) => {
     const viewport = { width: win.innerWidth, height: win.innerHeight };
+    const colorScheme = win.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
     cy.document().then((doc) => {
       // here, handle the source map
 
-      cy.wrap(takeChromaticSnapshot(doc, viewport, true)).then(
+      cy.wrap(takeChromaticSnapshot(doc, viewport, colorScheme, true)).then(
         (manualSnapshot: CypressSnapshot) => {
           // reassign manualSnapshots so it includes this new snapshot
           cy.get('@manualSnapshots')

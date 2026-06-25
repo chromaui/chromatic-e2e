@@ -10,14 +10,6 @@ context('mobile', { viewportWidth: 500, viewportHeight: 500 }, () => {
   });
 });
 
-context('using Cypress.config', () => {
-  it('does correctly set the viewport for Chromatic snapshots', () => {
-    Cypress.config('viewportWidth', 1150);
-    Cypress.config('viewportHeight', 500);
-    cy.visit('/viewports');
-  });
-});
-
 context('using cy.viewport', () => {
   it('does correctly set the viewport for Chromatic snapshots', () => {
     cy.viewport(800, 700);
@@ -43,5 +35,13 @@ context('using cy.viewport', () => {
     cy.contains('Window width: 1050').should('be.visible');
     cy.contains("I'm rendered when the page width is between 1100-1000").should('be.visible');
     cy.takeSnapshot('1050 x 1080');
+  });
+});
+
+context('using Cypress.config', () => {
+  it('does correctly set the viewport for Chromatic snapshots', () => {
+    Cypress.config('viewportWidth', 1150);
+    Cypress.config('viewportHeight', 500);
+    cy.visit('/viewports');
   });
 });

@@ -68,8 +68,11 @@
     "@storybook/builder-webpack5": "10.2.13",
     "@storybook/server": "10.2.13",
     "@storybook/server-webpack5": "10.2.13",
-    "cypress": "^15.11.0",
+    "cypress": "^15.18.0",
     "start-server-and-test": "^2.0.3"
+  },
+  "peerDependencies": {
+    "cypress": ">=15.10.0"
   },
   "publishConfig": {
     "access": "public"

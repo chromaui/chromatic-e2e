@@ -2,29 +2,29 @@ import './commands';
 import { takeSnapshot } from './takeSnapshot';
 import { CypressSnapshot } from './types';
 
-const buildChromaticParams = (env: Cypress.Cypress['env']) => ({
-  ...(env('diffThreshold') && {
-    diffThreshold: env('diffThreshold'),
+const buildChromaticParams = (expose: Cypress.Cypress['expose']) => ({
+  ...(expose('diffThreshold') && {
+    diffThreshold: expose('diffThreshold'),
   }),
-  ...(env('delay') && { delay: env('delay') }),
-  ...(env('diffIncludeAntiAliasing') && {
-    diffIncludeAntiAliasing: env('diffIncludeAntiAliasing'),
+  ...(expose('delay') && { delay: expose('delay') }),
+  ...(expose('diffIncludeAntiAliasing') && {
+    diffIncludeAntiAliasing: expose('diffIncludeAntiAliasing'),
   }),
-  ...(env('diffThreshold') && {
-    diffThreshold: env('diffThreshold'),
+  ...(expose('diffThreshold') && {
+    diffThreshold: expose('diffThreshold'),
   }),
-  ...(env('forcedColors') && { forcedColors: env('forcedColors') }),
-  ...(env('pauseAnimationAtEnd') && {
-    pauseAnimationAtEnd: env('pauseAnimationAtEnd'),
+  ...(expose('forcedColors') && { forcedColors: expose('forcedColors') }),
+  ...(expose('pauseAnimationAtEnd') && {
+    pauseAnimationAtEnd: expose('pauseAnimationAtEnd'),
   }),
-  ...(env('prefersReducedMotion') && {
-    prefersReducedMotion: env('prefersReducedMotion'),
+  ...(expose('prefersReducedMotion') && {
+    prefersReducedMotion: expose('prefersReducedMotion'),
   }),
-  ...(env('cropToViewport') && {
-    cropToViewport: env('cropToViewport'),
+  ...(expose('cropToViewport') && {
+    cropToViewport: expose('cropToViewport'),
   }),
-  ...(env('ignoreSelectors') && {
-    ignoreSelectors: env('ignoreSelectors'),
+  ...(expose('ignoreSelectors') && {
+    ignoreSelectors: expose('ignoreSelectors'),
   }),
 });
 
@@ -40,7 +40,7 @@ beforeEach(() => {
   cy.wrap([]).as('manualSnapshots');
   cy.task('prepareArchives', {
     action: 'setup-network-listener',
-    payload: { allowedDomains: Cypress.env('assetDomains') },
+    payload: { allowedDomains: Cypress.expose('assetDomains') },
   });
 });
 
@@ -54,7 +54,6 @@ afterEach(() => {
     // can we be sure this always fires after all the requests are back?
     cy.document().then((doc) => {
       cy.wrap(takeSnapshot(doc, viewport)).then((automaticSnapshot: CypressSnapshot) => {
-        // @ts-expect-error will fix when Cypress has its own package
         cy.get('@manualSnapshots').then((manualSnapshots = []) => {
           cy.url().then((url) => {
             // pass the snapshot to the server to write to disk
@@ -70,7 +69,7 @@ afterEach(() => {
                   ...manualSnapshots,
                   ...(automaticSnapshot ? [automaticSnapshot] : []),
                 ],
-                chromaticStorybookParams: buildChromaticParams(Cypress.env),
+                chromaticStorybookParams: buildChromaticParams(Cypress.expose),
                 pageUrl: url,
                 outputDir: Cypress.config('downloadsFolder'),
               },

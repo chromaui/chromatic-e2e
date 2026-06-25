@@ -36,6 +36,7 @@ export function createCommands(options: ResolvedOptions) {
       {
         snapshot: serializedNodeWithId;
         viewport: DOMSnapshots[string]['viewport'];
+        colorScheme: DOMSnapshots[string]['colorScheme'];
         pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
       }
     >
@@ -77,12 +78,17 @@ export function createCommands(options: ResolvedOptions) {
       name ||= `Snapshot #${sessionSnapshots.size + 1}`;
 
       const frame = await context.frame();
-      const viewport = await frame.evaluate(() => ({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }));
+      const { viewport, colorScheme } = await frame.evaluate(
+        () =>
+          ({
+            viewport: { width: window.innerWidth, height: window.innerHeight },
+            colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light',
+          }) as const
+      );
 
-      sessionSnapshots.set(name, { snapshot, viewport, pseudoClassIds });
+      sessionSnapshots.set(name, { snapshot, viewport, colorScheme, pseudoClassIds });
 
       ChromaticReporter.onSnapshot(context.project.vitest, entity);
     },
@@ -153,7 +159,7 @@ export function createCommands(options: ResolvedOptions) {
       const snapshotBuffers: DOMSnapshots = {};
       const titlePath = testOptions.title ? [testOptions.title] : getTitle(entity);
 
-      for (const [name, { snapshot, viewport, pseudoClassIds }] of sessionSnapshots) {
+      for (const [name, { snapshot, viewport, colorScheme, pseudoClassIds }] of sessionSnapshots) {
         const names = generateUniqueSnapshotName({
           snapshotName: getSnapshotPrefix(entity).concat(name),
           titlePath,
@@ -162,6 +168,7 @@ export function createCommands(options: ResolvedOptions) {
         snapshotBuffers[names] = {
           snapshot: Buffer.from(JSON.stringify(snapshot)),
           viewport,
+          colorScheme,
           pseudoClassIds,
           parameters: {
             chromatic: {

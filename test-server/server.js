@@ -175,6 +175,10 @@ app.get('/canvas', (req, res) => {
   res.sendFile(path.join(__dirname, 'fixtures/canvas.html'));
 });
 
+app.get('/color-scheme', (req, res) => {
+  res.sendFile(path.join(__dirname, 'fixtures/color-scheme.html'));
+});
+
 const server = app.listen(port, () => {
   console.log(`Example app port http://localhost:${port}`);
 });

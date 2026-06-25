@@ -5,6 +5,7 @@ import type { serializedNodeWithId } from '@rrweb/types';
 export const takeSnapshot = (
   doc: Document,
   viewport: { width: number; height: number },
+  colorScheme: 'light' | 'dark',
   isManualSnapshot?: boolean
 ): Promise<CypressSnapshot | null> => {
   return new Promise((resolve) => {
@@ -17,7 +18,7 @@ export const takeSnapshot = (
 
     const pseudoClassIds: CypressSnapshot['pseudoClassIds'] = {};
 
-    for (const className of [':hover', ':focus', ':focus-visible', ':active']) {
+    for (const className of [':hover', ':focus', ':focus-visible', ':active'] as const) {
       const elements = doc.querySelectorAll(className);
       const ids = Array.from(elements, (el) => mirror.getId(el)).filter((id) => id !== -1);
       pseudoClassIds[className] = ids;
@@ -54,7 +55,7 @@ export const takeSnapshot = (
     };
 
     replaceBlobUrls(domSnapshot).then(() => {
-      resolve({ snapshot: domSnapshot, viewport, pseudoClassIds });
+      resolve({ snapshot: domSnapshot, viewport, colorScheme, pseudoClassIds });
     });
   });
 };

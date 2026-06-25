@@ -7,5 +7,6 @@ export interface CypressSnapshot {
   // the DOM snapshot
   snapshot: serializedNodeWithId;
   viewport: DOMSnapshots[string]['viewport'];
+  colorScheme: DOMSnapshots[string]['colorScheme'];
   pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
 }

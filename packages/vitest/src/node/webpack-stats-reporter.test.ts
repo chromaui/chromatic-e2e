@@ -167,13 +167,23 @@ test('TurboSnap enabled with Vitest configuration file', async () => {
   const stats = readStats(root) as { modules: Module[] };
   assert(stats.modules?.length, 'Modules missing from stats');
 
-  for (const mod of stats.modules) {
-    const shouldDependOnConfigFile = mod.id.endsWith('.test.ts');
-    const dependsOnConfigFile = mod.reasons.some((r) => r.moduleName === configFile);
-    const errorMessage = `Module ${mod.id} should ${shouldDependOnConfigFile ? '' : 'not '}depend on config file`;
+  const configEntries = stats.modules.filter((m) => m.id === configFile);
+  expect(configEntries.length).toBe(1);
 
-    expect(dependsOnConfigFile, errorMessage).toBe(shouldDependOnConfigFile);
-  }
+  expect(configEntries[0]).toMatchInlineSnapshot(`
+    {
+      "id": "configs/vitest.config.custom.ts",
+      "name": "configs/vitest.config.custom.ts",
+      "reasons": [
+        {
+          "moduleName": "turbo-snap-1.test.ts",
+        },
+        {
+          "moduleName": "turbo-snap-2.test.ts",
+        },
+      ],
+    }
+  `);
 });
 
 test('TurboSnap disabled', async () => {

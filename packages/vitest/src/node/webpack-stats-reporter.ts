@@ -106,14 +106,16 @@ export class WebpackStatsReporter implements Reporter {
       const id = this.normalize(testModule.moduleId);
 
       // Test module is imported by all its story files
-      const dependencies = [...storyFiles];
+      statsMap.set(id, this.createStatsMapModule(id, [...storyFiles]));
 
       // Test module also depends on Vitest config
       if (testModule.project.config.config) {
-        dependencies.push(testModule.project.config.config);
-      }
+        const configId = this.normalize(testModule.project.config.config);
+        const configEntry = statsMap.get(configId) || this.createStatsMapModule(configId, []);
 
-      statsMap.set(id, this.createStatsMapModule(id, dependencies));
+        configEntry.reasons.push({ moduleName: id });
+        statsMap.set(configId, configEntry);
+      }
 
       this.addModule(testModule.moduleId, statsMap, vite.moduleGraph);
     }

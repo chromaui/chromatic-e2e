@@ -57,6 +57,9 @@ export type DOMSnapshots = Record<
     /** Viewport dimensions from the exact time the snapshot was taken */
     viewport: Viewport;
 
+    /** Color scheme from the exact time the snapshot was taken */
+    colorScheme: 'light' | 'dark';
+
     /** Mapping of pseudo-class names to their corresponding rrweb-snapshot element IDs */
     pseudoClassIds: Partial<
       Record<':active' | ':focus' | ':focus-visible' | ':hover', serializedNodeWithId['id'][]>

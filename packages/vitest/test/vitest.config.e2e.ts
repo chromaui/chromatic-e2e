@@ -26,6 +26,10 @@ export default defineConfig({
       viewport: { width: 1280, height: 720 },
 
       commands: {
+        async emulateColorScheme(context, colorScheme: 'light' | 'dark' | 'no-preference') {
+          await context.page.emulateMedia({ colorScheme });
+        },
+
         async mousedown(context, selector: string) {
           const frame = await context.frame();
           const box = await frame.locator(selector).boundingBox();
@@ -83,6 +87,7 @@ function testServerProxy() {
     'canvas',
     'amd',
     'css-pseudo-states',
+    'color-scheme',
     '@fz',
     'embeds',
   ];

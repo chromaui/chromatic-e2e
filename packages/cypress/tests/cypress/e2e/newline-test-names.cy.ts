@@ -7,7 +7,7 @@ newlines
     cy.visit('/');
   });
 
-  it('newlines in snapshot name', { env: { disableAutoSnapshot: true } }, () => {
+  it('newlines in snapshot name', { expose: { disableAutoSnapshot: true } }, () => {
     cy.visit('/');
     cy.takeSnapshot('snapshot name\nwith newlines\r\nand carriage returns');
   });

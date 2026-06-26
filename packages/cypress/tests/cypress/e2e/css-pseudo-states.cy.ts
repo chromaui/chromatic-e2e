@@ -1,6 +1,6 @@
 type Point = { x: number; y: number };
 
-it('captures :hover state', { env: { disableAutoSnapshot: true } }, () => {
+it('captures :hover state', { expose: { disableAutoSnapshot: true } }, () => {
   cy.visit('/css-pseudo-states');
   withElementCenter('button#target', mouseMove);
 
@@ -8,7 +8,7 @@ it('captures :hover state', { env: { disableAutoSnapshot: true } }, () => {
   cy.takeSnapshot('hover');
 });
 
-it('captures :focus state', { env: { disableAutoSnapshot: true } }, () => {
+it('captures :focus state', { expose: { disableAutoSnapshot: true } }, () => {
   cy.visit('/css-pseudo-states');
 
   withElementCenter('button#target', (point) =>
@@ -21,7 +21,7 @@ it('captures :focus state', { env: { disableAutoSnapshot: true } }, () => {
   cy.takeSnapshot('focus');
 });
 
-it('captures :active state', { env: { disableAutoSnapshot: true } }, () => {
+it('captures :active state', { expose: { disableAutoSnapshot: true } }, () => {
   cy.visit('/css-pseudo-states');
 
   let pressedCoords: Point = { x: 0, y: 0 };
@@ -40,7 +40,7 @@ it('captures :active state', { env: { disableAutoSnapshot: true } }, () => {
   cy.then(() => mouseUp(pressedCoords));
 });
 
-it('captures :focus-visible state', { env: { disableAutoSnapshot: true } }, () => {
+it('captures :focus-visible state', { expose: { disableAutoSnapshot: true } }, () => {
   cy.visit('/css-pseudo-states');
   cy.get('button#tab-cycle').focus();
 

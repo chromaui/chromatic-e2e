@@ -6,7 +6,7 @@ export default defineProject({
   resolve: { tsconfigPaths: true },
   test: {
     name: { label: 'Vitest Unit', color: 'yellow' },
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'embedded.test.ts'],
     exclude: ['**/*.browser.test.ts'],
     setupFiles: ['test/utils/setup.ts'],
     mockReset: true,

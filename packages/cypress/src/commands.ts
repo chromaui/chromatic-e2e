@@ -32,7 +32,6 @@ Cypress.Commands.add('takeSnapshot', (name?: string) => {
         (manualSnapshot: CypressSnapshot) => {
           // reassign manualSnapshots so it includes this new snapshot
           cy.get('@manualSnapshots')
-            // @ts-expect-error will fix when Cypress has its own package
             .then((snapshots: CypressSnapshot[]) => {
               return [...snapshots, { ...manualSnapshot, name }];
             })

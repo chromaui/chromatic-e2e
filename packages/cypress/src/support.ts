@@ -54,7 +54,6 @@ afterEach(() => {
     // can we be sure this always fires after all the requests are back?
     cy.document().then((doc) => {
       cy.wrap(takeSnapshot(doc, viewport)).then((automaticSnapshot: CypressSnapshot) => {
-        // @ts-expect-error will fix when Cypress has its own package
         cy.get('@manualSnapshots').then((manualSnapshots = []) => {
           cy.url().then((url) => {
             // pass the snapshot to the server to write to disk

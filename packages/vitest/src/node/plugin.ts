@@ -6,6 +6,7 @@ import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
 import { ChromaticReporter } from './reporter';
+import { WebpackStatsReporter } from './webpack-stats-reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 import { type ResolvedOptions, type Options } from '../types';
 
@@ -21,6 +22,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     outputDirectory: DEFAULT_OUTPUT_DIR,
     resourceArchiveTimeout: DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
     idleNetworkInterval: 100,
+    turboSnap: false,
     ...userOptions,
     reporter: resolveReporterOptions(userOptions.reporter),
   };
@@ -59,6 +61,10 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
       if (options.reporter.enabled) {
         ChromaticReporter.apply(context.vitest, options);
+      }
+
+      if (options.turboSnap) {
+        WebpackStatsReporter.apply(context.vitest, options);
       }
 
       // Ensure our setup file is registered first so that afterEach runs before any user-defined hooks.
@@ -109,7 +115,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       });
 
       function clean() {
-        rmSync(resolve(project.vitest.config.root, options.outputDirectory, 'chromatic-archives'), {
+        rmSync(resolve(project.vitest.config.root, options.outputDirectory), {
           recursive: true,
           force: true,
         });

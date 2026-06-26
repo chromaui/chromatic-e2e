@@ -59,6 +59,16 @@ export interface Options extends ChromaticConfig {
          */
         verbose?: boolean;
       };
+
+  /**
+   * Experimental: Enables [TurboSnap](https://www.chromatic.com/docs/turbosnap/).
+   *
+   * @default false
+   *
+   * @experimental
+   *
+   */
+  turboSnap?: boolean;
 }
 
 /** Additional `parameters` added into the Story JSON file. */

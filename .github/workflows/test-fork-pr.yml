@@ -1,0 +1,50 @@
+name: Test Fork PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number to test. Review the diff before running.
+        required: true
+        type: string
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.head.outputs.sha }}
+    steps:
+      - name: Resolve PR head SHA
+        id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(gh pr view "${{ inputs.pr }}" \
+            --repo "${{ github.repository }}" \
+            --json headRefOid --jq .headRefOid)
+          echo "Resolved PR #${{ inputs.pr }} to $sha"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+  test_cypress:
+    needs: resolve
+    uses: ./.github/workflows/test-cypress.yml
+    with:
+      ref: ${{ needs.resolve.outputs.ref }}
+    secrets:
+      chromaticProjectToken: ${{ secrets.CHROMATIC_CYPRESS_PROJECT_TOKEN }}
+
+  test_playwright:
+    needs: resolve
+    uses: ./.github/workflows/test-playwright.yml
+    with:
+      ref: ${{ needs.resolve.outputs.ref }}
+    secrets:
+      chromaticProjectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
+
+  test_vitest:
+    needs: resolve
+    uses: ./.github/workflows/test-vitest.yml
+    with:
+      ref: ${{ needs.resolve.outputs.ref }}
+    secrets:
+      chromaticProjectToken: ${{ secrets.CHROMATIC_VITEST_PROJECT_TOKEN }}

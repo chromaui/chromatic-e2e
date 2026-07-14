@@ -49,12 +49,12 @@
     "*.d.ts"
   ],
   "scripts": {
-    "prebuild": "yarn clean",
-    "build": "yarn prebuild && tsup",
+    "prebuild": "pnpm clean",
+    "build": "pnpm prebuild && tsup",
     "clean": "rimraf ./dist ./embedded",
-    "test:cypress": "start-server-and-test 'yarn run dev:server' 3000 'yarn run test:do-cypress'",
+    "test:cypress": "start-server-and-test 'pnpm --filter @chromaui/chromatic-e2e dev:server' 3000 'pnpm test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
-    "test:unit": "yarn workspace @chromaui/chromatic-e2e test:unit --project Cypress"
+    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Cypress"
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
@@ -68,8 +68,10 @@
     "@storybook/builder-webpack5": "10.2.13",
     "@storybook/server": "10.2.13",
     "@storybook/server-webpack5": "10.2.13",
-    "cypress": "^15.18.0",
-    "start-server-and-test": "^2.0.3"
+    "cypress": "15.18.0",
+    "rimraf": "^3.0.2",
+    "start-server-and-test": "^2.0.3",
+    "tsup": "^7.3.0"
   },
   "peerDependencies": {
     "cypress": ">=15.10.0"

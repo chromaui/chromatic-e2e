@@ -38,7 +38,7 @@ jobs:
 
       - name: Build
         run: |
-          pnpm build
+          pnpm build:vitest
 
       - name: Run tests
         run: |

@@ -20,6 +20,7 @@ This repository is a Yarn 4 monorepo containing the following packages:
 
 - If you have `yarn 1` installed globally, it is recommended that you run `corepack enable` so that the version of yarn set in `packageManager` in `package.json` is used for this project
 - Run `yarn install`
+- Run `cd embedded && npm install`
 - Run `yarn build`
 - Run `yarn playwright install`
 

@@ -1,5 +1,11 @@
 # @chromaui/shared-e2e
 
+## 0.11.6
+
+### Patch Changes
+
+- 0994e2e: Feat: add support for setting `colorScheme`
+
 ## 0.11.5
 
 ### Patch Changes

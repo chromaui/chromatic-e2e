@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { StorybookConfig } from '@storybook/server-webpack5';
 import { archivesDir } from '@chromatic-com/shared-e2e/utils/filePaths';
+import { storybookParentNodeModulesDir } from '@chromatic-com/shared-e2e/utils/storybookPaths';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -34,6 +35,18 @@ export default <StorybookConfig>{
     // Webpack defaults to `target: 'browserslist'`, which makes 'storybook build' transform
     // files based on the user's `.browserslistrc`: https://webpack.js.org/configuration/target/
     config.target = ['web'];
+
+    // Storybook's virtual entry modules live in the user's project root, where imports like
+    // `storybook/internal/csf` may not resolve by node_modules walk-up (e.g. with pnpm).
+    // Fall back to the `storybook` install this package depends on.
+    const storybookNodeModules = storybookParentNodeModulesDir(import.meta.url);
+    if (storybookNodeModules) {
+      config.resolve ??= {};
+      config.resolve.modules = [
+        ...(config.resolve.modules ?? ['node_modules']),
+        storybookNodeModules,
+      ];
+    }
 
     return config;
   },

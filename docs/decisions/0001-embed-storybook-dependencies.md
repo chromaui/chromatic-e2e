@@ -50,6 +50,7 @@ We use **Option B (embedded folder)** so that consumers get at most two storyboo
 - `@chromatic-com/playwright` and `@chromatic-com/cypress` publish an `embedded/` directory containing the Storybook 10.x stack (except the `storybook` package itself).
 - Root build runs `prepare-embedded` after workspace builds; each package’s build is `prebuild && tsup` only.
 - The three `@storybook/*` packages are devDependencies for the monorepo build and do not appear in the published dependencies list.
+- Storybook's webpack builder places its virtual entry modules in the consumer's project root, and their `storybook/*` imports resolve by node_modules walk-up from there. With pnpm the consumer's root `node_modules` does not contain our `storybook` dependency (regardless of the `hoist` setting), so each package's Storybook config adds the directory containing our `storybook` install to webpack's `resolve.modules` as a fallback (see `storybookParentNodeModulesDir`, chromaui/chromatic-e2e#416).
 - If we ever need to support only npm/yarn and can accept pnpm limitations, revisiting `bundledDependencies` would be reasonable.
 
 ## References

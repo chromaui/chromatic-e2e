@@ -1,5 +1,12 @@
 # @chromatic-com/vitest
 
+## 0.1.6
+
+### Patch Changes
+
+- 2993acf: Fix `Module not found: Error: Can't resolve 'storybook/internal/csf'` when the archive Storybook is built in a project where `storybook` is not reachable from the project root (e.g. pnpm, regardless of the `hoist` setting). Webpack now falls back to resolving `storybook/*` imports from the `storybook` install these packages depend on.
+- 0994e2e: Feat: add support for setting `colorScheme`
+
 ## 0.1.5
 
 ### Patch Changes

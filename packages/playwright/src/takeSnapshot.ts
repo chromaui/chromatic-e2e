@@ -38,7 +38,7 @@ async function takeSnapshot(
   });
 
   // Serialize and capture the DOM
-  const { domSnapshot, pseudoClassIds } = await executeSnapshotScript(page);
+  const { domSnapshot, pseudoClassIds, colorScheme } = await executeSnapshotScript(page);
 
   // First iframe is the main document, skip it.
   // This returns all iframes, even the nested ones.
@@ -78,6 +78,7 @@ async function takeSnapshot(
   chromaticSnapshots.get(testId).set(name, {
     snapshot: bufferedSnapshot,
     viewport: page.viewportSize() || { width: 1280, height: 720 },
+    colorScheme,
     pseudoClassIds,
   });
 }

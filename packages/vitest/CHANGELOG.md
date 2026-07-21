@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.1.7
+
+### Patch Changes
+
+- 663cb3d: Feat: Add TurboSnap support
+
 ## 0.1.6
 
 ### Patch Changes

@@ -1,0 +1,6 @@
+/* base.css becomes a file-only module graph entry without an id */
+@import './base.css';
+
+.styled {
+  font-weight: bold;
+}

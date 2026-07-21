@@ -92,9 +92,9 @@ export async function writeTestResult(
     })
   );
 
-  const storiesFile = storiesFileName(title, testRunner !== 'vitest');
+  const storiesFile = join(finalOutputDir, storiesFileName(title, testRunner !== 'vitest'));
   const storiesJson = createStories(title, domSnapshots, chromaticStorybookParams);
-  await outputJSONFile(join(finalOutputDir, storiesFile), storiesJson);
+  await outputJSONFile(storiesFile, storiesJson);
 
   const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
   if (errors.length > 0) {
@@ -103,4 +103,6 @@ export async function writeTestResult(
       errors: Object.fromEntries(errors),
     });
   }
+
+  return { storiesFile };
 }

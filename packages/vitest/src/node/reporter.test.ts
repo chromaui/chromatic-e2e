@@ -6,7 +6,9 @@ import { runFixture as baseRunFixture, StableTestFileOrderSorter } from '../../t
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
 vi.mock('@chromatic-com/shared-e2e');
-vi.mocked(shared.writeTestResult).mockImplementation(() => Promise.resolve());
+vi.mocked(shared.writeTestResult).mockImplementation(() =>
+  Promise.resolve({ storiesFile: 'test.stories.json' })
+);
 
 test('default reporter', async () => {
   const { stdout } = await runFixture({ reporters: 'default' });
@@ -158,6 +160,30 @@ test('summary when custom root', async () => {
 
     Archives saved in <process-cwd>/packages/vitest/test/fixtures/.vitest/chromatic
     To upload archives into Chromatic run CHROMATIC_ARCHIVE_LOCATION=packages/vitest/test/fixtures/.vitest/chromatic chromatic --vitest --project-token=<TOKEN>"
+  `);
+});
+
+test('summary with TurboSnap enabled', async () => {
+  onTestFinished(() => {
+    const reports = resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
+
+    if (existsSync(reports)) {
+      rmSync(reports, { recursive: true, force: true });
+    }
+  });
+
+  const { stdout } = await runFixture(
+    { reporters: 'default', root: process.cwd() },
+    { turboSnap: true }
+  );
+
+  expect(trimSummary(stdout)).toMatchInlineSnapshot(`
+    "Chromatic Visual Regression
+
+    ✓ 24 archives captured
+
+    Archives saved in <process-cwd>/.vitest/chromatic
+    To upload archives into Chromatic run chromatic --vitest --project-token=<TOKEN> --only-changed"
   `);
 });
 

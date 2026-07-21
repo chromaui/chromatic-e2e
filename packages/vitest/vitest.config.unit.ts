@@ -9,7 +9,7 @@ export default defineProject({
     include: ['src/**/*.test.ts', 'embedded.test.ts'],
     exclude: ['**/*.browser.test.ts'],
     setupFiles: ['test/utils/setup.ts'],
-    mockReset: true,
+    clearMocks: true,
 
     // Isolate project into it's own group as we are spawning browser runners during tests
     sequence: { groupOrder: 2 },

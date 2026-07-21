@@ -38,6 +38,7 @@ test('getOptions', async () => {
         "verbose": true,
       },
       "resourceArchiveTimeout": 10000,
+      "turboSnap": false,
     }
   `);
 });

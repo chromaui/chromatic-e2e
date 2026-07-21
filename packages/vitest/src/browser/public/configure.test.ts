@@ -3,7 +3,9 @@ import * as shared from '@chromatic-com/shared-e2e';
 import { runFixture } from '../../../test/utils/node';
 
 vi.mock('@chromatic-com/shared-e2e');
-vi.mocked(shared.writeTestResult).mockImplementation(() => Promise.resolve());
+vi.mocked(shared.writeTestResult).mockImplementation(() =>
+  Promise.resolve({ storiesFile: 'test.stories.json' })
+);
 
 describe('configure({ disableAutoSnapshot })', () => {
   /** See {@link file://./../../../test/fixtures/disable-autosnapshot.test.ts} */

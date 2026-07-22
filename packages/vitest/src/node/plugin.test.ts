@@ -205,6 +205,8 @@ test('does not clean existing output directory when "vitest --merge-reports" is 
   const outputDir = resolve(options.root, '.vitest-reports');
   const outputFile = resolve(outputDir, 'blob.json');
 
+  await rm(outputDir, { recursive: true, force: true });
+
   // First run to generate blob
   await runFixture({ reporters: [['blob', { outputFile }]], ...options });
 

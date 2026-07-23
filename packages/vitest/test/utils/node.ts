@@ -87,6 +87,16 @@ export class StableTestFileOrderSorter implements TestSequencer {
   }
 
   shard(files: TestSpecification[]) {
-    return files;
+    const shard = files[0]?.project?.config?.shard;
+
+    if (!shard) {
+      return files;
+    }
+
+    if (shard.count !== files.length) {
+      throw new Error(`Not Implemented: StableTestFileOrderSorter has simple sharding support.`);
+    }
+
+    return [files[shard.index - 1]];
   }
 }

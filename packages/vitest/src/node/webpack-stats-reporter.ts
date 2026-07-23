@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import type { TestCase, TestModule, Vite, Vitest } from 'vitest/node';
 import type { Reporter } from 'vitest/reporters';
@@ -42,11 +42,15 @@ export class WebpackStatsReporter implements Reporter {
     const exists = ctx.config.reporters.some(isWebpackStatsReporter);
 
     if (!exists) {
-      const outputFile = resolve(
-        ctx.config.root,
-        pluginOptions.outputDirectory,
-        'preview-stats.json'
-      );
+      const filename = [
+        'preview-stats',
+        ctx.config.shard && `-${ctx.config.shard.index}-${ctx.config.shard.count}`,
+        '.json',
+      ]
+        .filter(Boolean)
+        .join('');
+
+      const outputFile = resolve(ctx.config.root, pluginOptions.outputDirectory, filename);
 
       ctx.config.reporters.push(new WebpackStatsReporter(ctx, { outputFile }));
     }
@@ -324,4 +328,46 @@ function resolveMapSources(
 
     return [resolved];
   });
+}
+
+/**
+ * Merge multiple `preview-stats.json` files into a single one.
+ * When Vitest is run with `--shard` option, each stat file will have
+ * unique filenames like `preview-stats-1-4.json` and `preview-stats-2-4.json`.
+ *
+ * This helper will read all files matching this pattern and output a single `preview-stats.json`
+ * containing merged stats.
+ */
+export async function mergePreviewStats(options: { root: string; outputDirectory: string }) {
+  const outputDirectory = resolve(options.root, options.outputDirectory);
+  const merged = new Map<Module['id'], Module>();
+
+  for (const filename of await readdir(outputDirectory)) {
+    if (filename.startsWith('preview-stats') && filename.endsWith('.json')) {
+      const fullFilename = resolve(outputDirectory, filename);
+      const stats: { modules: Module[] } = JSON.parse(await readFile(fullFilename, 'utf-8'));
+
+      for (const mod of stats.modules) {
+        const previous = merged.get(mod.id);
+
+        if (previous) {
+          for (const reason of mod.reasons) {
+            if (!previous.reasons.some((r) => r.moduleName === reason.moduleName)) {
+              previous.reasons.push(reason);
+            }
+          }
+        } else {
+          merged.set(mod.id, mod);
+        }
+      }
+
+      await rm(fullFilename);
+    }
+  }
+
+  await writeFile(
+    resolve(outputDirectory, 'preview-stats.json'),
+    JSON.stringify({ modules: Array.from(merged.values()) }, null, 2),
+    'utf-8'
+  );
 }

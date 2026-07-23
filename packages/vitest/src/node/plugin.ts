@@ -1,4 +1,4 @@
-import { rmSync } from 'node:fs';
+import { existsSync, readdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type {} from 'vitest/config';
 import type { Vite } from 'vitest/node';
@@ -6,7 +6,7 @@ import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
 import { ChromaticReporter } from './reporter';
-import { WebpackStatsReporter } from './webpack-stats-reporter';
+import { mergePreviewStats, WebpackStatsReporter } from './webpack-stats-reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 import { type ResolvedOptions, type Options } from '../types';
 
@@ -49,10 +49,13 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       };
     },
 
-    configureVitest(context) {
+    async configureVitest(context) {
       const project = context.project;
       const browser = project.config.browser;
       const sequence = context.vitest.config.sequence;
+
+      // Enabled when "vitest --merge-reports" is run. It's used after sharded runs ("vitest --shard=1/2", "vitest --shard=2/2").
+      const isMergeReports = project.globalConfig.mergeReports;
 
       // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
       if (!browser.enabled || browser.name !== 'chromium') {
@@ -63,7 +66,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         ChromaticReporter.apply(context.vitest, options);
       }
 
-      if (options.turboSnap) {
+      if (options.turboSnap && !isMergeReports) {
         WebpackStatsReporter.apply(context.vitest, options);
       }
 
@@ -105,7 +108,14 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         }
       }
 
-      if (!project.globalConfig.mergeReports) {
+      if (isMergeReports) {
+        if (options.turboSnap) {
+          await mergePreviewStats({
+            root: project.vitest.config.root,
+            outputDirectory: options.outputDirectory,
+          });
+        }
+      } else {
         clean();
       }
 
@@ -117,8 +127,14 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       function clean() {
         const outputDirectory = resolve(project.vitest.config.root, options.outputDirectory);
 
-        for (const output of ['chromatic-archives', 'preview-stats.json']) {
-          rmSync(resolve(outputDirectory, output), { recursive: true, force: true });
+        rmSync(resolve(outputDirectory, 'chromatic-archives'), { recursive: true, force: true });
+
+        if (existsSync(outputDirectory)) {
+          for (const file of readdirSync(outputDirectory)) {
+            if (file.startsWith('preview-stats') && file.endsWith('.json')) {
+              rmSync(resolve(outputDirectory, file), { force: true });
+            }
+          }
         }
       }
     },

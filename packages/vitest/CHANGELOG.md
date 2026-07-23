@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 0.1.8
+
+### Patch Changes
+
+- f8a896f: Fix: TurboSnap with `vitest --shard` to contain `preview-stats.json` info from all runs.
+
 ## 0.1.7
 
 ### Patch Changes

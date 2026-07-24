@@ -4,13 +4,6 @@ import { Browser, chromium, Page } from 'playwright';
 import { performChromaticSnapshot } from './makeTest';
 import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
 
-// mock the tracking as it causes memory leak in test
-vi.mock(import('@chromatic-com/shared-e2e'), async (importOriginal) => ({
-  ...(await importOriginal()),
-  trackComplete: vi.fn(),
-  trackRun: vi.fn(),
-}));
-
 describe('makeTest', () => {
   let browser: Browser;
   let page: Page;

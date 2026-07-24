@@ -10,8 +10,6 @@ import type {
 import type { ChromaticConfig } from '@chromatic-com/shared-e2e';
 import {
   writeTestResult,
-  trackComplete,
-  trackRun,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
 } from '@chromatic-com/shared-e2e';
 import { join } from 'node:path';
@@ -40,8 +38,6 @@ export const performChromaticSnapshot = async (
   const httpCredentials = project?.use?.httpCredentials;
 
   try {
-    trackRun();
-
     // CDP only works in Chromium, so we only capture archives in Chromium.
     // We can later snapshot them in different browsers in the cloud.
     // TODO: I'm not sure if this is the best way to detect the browser version, but
@@ -86,8 +82,6 @@ export const performChromaticSnapshot = async (
       },
       'playwright'
     );
-
-    trackComplete();
   } finally {
     // make sure we clear the value associated with this test ID, so the shared chromaticSnapshots object stays small
     chromaticSnapshots.delete(testId);

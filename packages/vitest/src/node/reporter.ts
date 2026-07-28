@@ -3,6 +3,7 @@ import { TestCase, TestModule, Vitest } from 'vitest/node';
 import { Reporter } from 'vitest/reporters';
 import colors from 'tinyrainbow';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
+import { TELEMETRY_LOG_FILE } from './telemetry';
 import { type ResolvedOptions } from '../types';
 
 const REPORTER_NAME = 'chromatic-reporter';
@@ -10,7 +11,8 @@ const REPORTER_NAME = 'chromatic-reporter';
 interface Options
   extends
     Pick<ResolvedOptions, 'outputDirectory' | 'turboSnap'>,
-    Pick<ResolvedOptions['reporter'], 'verbose'> {
+    Pick<ResolvedOptions['reporter'], 'verbose'>,
+    Pick<ResolvedOptions['telemetry'], 'logToFile'> {
   /** User's Vitest built-in reporter */
   builtInReporter: 'default' | 'verbose' | 'tree';
 }
@@ -32,6 +34,7 @@ export class ChromaticReporter implements Reporter {
       verbose: pluginOptions.reporter.verbose,
       outputDirectory: pluginOptions.outputDirectory,
       turboSnap: pluginOptions.turboSnap,
+      logToFile: pluginOptions.telemetry.enabled && pluginOptions.telemetry.logToFile,
       builtInReporter: 'default',
     };
 
@@ -126,6 +129,10 @@ export class ChromaticReporter implements Reporter {
       uploadCommand = `CHROMATIC_ARCHIVE_LOCATION=${relative(process.cwd(), output)} ${uploadCommand}`;
     }
 
+    const telemetryInfo = this.options.logToFile
+      ? `\nTelemetry events logged to ${colors.dim(resolve(output, TELEMETRY_LOG_FILE))}`
+      : '';
+
     this.ctx.logger.log(
       `${separator}`,
 
@@ -134,6 +141,7 @@ export class ChromaticReporter implements Reporter {
       `\n\n${colors.green('✓')} ${snapshotCount} ${pluralize(snapshotCount, 'archive')} captured`,
 
       `\n\nArchives saved in ${colors.dim(output)}`,
+      telemetryInfo,
       `\nTo upload archives into Chromatic run ${colors.green(uploadCommand)}`,
 
       `\n\n${separator}\n`

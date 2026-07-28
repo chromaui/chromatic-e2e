@@ -6,6 +6,12 @@ import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
 import { ChromaticReporter } from './reporter';
+import {
+  cleanTelemetryLogFile,
+  resolveTelemetryOptions,
+  setupTelemetryCleanup,
+  trackEvent,
+} from './telemetry';
 import { mergePreviewStats, WebpackStatsReporter } from './webpack-stats-reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 import { type ResolvedOptions, type Options } from '../types';
@@ -25,6 +31,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     turboSnap: false,
     ...userOptions,
     reporter: resolveReporterOptions(userOptions.reporter),
+    telemetry: resolveTelemetryOptions(userOptions.telemetry),
   };
 
   const isDist = import.meta.url.includes('dist/plugin.js');
@@ -60,8 +67,58 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       // Enabled when "vitest --merge-reports" is run. It's used after sharded runs ("vitest --shard=1/2", "vitest --shard=2/2").
       const isMergeReports = project.globalConfig.mergeReports;
 
+      if (options.telemetry.enabled) {
+        setupTelemetryCleanup(context.vitest);
+
+        void trackEvent(
+          {
+            eventType: 'plugin_configured',
+            level: 'info',
+            payload: {
+              cropToViewport: options.cropToViewport,
+              delay: options.delay,
+              diffIncludeAntiAliasing: options.diffIncludeAntiAliasing,
+              diffThreshold: options.diffThreshold,
+              disableAutoSnapshot: options.disableAutoSnapshot,
+              forcedColors: options.forcedColors,
+              idleNetworkInterval: options.idleNetworkInterval,
+              pauseAnimationAtEnd: options.pauseAnimationAtEnd,
+              prefersReducedMotion: options.prefersReducedMotion,
+              resourceArchiveTimeout: options.resourceArchiveTimeout,
+              turboSnap: options.turboSnap,
+              reporter: !options.reporter.enabled
+                ? 'off'
+                : options.reporter.verbose
+                  ? 'verbose'
+                  : 'non-verbose',
+
+              // Don't attach any user-defined strings values:
+              isCustomOutputDirectory: options.outputDirectory !== DEFAULT_OUTPUT_DIR,
+              assetDomainsCount: options.assetDomains?.length ?? 0,
+              ignoreSelectorsCount: options.ignoreSelectors?.length ?? 0,
+              tagsCount: options.tags?.length ?? 0,
+            },
+          },
+          context.vitest,
+          options
+        );
+      }
+
       // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
       if (!browser.enabled || browser.name !== 'chromium') {
+        trackEvent(
+          {
+            eventType: 'project_ineligible',
+            level: 'warn',
+            payload: {
+              isBrowser: browser.enabled,
+              isChromium: browser.name === 'chromium',
+            },
+          },
+          context.vitest,
+          options
+        );
+
         return clean();
       }
 
@@ -131,6 +188,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         const outputDirectory = resolve(project.vitest.config.root, options.outputDirectory);
 
         rmSync(resolve(outputDirectory, 'chromatic-archives'), { recursive: true, force: true });
+        cleanTelemetryLogFile(outputDirectory);
 
         if (existsSync(outputDirectory)) {
           for (const file of readdirSync(outputDirectory)) {

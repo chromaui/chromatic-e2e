@@ -3,7 +3,7 @@ import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from '../dist/plugin';
 
 export default defineConfig({
-  plugins: [chromaticPlugin()],
+  plugins: [chromaticPlugin({ telemetry: false })],
 
   server: {
     proxy: testServerProxy(),

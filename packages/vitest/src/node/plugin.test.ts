@@ -4,7 +4,9 @@ import { beforeEach, expect, onTestFinished, test } from 'vitest';
 import { createVitest, type TestModule } from 'vitest/node';
 import { uniqueId } from '@chromatic-com/shared-e2e/write-archive/stories-files';
 import { chromaticPlugin } from './plugin';
+import type { WireTelemetryEvent } from './telemetry';
 import {
+  createTelemetryServer,
   createOutputStreams,
   getBrowserConfig,
   getResolvedConfig,
@@ -37,6 +39,7 @@ test('adds browser commands', async () => {
       "__chromatic_interceptFetch": [Function],
       "__chromatic_reset": [Function],
       "__chromatic_stopWithoutSnapshots": [Function],
+      "__chromatic_telemetry": [Function],
       "__chromatic_uploadDOMSnapshot": [Function],
       "__chromatic_waitForIdleNetwork": [Function],
       "__chromatic_writeTestResult": [Function],
@@ -263,5 +266,122 @@ test('works in multi project instance setup', { timeout: 30_000 }, async () => {
       "public-apis-1.stories.json",
       "public-apis-2.stories.json",
     ]
+  `);
+});
+
+test('sends plugin init telemetry event', async () => {
+  const { onRequest, setup } = createTelemetryServer();
+  const cleanup = setup();
+  onTestFinished(cleanup);
+
+  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
+  onTestFinished(() => void (process.env.CHROMATIC_DISABLE_TELEMETRY = '1'));
+
+  await getResolvedConfig(undefined, {
+    ignoreSelectors: ['.ignore-me'],
+    assetDomains: ['https://one.chromatic.com', 'https://two.chromatic.com'],
+    tags: ['first', 'second', 'third'],
+    turboSnap: true,
+    resourceArchiveTimeout: 1234,
+    disableAutoSnapshot: true,
+  });
+
+  const initEvents = onRequest.mock.calls.filter(
+    ([event]) => event.eventType === 'ch_vitest_plugin_configured'
+  );
+  expect(initEvents).toHaveLength(1);
+
+  const event = initEvents[0][0];
+
+  expect(event).toHaveProperty('eventType', 'ch_vitest_plugin_configured');
+  expect(event).toHaveProperty('level', 'info');
+  expect(event.payload).toMatchInlineSnapshot(`
+    {
+      "assetDomainsCount": 2,
+      "disableAutoSnapshot": true,
+      "idleNetworkInterval": 100,
+      "ignoreSelectorsCount": 1,
+      "isCustomOutputDirectory": false,
+      "reporter": "verbose",
+      "resourceArchiveTimeout": 1234,
+      "tagsCount": 3,
+      "turboSnap": true,
+    }
+  `);
+});
+
+test('sends multiple plugin init telemetry events when multiple projects', async () => {
+  const { onRequest, setup } = createTelemetryServer();
+  const cleanup = setup();
+  onTestFinished(cleanup);
+
+  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
+  onTestFinished(() => void (process.env.CHROMATIC_DISABLE_TELEMETRY = '1'));
+
+  await runFixture(
+    {
+      projects: [
+        {
+          plugins: [chromaticPlugin({ delay: 1111 })],
+          test: {
+            name: 'first-project',
+            browser: getBrowserConfig('first-browser'),
+            include: ['**/dom.test.ts'],
+            root: resolve(import.meta.dirname, '../../test/fixtures'),
+          },
+        },
+        {
+          plugins: [chromaticPlugin({ delay: 2222 })],
+          test: {
+            name: 'second-project',
+            browser: getBrowserConfig('second-browser'),
+            include: ['**/dom.test.ts'],
+            root: resolve(import.meta.dirname, '../../test/fixtures'),
+          },
+        },
+      ],
+    },
+    { disabled: true }
+  );
+
+  const initEvents = onRequest.mock.calls.flatMap(([event]) =>
+    event.eventType === 'ch_vitest_plugin_configured'
+      ? [event as WireTelemetryEvent<'plugin_configured'>]
+      : []
+  );
+
+  expect.soft(initEvents).toHaveLength(2);
+  expect.soft(initEvents.map((event) => event.payload.delay).sort()).toEqual([1111, 2222]);
+});
+
+test('sends project_ineligible telemetry event', async () => {
+  const { onRequest, setup } = createTelemetryServer();
+  const cleanup = setup();
+  onTestFinished(cleanup);
+
+  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
+  onTestFinished(() => void (process.env.CHROMATIC_DISABLE_TELEMETRY = '1'));
+
+  await runFixture({
+    name: 'unit',
+    include: ['**/dom.test.ts'],
+    browser: { enabled: false },
+    root: resolve(import.meta.dirname, '../../test/fixtures'),
+  });
+
+  const events = onRequest.mock.calls.map(([event]) => event);
+
+  expect(events).toHaveLength(2);
+  expect(events[0].eventType).toBe('ch_vitest_plugin_configured');
+
+  const { eventType, payload } = events[1];
+  expect({ eventType, payload }).toMatchInlineSnapshot(`
+    {
+      "eventType": "ch_vitest_project_ineligible",
+      "payload": {
+        "isBrowser": false,
+        "isChromium": false,
+      },
+    }
   `);
 });

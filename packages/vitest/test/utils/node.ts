@@ -3,6 +3,8 @@
 import { resolve } from 'node:path';
 import { Writable } from 'node:stream';
 import { stripVTControlCharacters } from 'node:util';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 import { type Mock, vi } from 'vitest';
 import {
   type CliOptions,
@@ -14,6 +16,7 @@ import {
 } from 'vitest/node';
 import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from '../../src/node/plugin';
+import { TELEMETRY_URL, type WireTelemetryEvent } from '../../src/node/telemetry';
 
 export function getBrowserConfig(name = 'chromium') {
   return {
@@ -99,4 +102,29 @@ export class StableTestFileOrderSorter implements TestSequencer {
 
     return [files[shard.index - 1]];
   }
+}
+
+export function createTelemetryServer(url = TELEMETRY_URL) {
+  const server = setupServer();
+  const onRequest = vi.fn<(event: WireTelemetryEvent) => void>();
+
+  const setup = () => {
+    onRequest.mockClear();
+
+    server.listen({ onUnhandledRequest: 'warn' });
+
+    server.use(
+      http.post<undefined, WireTelemetryEvent>(`${url}/vitest/v1/events`, async ({ request }) => {
+        onRequest(await request.json());
+        return HttpResponse.json({ ok: true });
+      })
+    );
+
+    return function cleanup() {
+      server.resetHandlers();
+      server.close();
+    };
+  };
+
+  return { server, setup, onRequest };
 }

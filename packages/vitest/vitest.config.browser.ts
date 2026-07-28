@@ -7,7 +7,7 @@ const isWatch = process.argv.includes('--watch');
 
 export default defineProject({
   resolve: { tsconfigPaths: true },
-  plugins: [chromaticPlugin()],
+  plugins: [chromaticPlugin({ telemetry: false })],
 
   // To always catch errors that happen on first test run
   optimizeDeps: { force: true },

@@ -2,7 +2,11 @@ import { existsSync, rmSync } from 'node:fs';
 import { normalize, resolve } from 'node:path';
 import { expect, onTestFinished, test, vi } from 'vitest';
 import * as shared from '@chromatic-com/shared-e2e';
-import { runFixture as baseRunFixture, StableTestFileOrderSorter } from '../../test/utils/node';
+import {
+  runFixture as baseRunFixture,
+  createTelemetryServer,
+  StableTestFileOrderSorter,
+} from '../../test/utils/node';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
 vi.mock('@chromatic-com/shared-e2e');
@@ -184,6 +188,38 @@ test('summary with TurboSnap enabled', async () => {
 
     Archives saved in <process-cwd>/.vitest/chromatic
     To upload archives into Chromatic run chromatic --vitest --project-token=<TOKEN> --only-changed"
+  `);
+});
+
+test('summary with telemetry.logToFile enabled', async () => {
+  const { setup } = createTelemetryServer();
+  const cleanup = setup();
+  onTestFinished(cleanup);
+
+  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
+
+  onTestFinished(() => {
+    const reports = resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
+    process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+
+    if (existsSync(reports)) {
+      rmSync(reports, { recursive: true, force: true });
+    }
+  });
+
+  const { stdout } = await runFixture(
+    { reporters: 'default', root: process.cwd() },
+    { telemetry: { logToFile: true } }
+  );
+
+  expect(trimSummary(stdout)).toMatchInlineSnapshot(`
+    "Chromatic Visual Regression
+
+    ✓ 24 archives captured
+
+    Archives saved in <process-cwd>/.vitest/chromatic
+    Telemetry events logged to <process-cwd>/.vitest/chromatic/telemetry.jsonl
+    To upload archives into Chromatic run chromatic --vitest --project-token=<TOKEN>"
   `);
 });
 

@@ -44,6 +44,7 @@ test('chromaticPlugin', () => {
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('outputDirectory');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('idleNetworkInterval');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('reporter');
+  expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('telemetry');
 
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('delay');
   expectTypeOf(chromaticPlugin).parameter(0).toHaveProperty('diffIncludeAntiAliasing');
@@ -67,4 +68,15 @@ test('chromaticPlugin({ reporter })', () => {
   assertType<Reporter>({ enabled: true });
   assertType<Reporter>({ verbose: true, enabled: true });
   assertType<Reporter>({ verbose: false, enabled: false });
+});
+
+test('chromaticPlugin({ telemetry })', () => {
+  type Telemetry = Parameters<typeof chromaticPlugin>[0]['telemetry'];
+
+  assertType<Telemetry>(true);
+  assertType<Telemetry>(false);
+  assertType<Telemetry>({ logToFile: false });
+  assertType<Telemetry>({ enabled: true });
+  assertType<Telemetry>({ logToFile: true, enabled: true });
+  assertType<Telemetry>({ logToFile: false, enabled: false });
 });

@@ -17,6 +17,7 @@ import {
   type ConfigureOptions,
   type ResolvedOptions,
 } from '../types';
+import { trackEvent } from './telemetry';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 import { ChromaticReporter } from './reporter';
 import { WebpackStatsReporter } from './webpack-stats-reporter';
@@ -206,6 +207,13 @@ export function createCommands(options: ResolvedOptions) {
      */
     async __chromatic_stopWithoutSnapshots(context, id: TestID) {
       await onTestCleanup(context, id);
+    },
+
+    /**
+     * Forward a browser-side telemetry event to the Node side.
+     */
+    async __chromatic_telemetry(context, event: Parameters<typeof trackEvent>[0]) {
+      void trackEvent(event, context.project.vitest, options);
     },
 
     /**

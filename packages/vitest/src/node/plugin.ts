@@ -42,6 +42,9 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
           entries: [setupFile],
         },
         test: {
+          provide: {
+            __chromatic_options: options,
+          },
           browser: {
             commands: createCommands(options),
           },
@@ -154,4 +157,11 @@ function resolveReporterOptions(reporter: Options['reporter']): ResolvedOptions[
     enabled: reporter.enabled ?? true,
     verbose: reporter.verbose ?? true,
   };
+}
+
+/** @internal */
+declare module 'vitest' {
+  export interface ProvidedContext {
+    __chromatic_options: ResolvedOptions;
+  }
 }

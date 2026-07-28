@@ -44,14 +44,6 @@ export function createCommands(options: ResolvedOptions) {
 
   return {
     /**
-     * Get resolved options on the client side.
-     * All options must be serializable at this point.
-     */
-    async __chromatic_getOptions() {
-      return options;
-    },
-
-    /**
      * Store a `@rrweb` generated DOM snapshot for the test.
      * Can be called multiple times during a single test case.
      */

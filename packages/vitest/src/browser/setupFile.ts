@@ -1,13 +1,14 @@
-import { afterEach, beforeEach } from 'vitest';
+import { afterEach, beforeEach, inject } from 'vitest';
 import { commands } from 'vitest/browser';
 import { takeSnapshot } from './public/takeSnapshot';
 import { waitForIdleNetwork } from './public/waitForIdleNetwork';
 import { type InternalTestContext } from '../types';
 import type {} from '../node/commands';
+import type {} from '../node/plugin';
 
 // Destructuring the context is important, so that possible user-provided fixtures work too
 beforeEach<InternalTestContext>(async ({ task }) => {
-  const options = await commands.__chromatic_getOptions();
+  const options = inject('__chromatic_options');
 
   if (options.tags) {
     // If user has defined plugin tags we register only the tests that match those tags

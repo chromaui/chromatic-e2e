@@ -33,7 +33,6 @@ test('adds browser commands', async () => {
 
   expect(config.browser.commands).toMatchInlineSnapshot(`
     {
-      "__chromatic_getOptions": [Function],
       "__chromatic_getSnapshots": [Function],
       "__chromatic_interceptFetch": [Function],
       "__chromatic_reset": [Function],

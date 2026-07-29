@@ -14,7 +14,6 @@ test('browser commands are available', () => {
 
   expect(Object.fromEntries(chromaticCommands)).toMatchInlineSnapshot(`
     {
-      "__chromatic_getOptions": [Function],
       "__chromatic_getSnapshots": [Function],
       "__chromatic_interceptFetch": [Function],
       "__chromatic_reset": [Function],
@@ -22,23 +21,6 @@ test('browser commands are available', () => {
       "__chromatic_uploadDOMSnapshot": [Function],
       "__chromatic_waitForIdleNetwork": [Function],
       "__chromatic_writeTestResult": [Function],
-    }
-  `);
-});
-
-test('getOptions', async () => {
-  await expect(commands.__chromatic_getOptions()).resolves.toMatchInlineSnapshot(`
-    {
-      "assetDomains": [],
-      "disableAutoSnapshot": false,
-      "idleNetworkInterval": 100,
-      "outputDirectory": ".vitest/chromatic",
-      "reporter": {
-        "enabled": true,
-        "verbose": true,
-      },
-      "resourceArchiveTimeout": 10000,
-      "turboSnap": false,
     }
   `);
 });

@@ -4,8 +4,8 @@ import { expect, onTestFinished, test, vi } from 'vitest';
 import * as shared from '@chromatic-com/shared-e2e';
 import {
   runFixture as baseRunFixture,
-  createTelemetryServer,
   StableTestFileOrderSorter,
+  setupTelemetryServer,
 } from '../../test/utils/node';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
@@ -192,15 +192,11 @@ test('summary with TurboSnap enabled', async () => {
 });
 
 test('summary with telemetry.logToFile enabled', async () => {
-  const { setup } = createTelemetryServer();
-  const cleanup = setup();
+  const { cleanup } = setupTelemetryServer();
   onTestFinished(cleanup);
-
-  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
 
   onTestFinished(() => {
     const reports = resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
-    process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
 
     if (existsSync(reports)) {
       rmSync(reports, { recursive: true, force: true });

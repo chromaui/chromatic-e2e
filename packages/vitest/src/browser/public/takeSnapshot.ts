@@ -5,10 +5,11 @@ import { serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { getCurrentTest } from '../getCurrentTest';
 import { isChromium } from '../isChromium';
+import { trackEvent } from '../telemetry';
 import type {} from '../../node/commands';
 
 interface Options {
-  ignoreUnawaited?: boolean;
+  isAutomaticSnapshot: boolean;
 }
 
 /**
@@ -27,10 +28,22 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
   const test = getCurrentTest();
 
   if (!test) {
+    trackEvent({
+      eventType: 'take_snapshot_invalid_call',
+      level: 'error',
+      payload: { isInsideTest: false, isRegisteredTest: undefined, isAwaited: undefined },
+    });
+
     throw new TypeError('takeSnapshot() must be called within a test()');
   }
 
   if (!test.meta.__chromatic_isRegistered) {
+    trackEvent({
+      eventType: 'take_snapshot_invalid_call',
+      level: 'error',
+      payload: { isInsideTest: true, isRegisteredTest: false, isAwaited: undefined },
+    });
+
     throw new TypeError(
       'takeSnapshot() cannot be called in a test that is not registered for Chromatic plugin.' +
         `\nMake sure ${test.file.projectName || 'root'} project has chromaticPlugin() enabled.`
@@ -53,11 +66,17 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
 
   const save = async () => {
     await replaceBlobUrls(domSnapshot);
-    await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, pseudoClassIds, name);
+    await commands.__chromatic_uploadDOMSnapshot(
+      test.id,
+      domSnapshot,
+      pseudoClassIds,
+      name ?? null, // Convert undefined to null to avoid https://github.com/vitest-dev/vitest/issues/10864
+      options
+    );
   };
 
-  // Ignore is set when called by automatic snapshots
-  if (options?.ignoreUnawaited) {
+  // Automatic snapshots are always awaited
+  if (options?.isAutomaticSnapshot) {
     return await save();
   }
 

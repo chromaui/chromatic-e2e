@@ -20,6 +20,7 @@ import {
 import { trackEvent } from './telemetry';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 import { ChromaticReporter } from './reporter';
+import { TelemetryReporter } from './telemetry-reporter';
 import { WebpackStatsReporter } from './webpack-stats-reporter';
 
 type TestID = TestCase['id'];
@@ -53,7 +54,8 @@ export function createCommands(options: ResolvedOptions) {
       id: TestID,
       snapshot: serializedNodeWithId,
       pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'],
-      name?: string
+      name: string | undefined,
+      snapshotOptions?: { isAutomaticSnapshot: boolean }
     ) {
       const entity = context.project.vitest.state.getReportedEntityById(id);
       assert(
@@ -68,6 +70,7 @@ export function createCommands(options: ResolvedOptions) {
         snapshots.set(id, sessionSnapshots);
       }
 
+      const isCustomName = name !== undefined;
       name ||= `Snapshot #${sessionSnapshots.size + 1}`;
 
       const frame = await context.frame();
@@ -84,6 +87,11 @@ export function createCommands(options: ResolvedOptions) {
       sessionSnapshots.set(name, { snapshot, viewport, colorScheme, pseudoClassIds });
 
       ChromaticReporter.onSnapshot(context.project.vitest, entity);
+      TelemetryReporter.onSnapshot(context.project.vitest, {
+        isCustomName,
+        colorScheme,
+        isAutomaticSnapshot: snapshotOptions?.isAutomaticSnapshot ?? false,
+      });
     },
 
     /**
@@ -200,6 +208,16 @@ export function createCommands(options: ResolvedOptions) {
       if (options.turboSnap) {
         WebpackStatsReporter.onStoryFileWrite(context.project.vitest, entity, storiesFile);
       }
+
+      trackEvent(
+        {
+          eventType: 'archives_created',
+          level: 'info',
+          payload: { count: Object.keys(snapshotBuffers).length },
+        },
+        context.project.vitest,
+        options
+      );
     },
 
     /**

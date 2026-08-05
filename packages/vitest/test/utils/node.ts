@@ -55,7 +55,7 @@ export async function runFixture(
 }
 
 export async function getResolvedConfig(
-  options: InlineConfig = {},
+  options: InlineConfig & { shard?: string } = {},
   pluginOptions: Parameters<typeof chromaticPlugin>[0] = {}
 ) {
   const vitest = await createVitest(

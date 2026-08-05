@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 import { x } from 'tinyexec';
 import { env, isCI, nodeVersion } from 'std-env';
 import type { Vitest } from 'vitest/node';
-import { type Options, type ResolvedOptions } from '../types';
+import type { ConfigureOptions, Options, ResolvedOptions } from '../types';
 import { version as pluginVersion } from '../../package.json';
 
 const EVENT_TYPE_PREFIX = 'vitest_';
@@ -92,6 +92,7 @@ export function trackEvent<T extends EventType = EventType>(
 async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: ResolvedOptions) {
   const url = env.CHROMATIC_TELEMETRY_URL || TELEMETRY_URL;
   const root = vitest.config.root;
+  const timestamp = new Date().toISOString();
 
   session.projectId ||= await createProjectId(root);
   session.chromaticVersion ||= getChromaticVersion(root);
@@ -100,7 +101,7 @@ async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: Resol
     id: randomUUID(),
     sessionId: session.id,
     projectId: session.projectId,
-    timestamp: new Date().toISOString(),
+    timestamp,
     eventType: `${EVENT_TYPE_PREFIX}${event.eventType}`,
     level: event.level,
     payload: event.payload,
@@ -259,10 +260,59 @@ type TelemetryPayloads = {
     cropToViewport: boolean | undefined;
     assetDomainsCount: number;
     ignoreSelectorsCount: number;
+    isShardedRun: boolean;
   };
 
   project_ineligible: {
     isBrowser: boolean;
     isChromium: boolean;
   };
+
+  run_started: Record<string, never>;
+
+  run_ended: {
+    snapshotCount: number;
+  };
+
+  snapshot_captured: {
+    isCustomName: boolean;
+    colorScheme: string;
+    isAutomaticSnapshot: boolean;
+  };
+
+  take_snapshot_invalid_call: {
+    isInsideTest: boolean;
+    isRegisteredTest: boolean | undefined;
+    isAwaited: boolean | undefined;
+  };
+
+  archives_created: {
+    count: number;
+  };
+
+  configure_called: {
+    options: (keyof ConfigureOptions)[];
+    scope: 'test' | 'suite' | 'file';
+  };
+
+  wait_for_idle_network_called: {
+    timeout: number;
+  };
+
+  wait_for_idle_network_invalid_call: {
+    isInsideTest: boolean;
+    isRegisteredTest: boolean | undefined;
+    isCalledByUser: boolean;
+  };
+
+  wait_for_idle_network_timeout: {
+    timeout: number;
+    isCalledByUser: boolean;
+  };
+
+  setup_files_parallel: {
+    setupFileCount: number;
+  };
+
+  tags_low_version: Record<string, unknown>;
 };

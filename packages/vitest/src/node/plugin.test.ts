@@ -9,6 +9,7 @@ import {
   getBrowserConfig,
   getResolvedConfig,
   runFixture,
+  setupTelemetryServer,
 } from '../../test/utils/node';
 
 beforeEach(() => {
@@ -77,6 +78,9 @@ test('does not override user-defined tags', async () => {
 });
 
 test('warns if tags are used with Vitest 4.0', async () => {
+  const { cleanup, onRequest } = setupTelemetryServer();
+  onTestFinished(cleanup);
+
   const { streams, getOutput } = createOutputStreams();
   const plugin = chromaticPlugin({ tags: ['my-tag-for-vrt'] });
   const vitest = await createVitest(
@@ -100,6 +104,24 @@ test('warns if tags are used with Vitest 4.0', async () => {
   expect(getOutput().stderr).toContain(
     'chromatic  Tags cannot be used with Vitest 4.0.1. Please upgrade to Vitest 4.1 or later to use this feature.'
   );
+
+  await vitest.close();
+
+  const tagsLowVersionEvents = onRequest.mock.calls.flatMap(([event]) =>
+    event.eventType === 'vitest_tags_low_version'
+      ? [{ eventType: event.eventType, payload: event.payload, level: event.level }]
+      : []
+  );
+
+  expect(tagsLowVersionEvents).toMatchInlineSnapshot(`
+    [
+      {
+        "eventType": "vitest_tags_low_version",
+        "level": "warn",
+        "payload": {},
+      },
+    ]
+  `);
 });
 
 test('can be scoped to a Vitest project', async () => {

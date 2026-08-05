@@ -10,6 +10,10 @@ export function getCurrentTest() {
   return hooks.getCurrentTest<Test | undefined>();
 }
 
+export function getCurrentSuite() {
+  return hooks.getCurrentSuite();
+}
+
 async function resolveHooks() {
   // TestRunner API is available on vitest@4.1.0
   if (vitest.TestRunner) {

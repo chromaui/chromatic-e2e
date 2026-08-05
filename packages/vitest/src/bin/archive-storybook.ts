@@ -9,7 +9,7 @@ const args = process.argv.slice(2);
 const configDir = path.resolve(import.meta.dirname, '../storybook-config');
 
 try {
-  archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);
+  await archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);
 } catch (err) {
   // Throwing the error results in a large output of minified code and a stacktrace that is
   // likely not helpful to users, so this should hide the noise.

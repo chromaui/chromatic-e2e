@@ -287,13 +287,13 @@ test('sends plugin init telemetry event', async () => {
   });
 
   const initEvents = onRequest.mock.calls.filter(
-    ([event]) => event.eventType === 'ch_vitest_plugin_configured'
+    ([event]) => event.eventType === 'vitest_plugin_configured'
   );
   expect(initEvents).toHaveLength(1);
 
   const event = initEvents[0][0];
 
-  expect(event).toHaveProperty('eventType', 'ch_vitest_plugin_configured');
+  expect(event).toHaveProperty('eventType', 'vitest_plugin_configured');
   expect(event).toHaveProperty('level', 'info');
   expect(event.payload).toMatchInlineSnapshot(`
     {
@@ -345,7 +345,7 @@ test('sends multiple plugin init telemetry events when multiple projects', async
   );
 
   const initEvents = onRequest.mock.calls.flatMap(([event]) =>
-    event.eventType === 'ch_vitest_plugin_configured'
+    event.eventType === 'vitest_plugin_configured'
       ? [event as WireTelemetryEvent<'plugin_configured'>]
       : []
   );
@@ -372,12 +372,12 @@ test('sends project_ineligible telemetry event', async () => {
   const events = onRequest.mock.calls.map(([event]) => event);
 
   expect(events).toHaveLength(2);
-  expect(events[0].eventType).toBe('ch_vitest_plugin_configured');
+  expect(events[0].eventType).toBe('vitest_plugin_configured');
 
   const { eventType, payload } = events[1];
   expect({ eventType, payload }).toMatchInlineSnapshot(`
     {
-      "eventType": "ch_vitest_project_ineligible",
+      "eventType": "vitest_project_ineligible",
       "payload": {
         "isBrowser": false,
         "isChromium": false,

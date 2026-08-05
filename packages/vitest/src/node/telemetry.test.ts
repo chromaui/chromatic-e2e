@@ -53,7 +53,7 @@ test('telemetry is sent to custom telemetry endpoint when CHROMATIC_TELEMETRY_UR
   const onCustomEndpointRequest = vi.fn();
 
   server.use(
-    http.post(`${url}/vitest/v1/events`, async () => {
+    http.post(`${url}/telemetry/v1/vitest/events`, async () => {
       onCustomEndpointRequest('called here');
       return HttpResponse.json({ ok: true });
     })
@@ -81,7 +81,7 @@ test('hanging telemetry endpoint does not block Vitest shutdown', async () => {
 
   const isFetching = new Promise<void>((fetchStarted) => {
     server.use(
-      http.post(`${url}/vitest/v1/events`, async () => {
+      http.post(`${url}/telemetry/v1/vitest/events`, async () => {
         fetchStarted();
         await new Promise((_resolve) => {});
       })
@@ -113,7 +113,7 @@ test('telemetry is logged to file when { telemetry: { logToFile: true }} ', asyn
 
   const rows = readLogFile(root);
 
-  const configureEvents = rows.filter((row) => row.eventType === 'ch_vitest_plugin_configured');
+  const configureEvents = rows.filter((row) => row.eventType === 'vitest_plugin_configured');
   expect(configureEvents.length).toBe(1);
 });
 
@@ -123,7 +123,7 @@ test('telemetry is logged to file when CHROMATIC_TELEMETRY_LOG_TO_FILE is set', 
 
   const rows = readLogFile(root);
 
-  const configureEvents = rows.filter((row) => row.eventType === 'ch_vitest_plugin_configured');
+  const configureEvents = rows.filter((row) => row.eventType === 'vitest_plugin_configured');
   expect(configureEvents.length).toBe(1);
 });
 

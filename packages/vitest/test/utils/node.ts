@@ -114,10 +114,13 @@ export function createTelemetryServer(url = TELEMETRY_URL) {
     server.listen({ onUnhandledRequest: 'warn' });
 
     server.use(
-      http.post<undefined, WireTelemetryEvent>(`${url}/vitest/v1/events`, async ({ request }) => {
-        onRequest(await request.json());
-        return HttpResponse.json({ ok: true });
-      })
+      http.post<undefined, WireTelemetryEvent>(
+        `${url}/telemetry/v1/vitest/events`,
+        async ({ request }) => {
+          onRequest(await request.json());
+          return HttpResponse.json({ ok: true });
+        }
+      )
     );
 
     return function cleanup() {

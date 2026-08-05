@@ -9,7 +9,7 @@ import type { Vitest } from 'vitest/node';
 import { type Options, type ResolvedOptions } from '../types';
 import { version as pluginVersion } from '../../package.json';
 
-const EVENT_TYPE_PREFIX = 'ch_vitest_';
+const EVENT_TYPE_PREFIX = 'vitest_';
 const TELEMETRY_FETCH_TIMEOUT_MS = 5_000;
 export const TELEMETRY_URL = 'https://analytics.chromatic.com';
 export const TELEMETRY_LOG_FILE = 'telemetry.jsonl';
@@ -119,7 +119,7 @@ async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: Resol
   let error: string | undefined = undefined;
 
   try {
-    await fetch(`${url}/vitest/v1/events`, {
+    await fetch(`${url}/telemetry/v1/vitest/events`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(wireEvent),

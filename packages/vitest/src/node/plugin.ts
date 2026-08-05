@@ -14,7 +14,7 @@ import {
   type TelemetryEvent,
 } from './telemetry';
 import { ChromaticReporter } from './reporter';
-import { TelemetryReporter } from './telemetry-reporter';
+import { TelemetryReporter } from './telemetry';
 import { mergePreviewStats, WebpackStatsReporter } from './webpack-stats-reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 import { type ResolvedOptions, type Options } from '../types';

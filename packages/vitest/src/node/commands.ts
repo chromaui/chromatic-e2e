@@ -20,7 +20,7 @@ import {
 import { trackEvent } from './telemetry';
 import { NetworkIdleTracker } from './NetworkIdleTracker';
 import { ChromaticReporter } from './reporter';
-import { TelemetryReporter } from './telemetry-reporter';
+import { TelemetryReporter } from './telemetry';
 import { WebpackStatsReporter } from './webpack-stats-reporter';
 
 type TestID = TestCase['id'];

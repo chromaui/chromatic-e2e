@@ -1,6 +1,6 @@
 import { describe, test } from 'vitest';
 
-import { trackEvent } from './telemetry';
+import { trackEvent } from './index';
 
 // These should rather use "expectTypeOf" instead of "@ts-expect-error", but expect-type is really difficult to use.
 

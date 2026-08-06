@@ -4,14 +4,19 @@ import { readFileSync } from 'fs';
 import { createRequire } from 'module';
 import { checkArchivesDirExists } from '../utils/filePaths';
 
+interface Callbacks {
+  onArchivesCheck: (error?: unknown) => void;
+}
+
 const req = require.resolve ? require : createRequire(import.meta.url);
 
 export async function archiveStorybook(
   processArgs: string[],
   configDir: string,
-  defaultOutputDir: string
+  defaultOutputDir: string,
+  callbacks?: Callbacks
 ) {
-  checkArchivesDirExists(defaultOutputDir);
+  assertOutputDirectory(defaultOutputDir, callbacks);
 
   await runBin([binPath(), 'dev', ...processArgs, '-c', configDir]);
 }
@@ -19,11 +24,23 @@ export async function archiveStorybook(
 export async function buildArchiveStorybook(
   processArgs: string[],
   configDir: string,
-  defaultOutputDir: string
+  defaultOutputDir: string,
+  callbacks?: Callbacks
 ) {
-  checkArchivesDirExists(defaultOutputDir);
+  assertOutputDirectory(defaultOutputDir, callbacks);
 
   await runBin([binPath(), 'build', ...processArgs, '-c', configDir]);
+}
+
+function assertOutputDirectory(outputDirectory: string, callbacks?: Callbacks) {
+  try {
+    checkArchivesDirExists(outputDirectory);
+  } catch (error) {
+    callbacks?.onArchivesCheck(error);
+    throw error;
+  }
+
+  callbacks?.onArchivesCheck();
 }
 
 function runBin(args: string[]): Promise<void> {

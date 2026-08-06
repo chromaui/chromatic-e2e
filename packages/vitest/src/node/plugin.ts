@@ -6,7 +6,7 @@ import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
 import {
-  cleanTelemetryLogFile,
+  cleanTelemetryLogFiles,
   resolveTelemetryOptions,
   setupTelemetryCleanup,
   trackEvent as _trackEvent,
@@ -193,7 +193,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         const outputDirectory = resolve(project.vitest.config.root, options.outputDirectory);
 
         rmSync(resolve(outputDirectory, 'chromatic-archives'), { recursive: true, force: true });
-        cleanTelemetryLogFile(outputDirectory);
+        cleanTelemetryLogFiles(outputDirectory);
 
         if (existsSync(outputDirectory)) {
           for (const file of readdirSync(outputDirectory)) {

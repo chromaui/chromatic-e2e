@@ -1,9 +1,10 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { readFileSync, rmSync } from 'node:fs';
 import util from 'node:util';
-import { appendFile, mkdir } from 'node:fs/promises';
+import { appendFile, mkdir, writeFile, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
-import { join, resolve } from 'node:path';
+import { join, resolve, sep } from 'node:path';
+import { homedir } from 'node:os';
 import { x } from 'tinyexec';
 import { env, isCI, nodeVersion } from 'std-env';
 import type { Vitest } from 'vitest/node';
@@ -14,6 +15,7 @@ const EVENT_TYPE_PREFIX = 'vitest_';
 const TELEMETRY_FETCH_TIMEOUT_MS = 5_000;
 export const TELEMETRY_URL = 'https://analytics.chromatic.com';
 export const TELEMETRY_LOG_FILE = 'telemetry.jsonl';
+export const TELEMETRY_METADATA_FILE = 'telemetry-metadata.json';
 
 const userAgentMatch = env.npm_config_user_agent?.match(/^([^/\s]+)\/(\S+)/);
 const packageManager = {
@@ -39,6 +41,12 @@ export const session = {
 
   /** Whether cleanup hooks were already registered for this session */
   cleanupRegistered: false,
+
+  /** Whether internal `.vitest/chromatic/metadata.json` has been written */
+  isMetadataWritten: false,
+
+  /** Contents of `.vitest/chromatic/metadata.json` */
+  telemetryMetadata: undefined as undefined | Awaited<ReturnType<typeof readTelemetryMetadata>>,
 
   /** Contents of `.env` */
   dotEnv: undefined as undefined | Record<string, string>,
@@ -94,10 +102,59 @@ export function trackEvent<T extends EventType = EventType>(
   session.cleanups.add(promise);
 }
 
-async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: ResolvedOptions) {
+export async function trackCliEvent<T extends EventType = EventType>(
+  event: TelemetryEvent<T>,
+  options: { outputDirectory: string }
+): Promise<void> {
+  if (isDisabledByEnv()) {
+    return;
+  }
+
+  let telemetryMetadata = session.telemetryMetadata;
+
+  if (session.telemetryMetadata === undefined) {
+    telemetryMetadata = await readTelemetryMetadata(options.outputDirectory);
+    session.telemetryMetadata = telemetryMetadata;
+
+    if (!('disabled' in telemetryMetadata)) {
+      session.id = telemetryMetadata.sessionId;
+      session.projectId = telemetryMetadata.projectId;
+      session.chromaticVersion = telemetryMetadata.chromaticVersion;
+    }
+  }
+
+  // If we don't find telemetry metadata written by Vitest test run, we consider telemetry to be disabled.
+  if (!telemetryMetadata || 'disabled' in telemetryMetadata) {
+    return;
+  }
+
+  await _trackEvent(
+    event,
+    {
+      version: telemetryMetadata.vitestVersion || 'unknown',
+      config: { root: options.outputDirectory },
+      projects: telemetryMetadata.isVitestProjects ? [1, 2] : [],
+    },
+    {
+      outputDirectory: options.outputDirectory,
+      telemetry: { enabled: true, logToFile: telemetryMetadata.logToFile },
+    }
+  );
+}
+
+async function _trackEvent(
+  event: TelemetryEvent,
+  vitest: {
+    version: Vitest['version'];
+    config: Pick<Vitest['config'], 'root'>;
+    projects: unknown[];
+  },
+  options: Pick<ResolvedOptions, 'outputDirectory' | 'telemetry'>
+) {
   const url = getEnv('CHROMATIC_TELEMETRY_URL') || TELEMETRY_URL;
   const root = vitest.config.root;
   const timestamp = new Date().toISOString();
+  const outputDirectory = resolve(root, options.outputDirectory);
 
   session.projectId ||= await createProjectId(root);
   session.chromaticVersion ||= getChromaticVersion(root);
@@ -122,6 +179,10 @@ async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: Resol
     },
   };
 
+  if (wireEvent.level === 'error' && 'error' in wireEvent.payload) {
+    wireEvent.payload.error = sanitizeError(wireEvent.payload.error);
+  }
+
   let error: string | undefined = undefined;
 
   try {
@@ -136,7 +197,6 @@ async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: Resol
   }
 
   if (options.telemetry.logToFile) {
-    const outputDirectory = resolve(root, options.outputDirectory);
     const logFile = resolve(outputDirectory, TELEMETRY_LOG_FILE);
 
     await mkdir(outputDirectory, { recursive: true });
@@ -145,6 +205,17 @@ async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: Resol
     if (error) {
       await appendFile(logFile, `${JSON.stringify({ telemetryPostError: error })}\n`, 'utf8');
     }
+  }
+
+  if (!session.isMetadataWritten) {
+    session.isMetadataWritten = true;
+
+    await writeTelemetryMetadata(outputDirectory, {
+      ...wireEvent.metadata,
+      sessionId: wireEvent.sessionId,
+      projectId: wireEvent.projectId,
+      logToFile: options.telemetry.logToFile,
+    });
   }
 }
 
@@ -156,7 +227,6 @@ export function resolveTelemetryOptions(
       ? { enabled: telemetry?.enabled ?? true, logToFile: telemetry?.logToFile ?? false }
       : { enabled: telemetry ?? true, logToFile: false };
 
-  // Environment variables can only disable telemetry or enable the log file, never the reverse
   if (isDisabledByEnv()) {
     resolved.enabled = false;
   }
@@ -173,15 +243,16 @@ function isDisabledByEnv() {
 }
 
 /**
- * Delete the telemetry log file just once per session
+ * Delete the telemetry log files just once per session
  */
-export function cleanTelemetryLogFile(outputDirectory: string): void {
+export function cleanTelemetryLogFiles(outputDirectory: string): void {
   if (session.cleanedLogFileDirectories.has(outputDirectory)) {
     return;
   }
   session.cleanedLogFileDirectories.add(outputDirectory);
 
   rmSync(resolve(outputDirectory, TELEMETRY_LOG_FILE), { force: true });
+  rmSync(resolve(outputDirectory, TELEMETRY_METADATA_FILE), { force: true });
 }
 
 /**
@@ -198,6 +269,7 @@ export function setupTelemetryCleanup(vitest: Vitest) {
     await Promise.all(Array.from(session.cleanups.values()));
     session.cleanups.clear();
 
+    session.isMetadataWritten = false;
     session.cleanedLogFileDirectories.clear();
     session.cleanupRegistered = false;
   });
@@ -245,6 +317,67 @@ function getChromaticVersion(root: string) {
   } catch {
     return 'unknown';
   }
+}
+
+/**
+ * Writes a `.vitest/chromatic/metadata.json` file with the given telemetry metadata.
+ * This file will be picked up when `chromatic --vitest` CLI is run, outside of Vitest test run.
+ * It allows us to share telemetry metadata between Vitest and Chromatic CLI processes.
+ */
+async function writeTelemetryMetadata(
+  outputDirectory: string,
+  data: WireTelemetryEvent['metadata'] &
+    Pick<WireTelemetryEvent, 'sessionId' | 'projectId'> &
+    Pick<ResolvedOptions['telemetry'], 'logToFile'>
+) {
+  await writeFile(
+    resolve(outputDirectory, TELEMETRY_METADATA_FILE),
+    JSON.stringify(data, null, 2),
+    'utf8'
+  );
+}
+
+/**
+ * Reads the `.vitest/chromatic/metadata.json` file and returns the telemetry metadata.
+ * This will be read when `chromatic --vitest` CLI is run, outside of Vitest test run.
+ */
+async function readTelemetryMetadata(
+  outputDirectory: string
+): Promise<{ disabled: true } | Parameters<typeof writeTelemetryMetadata>[1]> {
+  try {
+    const content = await readFile(resolve(outputDirectory, TELEMETRY_METADATA_FILE), 'utf8');
+
+    return JSON.parse(content);
+  } catch {
+    // Missing (or malformed) metadata indicates telemetry was disabled during Vitest run.
+    return { disabled: true };
+  }
+}
+
+function sanitizeError(error: unknown): string {
+  if (error instanceof Error && error.stack) {
+    const raw = error.stack.includes(error.message)
+      ? error.stack
+      : `${error.message}\nStack: ${error.stack}`;
+
+    return sanitizeString(raw).slice(0, 2000);
+  }
+
+  return sanitizeString(error instanceof Error ? error.message : String(error)).slice(0, 1000);
+}
+
+function sanitizeString(value: string): string {
+  return value
+    .replaceAll(sep, '/')
+    .replace(toPathRegExp(process.cwd()), '<process-cwd>')
+    .replace(toPathRegExp(homedir()), '<homedir>');
+}
+
+function toPathRegExp(path: string): RegExp {
+  const normalized = path.replaceAll(sep, '/');
+  const escaped = normalized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  return new RegExp(escaped, 'gi');
 }
 
 function getEnv(name: string): string | undefined {
@@ -341,4 +474,25 @@ type TelemetryPayloads = {
   };
 
   tags_low_version: Record<string, unknown>;
+
+  archives_resolved: {
+    isCustomLocation: boolean;
+    success: boolean;
+    command: 'archiveStorybook' | 'buildArchiveStorybook';
+  };
+
+  storybook_build_started: {
+    isCalledFromCLI: boolean;
+  };
+
+  storybook_build_completed: {
+    success: boolean;
+    error: unknown;
+  };
+
+  storybook_dev_started: Record<string, never>;
+
+  storybook_dev_failed: {
+    error: unknown;
+  };
 };

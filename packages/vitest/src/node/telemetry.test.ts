@@ -1,9 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { spawn } from 'node:child_process';
+import { homedir } from 'node:os';
 import { beforeEach, describe, expect, onTestFinished, test as base, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { chromaticPlugin } from './plugin';
-import { session, type WireTelemetryEvent } from './telemetry';
+import { session, TELEMETRY_METADATA_FILE, type WireTelemetryEvent } from './telemetry';
 import {
   getBrowserConfig,
   runFixture,
@@ -11,7 +13,10 @@ import {
   setupTelemetryServer,
 } from '../../test/utils/node';
 
+vi.mock('node:fs', { spy: true });
+
 beforeEach(() => {
+  vi.mocked(existsSync).mockReset();
   vi.unstubAllEnvs();
   session.dotEnv = undefined;
 });
@@ -24,9 +29,12 @@ describe('configuration', () => {
   });
 
   test('telemetry is disabled when { telemetry: false }', async ({ onRequest }) => {
-    await runVitest({}, { telemetry: false });
+    const { root } = await runVitest({}, { telemetry: false });
 
     expect(onRequest).not.toHaveBeenCalled();
+
+    const metadataJson = resolve(root, `.vitest/chromatic/${TELEMETRY_METADATA_FILE}`);
+    expect(existsSync(metadataJson), `Expected ${metadataJson} not to exist`).toBe(false);
   });
 
   test.for(['CHROMATIC_DISABLE_TELEMETRY', 'DO_NOT_TRACK'])(
@@ -100,6 +108,28 @@ describe('configuration', () => {
     const { root } = await runVitest();
 
     expect(existsSync(resolve(root, '.vitest/chromatic/telemetry.jsonl'))).toBe(false);
+  });
+
+  test('metadata file is written', async () => {
+    const { root } = await runVitest();
+
+    const filename = resolve(root, `.vitest/chromatic/${TELEMETRY_METADATA_FILE}`);
+    expect(existsSync(filename), `Expected metadata file to exist at ${filename}`).toBe(true);
+
+    const json = JSON.parse(readFileSync(filename, 'utf8'));
+
+    expect(json).toMatchObject({
+      sessionId: expect.any(String),
+      projectId: expect.any(String),
+      isCI: expect.any(Boolean),
+      pluginVersion: expect.any(String),
+      nodeVersion: expect.any(String),
+      vitestVersion: expect.any(String),
+      isVitestProjects: false,
+      packageManager: 'pnpm',
+      packageManagerVersion: expect.any(String),
+      chromaticVersion: expect.any(String),
+    });
   });
 
   test('hanging telemetry endpoint does not block Vitest shutdown', async ({ server }) => {
@@ -398,7 +428,7 @@ describe('events', () => {
           "payload": {
             "colorScheme": "light",
             "isAutomaticSnapshot": true,
-            "isCustomName": true,
+            "isCustomName": false,
           },
         },
         {
@@ -406,7 +436,7 @@ describe('events', () => {
           "payload": {
             "colorScheme": "light",
             "isAutomaticSnapshot": false,
-            "isCustomName": true,
+            "isCustomName": false,
           },
         },
         {
@@ -414,7 +444,7 @@ describe('events', () => {
           "payload": {
             "colorScheme": "light",
             "isAutomaticSnapshot": true,
-            "isCustomName": true,
+            "isCustomName": false,
           },
         },
       ]
@@ -688,6 +718,236 @@ describe('events', () => {
       ]
     `);
   });
+
+  test('archive-storybook called successfully', async ({ archivesDirectory, onRequest }) => {
+    onRequest.mockClear();
+    await runBinary('archive-storybook', { archivesDirectory });
+
+    const events = getSortedEvents(onRequest);
+
+    expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
+      [
+        {
+          "eventType": "vitest_storybook_dev_started",
+          "payload": {},
+        },
+        {
+          "eventType": "vitest_archives_resolved",
+          "payload": {
+            "command": "archiveStorybook",
+            "isCustomLocation": true,
+            "success": true,
+          },
+        },
+      ]
+    `);
+  });
+
+  test('archive-storybook called erroneously', async ({ archivesDirectory, onRequest }) => {
+    const error = new Error(`Example error with ${process.cwd()} and ${homedir()}`);
+    error.stack = `Example stack:\nwith cwd ${process.cwd()}\nand homedir ${homedir()}`;
+
+    onRequest.mockClear();
+    await runBinary('archive-storybook', { archivesDirectory, error });
+
+    const events = getSortedEvents(onRequest);
+
+    expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
+      [
+        {
+          "eventType": "vitest_storybook_dev_started",
+          "payload": {},
+        },
+        {
+          "eventType": "vitest_archives_resolved",
+          "payload": {
+            "command": "archiveStorybook",
+            "isCustomLocation": true,
+            "success": true,
+          },
+        },
+        {
+          "eventType": "vitest_storybook_dev_failed",
+          "payload": {
+            "error": "Example error with <process-cwd> and <homedir>
+      Stack: Example stack:
+      with cwd <process-cwd>
+      and homedir <homedir>",
+          },
+        },
+      ]
+    `);
+  });
+
+  test('archive-storybook called with directory without chromatic-archives', async ({
+    archivesDirectory,
+    onRequest,
+  }) => {
+    vi.mocked(existsSync).mockImplementation(
+      (path) => path !== `${archivesDirectory}/chromatic-archives`
+    );
+    onRequest.mockClear();
+    await runBinary('archive-storybook', { archivesDirectory });
+
+    const events = getSortedEvents(onRequest);
+
+    // Normalize error stack
+    events.forEach((event) => {
+      if ('error' in event.payload && typeof event.payload.error === 'string') {
+        event.payload.error = event.payload.error.split(/^\s+at /gm)[0]?.trim();
+      }
+    });
+
+    expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
+      [
+        {
+          "eventType": "vitest_storybook_dev_started",
+          "payload": {},
+        },
+        {
+          "eventType": "vitest_archives_resolved",
+          "payload": {
+            "command": "archiveStorybook",
+            "isCustomLocation": true,
+            "success": false,
+          },
+        },
+        {
+          "eventType": "vitest_storybook_dev_failed",
+          "payload": {
+            "error": "Error: Chromatic archives directory cannot be found: <process-cwd>/packages/vitest/test/fixtures/.vitest/chromatic/chromatic-archives
+
+      Please make sure that you have run your E2E tests, or have set the CHROMATIC_ARCHIVE_LOCATION env var if the output directory for the tests is not in the standard location.",
+          },
+        },
+      ]
+    `);
+  });
+
+  test('build-archive-storybook called successfully', async ({ archivesDirectory, onRequest }) => {
+    onRequest.mockClear();
+    await runBinary('build-archive-storybook', { archivesDirectory });
+
+    const events = getSortedEvents(onRequest);
+
+    expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
+      [
+        {
+          "eventType": "vitest_storybook_build_started",
+          "payload": {
+            "isCalledFromCLI": false,
+          },
+        },
+        {
+          "eventType": "vitest_archives_resolved",
+          "payload": {
+            "command": "buildArchiveStorybook",
+            "isCustomLocation": true,
+            "success": true,
+          },
+        },
+        {
+          "eventType": "vitest_storybook_build_completed",
+          "payload": {
+            "success": true,
+          },
+        },
+      ]
+    `);
+  });
+
+  test('build-archive-storybook called successfully from CLI', async ({
+    archivesDirectory,
+    onRequest,
+  }) => {
+    onRequest.mockClear();
+    vi.stubEnv('STORYBOOK_INVOKED_BY', 'chromatic');
+
+    await runBinary('build-archive-storybook', { archivesDirectory });
+
+    const events = getSortedEvents(onRequest);
+
+    expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
+      [
+        {
+          "eventType": "vitest_storybook_build_started",
+          "payload": {
+            "isCalledFromCLI": true,
+          },
+        },
+        {
+          "eventType": "vitest_archives_resolved",
+          "payload": {
+            "command": "buildArchiveStorybook",
+            "isCustomLocation": true,
+            "success": true,
+          },
+        },
+        {
+          "eventType": "vitest_storybook_build_completed",
+          "payload": {
+            "success": true,
+          },
+        },
+      ]
+    `);
+  });
+
+  test('build-archive-storybook called erroneously', async ({ archivesDirectory, onRequest }) => {
+    const error = new Error(`Example error with ${process.cwd()} and ${homedir()}`);
+    error.stack = `Example stack:\nwith cwd ${process.cwd()}\nand homedir ${homedir()}`;
+
+    onRequest.mockClear();
+    await runBinary('build-archive-storybook', { archivesDirectory, error });
+
+    const events = getSortedEvents(onRequest);
+
+    expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
+      [
+        {
+          "eventType": "vitest_storybook_build_started",
+          "payload": {
+            "isCalledFromCLI": false,
+          },
+        },
+        {
+          "eventType": "vitest_archives_resolved",
+          "payload": {
+            "command": "buildArchiveStorybook",
+            "isCustomLocation": true,
+            "success": true,
+          },
+        },
+        {
+          "eventType": "vitest_storybook_build_completed",
+          "payload": {
+            "error": "Example error with <process-cwd> and <homedir>
+      Stack: Example stack:
+      with cwd <process-cwd>
+      and homedir <homedir>",
+            "success": false,
+          },
+        },
+      ]
+    `);
+  });
+
+  test.for(['archive-storybook', 'build-archive-storybook'] as const)(
+    '%s based events contain metadata from test run',
+    async (command, { archivesDirectory, onRequest, getEvents }) => {
+      onRequest.mockClear();
+      await runBinary(command, { archivesDirectory });
+
+      // Data from telemetry-metadata.json should be found in CLI invoked events
+      const testRunEvent = getEvents()[0];
+
+      for (const event of onRequest.mock.calls.map(([event]) => event)) {
+        expect.soft(event).toHaveProperty('sessionId', testRunEvent.sessionId);
+        expect.soft(event).toHaveProperty('projectId', testRunEvent.projectId);
+        expect.soft(event.metadata).toMatchObject(testRunEvent.metadata);
+      }
+    }
+  );
 });
 
 const test = base
@@ -696,7 +956,7 @@ const test = base
 
     // Run a common fixture once before any tests start.
     // Tests that aren't validating edge cases can assert this data.
-    await runFixture(
+    const { stdout } = await runFixture(
       /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
       { include: ['take-snapshot.test.ts'], provide: { testName: 'five' } },
       {
@@ -708,17 +968,18 @@ const test = base
       }
     );
 
-    const events = onRequest.mock.calls
-      .map((call) => call[0])
-      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    const archivesDirectory = stdout.match(/Archives saved in (.*)/m)[1].trim();
+
+    const events = getSortedEvents(onRequest);
 
     onRequest.mockClear();
     onCleanup(cleanup);
 
-    return { events, cleanup, server, onRequest };
+    return { events, cleanup, server, onRequest, archivesDirectory };
   })
   .extend('server', ({ telemetry }) => telemetry.server)
   .extend('onRequest', ({ telemetry }) => telemetry.onRequest)
+  .extend('archivesDirectory', ({ telemetry }) => telemetry.archivesDirectory)
   .extend('getEvents', ({ telemetry }) => {
     return function getEvents(type?: WireTelemetryEvent['eventType']) {
       if (!type) {
@@ -727,6 +988,12 @@ const test = base
       return telemetry.events.filter((event) => event.eventType === type);
     };
   });
+
+function getSortedEvents(onRequest: ReturnType<typeof setupTelemetryServer>['onRequest']) {
+  return onRequest.mock.calls
+    .map((call) => call[0])
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+}
 
 function readLogFile(root: string) {
   const output = readFileSync(resolve(root, '.vitest/chromatic/telemetry.jsonl'), 'utf8');
@@ -745,4 +1012,42 @@ function readLogFile(root: string) {
 
 function pickTypeAndPayload(events: WireTelemetryEvent[]) {
   return events.map(({ eventType, payload }) => ({ eventType, payload }));
+}
+
+const childProcessHandles = vi.hoisted(() => ({ onClose: vi.fn(), onError: vi.fn() }));
+vi.mock(import('child_process'), async (importOriginal) => {
+  return {
+    ...(await importOriginal()),
+    spawn: vi.fn().mockReturnValue({
+      on: (event: any, callback: any) => {
+        if (event === 'close') {
+          childProcessHandles.onClose = callback;
+        }
+        if (event === 'error') {
+          childProcessHandles.onError = callback;
+        }
+      },
+    }),
+  };
+});
+
+async function runBinary(
+  name: 'archive-storybook' | 'build-archive-storybook',
+  options: { archivesDirectory: string; error?: Error }
+) {
+  vi.stubEnv('CHROMATIC_ARCHIVE_LOCATION', options.archivesDirectory);
+  vi.resetModules();
+
+  let isDone = false;
+  const promise = import(`../bin/${name}.ts`).finally(() => (isDone = true));
+
+  await vi.waitFor(() => isDone || expect(spawn).toHaveBeenCalled(), { timeout: 1_000 });
+
+  if (options.error) {
+    childProcessHandles.onError(options.error);
+  } else {
+    childProcessHandles.onClose(0, null);
+  }
+
+  await expect(promise).resolves.toBeTruthy();
 }

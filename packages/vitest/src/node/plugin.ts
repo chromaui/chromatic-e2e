@@ -175,10 +175,20 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
       if (isMergeReports) {
         if (options.turboSnap) {
-          await mergePreviewStats({
-            root: project.vitest.config.root,
-            outputDirectory: options.outputDirectory,
-          });
+          try {
+            await mergePreviewStats({
+              root: project.vitest.config.root,
+              outputDirectory: options.outputDirectory,
+            });
+          } catch (error) {
+            trackEvent({
+              eventType: 'turbosnap_error',
+              level: 'error',
+              payload: { operation: 'merge-stats', error },
+            });
+
+            throw error;
+          }
         }
       } else {
         clean();

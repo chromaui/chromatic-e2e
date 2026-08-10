@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { homedir } from 'node:os';
@@ -719,8 +720,63 @@ describe('events', () => {
     `);
   });
 
+  test('turbosnap_error - preview stats merge failure', async ({ onRequest }) => {
+    const root = resolve(import.meta.dirname, '../../../test/fixtures');
+
+    /** See {@link file://./../../../test/fixtures/corrupt-stats/preview-stats-1-2.json} */
+    const outputDirectory = resolve(root, 'corrupt-stats');
+
+    await expect(
+      runFixture(
+        { root, mergeReports: outputDirectory, include: ['dom.test.ts'] },
+        { turboSnap: true, outputDirectory }
+      )
+    ).rejects.toThrow();
+
+    const events = onRequest.mock.calls.flatMap(([event]) =>
+      event.eventType === 'vitest_turbosnap_error' ? [event] : []
+    );
+
+    expect.soft(events).toHaveLength(1);
+
+    expect.soft(events[0].level).toBe('error');
+    expect.soft(events[0].payload).toMatchObject({
+      operation: 'merge-stats',
+      error: expect.stringContaining('JSON'),
+    });
+  });
+
+  test('turbosnap_error - writing preview stats fails', async ({ onRequest }) => {
+    const root = resolve(import.meta.dirname, '../../../test/fixtures');
+    const statsFile = resolve(root, '.vitest/chromatic/preview-stats.json');
+
+    // Leftover directory would crash the next test run's output directory cleanup
+    onTestFinished(() => rm(statsFile, { recursive: true, force: true }));
+
+    await runFixture(
+      {
+        root,
+        include: ['dom.test.ts'],
+        // Block the stats file location with a directory so that writing the stats fails.
+        reporters: [{ onTestCaseReady: () => void mkdirSync(statsFile, { recursive: true }) }],
+      },
+      { turboSnap: true }
+    ).catch(() => {});
+
+    const events = onRequest.mock.calls.flatMap(([event]) =>
+      event.eventType === 'vitest_turbosnap_error' ? [event] : []
+    );
+
+    expect.soft(events).toHaveLength(1);
+
+    expect.soft(events[0].level).toBe('error');
+    expect.soft(events[0].payload).toMatchObject({
+      operation: 'write-stats',
+      error: expect.stringContaining('EISDIR'),
+    });
+  });
+
   test('archive-storybook called successfully', async ({ archivesDirectory, onRequest }) => {
-    onRequest.mockClear();
     await runBinary('archive-storybook', { archivesDirectory });
 
     const events = getSortedEvents(onRequest);
@@ -747,7 +803,6 @@ describe('events', () => {
     const error = new Error(`Example error with ${process.cwd()} and ${homedir()}`);
     error.stack = `Example stack:\nwith cwd ${process.cwd()}\nand homedir ${homedir()}`;
 
-    onRequest.mockClear();
     await runBinary('archive-storybook', { archivesDirectory, error });
 
     const events = getSortedEvents(onRequest);
@@ -786,7 +841,6 @@ describe('events', () => {
     vi.mocked(existsSync).mockImplementation(
       (path) => path !== `${archivesDirectory}/chromatic-archives`
     );
-    onRequest.mockClear();
     await runBinary('archive-storybook', { archivesDirectory });
 
     const events = getSortedEvents(onRequest);
@@ -825,7 +879,6 @@ describe('events', () => {
   });
 
   test('build-archive-storybook called successfully', async ({ archivesDirectory, onRequest }) => {
-    onRequest.mockClear();
     await runBinary('build-archive-storybook', { archivesDirectory });
 
     const events = getSortedEvents(onRequest);
@@ -860,7 +913,6 @@ describe('events', () => {
     archivesDirectory,
     onRequest,
   }) => {
-    onRequest.mockClear();
     vi.stubEnv('STORYBOOK_INVOKED_BY', 'chromatic');
 
     await runBinary('build-archive-storybook', { archivesDirectory });
@@ -897,7 +949,6 @@ describe('events', () => {
     const error = new Error(`Example error with ${process.cwd()} and ${homedir()}`);
     error.stack = `Example stack:\nwith cwd ${process.cwd()}\nand homedir ${homedir()}`;
 
-    onRequest.mockClear();
     await runBinary('build-archive-storybook', { archivesDirectory, error });
 
     const events = getSortedEvents(onRequest);
@@ -935,7 +986,6 @@ describe('events', () => {
   test.for(['archive-storybook', 'build-archive-storybook'] as const)(
     '%s based events contain metadata from test run',
     async (command, { archivesDirectory, onRequest, getEvents }) => {
-      onRequest.mockClear();
       await runBinary(command, { archivesDirectory });
 
       // Data from telemetry-metadata.json should be found in CLI invoked events

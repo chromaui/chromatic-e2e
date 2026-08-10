@@ -87,6 +87,11 @@ type TelemetryPayloads = {
     error: unknown;
   };
 
+  turbosnap_error: {
+    operation: 'write-stats' | 'merge-stats';
+    error: unknown;
+  };
+
   configure_called: {
     options: (keyof ConfigureOptions)[];
     scope: 'test' | 'suite' | 'file';

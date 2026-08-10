@@ -1,6 +1,6 @@
 /** These types are consumed by both browser and node sides */
 
-import type { ConfigureOptions } from '../../types';
+import type { ChromaticNamespace, ConfigureOptions } from '../../types';
 import { EVENT_TYPE_PREFIX } from './constants';
 
 export type EventType = keyof TelemetryPayloads;
@@ -80,6 +80,11 @@ type TelemetryPayloads = {
 
   archives_created: {
     count: number;
+  };
+
+  command_failed: {
+    command: ChromaticNamespace;
+    error: unknown;
   };
 
   configure_called: {

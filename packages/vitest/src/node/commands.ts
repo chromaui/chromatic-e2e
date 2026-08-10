@@ -31,6 +31,7 @@ export function createCommands(options: ResolvedOptions) {
   const resourceArchivers = new Map<SessionId, ResourceArchiver>();
   const networkIdleTrackers = new Map<SessionId, NetworkIdleTracker>();
   const savedResults = new Set<string>();
+  const trackedCommandFailures = new Set<string>();
   const snapshots = new Map<
     TestID,
     Map<
@@ -44,7 +45,7 @@ export function createCommands(options: ResolvedOptions) {
     >
   >();
 
-  return {
+  const commands = {
     /**
      * Store a `@rrweb` generated DOM snapshot for the test.
      * Can be called multiple times during a single test case.
@@ -246,6 +247,7 @@ export function createCommands(options: ResolvedOptions) {
       networkIdleTrackers.clear();
       snapshots.clear();
       savedResults.clear();
+      trackedCommandFailures.clear();
     },
 
     /**
@@ -256,6 +258,55 @@ export function createCommands(options: ResolvedOptions) {
       return Object.fromEntries(snapshots.get(id) || []);
     },
   } satisfies Record<ChromaticNamespace, BrowserCommand<any>>;
+
+  return withErrorTracking(commands);
+
+  function withErrorTracking(_commands: typeof commands): typeof commands {
+    return Object.fromEntries(
+      Object.entries(_commands).map(
+        ([name, command]: [keyof typeof _commands, BrowserCommand<any>]) => [
+          name,
+          async (context: BrowserCommandContext, ...args: unknown[]) => {
+            try {
+              return await command(context, ...args);
+            } catch (error) {
+              trackCommandFailure(name as keyof ChromaticCommands, error, context);
+              throw error;
+            }
+          },
+        ]
+      )
+    ) as typeof commands;
+  }
+
+  function trackCommandFailure(
+    command: keyof ChromaticCommands,
+    error: unknown,
+    context: BrowserCommandContext
+  ) {
+    // Don't tracked failed telemetry events or test-only getSnapshots command
+    if (command === '__chromatic_telemetry' || command === '__chromatic_getSnapshots') {
+      return;
+    }
+
+    // Report identical failures just once, e.g. a failing beforeEach repeating for every test
+    const key = `${command}:${error instanceof Error ? error.message : String(error)}`;
+
+    if (trackedCommandFailures.has(key)) {
+      return;
+    }
+    trackedCommandFailures.add(key);
+
+    try {
+      trackEvent(
+        { eventType: 'command_failed', level: 'error', payload: { command, error } },
+        context.project.vitest,
+        options
+      );
+    } catch {
+      // Make sure failing trackEvent doesn't hide the original error
+    }
+  }
 
   async function onTestCleanup(context: BrowserCommandContext, id: TestID) {
     const resourceArchiver = resourceArchivers.get(context.sessionId);

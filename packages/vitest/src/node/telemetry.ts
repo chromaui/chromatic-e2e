@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { rmSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
+import util from 'node:util';
 import { appendFile, mkdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
@@ -20,8 +21,9 @@ const packageManager = {
   version: userAgentMatch?.[2] || 'unknown',
 };
 
-const session = {
-  id: randomUUID(),
+/** @internal */
+export const session = {
+  id: randomUUID() as string,
   projectId: undefined as string | undefined,
   chromaticVersion: undefined as string | undefined,
 
@@ -37,6 +39,9 @@ const session = {
 
   /** Whether cleanup hooks were already registered for this session */
   cleanupRegistered: false,
+
+  /** Contents of `.env` */
+  dotEnv: undefined as undefined | Record<string, string>,
 };
 
 export type EventType = keyof TelemetryPayloads;
@@ -90,7 +95,7 @@ export function trackEvent<T extends EventType = EventType>(
 }
 
 async function _trackEvent(event: TelemetryEvent, vitest: Vitest, options: ResolvedOptions) {
-  const url = env.CHROMATIC_TELEMETRY_URL || TELEMETRY_URL;
+  const url = getEnv('CHROMATIC_TELEMETRY_URL') || TELEMETRY_URL;
   const root = vitest.config.root;
   const timestamp = new Date().toISOString();
 
@@ -152,15 +157,19 @@ export function resolveTelemetryOptions(
       : { enabled: telemetry ?? true, logToFile: false };
 
   // Environment variables can only disable telemetry or enable the log file, never the reverse
-  if (isTruthyEnv(env.CHROMATIC_DISABLE_TELEMETRY) || isTruthyEnv(env.DO_NOT_TRACK)) {
+  if (isDisabledByEnv()) {
     resolved.enabled = false;
   }
 
-  if (isTruthyEnv(env.CHROMATIC_TELEMETRY_LOG_TO_FILE)) {
+  if (isTruthyEnv(getEnv('CHROMATIC_TELEMETRY_LOG_TO_FILE'))) {
     resolved.logToFile = true;
   }
 
   return resolved;
+}
+
+function isDisabledByEnv() {
+  return isTruthyEnv(getEnv('CHROMATIC_DISABLE_TELEMETRY')) || isTruthyEnv(getEnv('DO_NOT_TRACK'));
 }
 
 /**
@@ -236,6 +245,23 @@ function getChromaticVersion(root: string) {
   } catch {
     return 'unknown';
   }
+}
+
+function getEnv(name: string): string | undefined {
+  if (session.dotEnv === undefined) {
+    // Supported in LTS 22 and EOL 20.12
+    if (typeof util.parseEnv !== 'function') {
+      session.dotEnv = {};
+    } else {
+      try {
+        session.dotEnv = util.parseEnv(readFileSync(resolve(process.cwd(), '.env'), 'utf8'));
+      } catch {
+        session.dotEnv = {};
+      }
+    }
+  }
+
+  return env[name] ?? session.dotEnv[name];
 }
 
 function isTruthyEnv(value: string | undefined): boolean {

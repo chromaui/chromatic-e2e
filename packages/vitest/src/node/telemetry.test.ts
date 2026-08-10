@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { beforeEach, describe, expect, onTestFinished, test as base, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { chromaticPlugin } from './plugin';
-import { type WireTelemetryEvent } from './telemetry';
+import { session, type WireTelemetryEvent } from './telemetry';
 import {
   getBrowserConfig,
   runFixture,
@@ -13,6 +13,7 @@ import {
 
 beforeEach(() => {
   vi.unstubAllEnvs();
+  session.dotEnv = undefined;
 });
 
 describe('configuration', () => {
@@ -32,6 +33,23 @@ describe('configuration', () => {
     'telemetry is disabled when %s is set',
     async (envVar, { onRequest }) => {
       vi.stubEnv(envVar, '1');
+      await runVitest();
+
+      expect(onRequest).not.toHaveBeenCalled();
+    }
+  );
+
+  test.for(['CHROMATIC_DISABLE_TELEMETRY', 'DO_NOT_TRACK'])(
+    'telemetry is disabled when %s is set in .env',
+    async (envVar, { onRequest }) => {
+      vi.stubEnv(envVar, undefined);
+
+      const original = process.cwd();
+      onTestFinished(() => void process.chdir(original));
+
+      const cwd = resolve(import.meta.dirname, `../../test/fixtures/dotenvs/${envVar}`);
+      process.chdir(cwd);
+
       await runVitest();
 
       expect(onRequest).not.toHaveBeenCalled();

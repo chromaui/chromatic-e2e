@@ -1,7 +1,8 @@
-import { Vitest } from 'vitest/node';
-import { Reporter } from 'vitest/reporters';
-import { type TelemetryEvent, trackEvent } from './telemetry';
-import { type ResolvedOptions } from '../types';
+import { type Vitest } from 'vitest/node';
+import { type Reporter } from 'vitest/reporters';
+import { trackEvent } from './track';
+import { type TelemetryEvent } from './types';
+import { type ResolvedOptions } from '../../types';
 
 const REPORTER_NAME = 'chromatic-telemetry-reporter';
 

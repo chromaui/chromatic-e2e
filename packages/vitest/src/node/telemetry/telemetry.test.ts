@@ -4,21 +4,21 @@ import { spawn } from 'node:child_process';
 import { homedir } from 'node:os';
 import { beforeEach, describe, expect, onTestFinished, test as base, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
-import { chromaticPlugin } from './plugin';
-import { session, TELEMETRY_METADATA_FILE, type WireTelemetryEvent } from './telemetry';
+import { chromaticPlugin } from '../plugin';
+import { invalidateDotEnvCache, TELEMETRY_METADATA_FILE, type WireTelemetryEvent } from './index';
 import {
   getBrowserConfig,
   runFixture,
   getResolvedConfig as runVitest,
   setupTelemetryServer,
-} from '../../test/utils/node';
+} from '../../../test/utils/node';
 
 vi.mock('node:fs', { spy: true });
 
 beforeEach(() => {
   vi.mocked(existsSync).mockReset();
   vi.unstubAllEnvs();
-  session.dotEnv = undefined;
+  invalidateDotEnvCache();
 });
 
 describe('configuration', () => {
@@ -55,7 +55,7 @@ describe('configuration', () => {
       const original = process.cwd();
       onTestFinished(() => void process.chdir(original));
 
-      const cwd = resolve(import.meta.dirname, `../../test/fixtures/dotenvs/${envVar}`);
+      const cwd = resolve(import.meta.dirname, `../../../test/fixtures/dotenvs/${envVar}`);
       process.chdir(cwd);
 
       await runVitest();
@@ -217,7 +217,7 @@ describe('automatic fields', () => {
             plugins: [chromaticPlugin()],
             test: {
               include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../test/fixtures'),
+              root: resolve(import.meta.dirname, '../../../test/fixtures'),
               browser: getBrowserConfig('first-browser'),
             },
           },
@@ -225,7 +225,7 @@ describe('automatic fields', () => {
             plugins: [chromaticPlugin()],
             test: {
               include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../test/fixtures'),
+              root: resolve(import.meta.dirname, '../../../test/fixtures'),
               browser: getBrowserConfig('second-browser'),
             },
           },
@@ -284,7 +284,7 @@ describe('events', () => {
   });
 
   test('plugin_configured in Vitest sharded run', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
+    /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runVitest({ shard: '1/2' });
 
     const pluginConfiguredEvents = onRequest.mock.calls.flatMap(([event]) =>
@@ -324,7 +324,7 @@ describe('events', () => {
               name: 'first-project',
               browser: getBrowserConfig('first-browser'),
               include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../test/fixtures'),
+              root: resolve(import.meta.dirname, '../../../test/fixtures'),
             },
           },
           {
@@ -333,7 +333,7 @@ describe('events', () => {
               name: 'second-project',
               browser: getBrowserConfig('second-browser'),
               include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../test/fixtures'),
+              root: resolve(import.meta.dirname, '../../../test/fixtures'),
             },
           },
         ],
@@ -452,7 +452,7 @@ describe('events', () => {
   });
 
   test('take_snapshot_invalid_call - called outside test', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
+    /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture({
       include: ['**/take-snapshot.test.ts'],
       provide: { testName: 'two' },
@@ -475,7 +475,7 @@ describe('events', () => {
   });
 
   test('take_snapshot_invalid_call - not registered test', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
+    /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture(
       {
         include: ['**/take-snapshot.test.ts'],
@@ -503,7 +503,7 @@ describe('events', () => {
   });
 
   test('take_snapshot_invalid_call - not awaited', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
+    /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture({
       include: ['**/take-snapshot.test.ts'],
       provide: { testName: 'three' },
@@ -549,7 +549,7 @@ describe('events', () => {
   });
 
   test('configure_called', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/configure-calls.test.ts} */
+    /** See {@link file://./../../../test/fixtures/configure-calls.test.ts} */
     await runFixture({ include: ['**/configure-calls.test.ts'] });
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
@@ -592,7 +592,7 @@ describe('events', () => {
   });
 
   test('wait_for_idle_network_called', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/wait-for-idle-network.test.ts} */
+    /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture({
       include: ['**/wait-for-idle-network.test.ts'],
       provide: { testName: 'three' },
@@ -615,7 +615,7 @@ describe('events', () => {
   });
 
   test('wait_for_idle_network_invalid_call - called outside test', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/wait-for-idle-network.test.ts} */
+    /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture({
       include: ['**/wait-for-idle-network.test.ts'],
       provide: { testName: 'two' },
@@ -639,7 +639,7 @@ describe('events', () => {
   });
 
   test('wait_for_idle_network_invalid_call - not registered test', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/wait-for-idle-network.test.ts} */
+    /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture(
       {
         include: ['**/wait-for-idle-network.test.ts'],
@@ -668,7 +668,7 @@ describe('events', () => {
   });
 
   test('wait_for_idle_network_timeout', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/wait-for-idle-network.test.ts} */
+    /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture(
       {
         include: ['**/wait-for-idle-network.test.ts'],
@@ -695,7 +695,7 @@ describe('events', () => {
   });
 
   test('setup_files_parallel', async ({ onRequest }) => {
-    /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
+    /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture({
       include: ['**/take-snapshot.test.ts'],
       provide: { testName: 'four' },
@@ -957,7 +957,7 @@ const test = base
     // Run a common fixture once before any tests start.
     // Tests that aren't validating edge cases can assert this data.
     const { stdout } = await runFixture(
-      /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
+      /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
       { include: ['take-snapshot.test.ts'], provide: { testName: 'five' } },
       {
         ignoreSelectors: ['.ignore-me'],
@@ -1039,7 +1039,7 @@ async function runBinary(
   vi.resetModules();
 
   let isDone = false;
-  const promise = import(`../bin/${name}.ts`).finally(() => (isDone = true));
+  const promise = import(`../../bin/${name}.ts`).finally(() => (isDone = true));
 
   await vi.waitFor(() => isDone || expect(spawn).toHaveBeenCalled(), { timeout: 1_000 });
 

@@ -79,7 +79,7 @@ type TelemetryPayloads = {
   };
 
   archives_created: {
-    count: number;
+    archiveCount: number;
   };
 
   command_failed: {

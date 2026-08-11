@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { existsSync } from 'node:fs';
 import { writeFile, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
@@ -15,10 +16,15 @@ export const packageManager = {
   version: userAgentMatch?.[2] || 'unknown',
 };
 
-/** Contents of the `.vitest/chromatic/metadata.json` file shared between Vitest and Chromatic CLI processes. */
-export type TelemetryMetadata = WireTelemetryEvent['metadata'] &
-  Pick<WireTelemetryEvent, 'sessionId' | 'projectId'> &
-  Pick<ResolvedOptions['telemetry'], 'logToFile'>;
+/** Contents of the `.vitest/chromatic/telemetry-metadata.json` file shared between Vitest and Chromatic CLI processes. */
+export interface TelemetryMetadata {
+  sessionId: WireTelemetryEvent['sessionId'];
+  projectId: WireTelemetryEvent['projectId'];
+  chromaticVersion: WireTelemetryEvent['metadata']['chromaticVersion'];
+  vitestVersion: WireTelemetryEvent['metadata']['vitestVersion'];
+  isVitestProjects: WireTelemetryEvent['metadata']['isVitestProjects'];
+  logToFile: ResolvedOptions['telemetry']['logToFile'];
+}
 
 export async function createProjectId(root: string): Promise<string> {
   let remote: string | undefined = undefined;
@@ -65,7 +71,7 @@ export function getChromaticVersion(root: string) {
 }
 
 /**
- * Writes a `.vitest/chromatic/metadata.json` file with the given telemetry metadata.
+ * Writes a `.vitest/chromatic/telemetry-metadata.json` file with the given telemetry metadata.
  * This file will be picked up when `chromatic --vitest` CLI is run, outside of Vitest test run.
  * It allows us to share telemetry metadata between Vitest and Chromatic CLI processes.
  */
@@ -78,18 +84,39 @@ export async function writeTelemetryMetadata(outputDirectory: string, data: Tele
 }
 
 /**
- * Reads the `.vitest/chromatic/metadata.json` file and returns the telemetry metadata.
+ * Reads the `.vitest/chromatic/telemetry-metadata.json` file and returns the telemetry metadata.
  * This will be read when `chromatic --vitest` CLI is run, outside of Vitest test run.
  */
 export async function readTelemetryMetadata(
   outputDirectory: string
 ): Promise<{ disabled: true } | TelemetryMetadata> {
   try {
-    const content = await readFile(resolve(outputDirectory, TELEMETRY_METADATA_FILE), 'utf8');
+    const filename = resolve(outputDirectory, TELEMETRY_METADATA_FILE);
 
-    return JSON.parse(content);
+    // Missing metadata indicates telemetry was disabled during Vitest run.
+    if (!existsSync(filename)) {
+      return { disabled: true };
+    }
+
+    const content = await readFile(filename, 'utf8');
+    const json = JSON.parse(content);
+
+    return {
+      sessionId: json.sessionId || 'unknown',
+      projectId: json.projectId || 'unknown',
+      chromaticVersion: json.chromaticVersion || 'unknown',
+      vitestVersion: json.vitestVersion || 'unknown',
+      isVitestProjects: json.isVitestProjects ?? false,
+      logToFile: json.logToFile ?? false,
+    };
   } catch {
-    // Missing (or malformed) metadata indicates telemetry was disabled during Vitest run.
-    return { disabled: true };
+    return {
+      sessionId: 'unknown',
+      projectId: 'unknown',
+      chromaticVersion: 'unknown',
+      vitestVersion: 'unknown',
+      isVitestProjects: false,
+      logToFile: false,
+    };
   }
 }

@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { homedir } from 'node:os';
@@ -536,13 +536,13 @@ describe('events', () => {
         {
           "eventType": "vitest_archives_created",
           "payload": {
-            "count": 3,
+            "archiveCount": 3,
           },
         },
         {
           "eventType": "vitest_archives_created",
           "payload": {
-            "count": 2,
+            "archiveCount": 2,
           },
         },
       ]
@@ -1035,6 +1035,31 @@ describe('events', () => {
         expect.soft(event).toHaveProperty('sessionId', testRunEvent.sessionId);
         expect.soft(event).toHaveProperty('projectId', testRunEvent.projectId);
         expect.soft(event.metadata).toMatchObject(testRunEvent.metadata);
+      }
+    }
+  );
+
+  test.for(['archive-storybook', 'build-archive-storybook'] as const)(
+    '%s based events contain fallback metadata when previous test run data is malformed',
+    async (command, { onRequest }) => {
+      const archivesDirectory = resolve(
+        import.meta.dirname,
+        '../../test/fixtures/.vitest/malformed-metadata'
+      );
+
+      mkdirSync(`${archivesDirectory}/chromatic-archives`, { recursive: true });
+      writeFileSync(resolve(archivesDirectory, TELEMETRY_METADATA_FILE), 'malformed json');
+
+      await runBinary(command, { archivesDirectory });
+
+      for (const event of onRequest.mock.calls.map(([event]) => event)) {
+        expect.soft(event).toHaveProperty('sessionId', 'unknown');
+        expect.soft(event).toHaveProperty('projectId', 'unknown');
+        expect.soft(event.metadata).toMatchObject({
+          chromaticVersion: 'unknown',
+          vitestVersion: 'unknown',
+          isVitestProjects: false,
+        });
       }
     }
   );

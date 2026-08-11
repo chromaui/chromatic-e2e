@@ -32,11 +32,6 @@ async function waitForIdleNetwork(timeout: number, options?: Options): Promise<v
   }
 
   const isCalledByUser = options?._internal !== true;
-
-  if (isCalledByUser) {
-    trackEvent({ eventType: 'wait_for_idle_network_called', level: 'info', payload: { timeout } });
-  }
-
   const test = getCurrentTest();
 
   if (!test) {
@@ -68,6 +63,10 @@ async function waitForIdleNetwork(timeout: number, options?: Options): Promise<v
       'waitForIdleNetwork() cannot be called in a test that is not registered for Chromatic plugin.' +
         `\nMake sure ${test.file.projectName || 'root'} project has chromaticPlugin() enabled.`
     );
+  }
+
+  if (isCalledByUser) {
+    trackEvent({ eventType: 'wait_for_idle_network_called', level: 'info', payload: { timeout } });
   }
 
   try {

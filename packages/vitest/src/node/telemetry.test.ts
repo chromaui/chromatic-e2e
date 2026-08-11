@@ -487,13 +487,13 @@ describe('events', () => {
         {
           "eventType": "vitest_archives_created",
           "payload": {
-            "count": 3,
+            "archiveCount": 3,
           },
         },
         {
           "eventType": "vitest_archives_created",
           "payload": {
-            "count": 2,
+            "archiveCount": 2,
           },
         },
       ]

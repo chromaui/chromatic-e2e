@@ -213,7 +213,7 @@ export function createCommands(options: ResolvedOptions) {
         {
           eventType: 'archives_created',
           level: 'info',
-          payload: { count: Object.keys(snapshotBuffers).length },
+          payload: { archiveCount: Object.keys(snapshotBuffers).length },
         },
         context.project.vitest,
         options

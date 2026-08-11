@@ -5,13 +5,16 @@ import type { Vite } from 'vitest/node';
 import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
-import { ChromaticReporter } from './reporter';
 import {
   cleanTelemetryLogFile,
   resolveTelemetryOptions,
   setupTelemetryCleanup,
-  trackEvent,
+  trackEvent as _trackEvent,
+  type EventType,
+  type TelemetryEvent,
 } from './telemetry';
+import { ChromaticReporter } from './reporter';
+import { TelemetryReporter } from './telemetry-reporter';
 import { mergePreviewStats, WebpackStatsReporter } from './webpack-stats-reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 import { type ResolvedOptions, type Options } from '../types';
@@ -70,54 +73,44 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       if (options.telemetry.enabled) {
         setupTelemetryCleanup(context.vitest);
 
-        void trackEvent(
-          {
-            eventType: 'plugin_configured',
-            level: 'info',
-            payload: {
-              cropToViewport: options.cropToViewport,
-              delay: options.delay,
-              diffIncludeAntiAliasing: options.diffIncludeAntiAliasing,
-              diffThreshold: options.diffThreshold,
-              disableAutoSnapshot: options.disableAutoSnapshot,
-              forcedColors: options.forcedColors,
-              idleNetworkInterval: options.idleNetworkInterval,
-              pauseAnimationAtEnd: options.pauseAnimationAtEnd,
-              prefersReducedMotion: options.prefersReducedMotion,
-              resourceArchiveTimeout: options.resourceArchiveTimeout,
-              turboSnap: options.turboSnap,
-              reporter: !options.reporter.enabled
-                ? 'off'
-                : options.reporter.verbose
-                  ? 'verbose'
-                  : 'non-verbose',
+        trackEvent({
+          eventType: 'plugin_configured',
+          level: 'info',
+          payload: {
+            isShardedRun: project.config.shard != null,
+            cropToViewport: options.cropToViewport,
+            delay: options.delay,
+            diffIncludeAntiAliasing: options.diffIncludeAntiAliasing,
+            diffThreshold: options.diffThreshold,
+            disableAutoSnapshot: options.disableAutoSnapshot,
+            forcedColors: options.forcedColors,
+            idleNetworkInterval: options.idleNetworkInterval,
+            pauseAnimationAtEnd: options.pauseAnimationAtEnd,
+            prefersReducedMotion: options.prefersReducedMotion,
+            resourceArchiveTimeout: options.resourceArchiveTimeout,
+            turboSnap: options.turboSnap,
+            reporter: !options.reporter.enabled
+              ? 'off'
+              : options.reporter.verbose
+                ? 'verbose'
+                : 'non-verbose',
 
-              // Don't attach any user-defined strings values:
-              isCustomOutputDirectory: options.outputDirectory !== DEFAULT_OUTPUT_DIR,
-              assetDomainsCount: options.assetDomains?.length ?? 0,
-              ignoreSelectorsCount: options.ignoreSelectors?.length ?? 0,
-              tagsCount: options.tags?.length ?? 0,
-            },
+            // Don't attach any user-defined strings values:
+            isCustomOutputDirectory: options.outputDirectory !== DEFAULT_OUTPUT_DIR,
+            assetDomainsCount: options.assetDomains?.length ?? 0,
+            ignoreSelectorsCount: options.ignoreSelectors?.length ?? 0,
+            tagsCount: options.tags?.length ?? 0,
           },
-          context.vitest,
-          options
-        );
+        });
       }
 
       // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
       if (!browser.enabled || browser.name !== 'chromium') {
-        trackEvent(
-          {
-            eventType: 'project_ineligible',
-            level: 'warn',
-            payload: {
-              isBrowser: browser.enabled,
-              isChromium: browser.name === 'chromium',
-            },
-          },
-          context.vitest,
-          options
-        );
+        trackEvent({
+          eventType: 'project_ineligible',
+          level: 'warn',
+          payload: { isBrowser: browser.enabled, isChromium: browser.name === 'chromium' },
+        });
 
         return clean();
       }
@@ -130,12 +123,22 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         WebpackStatsReporter.apply(context.vitest, options);
       }
 
+      if (options.telemetry.enabled) {
+        TelemetryReporter.apply(context.vitest, options);
+      }
+
       // Ensure our setup file is registered first so that afterEach runs before any user-defined hooks.
       if (sequence.hooks === 'stack') {
         project.config.setupFiles.push(setupFile);
       } else if (sequence.hooks === 'list') {
         project.config.setupFiles.unshift(setupFile);
       } else {
+        trackEvent({
+          eventType: 'setup_files_parallel',
+          level: 'warn',
+          payload: { setupFileCount: project.config.setupFiles.length },
+        });
+
         project.config.setupFiles.push(setupFile);
 
         context.vitest.logger.warn(
@@ -154,6 +157,8 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
             `Tags cannot be used with Vitest ${context.vitest.version}. Please upgrade to Vitest 4.1 or later to use this feature.`
           )
         );
+
+        trackEvent({ eventType: 'tags_low_version', level: 'warn', payload: {} });
       }
 
       if (options.tags) {
@@ -197,6 +202,10 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
             }
           }
         }
+      }
+
+      function trackEvent<T extends EventType = EventType>(event: TelemetryEvent<T>): void {
+        _trackEvent(event, context.vitest, options);
       }
     },
   };

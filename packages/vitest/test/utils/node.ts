@@ -55,7 +55,7 @@ export async function runFixture(
 }
 
 export async function getResolvedConfig(
-  options: InlineConfig = {},
+  options: InlineConfig & { shard?: string } = {},
   pluginOptions: Parameters<typeof chromaticPlugin>[0] = {}
 ) {
   const vitest = await createVitest(
@@ -104,30 +104,30 @@ export class StableTestFileOrderSorter implements TestSequencer {
   }
 }
 
-export function createTelemetryServer(url = TELEMETRY_URL) {
-  const server = setupServer();
+export function setupTelemetryServer(_server?: ReturnType<typeof setupServer>) {
+  const server = _server || setupServer();
   const onRequest = vi.fn<(event: WireTelemetryEvent) => void>();
 
-  const setup = () => {
-    onRequest.mockClear();
+  server.listen({ onUnhandledRequest: 'warn' });
 
-    server.listen({ onUnhandledRequest: 'warn' });
+  server.use(
+    http.post<undefined, WireTelemetryEvent>(
+      `${TELEMETRY_URL}/telemetry/v1/vitest/events`,
+      async ({ request }) => {
+        onRequest(await request.json());
+        return HttpResponse.json({ ok: true });
+      }
+    )
+  );
 
-    server.use(
-      http.post<undefined, WireTelemetryEvent>(
-        `${url}/telemetry/v1/vitest/events`,
-        async ({ request }) => {
-          onRequest(await request.json());
-          return HttpResponse.json({ ok: true });
-        }
-      )
-    );
+  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
 
-    return function cleanup() {
-      server.resetHandlers();
-      server.close();
-    };
-  };
+  function cleanup() {
+    process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
 
-  return { server, setup, onRequest };
+    server.resetHandlers();
+    server.close();
+  }
+
+  return { server, onRequest, cleanup };
 }

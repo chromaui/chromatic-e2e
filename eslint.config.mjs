@@ -60,6 +60,7 @@ export default tseslint.config(
     files: ['**/*.test.ts', '**/*.spec.ts'],
     rules: {
       'no-restricted-syntax': 'off',
+      'no-empty-pattern': 'off',
     },
   },
   eslintConfigPrettier

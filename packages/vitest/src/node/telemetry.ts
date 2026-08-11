@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { readFileSync, rmSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import util from 'node:util';
 import { appendFile, mkdir, writeFile, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
@@ -326,9 +326,14 @@ function getChromaticVersion(root: string) {
  */
 async function writeTelemetryMetadata(
   outputDirectory: string,
-  data: WireTelemetryEvent['metadata'] &
-    Pick<WireTelemetryEvent, 'sessionId' | 'projectId'> &
-    Pick<ResolvedOptions['telemetry'], 'logToFile'>
+  data: {
+    sessionId: WireTelemetryEvent['sessionId'];
+    projectId: WireTelemetryEvent['projectId'];
+    chromaticVersion: WireTelemetryEvent['metadata']['chromaticVersion'];
+    vitestVersion: WireTelemetryEvent['metadata']['vitestVersion'];
+    isVitestProjects: WireTelemetryEvent['metadata']['isVitestProjects'];
+    logToFile: ResolvedOptions['telemetry']['logToFile'];
+  }
 ) {
   await writeFile(
     resolve(outputDirectory, TELEMETRY_METADATA_FILE),
@@ -345,12 +350,33 @@ async function readTelemetryMetadata(
   outputDirectory: string
 ): Promise<{ disabled: true } | Parameters<typeof writeTelemetryMetadata>[1]> {
   try {
-    const content = await readFile(resolve(outputDirectory, TELEMETRY_METADATA_FILE), 'utf8');
+    const filename = resolve(outputDirectory, TELEMETRY_METADATA_FILE);
 
-    return JSON.parse(content);
+    // Missing metadata indicates telemetry was disabled during Vitest run.
+    if (!existsSync(filename)) {
+      return { disabled: true };
+    }
+
+    const content = await readFile(filename, 'utf8');
+    const json = JSON.parse(content);
+
+    return {
+      sessionId: json.sessionId || 'unknown',
+      projectId: json.projectId || 'unknown',
+      chromaticVersion: json.chromaticVersion || 'unknown',
+      vitestVersion: json.vitestVersion || 'unknown',
+      isVitestProjects: json.isVitestProjects ?? false,
+      logToFile: json.logToFile ?? false,
+    };
   } catch {
-    // Missing (or malformed) metadata indicates telemetry was disabled during Vitest run.
-    return { disabled: true };
+    return {
+      sessionId: 'unknown',
+      projectId: 'unknown',
+      chromaticVersion: 'unknown',
+      vitestVersion: 'unknown',
+      isVitestProjects: false,
+      logToFile: false,
+    };
   }
 }
 

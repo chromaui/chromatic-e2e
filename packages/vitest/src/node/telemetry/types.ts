@@ -97,6 +97,12 @@ type TelemetryPayloads = {
     error: unknown;
   };
 
+  snapshot_error: {
+    operation: 'capture' | 'replace-blob-urls' | 'upload';
+    isAutomaticSnapshot: boolean;
+    error: unknown;
+  };
+
   configure_called: {
     options: (keyof ConfigureOptions)[];
     scope: 'test' | 'suite' | 'file';

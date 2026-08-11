@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test, inject, onTestFinished } from 'vitest';
+import { http } from 'msw';
 import { setupWorker } from 'msw/browser';
 import { waitForIdleNetwork } from '../../src';
-import { http } from 'msw';
 
 test.runIf(inject('testName') === 'one')('test #1', async () => {
   document.body.innerHTML = '<h1>Example heading</h1>';

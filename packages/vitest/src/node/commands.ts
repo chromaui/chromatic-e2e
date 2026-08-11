@@ -70,7 +70,7 @@ export function createCommands(options: ResolvedOptions) {
         snapshots.set(id, sessionSnapshots);
       }
 
-      const isCustomName = name !== undefined;
+      const isCustomName = name != undefined;
       name ||= `Snapshot #${sessionSnapshots.size + 1}`;
 
       const frame = await context.frame();

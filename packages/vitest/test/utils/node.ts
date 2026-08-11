@@ -6,6 +6,7 @@ import { stripVTControlCharacters } from 'node:util';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { type Mock, vi } from 'vitest';
+import { type ViteUserConfig } from 'vitest/config';
 import {
   type CliOptions,
   createVitest,
@@ -29,7 +30,11 @@ export function getBrowserConfig(name = 'chromium') {
 }
 
 export async function runFixture(
-  { stdout, ...options }: CliOptions & { stdout?: 'inherit' },
+  {
+    stdout,
+    plugins,
+    ...options
+  }: CliOptions & { stdout?: 'inherit'; plugins?: ViteUserConfig['plugins'] },
   pluginOptions: Parameters<typeof chromaticPlugin>[0] | { disabled: true } = {}
 ) {
   const { streams, getOutput } = createOutputStreams();
@@ -39,7 +44,10 @@ export async function runFixture(
     [],
     { config: options.config ?? false },
     {
-      plugins: ['disabled' in pluginOptions ? undefined : chromaticPlugin(pluginOptions)],
+      plugins: [
+        ...(plugins ?? []),
+        'disabled' in pluginOptions ? undefined : chromaticPlugin(pluginOptions),
+      ],
       test: {
         watch: false,
         root: resolve(import.meta.dirname, '../fixtures'),

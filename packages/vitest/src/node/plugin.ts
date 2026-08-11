@@ -62,7 +62,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       };
     },
 
-    async configureVitest(context) {
+    configureVitest: withErrorTracking(options, async (context) => {
       const project = context.project;
       const browser = project.config.browser;
       const sequence = context.vitest.config.sequence;
@@ -217,7 +217,26 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       function trackEvent<T extends EventType = EventType>(event: TelemetryEvent<T>): void {
         _trackEvent(event, context.vitest, options);
       }
-    },
+    }),
+  };
+}
+
+function withErrorTracking(
+  options: ResolvedOptions,
+  configureVitest: Vite.Plugin['configureVitest']
+): Vite.Plugin['configureVitest'] {
+  return async (context) => {
+    try {
+      return await configureVitest(context);
+    } catch (error) {
+      _trackEvent(
+        { eventType: 'plugin_error', level: 'error', payload: { operation: 'configure', error } },
+        context.vitest,
+        options
+      );
+
+      throw error;
+    }
   };
 }
 

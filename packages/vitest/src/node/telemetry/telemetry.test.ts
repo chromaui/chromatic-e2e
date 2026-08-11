@@ -776,6 +776,43 @@ describe('events', () => {
     });
   });
 
+  test('plugin_error - configuring Vitest fails', async ({ onRequest }) => {
+    await runFixture({
+      include: ['dom.test.ts'],
+      plugins: [
+        {
+          name: 'simulate-configuring-error',
+          enforce: 'pre',
+          configureVitest(context) {
+            const setupFiles = context.project.config.setupFiles;
+            const push = setupFiles.push.bind(setupFiles);
+
+            // Throw error when built-in plugin pushes setupFile
+            setupFiles.push = function mockedArrayPush(file) {
+              if (file.includes('src/browser/setupFile.ts')) {
+                throw new Error('Example error');
+              }
+
+              return push(file);
+            };
+          },
+        },
+      ],
+    }).catch(() => {});
+
+    const events = onRequest.mock.calls.flatMap(([event]) =>
+      event.eventType === 'vitest_plugin_error' ? [event] : []
+    );
+
+    expect.soft(events).toHaveLength(1);
+
+    expect.soft(events[0]?.level).toBe('error');
+    expect.soft(events[0]?.payload).toMatchObject({
+      operation: 'configure',
+      error: expect.stringContaining('Example error'),
+    });
+  });
+
   test('archive-storybook called successfully', async ({ archivesDirectory, onRequest }) => {
     await runBinary('archive-storybook', { archivesDirectory });
 
@@ -862,6 +899,9 @@ describe('events', () => {
           "eventType": "vitest_archives_resolved",
           "payload": {
             "command": "archiveStorybook",
+            "error": "Error: Chromatic archives directory cannot be found: <process-cwd>/packages/vitest/test/fixtures/.vitest/chromatic/chromatic-archives
+
+      Please make sure that you have run your E2E tests, or have set the CHROMATIC_ARCHIVE_LOCATION env var if the output directory for the tests is not in the standard location.",
             "isCustomLocation": true,
             "success": false,
           },

@@ -92,6 +92,11 @@ type TelemetryPayloads = {
     error: unknown;
   };
 
+  plugin_error: {
+    operation: 'configure';
+    error: unknown;
+  };
+
   configure_called: {
     options: (keyof ConfigureOptions)[];
     scope: 'test' | 'suite' | 'file';
@@ -121,6 +126,7 @@ type TelemetryPayloads = {
   archives_resolved: {
     isCustomLocation: boolean;
     success: boolean;
+    error: unknown;
     command: 'archiveStorybook' | 'buildArchiveStorybook';
   };
 

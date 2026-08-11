@@ -446,7 +446,7 @@ type TelemetryPayloads = {
   };
 
   archives_created: {
-    count: number;
+    archiveCount: number;
   };
 
   configure_called: {

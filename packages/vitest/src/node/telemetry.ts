@@ -42,10 +42,10 @@ export const session = {
   /** Whether cleanup hooks were already registered for this session */
   cleanupRegistered: false,
 
-  /** Whether internal `.vitest/chromatic/metadata.json` has been written */
+  /** Whether internal `.vitest/chromatic/telemetry-metadata.json` has been written */
   isMetadataWritten: false,
 
-  /** Contents of `.vitest/chromatic/metadata.json` */
+  /** Contents of `.vitest/chromatic/telemetry-metadata.json` */
   telemetryMetadata: undefined as undefined | Awaited<ReturnType<typeof readTelemetryMetadata>>,
 
   /** Contents of `.env` */
@@ -320,7 +320,7 @@ function getChromaticVersion(root: string) {
 }
 
 /**
- * Writes a `.vitest/chromatic/metadata.json` file with the given telemetry metadata.
+ * Writes a `.vitest/chromatic/telemetry-metadata.json` file with the given telemetry metadata.
  * This file will be picked up when `chromatic --vitest` CLI is run, outside of Vitest test run.
  * It allows us to share telemetry metadata between Vitest and Chromatic CLI processes.
  */
@@ -338,7 +338,7 @@ async function writeTelemetryMetadata(
 }
 
 /**
- * Reads the `.vitest/chromatic/metadata.json` file and returns the telemetry metadata.
+ * Reads the `.vitest/chromatic/telemetry-metadata.json` file and returns the telemetry metadata.
  * This will be read when `chromatic --vitest` CLI is run, outside of Vitest test run.
  */
 async function readTelemetryMetadata(

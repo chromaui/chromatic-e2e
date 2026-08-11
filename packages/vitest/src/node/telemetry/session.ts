@@ -24,10 +24,10 @@ export const session = {
   /** Whether cleanup hooks were already registered for this session */
   cleanupRegistered: false,
 
-  /** Whether internal `.vitest/chromatic/metadata.json` has been written */
+  /** Whether internal `.vitest/chromatic/telemetry-metadata.json` has been written */
   isMetadataWritten: false,
 
-  /** Contents of `.vitest/chromatic/metadata.json` */
+  /** Contents of `.vitest/chromatic/telemetry-metadata.json` */
   telemetryMetadata: undefined as undefined | { disabled: true } | TelemetryMetadata,
 };
 

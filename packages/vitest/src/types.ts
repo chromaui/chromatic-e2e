@@ -142,7 +142,7 @@ type InternalMeta = Record<ChromaticNamespace, unknown> & {
   /** Options for the current test, set via `configure()` */
   __chromatic_options?: ConfigureOptions;
 
-  /** Indicates whether `takeSnapshot()` has been called */
+  /** Indicates whether `takeSnapshot()` has been called successfully */
   __chromatic_isTakeSnapshotCalled?: boolean;
 
   /** Pending `takeSnapshot()` promises */

@@ -45,6 +45,7 @@ function onArchivesCheck(error?: unknown) {
       error,
       isCustomLocation: process.env.CHROMATIC_ARCHIVE_LOCATION != undefined,
       command: 'archiveStorybook',
+      chromaticProjectId: undefined,
     },
   });
 }

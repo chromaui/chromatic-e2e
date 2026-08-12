@@ -928,12 +928,14 @@ describe('events', () => {
         {
           "eventType": "vitest_storybook_build_started",
           "payload": {
+            "chromaticProjectId": "unknown",
             "isCalledFromCLI": false,
           },
         },
         {
           "eventType": "vitest_archives_resolved",
           "payload": {
+            "chromaticProjectId": "unknown",
             "command": "buildArchiveStorybook",
             "isCustomLocation": true,
             "success": true,
@@ -942,6 +944,7 @@ describe('events', () => {
         {
           "eventType": "vitest_storybook_build_completed",
           "payload": {
+            "chromaticProjectId": "unknown",
             "success": true,
           },
         },
@@ -954,6 +957,7 @@ describe('events', () => {
     onRequest,
   }) => {
     vi.stubEnv('STORYBOOK_INVOKED_BY', 'chromatic');
+    vi.stubEnv('CHROMATIC_PROJECT_ID', 'example-project-id');
 
     await runBinary('build-archive-storybook', { archivesDirectory });
 
@@ -964,12 +968,14 @@ describe('events', () => {
         {
           "eventType": "vitest_storybook_build_started",
           "payload": {
+            "chromaticProjectId": "example-project-id",
             "isCalledFromCLI": true,
           },
         },
         {
           "eventType": "vitest_archives_resolved",
           "payload": {
+            "chromaticProjectId": "example-project-id",
             "command": "buildArchiveStorybook",
             "isCustomLocation": true,
             "success": true,
@@ -978,6 +984,7 @@ describe('events', () => {
         {
           "eventType": "vitest_storybook_build_completed",
           "payload": {
+            "chromaticProjectId": "example-project-id",
             "success": true,
           },
         },
@@ -998,12 +1005,14 @@ describe('events', () => {
         {
           "eventType": "vitest_storybook_build_started",
           "payload": {
+            "chromaticProjectId": "unknown",
             "isCalledFromCLI": false,
           },
         },
         {
           "eventType": "vitest_archives_resolved",
           "payload": {
+            "chromaticProjectId": "unknown",
             "command": "buildArchiveStorybook",
             "isCustomLocation": true,
             "success": true,
@@ -1012,6 +1021,7 @@ describe('events', () => {
         {
           "eventType": "vitest_storybook_build_completed",
           "payload": {
+            "chromaticProjectId": "unknown",
             "error": "Example error with <process-cwd> and <homedir>
       Stack: Example stack:
       with cwd <process-cwd>

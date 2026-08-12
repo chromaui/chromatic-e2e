@@ -134,15 +134,18 @@ type TelemetryPayloads = {
     success: boolean;
     error: unknown;
     command: 'archiveStorybook' | 'buildArchiveStorybook';
+    chromaticProjectId: string | undefined;
   };
 
   storybook_build_started: {
     isCalledFromCLI: boolean;
+    chromaticProjectId: string | undefined;
   };
 
   storybook_build_completed: {
     success: boolean;
     error: unknown;
+    chromaticProjectId: string | undefined;
   };
 
   storybook_dev_started: Record<string, never>;

@@ -1,6 +1,6 @@
 /** These types are consumed by both browser and node sides */
 
-import type { ConfigureOptions } from '../../types';
+import type { ChromaticNamespace, ConfigureOptions } from '../../types';
 import { EVENT_TYPE_PREFIX } from './constants';
 
 export type EventType = keyof TelemetryPayloads;
@@ -79,7 +79,28 @@ type TelemetryPayloads = {
   };
 
   archives_created: {
-    archivesCount: number;
+    archiveCount: number;
+  };
+
+  command_failed: {
+    command: ChromaticNamespace;
+    error: unknown;
+  };
+
+  turbosnap_error: {
+    operation: 'write-stats' | 'merge-stats';
+    error: unknown;
+  };
+
+  plugin_error: {
+    operation: 'configure';
+    error: unknown;
+  };
+
+  snapshot_error: {
+    operation: 'capture' | 'replace-blob-urls' | 'upload';
+    isAutomaticSnapshot: boolean;
+    error: unknown;
   };
 
   configure_called: {
@@ -111,6 +132,7 @@ type TelemetryPayloads = {
   archives_resolved: {
     isCustomLocation: boolean;
     success: boolean;
+    error: unknown;
     command: 'archiveStorybook' | 'buildArchiveStorybook';
   };
 

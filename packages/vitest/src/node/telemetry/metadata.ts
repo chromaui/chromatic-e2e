@@ -89,7 +89,7 @@ export async function writeTelemetryMetadata(outputDirectory: string, data: Tele
  */
 export async function readTelemetryMetadata(
   outputDirectory: string
-): Promise<{ disabled: true } | Parameters<typeof writeTelemetryMetadata>[1]> {
+): Promise<{ disabled: true } | TelemetryMetadata> {
   try {
     const filename = resolve(outputDirectory, TELEMETRY_METADATA_FILE);
 

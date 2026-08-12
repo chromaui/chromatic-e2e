@@ -42,6 +42,7 @@ function onArchivesCheck(error?: unknown) {
     level: error ? 'error' : 'info',
     payload: {
       success: error == undefined,
+      error,
       isCustomLocation: process.env.CHROMATIC_ARCHIVE_LOCATION != undefined,
       command: 'archiveStorybook',
     },

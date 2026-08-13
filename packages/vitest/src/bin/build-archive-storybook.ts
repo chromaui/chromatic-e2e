@@ -10,16 +10,17 @@ import { type EventType, type TelemetryEvent, trackCliEvent } from '../node/tele
 const args = process.argv.slice(2);
 const configDir = path.resolve(import.meta.dirname, '../storybook-config');
 
+// These environment variables are set by chromatic-cli:
+const isCalledFromCLI = process.env.STORYBOOK_INVOKED_BY === 'chromatic';
+const chromaticProjectId = process.env.CHROMATIC_PROJECT_ID || 'unknown';
+
 let queue = Promise.resolve();
 
 try {
   trackEvent({
     eventType: 'storybook_build_started',
     level: 'info',
-    payload: {
-      // chromatic cli sets `STORYBOOK_INVOKED_BY=chromatic`
-      isCalledFromCLI: process.env.STORYBOOK_INVOKED_BY === 'chromatic',
-    },
+    payload: { isCalledFromCLI, chromaticProjectId },
   });
 
   await buildArchiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR, { onArchivesCheck });
@@ -27,13 +28,13 @@ try {
   trackEvent({
     eventType: 'storybook_build_completed',
     level: 'info',
-    payload: { success: true, error: undefined },
+    payload: { success: true, error: undefined, chromaticProjectId },
   });
 } catch (err) {
   trackEvent({
     eventType: 'storybook_build_completed',
     level: 'error',
-    payload: { success: false, error: err },
+    payload: { success: false, error: err, chromaticProjectId },
   });
 
   // Throwing the error results in a large output of minified code and a stacktrace that is
@@ -62,6 +63,7 @@ function onArchivesCheck(error?: unknown) {
       error,
       isCustomLocation: process.env.CHROMATIC_ARCHIVE_LOCATION != undefined,
       command: 'buildArchiveStorybook',
+      chromaticProjectId,
     },
   });
 }

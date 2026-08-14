@@ -7,7 +7,6 @@ import { x } from 'tinyexec';
 import { env } from 'std-env';
 import { TELEMETRY_METADATA_FILE } from './constants';
 import type { WireTelemetryEvent } from './types';
-import type { ResolvedOptions } from '../../types';
 
 const userAgentMatch = env.npm_config_user_agent?.match(/^([^/\s]+)\/(\S+)/);
 
@@ -23,7 +22,6 @@ export interface TelemetryMetadata {
   chromaticVersion: WireTelemetryEvent['metadata']['chromaticVersion'];
   vitestVersion: WireTelemetryEvent['metadata']['vitestVersion'];
   isVitestProjects: WireTelemetryEvent['metadata']['isVitestProjects'];
-  logToFile: ResolvedOptions['telemetry']['logToFile'];
 }
 
 export async function createProjectId(root: string): Promise<string> {
@@ -87,36 +85,27 @@ export async function writeTelemetryMetadata(outputDirectory: string, data: Tele
  * Reads the `.vitest/chromatic/telemetry-metadata.json` file and returns the telemetry metadata.
  * This will be read when `chromatic --vitest` CLI is run, outside of Vitest test run.
  */
-export async function readTelemetryMetadata(
-  outputDirectory: string
-): Promise<{ disabled: true } | TelemetryMetadata> {
+export async function readTelemetryMetadata(outputDirectory: string): Promise<TelemetryMetadata> {
+  const defaults: TelemetryMetadata = {
+    sessionId: 'unknown',
+    projectId: 'unknown',
+    chromaticVersion: 'unknown',
+    vitestVersion: 'unknown',
+    isVitestProjects: false,
+  };
+
   try {
     const filename = resolve(outputDirectory, TELEMETRY_METADATA_FILE);
 
-    // Missing metadata indicates telemetry was disabled during Vitest run.
     if (!existsSync(filename)) {
-      return { disabled: true };
+      return defaults;
     }
 
     const content = await readFile(filename, 'utf8');
     const json = JSON.parse(content);
 
-    return {
-      sessionId: json.sessionId || 'unknown',
-      projectId: json.projectId || 'unknown',
-      chromaticVersion: json.chromaticVersion || 'unknown',
-      vitestVersion: json.vitestVersion || 'unknown',
-      isVitestProjects: json.isVitestProjects ?? false,
-      logToFile: json.logToFile ?? false,
-    };
+    return { ...defaults, ...json };
   } catch {
-    return {
-      sessionId: 'unknown',
-      projectId: 'unknown',
-      chromaticVersion: 'unknown',
-      vitestVersion: 'unknown',
-      isVitestProjects: false,
-      logToFile: false,
-    };
+    return defaults;
   }
 }

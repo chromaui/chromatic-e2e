@@ -66,31 +66,6 @@ export interface Options extends ChromaticConfig {
    * @default false
    */
   turboSnap?: boolean;
-
-  /**
-   * Anonymous usage telemetry.
-   * Can also be disabled by setting the `CHROMATIC_DISABLE_TELEMETRY` or `DO_NOT_TRACK` environment variable.
-   *
-   * @default true
-   */
-  telemetry?:
-    | boolean
-    | {
-        /**
-         * Whether telemetry is enabled.
-         *
-         * @default true
-         */
-        enabled?: boolean;
-
-        /**
-         * Write all telemetry events to `${outputDirectory}/telemetry.jsonl`, one JSON event per line.
-         * Can also be enabled by setting the `CHROMATIC_TELEMETRY_LOG_TO_FILE` environment variable.
-         *
-         * @default false
-         */
-        logToFile?: boolean;
-      };
 }
 
 /** Additional `parameters` added into the Story JSON file. */
@@ -120,9 +95,25 @@ export interface ResolvedOptions
   extends
     Required<Pick<Options, ResolvedOptionKeys>>,
     Pick<Options, UnresolvedOptionKeys | 'reporter'> {
-  //
   reporter: Required<Exclude<Options['reporter'], boolean>>;
-  telemetry: Required<Exclude<Options['telemetry'], boolean>>;
+
+  telemetry: {
+    /**
+     * Whether telemetry is enabled.
+     * Value is resolved from `CHROMATIC_DISABLE_TELEMETRY` and `DO_NOT_TRACK` environment variables.
+     *
+     * @default true
+     */
+    enabled?: boolean;
+
+    /**
+     * Write all telemetry events to `${outputDirectory}/telemetry.jsonl`, one JSON event per line.
+     * Value is resolved from `CHROMATIC_TELEMETRY_LOG_TO_FILE` environment variable.
+     *
+     * @default false
+     */
+    logToFile?: boolean;
+  };
 }
 
 /**

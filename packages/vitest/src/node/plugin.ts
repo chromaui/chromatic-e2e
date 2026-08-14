@@ -34,7 +34,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     turboSnap: false,
     ...userOptions,
     reporter: resolveReporterOptions(userOptions.reporter),
-    telemetry: resolveTelemetryOptions(userOptions.telemetry),
+    telemetry: resolveTelemetryOptions(),
   };
 
   const isDist = import.meta.url.includes('dist/plugin.js');

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import util from 'node:util';
 import { env } from 'std-env';
-import type { Options, ResolvedOptions } from '../../types';
+import type { ResolvedOptions } from '../../types';
 
 /** Contents of `.env` */
 let dotEnv: Record<string, string> | undefined = undefined;
@@ -29,27 +29,16 @@ export function getEnv(name: string): string | undefined {
   return env[name] ?? dotEnv[name];
 }
 
-export function resolveTelemetryOptions(
-  telemetry: Options['telemetry']
-): ResolvedOptions['telemetry'] {
-  const resolved =
-    typeof telemetry === 'object'
-      ? { enabled: telemetry?.enabled ?? true, logToFile: telemetry?.logToFile ?? false }
-      : { enabled: telemetry ?? true, logToFile: false };
+export function resolveTelemetryOptions(): ResolvedOptions['telemetry'] {
+  return {
+    // Enabled by default, disabled by env variables
+    enabled:
+      isTruthyEnv(getEnv('CHROMATIC_DISABLE_TELEMETRY')) === false &&
+      isTruthyEnv(getEnv('DO_NOT_TRACK')) === false,
 
-  if (isDisabledByEnv()) {
-    resolved.enabled = false;
-  }
-
-  if (isTruthyEnv(getEnv('CHROMATIC_TELEMETRY_LOG_TO_FILE'))) {
-    resolved.logToFile = true;
-  }
-
-  return resolved;
-}
-
-export function isDisabledByEnv() {
-  return isTruthyEnv(getEnv('CHROMATIC_DISABLE_TELEMETRY')) || isTruthyEnv(getEnv('DO_NOT_TRACK'));
+    // Disabled by default, enabled by env variable
+    logToFile: isTruthyEnv(getEnv('CHROMATIC_TELEMETRY_LOG_TO_FILE')),
+  };
 }
 
 function isTruthyEnv(value: string | undefined): boolean {

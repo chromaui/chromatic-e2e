@@ -29,22 +29,16 @@ describe('configuration', () => {
     expect(onRequest).toHaveBeenCalled();
   });
 
-  test('telemetry is disabled when { telemetry: false }', async ({ onRequest }) => {
-    const { root } = await runVitest({}, { telemetry: false });
-
-    expect(onRequest).not.toHaveBeenCalled();
-
-    const metadataJson = resolve(root, `.vitest/chromatic/${TELEMETRY_METADATA_FILE}`);
-    expect(existsSync(metadataJson), `Expected ${metadataJson} not to exist`).toBe(false);
-  });
-
   test.for(['CHROMATIC_DISABLE_TELEMETRY', 'DO_NOT_TRACK'])(
     'telemetry is disabled when %s is set',
     async (envVar, { onRequest }) => {
       vi.stubEnv(envVar, '1');
-      await runVitest();
+      const { root } = await runVitest();
 
       expect(onRequest).not.toHaveBeenCalled();
+
+      const metadataJson = resolve(root, `.vitest/chromatic/${TELEMETRY_METADATA_FILE}`);
+      expect(existsSync(metadataJson), `Expected ${metadataJson} not to exist`).toBe(false);
     }
   );
 
@@ -84,15 +78,6 @@ describe('configuration', () => {
 
     expect.soft(onRequest).not.toHaveBeenCalled();
     expect.soft(onCustomEndpointRequest).toHaveBeenCalledWith('called here');
-  });
-
-  test('telemetry is logged to file when { telemetry: { logToFile: true }} ', async () => {
-    const { root } = await runVitest({}, { telemetry: { logToFile: true } });
-
-    const rows = readLogFile(root);
-
-    const configureEvents = rows.filter((row) => row.eventType === 'vitest_plugin_configured');
-    expect(configureEvents.length).toBe(1);
   });
 
   test('telemetry is logged to file when CHROMATIC_TELEMETRY_LOG_TO_FILE is set', async () => {

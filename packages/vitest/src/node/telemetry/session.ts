@@ -28,7 +28,7 @@ export const session = {
   isMetadataWritten: false,
 
   /** Contents of `.vitest/chromatic/telemetry-metadata.json` */
-  telemetryMetadata: undefined as undefined | { disabled: true } | TelemetryMetadata,
+  telemetryMetadata: undefined as undefined | TelemetryMetadata,
 };
 
 /**

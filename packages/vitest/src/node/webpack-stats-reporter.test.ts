@@ -13,7 +13,11 @@ afterEach(() => {
 
 test('TurboSnap enabled, source files', async () => {
   const root = resolve(import.meta.dirname, '../../test/fixtures');
-  await runFixture({ root }, { turboSnap: true });
+  await runFixture(
+    /** {@link file://./../../test/fixtures/css-setup-file.ts} */
+    { root, setupFiles: [resolve(import.meta.dirname, '../../test/fixtures/css-setup-file.ts')] },
+    { turboSnap: true }
+  );
 
   const stats = readStats(root);
   const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);

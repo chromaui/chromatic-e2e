@@ -2,8 +2,11 @@ import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from '../dist/plugin';
 
+// Prevent sending telemetry during test run
+process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+
 export default defineConfig({
-  plugins: [chromaticPlugin({ telemetry: false })],
+  plugins: [chromaticPlugin()],
 
   server: {
     proxy: testServerProxy(),

@@ -191,11 +191,14 @@ test('summary with TurboSnap enabled', async () => {
   `);
 });
 
-test('summary with telemetry.logToFile enabled', async () => {
+test('summary with `CHROMATIC_TELEMETRY_LOG_TO_FILE` enabled', async () => {
   const { cleanup } = setupTelemetryServer();
-  onTestFinished(cleanup);
+  vi.stubEnv('CHROMATIC_TELEMETRY_LOG_TO_FILE', '1');
 
   onTestFinished(() => {
+    vi.unstubAllEnvs();
+    cleanup();
+
     const reports = resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
 
     if (existsSync(reports)) {
@@ -203,10 +206,7 @@ test('summary with telemetry.logToFile enabled', async () => {
     }
   });
 
-  const { stdout } = await runFixture(
-    { reporters: 'default', root: process.cwd() },
-    { telemetry: { logToFile: true } }
-  );
+  const { stdout } = await runFixture({ reporters: 'default', root: process.cwd() });
 
   expect(trimSummary(stdout)).toMatchInlineSnapshot(`
     "Chromatic Visual Regression

@@ -10,7 +10,7 @@ import {
   TELEMETRY_LOG_FILE,
   TELEMETRY_URL,
 } from './constants';
-import { getEnv, isDisabledByEnv } from './env';
+import { getEnv, resolveTelemetryOptions } from './env';
 import {
   createProjectId,
   getChromaticVersion,
@@ -49,7 +49,9 @@ export async function trackCliEvent<T extends EventType = EventType>(
   event: TelemetryEvent<T>,
   options: { outputDirectory: string }
 ): Promise<void> {
-  if (isDisabledByEnv()) {
+  const telemetry = resolveTelemetryOptions();
+
+  if (!telemetry.enabled) {
     return;
   }
 
@@ -66,21 +68,16 @@ export async function trackCliEvent<T extends EventType = EventType>(
     }
   }
 
-  // If we don't find telemetry metadata written by Vitest test run, we consider telemetry to be disabled.
-  if (!telemetryMetadata || 'disabled' in telemetryMetadata) {
-    return;
-  }
-
   await _trackEvent(
     event,
     {
-      version: telemetryMetadata.vitestVersion || 'unknown',
+      version: telemetryMetadata.vitestVersion,
       config: { root: options.outputDirectory },
       projects: telemetryMetadata.isVitestProjects ? [1, 2] : [],
     },
     {
       outputDirectory: options.outputDirectory,
-      telemetry: { enabled: true, logToFile: telemetryMetadata.logToFile },
+      telemetry,
     }
   );
 }
@@ -157,7 +154,6 @@ async function _trackEvent(
       ...wireEvent.metadata,
       sessionId: wireEvent.sessionId,
       projectId: wireEvent.projectId,
-      logToFile: options.telemetry.logToFile,
     });
   }
 }

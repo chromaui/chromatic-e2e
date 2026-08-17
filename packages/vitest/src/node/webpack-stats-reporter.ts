@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
-import type { TestCase, TestModule, Vite, Vitest } from 'vitest/node';
+import { isCSSRequest, type TestCase, type TestModule, type Vite, type Vitest } from 'vitest/node';
 import type { Reporter } from 'vitest/reporters';
 import type { ResolvedOptions } from '../types';
 
@@ -172,6 +172,12 @@ export class WebpackStatsReporter implements Reporter {
       // File-only entries have no `id`, e.g. Sass partials and CSS `@import`s
       if (imported.id == null) {
         if (imported.file) {
+          // Tailwind's content scanner watches every single file in the project by default.
+          // It marks CSS files as dependent on every file in the project (even .github/workflows/ci.yml).
+          // Cut the import chain early when a CSS file imports a non-CSS file.
+          if (mod.file && isCSSRequest(mod.file) && !isCSSRequest(imported.file)) {
+            continue;
+          }
           importedModules.push({ id: imported.file, isInModuleGraph: false });
         }
         continue;

@@ -34,6 +34,27 @@ test('TurboSnap enabled, source files', async () => {
         ],
       },
       {
+        "id": "css-setup.css",
+        "name": "css-setup.css",
+        "reasons": [
+          {
+            "moduleName": "css-setup-file.ts",
+          },
+        ],
+      },
+      {
+        "id": "css-setup-file.ts",
+        "name": "css-setup-file.ts",
+        "reasons": [
+          {
+            "moduleName": "turbo-snap-1.test.ts",
+          },
+          {
+            "moduleName": "turbo-snap-2.test.ts",
+          },
+        ],
+      },
+      {
         "id": "components/button/button.ts",
         "name": "components/button/button.ts",
         "reasons": [

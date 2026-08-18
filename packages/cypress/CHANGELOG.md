@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 0.13.2
+
+### Patch Changes
+
+- b0022b4: Fix: Remove unused Segment dependency
+
 ## 0.13.1
 
 ### Patch Changes

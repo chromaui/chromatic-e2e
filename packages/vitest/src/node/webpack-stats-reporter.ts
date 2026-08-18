@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
-import type { TestCase, TestModule, Vite, Vitest } from 'vitest/node';
+import { isCSSRequest, type TestCase, type TestModule, type Vite, type Vitest } from 'vitest/node';
 import type { Reporter } from 'vitest/reporters';
 import type { ResolvedOptions } from '../types';
 
@@ -109,20 +109,29 @@ export class WebpackStatsReporter implements Reporter {
       }
 
       const id = this.normalize(testModule.moduleId);
+      const additionalModules: { id: string; isInModuleGraph?: boolean }[] = [];
 
       // Test module is imported by all its story files
       statsMap.set(id, this.createStatsMapModule(id, [...storyFiles]));
 
-      // Test module also depends on Vitest config
+      // Test module depends on Vitest config
       if (testModule.project.config.config) {
-        const configId = this.normalize(testModule.project.config.config);
-        const configEntry = statsMap.get(configId) || this.createStatsMapModule(configId, []);
-
-        configEntry.reasons.push({ moduleName: id });
-        statsMap.set(configId, configEntry);
+        additionalModules.push({ id: testModule.project.config.config, isInModuleGraph: false });
       }
 
-      this.addModule(testModule.moduleId, statsMap, vite.moduleGraph, vite.config.cacheDir);
+      // Test module depends on setup files
+      for (const setupFile of testModule.project.config.setupFiles) {
+        additionalModules.push({ id: setupFile, isInModuleGraph: true });
+      }
+
+      this.addModule(
+        testModule.moduleId,
+        statsMap,
+        vite.moduleGraph,
+        vite.config.cacheDir,
+        new Set<Vite.ModuleNode['id']>(),
+        additionalModules
+      );
     }
 
     if (!existsSync(dirname(this.options.outputFile))) {
@@ -141,7 +150,8 @@ export class WebpackStatsReporter implements Reporter {
     statsMap: Map<Module['id'], Module>,
     moduleGraph: Vite.ModuleGraph,
     cacheDir: Vite.UserConfig['cacheDir'],
-    visited = new Set<Vite.ModuleNode['id']>()
+    visited: Set<Vite.ModuleNode['id']>,
+    additionalModules: { id: string; isInModuleGraph?: boolean }[] = []
   ) {
     if (visited.has(id)) {
       return;
@@ -156,12 +166,18 @@ export class WebpackStatsReporter implements Reporter {
       );
     }
 
-    const importedModules: { id: string; isInModuleGraph?: boolean }[] = [];
+    const importedModules = [...additionalModules];
 
     for (const imported of mod.importedModules) {
       // File-only entries have no `id`, e.g. Sass partials and CSS `@import`s
       if (imported.id == null) {
         if (imported.file) {
+          // Tailwind's content scanner watches every single file in the project by default.
+          // It marks CSS files as dependent on every file in the project (even .github/workflows/ci.yml).
+          // Cut the import chain early when a CSS file imports a non-CSS file.
+          if (mod.file && isCSSRequest(mod.file) && !isCSSRequest(imported.file)) {
+            continue;
+          }
           importedModules.push({ id: imported.file, isInModuleGraph: false });
         }
         continue;

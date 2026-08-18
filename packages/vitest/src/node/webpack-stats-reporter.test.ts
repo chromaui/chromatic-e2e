@@ -13,7 +13,11 @@ afterEach(() => {
 
 test('TurboSnap enabled, source files', async () => {
   const root = resolve(import.meta.dirname, '../../test/fixtures');
-  await runFixture({ root }, { turboSnap: true });
+  await runFixture(
+    /** {@link file://./../../test/fixtures/css-setup-file.ts} */
+    { root, setupFiles: [resolve(import.meta.dirname, '../../test/fixtures/css-setup-file.ts')] },
+    { turboSnap: true }
+  );
 
   const stats = readStats(root);
   const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
@@ -26,6 +30,27 @@ test('TurboSnap enabled, source files', async () => {
         "reasons": [
           {
             "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "css-setup.css",
+        "name": "css-setup.css",
+        "reasons": [
+          {
+            "moduleName": "css-setup-file.ts",
+          },
+        ],
+      },
+      {
+        "id": "css-setup-file.ts",
+        "name": "css-setup-file.ts",
+        "reasons": [
+          {
+            "moduleName": "turbo-snap-1.test.ts",
+          },
+          {
+            "moduleName": "turbo-snap-2.test.ts",
           },
         ],
       },
@@ -419,6 +444,41 @@ test('TurboSnap enabled, CSS imports', async () => {
       },
     ]
   `);
+});
+
+test('TurboSnap enabled, Tailwind-like content scanner watch files', async () => {
+  const root = resolve(import.meta.dirname, '../../test/fixtures');
+
+  await runFixture(
+    {
+      root,
+      /** {@link file://./../../test/fixtures/configs/vitest.config.fake-tailwind.ts} */
+      config: resolve(root, 'configs/vitest.config.fake-tailwind.ts'),
+      /** {@link file://./../../test/fixtures/turbo-snap-css.test.ts} */
+      include: [resolve(root, 'turbo-snap-css.test.ts')],
+    },
+    { turboSnap: true }
+  );
+
+  const stats = readStats(root);
+  const ids = stats.modules.map((mod) => mod.id);
+
+  // Non-CSS files and glob patterns watched by the CSS module are content
+  // scanner registrations, not real dependencies, and must be filtered out
+  expect(ids).not.toContain('turbo-snap-1.test.ts');
+  expect(ids.filter((id) => id.includes('*'))).toEqual([]);
+
+  // CSS files watched by the CSS module are real dependencies and are kept
+  expect(stats.modules).toContainEqual({
+    id: 'css-setup.css',
+    name: 'css-setup.css',
+    reasons: [{ moduleName: 'components/styled/styles.css' }],
+  });
+
+  // Regular CSS `@import` chain is unaffected
+  expect(stats.modules).toContainEqual(
+    expect.objectContaining({ id: 'components/styled/base.css' })
+  );
 });
 
 test('TurboSnap enabled with custom output directory', async () => {

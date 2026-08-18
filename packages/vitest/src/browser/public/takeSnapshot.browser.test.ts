@@ -1,6 +1,7 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, describe, expect, inject, test, vi } from 'vitest';
 import { commands, page } from 'vitest/browser';
 import { takeSnapshot } from './takeSnapshot';
+import { configure } from './configure';
 
 beforeEach(() => {
   document.body.innerHTML = '';
@@ -128,4 +129,77 @@ test('blob URLs are replaced with data URLs', async ({ task }) => {
   `);
 
   expect(img.src).toMatch(/^blob:/);
+});
+
+describe('snapshot failure tracking', () => {
+  configure({ disableAutoSnapshot: true });
+
+  beforeEach(() => {
+    const options = inject('__chromatic_options');
+    options.telemetry.enabled = true;
+
+    const telemetry = vi.spyOn(commands, '__chromatic_telemetry').mockResolvedValue(undefined);
+
+    return () => {
+      options.telemetry.enabled = false;
+      telemetry.mockRestore();
+    };
+  });
+
+  test('DOM snapshot capture fails', async () => {
+    document.body.innerHTML = '<canvas></canvas>';
+
+    vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockThrowOnce(
+      new Error('Simulated capture failure')
+    );
+
+    await expect(takeSnapshot('example')).rejects.toThrow('Simulated capture failure');
+
+    expect(commands.__chromatic_telemetry).toHaveBeenCalledWith({
+      eventType: 'snapshot_error',
+      level: 'error',
+      payload: {
+        operation: 'capture',
+        isAutomaticSnapshot: false,
+        error: expect.stringContaining('Simulated capture failure'),
+      },
+    });
+  });
+
+  test('tracks snapshot_error when blob URL replacement fails', async () => {
+    const revokedURL = URL.createObjectURL(new Blob([''], { type: 'image/png' }));
+    URL.revokeObjectURL(revokedURL);
+
+    document.body.innerHTML = `<img src="${revokedURL}" />`;
+
+    await expect(takeSnapshot('example')).rejects.toThrow('Failed to fetch');
+
+    expect(commands.__chromatic_telemetry).toHaveBeenCalledWith({
+      eventType: 'snapshot_error',
+      level: 'error',
+      payload: {
+        operation: 'replace-blob-urls',
+        isAutomaticSnapshot: false,
+        error: expect.stringContaining('Failed to fetch'),
+      },
+    });
+  });
+
+  test('tracks snapshot_error when DOM snapshot upload fails', async () => {
+    vi.spyOn(commands, '__chromatic_uploadDOMSnapshot').mockRejectedValueOnce(
+      new Error('Simulated upload failure')
+    );
+
+    await expect(takeSnapshot('example')).rejects.toThrow('Simulated upload failure');
+
+    expect(commands.__chromatic_telemetry).toHaveBeenCalledWith({
+      eventType: 'snapshot_error',
+      level: 'error',
+      payload: {
+        operation: 'upload',
+        isAutomaticSnapshot: false,
+        error: expect.stringContaining('Simulated upload failure'),
+      },
+    });
+  });
 });

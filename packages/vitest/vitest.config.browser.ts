@@ -5,6 +5,9 @@ import { type ConfigureOptions } from './src/types';
 
 const isWatch = process.argv.includes('--watch');
 
+// Prevent sending telemetry during test run
+process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+
 export default defineProject({
   resolve: { tsconfigPaths: true },
   plugins: [chromaticPlugin()],

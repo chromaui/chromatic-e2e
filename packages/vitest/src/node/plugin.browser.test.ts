@@ -12,6 +12,10 @@ test('provided __chromatic_options', async () => {
         "verbose": true,
       },
       "resourceArchiveTimeout": 10000,
+      "telemetry": {
+        "enabled": false,
+        "logToFile": false,
+      },
       "turboSnap": false,
     }
   `);

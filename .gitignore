@@ -4,6 +4,7 @@ storybook-static/
 build-storybook.log
 .DS_Store
 .env
+!**/fixtures/**/.env
 .cache
 yarn-error.log
 chromatic.log

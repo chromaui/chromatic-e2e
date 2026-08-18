@@ -2,6 +2,7 @@ import { afterEach, beforeEach, inject } from 'vitest';
 import { commands } from 'vitest/browser';
 import { takeSnapshot } from './public/takeSnapshot';
 import { waitForIdleNetwork } from './public/waitForIdleNetwork';
+import { trackEvent } from './telemetry';
 import { type InternalTestContext } from '../types';
 import type {} from '../node/commands';
 import type {} from '../node/plugin';
@@ -90,12 +91,12 @@ afterEach<InternalTestContext>(async ({ task }) => {
 
   if (testOptions.resourceArchiveTimeout !== 0) {
     await document.fonts.ready;
-    await waitForIdleNetwork(testOptions.resourceArchiveTimeout);
+    await waitForIdleNetwork(testOptions.resourceArchiveTimeout, { _internal: true });
   }
 
   // Take automatic snapshot
   if (!options.disableAutoSnapshot) {
-    await takeSnapshot(undefined, { ignoreUnawaited: true });
+    await takeSnapshot(undefined, { isAutomaticSnapshot: true });
   }
 });
 
@@ -106,5 +107,15 @@ class PendingSnapshotsError extends AggregateError {
       `${pendingCalls.length} unawaited takeSnapshot() call(s)`
     );
     this.name = 'PendingSnapshotsError';
+
+    trackEvent({
+      eventType: 'take_snapshot_invalid_call',
+      level: 'error',
+      payload: {
+        isAwaited: false,
+        isInsideTest: true,
+        isRegisteredTest: true,
+      },
+    });
   }
 }

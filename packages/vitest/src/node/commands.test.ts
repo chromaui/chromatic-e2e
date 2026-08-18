@@ -1,11 +1,19 @@
 import { expect, test, vi } from 'vitest';
 import * as shared from '@chromatic-com/shared-e2e';
+import type { BrowserCommandContext } from 'vitest/node';
 import { runFixture } from '../../test/utils/node';
+import { createCommands } from './commands';
+import { trackEvent } from './telemetry';
+import type { ResolvedOptions } from '../types';
 
 vi.mock('@chromatic-com/shared-e2e/write-archive/index');
 vi.mocked(shared.writeTestResult).mockImplementation(() =>
   Promise.resolve({ storiesFile: 'test.stories.json' })
 );
+
+// Prevent trackEvent from sending real events while keeping call records
+vi.mock('./telemetry', { spy: true });
+vi.mocked(trackEvent).mockImplementation(() => {});
 
 test('writes test results with full test name', async () => {
   /** See {@link file://./../../test/fixtures/test-names.test.ts} */
@@ -266,6 +274,68 @@ test('writes archived assets even when browser cached them', { timeout: 30_000 }
   }
 });
 
+test('tracks command_failed when a command fails', async () => {
+  const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
+  const context = createContext();
+
+  await expect(commands.__chromatic_waitForIdleNetwork(context, 1)).rejects.toThrow(
+    'No network idle tracker found for session session-1'
+  );
+
+  expect(trackEvent).toHaveBeenCalledWith(
+    {
+      eventType: 'command_failed',
+      level: 'error',
+      payload: {
+        command: '__chromatic_waitForIdleNetwork',
+        error: expect.objectContaining({
+          message: 'No network idle tracker found for session session-1',
+        }),
+      },
+    },
+    context.project.vitest,
+    expect.anything()
+  );
+});
+
+test('identical failures are tracked only once', async () => {
+  const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
+  const context = createContext();
+
+  await expect(commands.__chromatic_waitForIdleNetwork(context, 1)).rejects.toThrow();
+  await expect(commands.__chromatic_waitForIdleNetwork(context, 1)).rejects.toThrow();
+
+  expect(getCommandFailedEvents()).toHaveLength(1);
+});
+
+test('identical failures are tracked again after reset', async () => {
+  const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
+  const context = createContext();
+
+  await expect(commands.__chromatic_waitForIdleNetwork(context, 1)).rejects.toThrow();
+  await commands.__chromatic_reset();
+  await expect(commands.__chromatic_waitForIdleNetwork(context, 1)).rejects.toThrow();
+
+  expect(getCommandFailedEvents()).toHaveLength(2);
+});
+
+test('telemetry command failures are not tracked', async () => {
+  vi.mocked(trackEvent).mockThrow(new Error('Mock error'));
+
+  const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
+  const context = createContext();
+
+  await expect(
+    commands.__chromatic_telemetry(context, {
+      eventType: 'run_started',
+      level: 'info',
+      payload: {},
+    })
+  ).rejects.toThrow('Mock error');
+
+  expect(getCommandFailedEvents()).toHaveLength(0);
+});
+
 function formatResourceArchives(archives: shared.ResourceArchive[]) {
   return JSON.stringify(
     archives.map((archive) => Object.keys(archive).map((url) => parseArchive(archive[url]))),
@@ -283,4 +353,12 @@ function parseArchive(asset: shared.ArchiveResponse) {
     ...asset,
     body: Buffer.from(asset.body).toString().trim().replace(/\s+/g, ' '),
   };
+}
+
+function createContext() {
+  return { sessionId: 'session-1', project: { vitest: {} } } as unknown as BrowserCommandContext;
+}
+
+function getCommandFailedEvents() {
+  return vi.mocked(trackEvent).mock.calls.filter(([event]) => event.eventType === 'command_failed');
 }

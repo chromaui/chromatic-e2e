@@ -33,7 +33,7 @@ runs:
         restore-keys: |
           ${{ runner.os }}-playwright-
 
-    - name: Install Playwright Dependencies
+    - name: Install Playwright Dependencies (cache miss)
       shell: bash
       if: steps.playwright-cache.outputs.cache-hit != 'true'
-      run: pnpm exec playwright install
+      run: pnpm exec playwright install firefox webkit

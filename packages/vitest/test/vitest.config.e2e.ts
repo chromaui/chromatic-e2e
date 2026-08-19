@@ -44,6 +44,7 @@ export default defineConfig({
       },
 
       provider: playwright({
+        launchOptions: { channel: 'chrome' },
         contextOptions: {
           httpCredentials: {
             username: 'user',

@@ -41,9 +41,9 @@ jobs:
       - uses: ./.github/actions/setup-playwright
 
       # Needed for additional browsers that Vitest unit tests use.
-      # System dependencies cannot be cachced.
+      # System dependencies cannot be cached.
       - name: Playwright deps
-        run: pnpm exec playwright install-deps
+        run: pnpm exec playwright install-deps firefox webkit
 
       - name: Run lint
         run: |

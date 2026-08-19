@@ -8,9 +8,9 @@ export default defineConfig({
       username: 'user',
       password: 'secret',
     },
-
     ...devices['Desktop Chrome'],
     viewport: { width: 1280, height: 720 },
+    launchOptions: { channel: 'chrome' },
   },
 
   webServer: {

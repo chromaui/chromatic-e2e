@@ -20,7 +20,7 @@ export function getBrowserConfig(name = 'chromium') {
     enabled: true,
     headless: true,
     screenshotFailures: false,
-    provider: playwright(),
+    provider: playwright({ launchOptions: { channel: 'chrome' } }),
     instances: [{ browser: 'chromium', name }],
   } satisfies NonNullable<InlineConfig['browser']>;
 }

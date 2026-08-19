@@ -35,6 +35,23 @@ expect.addSnapshotSerializer({
   },
 });
 
+// Remove stack traces from snapshots
+expect.addSnapshotSerializer({
+  test: (val: unknown) => {
+    return val && typeof val === 'string' && val.includes('❯') && val.includes('node_modules');
+  },
+
+  serialize: (val: string, config, indentation, depth, refs, printer) => {
+    return printer(
+      val.replaceAll(/^\s+❯.*node_modules.*:\d+:\d+$/gm, '').replaceAll(/\s+\n\s+\n/g, '\n\n'),
+      config,
+      indentation,
+      depth,
+      refs
+    );
+  },
+});
+
 function traverseToBody(node: serializedNodeWithId): serializedNodeWithId | null {
   if ('tagName' in node && node.tagName === 'body') {
     return node;

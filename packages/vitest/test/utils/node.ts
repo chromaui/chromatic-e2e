@@ -10,6 +10,7 @@ import {
   type InlineConfig,
   startVitest,
   TestSequencer,
+  version as vitestVersion,
   type TestSpecification,
 } from 'vitest/node';
 import { playwright } from '@vitest/browser-playwright';
@@ -36,7 +37,7 @@ export async function runFixture(
     [],
     { config: options.config ?? false },
     {
-      plugins: ['disabled' in pluginOptions ? undefined : chromaticPlugin(pluginOptions)],
+      plugins: ['disabled' in pluginOptions ? suiteImportPlugin() : chromaticPlugin(pluginOptions)],
       test: {
         watch: false,
         root: resolve(import.meta.dirname, '../fixtures'),
@@ -49,6 +50,19 @@ export async function runFixture(
   await vitest.close();
 
   return getOutput();
+
+  function suiteImportPlugin() {
+    return {
+      name: 'hack',
+      enforce: 'pre',
+      resolveId(id: string) {
+        // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
+        if (id === 'vitest/suite' && !vitestVersion.startsWith('4.0')) {
+          return 'vitest';
+        }
+      },
+    };
+  }
 }
 
 export async function getResolvedConfig(
@@ -57,8 +71,11 @@ export async function getResolvedConfig(
 ) {
   const vitest = await createVitest(
     'test',
-    { config: false, watch: false, browser: options.browser || getBrowserConfig() },
-    { plugins: [chromaticPlugin(pluginOptions)], test: options },
+    { config: false, watch: false },
+    {
+      plugins: [chromaticPlugin(pluginOptions)],
+      test: { ...options, browser: options.browser || getBrowserConfig() },
+    },
     createOutputStreams().streams
   );
   await vitest.close();
@@ -99,4 +116,8 @@ export class StableTestFileOrderSorter implements TestSequencer {
 
     return [files[shard.index - 1]];
   }
+}
+
+export function isVitest5() {
+  return vitestVersion.startsWith('5.');
 }

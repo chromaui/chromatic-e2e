@@ -10,7 +10,10 @@
   },
   "license": "MIT",
   "author": "Chromatic <tom@chromatic.com>",
-  "exports": "./src/index",
+  "exports": {
+    ".": "./src/index",
+    "./test-utils": "./src/test-utils"
+  },
   "scripts": {
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Shared"
   },

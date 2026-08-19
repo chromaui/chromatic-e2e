@@ -2,6 +2,7 @@ import { existsSync, readdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type {} from 'vitest/config';
 import type { Vite } from 'vitest/node';
+import { version as vitestVersion } from 'vitest/node';
 import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
@@ -36,6 +37,15 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
   return {
     name: 'vitest:chromatic',
+    enforce: 'pre',
+
+    resolveId(id) {
+      // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
+      if (id === 'vitest/suite' && !vitestVersion.startsWith('4.0')) {
+        return 'vitest';
+      }
+    },
+
     config() {
       return {
         optimizeDeps: {

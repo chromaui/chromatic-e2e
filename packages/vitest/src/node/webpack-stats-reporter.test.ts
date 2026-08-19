@@ -5,7 +5,11 @@ import { afterEach, assert, expect, onTestFinished, test } from 'vitest';
 import { uniqueId } from '@chromatic-com/shared-e2e/write-archive/stories-files';
 import type { Module } from './webpack-stats-reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
-import { runFixture as baseRunFixture, StableTestFileOrderSorter } from '../../test/utils/node';
+import {
+  runFixture as baseRunFixture,
+  isVitest5,
+  StableTestFileOrderSorter,
+} from '../../test/utils/node';
 
 afterEach(() => {
   uniqueId.value = 1;
@@ -20,7 +24,10 @@ test('TurboSnap enabled, source files', async () => {
   );
 
   const stats = readStats(root);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   expect(modules).toMatchInlineSnapshot(`
     [
@@ -233,7 +240,10 @@ test('TurboSnap enabled, circular imports', async () => {
   );
 
   const stats = readStats(root);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   expect(modules).toMatchInlineSnapshot(`
     [
@@ -320,7 +330,10 @@ test('TurboSnap enabled, sharded run', async () => {
 
   // preview-stats.json from both runs should be merged together:
   const stats = readStats(root);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   // Both test cases and their dependencies should be found:
   expect(modules).toMatchInlineSnapshot(`
@@ -496,7 +509,10 @@ test('TurboSnap enabled with custom output directory', async () => {
   await runFixture({ root }, { turboSnap: true, outputDirectory });
 
   const stats = readStats(root, outputDirectory);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   expect(modules).toMatchInlineSnapshot(`
     [
@@ -638,6 +654,12 @@ function excludeNodeModules(mod: Module) {
 // Exclude plugin source files from the stats report, as they are not relevant to the test results.
 function excludePluginSources(mod: Module) {
   return !mod.id.includes('src/browser/') && !mod.id.includes('src/index.ts');
+}
+
+function excludeVitest5OnlyModules(mod: Module) {
+  return isVitest5()
+    ? !mod.reasons.find((reason) => reason.moduleName.includes('src/browser/getCurrentTest.ts'))
+    : true;
 }
 
 async function mergeChromaticDirectories(target: string, sources: string[]) {

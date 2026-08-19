@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import { mkdir, readdir, rm } from 'node:fs/promises';
-import { beforeEach, expect, onTestFinished, test } from 'vitest';
+import { beforeEach, expect, onTestFailed, onTestFinished, test } from 'vitest';
 import { createVitest, type TestModule } from 'vitest/node';
 import { uniqueId } from '@chromatic-com/shared-e2e/write-archive/stories-files';
 import { chromaticPlugin } from './plugin';
@@ -10,6 +10,7 @@ import {
   getResolvedConfig,
   runFixture,
 } from '../../test/utils/node';
+import { playwright } from '@vitest/browser-playwright';
 
 beforeEach(() => {
   uniqueId.value = 1;
@@ -174,6 +175,10 @@ test('writes results to root when in Vitest projects setup', async () => {
 
   const results = await readdir(resolve(root, '.vitest/chromatic/chromatic-archives'));
 
+  onTestFailed(() => {
+    console.log(JSON.stringify(results, null, 2));
+  });
+
   // 1 for "archive" directory and 2 for each project's "*.stories.json" files
   expect.soft(results).toHaveLength(3);
 
@@ -236,8 +241,8 @@ test('works in multi project instance setup', { timeout: 30_000 }, async () => {
       ...getBrowserConfig(),
       instances: [
         { browser: 'chromium', name: 'custom-name-for-chromium-browser' },
-        { browser: 'webkit', name: 'custom-name-for-webkit-browser' },
-        { browser: 'firefox', name: 'custom-name-for-firefox-browser' },
+        { browser: 'webkit', name: 'custom-name-for-webkit-browser', provider: playwright() },
+        { browser: 'firefox', name: 'custom-name-for-firefox-browser', provider: playwright() },
       ],
     },
     reporters: ['default', { onTestRunEnd: (testModules) => void tests.push(...testModules) }],

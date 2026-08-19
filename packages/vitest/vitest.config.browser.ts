@@ -26,7 +26,7 @@ export default defineProject({
       enabled: true,
       headless: true,
       screenshotFailures: false,
-      provider: playwright(),
+      provider: playwright({ launchOptions: { channel: 'chrome' } }),
       instances: [{ browser: 'chromium' }],
     },
 

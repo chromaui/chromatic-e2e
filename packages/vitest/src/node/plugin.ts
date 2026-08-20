@@ -37,20 +37,18 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
   return {
     name: 'vitest:chromatic',
-    enforce: 'pre',
-
-    resolveId(id) {
-      // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
-      if (id === 'vitest/suite' && !vitestVersion.startsWith('4.0')) {
-        return 'vitest';
-      }
-    },
 
     config() {
       return {
         optimizeDeps: {
           entries: [setupFile],
         },
+
+        // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
+        resolve: vitestVersion.startsWith('4.0')
+          ? undefined
+          : { alias: { 'vitest/suite': 'vitest' } },
+
         test: {
           provide: {
             __chromatic_options: options,

@@ -21,7 +21,8 @@ export class ChromaticReporter implements Reporter {
   private constructor(
     private ctx: Vitest,
     private options: Options,
-    private snapshotCountPerEntity = new Map<TestCase['id'] | TestModule['id'], number>()
+    private snapshotCountPerEntity = new Map<TestCase['id'] | TestModule['id'], number>(),
+    private isPluginActivated = false
   ) {}
 
   /**
@@ -65,6 +66,15 @@ export class ChromaticReporter implements Reporter {
     reporter?._onSnapshot(test);
   }
 
+  /**
+   * Custom reporter life-cycle called when plugin is activated for a project.
+   */
+  static onPluginActivated(ctx: Vitest) {
+    const reporter = ctx.config.reporters.find(isChromaticReporter);
+
+    reporter?._onPluginActivated();
+  }
+
   onTestCaseResult(testCase: TestCase) {
     if (this.options.builtInReporter !== 'verbose') {
       return;
@@ -104,12 +114,25 @@ export class ChromaticReporter implements Reporter {
     const snapshotCount = [...this.snapshotCountPerEntity.values()].reduce((a, b) => a + b, 0);
     this.snapshotCountPerEntity.clear();
 
+    const separator = colors.dim('─'.repeat(this.ctx.logger.getColumns()));
+
+    if (!this.isPluginActivated) {
+      return this.ctx.logger.log(
+        `${separator}`,
+
+        `\n${colors.inverse(' Chromatic Visual Regression ')}`,
+
+        `\n\n${colors.red('No archives captured. Chromatic plugin requires a browser mode project with Chromium project.')}`,
+
+        `\n\n${separator}\n`
+      );
+    }
+
     if (snapshotCount === 0) {
       return;
     }
 
     const output = resolve(this.ctx.config.root, this.options.outputDirectory);
-    const separator = colors.dim('─'.repeat(this.ctx.logger.getColumns()));
 
     let uploadCommand = 'chromatic --vitest --project-token=<TOKEN>';
 
@@ -164,6 +187,10 @@ export class ChromaticReporter implements Reporter {
 
     const previousCount = this.snapshotCountPerEntity.get(key) ?? 0;
     this.snapshotCountPerEntity.set(key, previousCount + 1);
+  }
+
+  private _onPluginActivated() {
+    this.isPluginActivated = true;
   }
 }
 

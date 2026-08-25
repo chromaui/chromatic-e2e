@@ -4,6 +4,7 @@ import { expect, onTestFinished, test, vi } from 'vitest';
 import * as shared from '@chromatic-com/shared-e2e';
 import {
   runFixture as baseRunFixture,
+  getBrowserConfig,
   isVitest5,
   StableTestFileOrderSorter,
 } from '../../test/utils/node';
@@ -234,6 +235,19 @@ test('summary when custom output directory', async () => {
 
     Archives saved in <process-cwd>/.vitest/custom-output-directory
     To upload archives into Chromatic run CHROMATIC_ARCHIVE_LOCATION=.vitest/custom-output-directory chromatic --vitest --project-token=<TOKEN>"
+  `);
+});
+
+test('summary when no eligible projects', async () => {
+  const { stdout } = await runFixture({
+    reporters: 'default',
+    browser: { ...getBrowserConfig(), instances: [{ browser: 'webkit' }] },
+  });
+
+  expect(trimSummary(stdout)).toMatchInlineSnapshot(`
+    "Chromatic Visual Regression
+
+    No archives captured. Chromatic plugin requires a browser mode project with Chromium project."
   `);
 });
 

@@ -68,14 +68,16 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       // Enabled when "vitest --merge-reports" is run. It's used after sharded runs ("vitest --shard=1/2", "vitest --shard=2/2").
       const isMergeReports = project.globalConfig.mergeReports;
 
+      if (options.reporter.enabled) {
+        ChromaticReporter.apply(context.vitest, options);
+      }
+
       // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
       if (!browser.enabled || browser.name !== 'chromium') {
         return clean();
       }
 
-      if (options.reporter.enabled) {
-        ChromaticReporter.apply(context.vitest, options);
-      }
+      ChromaticReporter.onPluginActivated(context.vitest);
 
       if (options.turboSnap && !isMergeReports) {
         WebpackStatsReporter.apply(context.vitest, options);

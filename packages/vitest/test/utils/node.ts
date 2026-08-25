@@ -53,12 +53,12 @@ export async function runFixture(
 
   function suiteImportPlugin() {
     return {
-      name: 'hack',
+      name: 'test:suite-import-rewrite',
       enforce: 'pre',
-      resolveId(id: string) {
+      config() {
         // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
-        if (id === 'vitest/suite' && !vitestVersion.startsWith('4.0')) {
-          return 'vitest';
+        if (!vitestVersion.startsWith('4.0')) {
+          return { resolve: { alias: { 'vitest/suite': 'vitest' } } };
         }
       },
     };

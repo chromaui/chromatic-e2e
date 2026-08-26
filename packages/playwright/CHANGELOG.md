@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.14.12
+
+### Patch Changes
+
+- b0022b4: Fix: Remove unused Segment dependency
+
 ## 0.14.11
 
 ### Patch Changes

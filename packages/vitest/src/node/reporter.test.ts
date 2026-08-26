@@ -4,8 +4,10 @@ import { expect, onTestFinished, test, vi } from 'vitest';
 import * as shared from '@chromatic-com/shared-e2e';
 import {
   runFixture as baseRunFixture,
-  StableTestFileOrderSorter,
+  getBrowserConfig,
+  isVitest5,
   setupTelemetryServer,
+  StableTestFileOrderSorter,
 } from '../../test/utils/node';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
@@ -37,23 +39,43 @@ test('default reporter with slow tests', { timeout: 10_000 }, async () => {
     slowTestThreshold: 499,
   });
 
-  expect(trimReporterOutput(stdout)).toMatchInlineSnapshot(`
-    " RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
+  if (isVitest5()) {
+    expect(trimReporterOutput(stdout)).toMatchInlineSnapshot(`
+      " RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
 
-     ✓  chromium  reporter-1.test.ts (3 tests) <time>
-       ✓ test #3  <time>
-       (6 archives captured)
-     ✓  chromium  reporter-2.test.ts (4 tests) <time>
-       ✓ test #3  <time>
-       ✓ test #4  <time>
-       (8 archives captured)
-     ✓  chromium  reporter-3.test.ts (5 tests) <time>
-       ✓ test #3  <time>
-       ✓ test #4  <time>
-       ✓ test #5  <time>
-       (10 archives captured)
-    "
-  `);
+       ✓  chromium  reporter-1.test.ts (3 tests) <time>
+         ✓ test #3 <time>
+         (6 archives captured)
+       ✓  chromium  reporter-2.test.ts (4 tests) <time>
+         ✓ test #3 <time>
+         ✓ test #4 <time>
+         (8 archives captured)
+       ✓  chromium  reporter-3.test.ts (5 tests) <time>
+         ✓ test #3 <time>
+         ✓ test #4 <time>
+         ✓ test #5 <time>
+         (10 archives captured)
+      "
+    `);
+  } else {
+    expect(trimReporterOutput(stdout)).toMatchInlineSnapshot(`
+      " RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
+
+       ✓  chromium  reporter-1.test.ts (3 tests) <time>
+         ✓ test #3  <time>
+         (6 archives captured)
+       ✓  chromium  reporter-2.test.ts (4 tests) <time>
+         ✓ test #3  <time>
+         ✓ test #4  <time>
+         (8 archives captured)
+       ✓  chromium  reporter-3.test.ts (5 tests) <time>
+         ✓ test #3  <time>
+         ✓ test #4  <time>
+         ✓ test #5  <time>
+         (10 archives captured)
+      "
+    `);
+  }
 });
 
 test('tree reporter', async () => {
@@ -245,22 +267,51 @@ test('summary when custom output directory', async () => {
   `);
 });
 
+test('summary when no eligible projects', async () => {
+  const { stdout } = await runFixture({
+    reporters: 'default',
+    browser: { ...getBrowserConfig(), instances: [{ browser: 'webkit' }] },
+  });
+
+  expect(trimSummary(stdout)).toMatchInlineSnapshot(`
+    "Chromatic Visual Regression
+
+    No archives captured. Chromatic plugin requires a browser mode project with Chromium project."
+  `);
+});
+
 test('reporter can be disabled', async () => {
   const { stdout } = await runFixture({ reporters: 'default' }, { reporter: false });
 
-  expect(trimReporterOutput(stdout, 0, Infinity)).toMatchInlineSnapshot(`
-    "
-     RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
+  if (isVitest5()) {
+    expect(trimReporterOutput(stdout, 0, Infinity)).toMatchInlineSnapshot(`
+      "
+       RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
 
-     ✓  chromium  reporter-1.test.ts (3 tests) <time>
-     ✓  chromium  reporter-2.test.ts (4 tests) <time>
-     ✓  chromium  reporter-3.test.ts (5 tests) <time>
+       ✓  chromium  reporter-1.test.ts (3 tests) <time>
+       ✓  chromium  reporter-2.test.ts (4 tests) <time>
+       ✓  chromium  reporter-3.test.ts (5 tests) <time>
 
-     Test Files  3 passed (3)
-          Tests  12 passed (12)
-       Start at  <time>
-       Duration  <time> (transform <time>, setup <time>, import <time>, tests <time>, environment <time>)"
-  `);
+       Test Files  3 passed (3)
+            Tests  12 passed (12)
+         Start at  <time>
+         Duration  <time> (worker <time>, tests <time>, setup <time>, import <time>)"
+    `);
+  } else {
+    expect(trimReporterOutput(stdout, 0, Infinity)).toMatchInlineSnapshot(`
+      "
+       RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
+
+       ✓  chromium  reporter-1.test.ts (3 tests) <time>
+       ✓  chromium  reporter-2.test.ts (4 tests) <time>
+       ✓  chromium  reporter-3.test.ts (5 tests) <time>
+
+       Test Files  3 passed (3)
+            Tests  12 passed (12)
+         Start at  <time>
+         Duration  <time> (transform <time>, setup <time>, import <time>, tests <time>, environment <time>)"
+    `);
+  }
 });
 
 function runFixture(
@@ -295,8 +346,11 @@ function trimReporterOutput(report: string, start?: number, end?: number) {
     .join('\n')
     .replaceAll(/\d+ms/g, '<time>')
     .replaceAll(/\d+\.\d+s/g, '<time>')
+    .replaceAll(/\d+%/g, '<time>')
     .replaceAll(normalize(process.cwd()), '<process-cwd>')
     .replaceAll(/RUN {2}v([\w\-.]+) /g, 'RUN  v[...] ')
+    .replaceAll(/.*API started at.*/gm, '')
+    .replaceAll(/\s*\n\s*\n/g, '\n\n')
     .replaceAll(/(Start at {1,2})\d+:\d+:\d+/g, '$1<time>');
 }
 

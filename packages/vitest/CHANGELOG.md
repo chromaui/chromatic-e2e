@@ -1,5 +1,12 @@
 # @chromatic-com/vitest
 
+## 0.1.9
+
+### Patch Changes
+
+- b0022b4: Fix: Remove unused Segment dependency
+- d183f0a: Fix: TurboSnap to consider `setupFiles` too
+
 ## 0.1.8
 
 ### Patch Changes

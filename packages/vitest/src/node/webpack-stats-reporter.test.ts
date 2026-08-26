@@ -5,7 +5,11 @@ import { afterEach, assert, expect, onTestFinished, test } from 'vitest';
 import { uniqueId } from '@chromatic-com/shared-e2e/write-archive/stories-files';
 import type { Module } from './webpack-stats-reporter';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
-import { runFixture as baseRunFixture, StableTestFileOrderSorter } from '../../test/utils/node';
+import {
+  runFixture as baseRunFixture,
+  isVitest5,
+  StableTestFileOrderSorter,
+} from '../../test/utils/node';
 
 afterEach(() => {
   uniqueId.value = 1;
@@ -13,10 +17,17 @@ afterEach(() => {
 
 test('TurboSnap enabled, source files', async () => {
   const root = resolve(import.meta.dirname, '../../test/fixtures');
-  await runFixture({ root }, { turboSnap: true });
+  await runFixture(
+    /** {@link file://./../../test/fixtures/css-setup-file.ts} */
+    { root, setupFiles: [resolve(import.meta.dirname, '../../test/fixtures/css-setup-file.ts')] },
+    { turboSnap: true }
+  );
 
   const stats = readStats(root);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   expect(modules).toMatchInlineSnapshot(`
     [
@@ -26,6 +37,27 @@ test('TurboSnap enabled, source files', async () => {
         "reasons": [
           {
             "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "css-setup.css",
+        "name": "css-setup.css",
+        "reasons": [
+          {
+            "moduleName": "css-setup-file.ts",
+          },
+        ],
+      },
+      {
+        "id": "css-setup-file.ts",
+        "name": "css-setup-file.ts",
+        "reasons": [
+          {
+            "moduleName": "turbo-snap-1.test.ts",
+          },
+          {
+            "moduleName": "turbo-snap-2.test.ts",
           },
         ],
       },
@@ -208,7 +240,10 @@ test('TurboSnap enabled, circular imports', async () => {
   );
 
   const stats = readStats(root);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   expect(modules).toMatchInlineSnapshot(`
     [
@@ -295,7 +330,10 @@ test('TurboSnap enabled, sharded run', async () => {
 
   // preview-stats.json from both runs should be merged together:
   const stats = readStats(root);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   // Both test cases and their dependencies should be found:
   expect(modules).toMatchInlineSnapshot(`
@@ -421,6 +459,41 @@ test('TurboSnap enabled, CSS imports', async () => {
   `);
 });
 
+test('TurboSnap enabled, Tailwind-like content scanner watch files', async () => {
+  const root = resolve(import.meta.dirname, '../../test/fixtures');
+
+  await runFixture(
+    {
+      root,
+      /** {@link file://./../../test/fixtures/configs/vitest.config.fake-tailwind.ts} */
+      config: resolve(root, 'configs/vitest.config.fake-tailwind.ts'),
+      /** {@link file://./../../test/fixtures/turbo-snap-css.test.ts} */
+      include: [resolve(root, 'turbo-snap-css.test.ts')],
+    },
+    { turboSnap: true }
+  );
+
+  const stats = readStats(root);
+  const ids = stats.modules.map((mod) => mod.id);
+
+  // Non-CSS files and glob patterns watched by the CSS module are content
+  // scanner registrations, not real dependencies, and must be filtered out
+  expect(ids).not.toContain('turbo-snap-1.test.ts');
+  expect(ids.filter((id) => id.includes('*'))).toEqual([]);
+
+  // CSS files watched by the CSS module are real dependencies and are kept
+  expect(stats.modules).toContainEqual({
+    id: 'css-setup.css',
+    name: 'css-setup.css',
+    reasons: [{ moduleName: 'components/styled/styles.css' }],
+  });
+
+  // Regular CSS `@import` chain is unaffected
+  expect(stats.modules).toContainEqual(
+    expect.objectContaining({ id: 'components/styled/base.css' })
+  );
+});
+
 test('TurboSnap enabled with custom output directory', async () => {
   const root = resolve(import.meta.dirname, '../../test/fixtures');
   const outputDirectory = '.vitest/custom-output-directory';
@@ -436,7 +509,10 @@ test('TurboSnap enabled with custom output directory', async () => {
   await runFixture({ root }, { turboSnap: true, outputDirectory });
 
   const stats = readStats(root, outputDirectory);
-  const modules = stats.modules.filter(excludeNodeModules).filter(excludePluginSources);
+  const modules = stats.modules
+    .filter(excludeNodeModules)
+    .filter(excludePluginSources)
+    .filter(excludeVitest5OnlyModules);
 
   expect(modules).toMatchInlineSnapshot(`
     [
@@ -578,6 +654,12 @@ function excludeNodeModules(mod: Module) {
 // Exclude plugin source files from the stats report, as they are not relevant to the test results.
 function excludePluginSources(mod: Module) {
   return !mod.id.includes('src/browser/') && !mod.id.includes('src/index.ts');
+}
+
+function excludeVitest5OnlyModules(mod: Module) {
+  return isVitest5()
+    ? !mod.reasons.find((reason) => reason.moduleName.includes('src/browser/getCurrentTest.ts'))
+    : true;
 }
 
 async function mergeChromaticDirectories(target: string, sources: string[]) {

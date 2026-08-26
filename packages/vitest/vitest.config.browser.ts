@@ -11,6 +11,7 @@ process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
 export default defineProject({
   resolve: { tsconfigPaths: true },
   plugins: [chromaticPlugin()],
+  publicDir: 'test/fixtures/public-dir',
 
   // To always catch errors that happen on first test run
   optimizeDeps: { force: true },

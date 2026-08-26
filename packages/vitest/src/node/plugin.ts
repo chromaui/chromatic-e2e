@@ -2,6 +2,7 @@ import { existsSync, readdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type {} from 'vitest/config';
 import type { Vite } from 'vitest/node';
+import { version as vitestVersion } from 'vitest/node';
 import colors from 'tinyrainbow';
 import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
 import { createCommands } from './commands';
@@ -46,11 +47,18 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
   return {
     name: 'vitest:chromatic',
+
     config() {
       return {
         optimizeDeps: {
           entries: [setupFile],
         },
+
+        // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
+        resolve: vitestVersion.startsWith('4.0')
+          ? undefined
+          : { alias: { 'vitest/suite': 'vitest' } },
+
         test: {
           provide: {
             __chromatic_options: options,
@@ -104,6 +112,10 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         });
       }
 
+      if (options.reporter.enabled) {
+        ChromaticReporter.apply(context.vitest, options);
+      }
+
       // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
       if (!browser.enabled || browser.name !== 'chromium') {
         trackEvent({
@@ -115,9 +127,7 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         return clean();
       }
 
-      if (options.reporter.enabled) {
-        ChromaticReporter.apply(context.vitest, options);
-      }
+      ChromaticReporter.onPluginActivated(context.vitest);
 
       if (options.turboSnap && !isMergeReports) {
         WebpackStatsReporter.apply(context.vitest, options);

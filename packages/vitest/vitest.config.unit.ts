@@ -7,6 +7,8 @@ process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
 
 export default defineProject({
   resolve: { tsconfigPaths: true },
+  publicDir: 'test/fixtures/public-dir',
+
   test: {
     name: { label: 'Vitest Unit', color: 'yellow' },
     include: ['src/**/*.test.ts', 'embedded.test.ts'],

@@ -18,6 +18,7 @@ test('browser commands are available', () => {
       "__chromatic_interceptFetch": [Function],
       "__chromatic_reset": [Function],
       "__chromatic_stopWithoutSnapshots": [Function],
+      "__chromatic_telemetry": [Function],
       "__chromatic_uploadDOMSnapshot": [Function],
       "__chromatic_waitForIdleNetwork": [Function],
       "__chromatic_writeTestResult": [Function],

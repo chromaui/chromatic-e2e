@@ -3,6 +3,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { isCSSRequest, type TestCase, type TestModule, type Vite, type Vitest } from 'vitest/node';
 import type { Reporter } from 'vitest/reporters';
+import { trackEvent } from './telemetry';
 import type { ResolvedOptions } from '../types';
 
 const REPORTER_NAME = 'chromatic-webpack-stats-reporter';
@@ -11,6 +12,9 @@ const VIRTUAL_MODULE_PREFIX = '\0';
 interface Options {
   /** Full resolved path to the `preview-stats.json` file */
   outputFile: string;
+
+  /** Resolved plugin options */
+  pluginOptions: ResolvedOptions;
 }
 
 /** Path to a Story file, for example `.vitest/chromatic/chromatic-archives/test-button-2.stories.json` */
@@ -52,7 +56,7 @@ export class WebpackStatsReporter implements Reporter {
 
       const outputFile = resolve(ctx.config.root, pluginOptions.outputDirectory, filename);
 
-      ctx.config.reporters.push(new WebpackStatsReporter(ctx, { outputFile }));
+      ctx.config.reporters.push(new WebpackStatsReporter(ctx, { outputFile, pluginOptions }));
     }
   }
 
@@ -87,10 +91,28 @@ export class WebpackStatsReporter implements Reporter {
     this.moduleIdsToStoryFiles.clear();
   }
 
+  async onTestRunEnd(testModules: TestModule[]) {
+    try {
+      await this.writePreviewStats(testModules);
+    } catch (error) {
+      trackEvent(
+        {
+          eventType: 'turbosnap_error',
+          level: 'error',
+          payload: { operation: 'write-stats', error },
+        },
+        this.ctx,
+        this.options.pluginOptions
+      );
+
+      throw error;
+    }
+  }
+
   /**
    * Generate `preview-stats.json` from collected Story files and their dependent test modules
    */
-  async onTestRunEnd(testModules: TestModule[]) {
+  private async writePreviewStats(testModules: TestModule[]) {
     const statsMap = new Map<Module['id'], Module>();
 
     for (const testModule of testModules) {

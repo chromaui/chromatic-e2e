@@ -95,8 +95,25 @@ export interface ResolvedOptions
   extends
     Required<Pick<Options, ResolvedOptionKeys>>,
     Pick<Options, UnresolvedOptionKeys | 'reporter'> {
-  //
   reporter: Required<Exclude<Options['reporter'], boolean>>;
+
+  telemetry: {
+    /**
+     * Whether telemetry is enabled.
+     * Value is resolved from `CHROMATIC_DISABLE_TELEMETRY` and `DO_NOT_TRACK` environment variables.
+     *
+     * @default true
+     */
+    enabled?: boolean;
+
+    /**
+     * Write all telemetry events to `${outputDirectory}/telemetry.jsonl`, one JSON event per line.
+     * Value is resolved from `CHROMATIC_TELEMETRY_LOG_TO_FILE` environment variable.
+     *
+     * @default false
+     */
+    logToFile?: boolean;
+  };
 }
 
 /**
@@ -116,7 +133,7 @@ type InternalMeta = Record<ChromaticNamespace, unknown> & {
   /** Options for the current test, set via `configure()` */
   __chromatic_options?: ConfigureOptions;
 
-  /** Indicates whether `takeSnapshot()` has been called */
+  /** Indicates whether `takeSnapshot()` has been called successfully */
   __chromatic_isTakeSnapshotCalled?: boolean;
 
   /** Pending `takeSnapshot()` promises */

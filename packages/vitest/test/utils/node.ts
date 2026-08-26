@@ -3,7 +3,10 @@
 import { resolve } from 'node:path';
 import { Writable } from 'node:stream';
 import { stripVTControlCharacters } from 'node:util';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
 import { type Mock, vi } from 'vitest';
+import { type ViteUserConfig } from 'vitest/config';
 import {
   type CliOptions,
   createVitest,
@@ -15,6 +18,7 @@ import {
 } from 'vitest/node';
 import { playwright } from '@vitest/browser-playwright';
 import { chromaticPlugin } from '../../src/node/plugin';
+import { TELEMETRY_URL, type WireTelemetryEvent } from '../../src/node/telemetry';
 
 export function getBrowserConfig(name = 'chromium') {
   return {
@@ -27,7 +31,11 @@ export function getBrowserConfig(name = 'chromium') {
 }
 
 export async function runFixture(
-  { stdout, ...options }: CliOptions & { stdout?: 'inherit' },
+  {
+    stdout,
+    plugins,
+    ...options
+  }: CliOptions & { stdout?: 'inherit'; plugins?: ViteUserConfig['plugins'] },
   pluginOptions: Parameters<typeof chromaticPlugin>[0] | { disabled: true } = {}
 ) {
   const { streams, getOutput } = createOutputStreams();
@@ -37,7 +45,10 @@ export async function runFixture(
     [],
     { config: options.config ?? false },
     {
-      plugins: ['disabled' in pluginOptions ? suiteImportPlugin() : chromaticPlugin(pluginOptions)],
+      plugins: [
+        ...(plugins ?? []),
+        'disabled' in pluginOptions ? suiteImportPlugin() : chromaticPlugin(pluginOptions),
+      ],
       test: {
         watch: false,
         root: resolve(import.meta.dirname, '../fixtures'),
@@ -66,7 +77,7 @@ export async function runFixture(
 }
 
 export async function getResolvedConfig(
-  options: InlineConfig = {},
+  options: InlineConfig & { shard?: string } = {},
   pluginOptions: Parameters<typeof chromaticPlugin>[0] = {}
 ) {
   const vitest = await createVitest(
@@ -120,4 +131,32 @@ export class StableTestFileOrderSorter implements TestSequencer {
 
 export function isVitest5() {
   return vitestVersion.startsWith('5.');
+}
+
+export function setupTelemetryServer(_server?: ReturnType<typeof setupServer>) {
+  const server = _server || setupServer();
+  const onRequest = vi.fn<(event: WireTelemetryEvent) => void>();
+
+  server.listen({ onUnhandledRequest: 'warn' });
+
+  server.use(
+    http.post<undefined, WireTelemetryEvent>(
+      `${TELEMETRY_URL}/telemetry/v1/vitest/events`,
+      async ({ request }) => {
+        onRequest(await request.json());
+        return HttpResponse.json({ ok: true });
+      }
+    )
+  );
+
+  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
+
+  function cleanup() {
+    process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+
+    server.resetHandlers();
+    server.close();
+  }
+
+  return { server, onRequest, cleanup };
 }

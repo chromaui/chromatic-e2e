@@ -1,6 +1,7 @@
 import { beforeAll } from 'vitest';
-import { getCurrentTest, type Test } from '../getCurrentTest';
+import { getCurrentSuite, getCurrentTest, type Test } from '../getCurrentTest';
 import { isChromium } from '../isChromium';
+import { trackEvent } from '../telemetry';
 import type { ConfigureOptions } from '../../types';
 
 /**
@@ -75,13 +76,18 @@ export function configure(options: ConfigureOptions) {
       ...test.meta.__chromatic_options,
       ...options,
     };
-    return;
+
+    return trackConfigure('test');
   }
+
+  const scope = getCurrentSuite()?.suite ? 'suite' : 'file';
 
   // Called at top level or within describe().
   // Wrap suite traversal in beforeAll to make sure it runs after test collection.
   // eslint-disable-next-line no-empty-pattern
   beforeAll(({}, suite) => {
+    trackConfigure(scope);
+
     traverseTests(suite);
 
     function traverseTests(task: (typeof suite.tasks)[0]) {
@@ -99,4 +105,15 @@ export function configure(options: ConfigureOptions) {
       task.tasks.forEach(traverseTests);
     }
   });
+
+  function trackConfigure(scope: 'test' | 'suite' | 'file') {
+    trackEvent({
+      eventType: 'configure_called',
+      level: 'info',
+      payload: {
+        options: Object.keys(options) as (keyof typeof options)[],
+        scope,
+      },
+    });
+  }
 }

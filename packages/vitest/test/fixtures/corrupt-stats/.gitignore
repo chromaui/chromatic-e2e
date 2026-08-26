@@ -1,0 +1,4 @@
+# Test runs write telemetry metadata into this directory. Ignore everything except the fixture itself.
+*
+!.gitignore
+!preview-stats-1-2.json

@@ -1,14 +1,15 @@
 import { assert } from 'vitest';
 import { commands } from 'vitest/browser';
-import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
+import { snapshot as rrwebSnapshot, createMirror } from '@chromaui/rrweb-snapshot';
 import { serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
 import { getCurrentTest } from '../getCurrentTest';
 import { isChromium } from '../isChromium';
+import { trackEvent } from '../telemetry';
 import type {} from '../../node/commands';
 
 interface Options {
-  ignoreUnawaited?: boolean;
+  isAutomaticSnapshot: boolean;
 }
 
 /**
@@ -27,21 +28,30 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
   const test = getCurrentTest();
 
   if (!test) {
+    trackEvent({
+      eventType: 'take_snapshot_invalid_call',
+      level: 'error',
+      payload: { isInsideTest: false, isRegisteredTest: undefined, isAwaited: undefined },
+    });
+
     throw new TypeError('takeSnapshot() must be called within a test()');
   }
 
   if (!test.meta.__chromatic_isRegistered) {
+    trackEvent({
+      eventType: 'take_snapshot_invalid_call',
+      level: 'error',
+      payload: { isInsideTest: true, isRegisteredTest: false, isAwaited: undefined },
+    });
+
     throw new TypeError(
       'takeSnapshot() cannot be called in a test that is not registered for Chromatic plugin.' +
         `\nMake sure ${test.file.projectName || 'root'} project has chromaticPlugin() enabled.`
     );
   }
 
-  test.meta.__chromatic_isTakeSnapshotCalled = true;
-
   const mirror = createMirror();
-  const domSnapshot = snapshot(document, { recordCanvas: true, mirror });
-  assert(domSnapshot, 'Failed to capture DOM snapshot');
+  const domSnapshot = snapshot({ document, mirror, onError: trackSnapshotError('capture') });
 
   const pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'] = {};
 
@@ -52,12 +62,23 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
   }
 
   const save = async () => {
-    await replaceBlobUrls(domSnapshot);
-    await commands.__chromatic_uploadDOMSnapshot(test.id, domSnapshot, pseudoClassIds, name);
+    await replaceBlobUrls(domSnapshot).catch(trackSnapshotError('replace-blob-urls'));
+
+    await commands
+      .__chromatic_uploadDOMSnapshot(
+        test.id,
+        domSnapshot,
+        pseudoClassIds,
+        name ?? null, // Convert undefined to null to avoid https://github.com/vitest-dev/vitest/issues/10864
+        options
+      )
+      .catch(trackSnapshotError('upload'));
+
+    test.meta.__chromatic_isTakeSnapshotCalled = true;
   };
 
-  // Ignore is set when called by automatic snapshots
-  if (options?.ignoreUnawaited) {
+  // Automatic snapshots are always awaited
+  if (options?.isAutomaticSnapshot) {
     return await save();
   }
 
@@ -79,6 +100,45 @@ async function takeSnapshot(name?: string, options?: Options): Promise<void> {
       test.meta.__chromatic_pendingTakeSnapshots?.splice(index, 1);
     }
   });
+
+  /**
+   * Report a snapshot failure to telemetry before rethrowing it. The error is serialized
+   * eagerly, as `Error` instances would not survive the RPC to the Node process.
+   */
+  function trackSnapshotError(operation: 'capture' | 'replace-blob-urls' | 'upload') {
+    return function onError(error: unknown) {
+      trackEvent({
+        eventType: 'snapshot_error',
+        level: 'error',
+        payload: {
+          operation,
+          isAutomaticSnapshot: options?.isAutomaticSnapshot ?? false,
+          error: error instanceof Error ? (error.stack ?? error.message) : String(error),
+        },
+      });
+
+      throw error;
+    };
+  }
+}
+
+function snapshot(options: {
+  document: Document;
+  mirror: ReturnType<typeof createMirror>;
+  onError: (error: unknown) => void;
+}): serializedNodeWithId {
+  try {
+    const domSnapshot = rrwebSnapshot(options.document, {
+      recordCanvas: true,
+      mirror: options.mirror,
+    });
+    assert(domSnapshot, 'Failed to capture DOM snapshot');
+
+    return domSnapshot;
+  } catch (error) {
+    options.onError(error);
+    throw error;
+  }
 }
 
 async function replaceBlobUrls(node: serializedNodeWithId) {

@@ -2,6 +2,9 @@ import { defineProject } from 'vitest/config';
 
 const isWatch = process.argv.includes('--watch');
 
+// Prevent sending telemetry during test run
+process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+
 export default defineProject({
   resolve: { tsconfigPaths: true },
   publicDir: 'test/fixtures/public-dir',
@@ -20,7 +23,7 @@ export default defineProject({
 
     typecheck: {
       enabled: true,
-      include: ['src/*.test-d.ts'],
+      include: ['src/**/*.test-d.ts'],
       ignoreSourceErrors: true,
     },
   },

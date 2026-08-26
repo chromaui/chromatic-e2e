@@ -21,13 +21,13 @@ test("throws when used in a test that isn't registered", async () => {
        FAIL   chromium  wait-for-idle-network.test.ts > test #1
       TypeError: waitForIdleNetwork() cannot be called in a test that is not registered for Chromatic plugin.
       Make sure chromium project has chromaticPlugin() enabled.
-       ❯ wait-for-idle-network.test.ts:7:9
-            5|   document.body.innerHTML = '<h1>Example heading</h1>';
-            6|
-            7|   await waitForIdleNetwork(1);
-             |         ^
+       ❯ wait-for-idle-network.test.ts:9:9
+            7|   document.body.innerHTML = '<h1>Example heading</h1>';
             8|
-            9|   expect.fail('Should not reach this point');
+            9|   await waitForIdleNetwork(1);
+             |         ^
+           10|
+           11|   expect.fail('Should not reach this point');
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);
@@ -39,13 +39,13 @@ test("throws when used in a test that isn't registered", async () => {
        FAIL   chromium  wait-for-idle-network.test.ts > test #1
       TypeError: waitForIdleNetwork() cannot be called in a test that is not registered for Chromatic plugin.
       Make sure chromium project has chromaticPlugin() enabled.
-       ❯ wait-for-idle-network.test.ts:7:8
-            5|   document.body.innerHTML = '<h1>Example heading</h1>';
-            6|
-            7|   await waitForIdleNetwork(1);
-             |        ^
+       ❯ wait-for-idle-network.test.ts:9:8
+            7|   document.body.innerHTML = '<h1>Example heading</h1>';
             8|
-            9|   expect.fail('Should not reach this point');
+            9|   await waitForIdleNetwork(1);
+             |        ^
+           10|
+           11|   expect.fail('Should not reach this point');
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);
@@ -65,13 +65,13 @@ test('throws when used outside of a test()', async () => {
 
        FAIL   chromium  wait-for-idle-network.test.ts > suite
       TypeError: waitForIdleNetwork() must be called within a test()
-       ❯ wait-for-idle-network.test.ts:14:11
-           12| describe.runIf(inject('testName') === 'two')('suite', async () => {
-           13|   beforeAll(async () => {
-           14|     await waitForIdleNetwork(1);
+       ❯ wait-for-idle-network.test.ts:16:11
+           14| describe.runIf(inject('testName') === 'two')('suite', async () => {
+           15|   beforeAll(async () => {
+           16|     await waitForIdleNetwork(1);
              |           ^
-           15|   });
-           16|
+           17|   });
+           18|
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);
@@ -82,13 +82,13 @@ test('throws when used outside of a test()', async () => {
 
        FAIL   chromium  wait-for-idle-network.test.ts > suite
       TypeError: waitForIdleNetwork() must be called within a test()
-       ❯ wait-for-idle-network.test.ts:14:10
-           12| describe.runIf(inject('testName') === 'two')('suite', async () => {
-           13|   beforeAll(async () => {
-           14|     await waitForIdleNetwork(1);
+       ❯ wait-for-idle-network.test.ts:16:10
+           14| describe.runIf(inject('testName') === 'two')('suite', async () => {
+           15|   beforeAll(async () => {
+           16|     await waitForIdleNetwork(1);
              |          ^
-           15|   });
-           16|
+           17|   });
+           18|
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);

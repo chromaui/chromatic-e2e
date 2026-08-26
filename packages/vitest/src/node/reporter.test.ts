@@ -6,6 +6,7 @@ import {
   runFixture as baseRunFixture,
   getBrowserConfig,
   isVitest5,
+  setupTelemetryServer,
   StableTestFileOrderSorter,
 } from '../../test/utils/node';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
@@ -209,6 +210,34 @@ test('summary with TurboSnap enabled', async () => {
 
     Archives saved in <process-cwd>/.vitest/chromatic
     To upload archives into Chromatic run chromatic --vitest --project-token=<TOKEN> --only-changed"
+  `);
+});
+
+test('summary with `CHROMATIC_TELEMETRY_LOG_TO_FILE` enabled', async () => {
+  const { cleanup } = setupTelemetryServer();
+  vi.stubEnv('CHROMATIC_TELEMETRY_LOG_TO_FILE', '1');
+
+  onTestFinished(() => {
+    vi.unstubAllEnvs();
+    cleanup();
+
+    const reports = resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
+
+    if (existsSync(reports)) {
+      rmSync(reports, { recursive: true, force: true });
+    }
+  });
+
+  const { stdout } = await runFixture({ reporters: 'default', root: process.cwd() });
+
+  expect(trimSummary(stdout)).toMatchInlineSnapshot(`
+    "Chromatic Visual Regression
+
+    ✓ 24 archives captured
+
+    Archives saved in <process-cwd>/.vitest/chromatic
+    Telemetry events logged to <process-cwd>/.vitest/chromatic/telemetry.jsonl
+    To upload archives into Chromatic run chromatic --vitest --project-token=<TOKEN>"
   `);
 });
 

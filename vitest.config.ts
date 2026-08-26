@@ -7,5 +7,19 @@ export default defineConfig({
       enabled: true,
     },
     projects: ['./packages/*/vitest.config.*'],
+
+    onConsoleLog(log, type, entity) {
+      if (
+        log.startsWith('Chromatic archives directory cannot be found') &&
+        entity.type === 'test' &&
+        entity.name === 'archive-storybook called with directory without chromatic-archives'
+      ) {
+        return false;
+      }
+
+      if (log.startsWith('Example error') && entity.type === 'test') {
+        return false;
+      }
+    },
   },
 });

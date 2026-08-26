@@ -1,5 +1,12 @@
 # @chromatic-com/vitest
 
+## 0.1.10
+
+### Patch Changes
+
+- e7d5669: Feat: Add telemetry
+- 8342990: Fix: Vitest@5.0.0-rc.2 compatibility fixes
+
 ## 0.1.9
 
 ### Patch Changes

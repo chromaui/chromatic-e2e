@@ -1,10 +1,11 @@
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import type { Frame, Page, TestInfo } from '@playwright/test';
 import { NodeType, type serializedNodeWithId } from '@rrweb/types';
 import { type DOMSnapshots, type SerializedIframeNode, logger } from '@chromatic-com/shared-e2e';
 import type { takeSnapshot as browserTakeSnapshot } from './browser';
 
-const browserEntry = require.resolve('@chromatic-com/playwright/browser');
+const browserEntry = createRequire(import.meta.url).resolve('@chromatic-com/playwright/browser');
 const browserScript = readFileSync(browserEntry, 'utf-8');
 
 type TestID = TestInfo['testId'];

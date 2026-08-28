@@ -1,6 +1,8 @@
-const path = require('path');
-const express = require('express');
-const basicAuth = require('express-basic-auth');
+import path from 'node:path';
+import express from 'express';
+import basicAuth from 'express-basic-auth';
+
+const __dirname = import.meta.dirname;
 
 const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
@@ -191,4 +193,4 @@ const embedServer = embedApp.listen(embedPort, () => {
 process.on('SIGINT', () => process.exit(0));
 process.on('SIGTERM', () => process.exit(0));
 
-module.exports = { server, embedServer };
+export { server, embedServer };

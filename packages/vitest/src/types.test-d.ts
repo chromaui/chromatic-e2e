@@ -1,7 +1,7 @@
 import { assertType, expectTypeOf, test } from 'vitest';
 
-import { takeSnapshot, waitForIdleNetwork, configure } from '../dist';
-import { chromaticPlugin } from '../dist/plugin';
+import { takeSnapshot, waitForIdleNetwork, configure } from '../dist/index.mjs';
+import { chromaticPlugin } from '../dist/plugin.mjs';
 
 test('takeSnapshot', () => {
   expectTypeOf(takeSnapshot).toBeFunction();

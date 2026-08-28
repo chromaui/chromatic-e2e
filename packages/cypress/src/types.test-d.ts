@@ -1,6 +1,6 @@
 import { expectTypeOf, test } from 'vitest';
 
-import '../dist/support';
+import '../dist/support.mjs';
 
 test('takeSnapshot', () => {
   expectTypeOf(cy.takeSnapshot).toBeFunction();

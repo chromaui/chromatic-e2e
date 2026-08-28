@@ -1,6 +1,6 @@
 /* Types consumed by both browser and Node context */
 
-import { type ChromaticConfig } from '@chromatic-com/shared-e2e';
+import { type ChromaticConfig } from '@chromatic-com/shared-e2e/types';
 
 /**
  * Prefix to avoid conflicting with user-defined browser commands, task meta and others.

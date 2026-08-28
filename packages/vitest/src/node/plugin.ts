@@ -38,11 +38,11 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     telemetry: resolveTelemetryOptions(),
   };
 
-  const isDist = import.meta.url.includes('dist/plugin.js');
+  const isDist = import.meta.url.includes('dist/plugin.mjs');
 
   const setupFile = resolve(
     import.meta.dirname,
-    isDist ? './setupFile.js' : '../browser/setupFile.ts'
+    isDist ? './setupFile.mjs' : '../browser/setupFile.ts'
   );
 
   return {

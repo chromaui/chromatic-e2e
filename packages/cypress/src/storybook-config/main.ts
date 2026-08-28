@@ -1,21 +1,18 @@
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import type { StorybookConfig } from '@storybook/server-webpack5';
 import { archivesDir } from '@chromatic-com/shared-e2e/utils/filePaths';
 import { storybookParentNodeModulesDir } from '@chromatic-com/shared-e2e/utils/storybookPaths';
 import { DEFAULT_OUTPUT_DIR } from '../constants';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Resolve embedded Storybook 10.x stack from package root (dist/storybook-config -> .. -> ..)
-const packageRoot = path.resolve(__dirname, '..', '..');
+const packageRoot = path.resolve(import.meta.dirname, '..', '..');
 const embeddedDir = path.join(packageRoot, 'embedded', 'node_modules');
 
 export default <StorybookConfig>{
   stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
-  managerEntries: [path.resolve(__dirname, 'manager.mjs')],
-  previewAnnotations: [path.resolve(__dirname, 'preview.mjs')],
+  managerEntries: [path.resolve(import.meta.dirname, 'manager.mjs')],
+  previewAnnotations: [path.resolve(import.meta.dirname, 'preview.mjs')],
   framework: {
     name: path.join(embeddedDir, '@storybook', 'server-webpack5'),
     options: {},

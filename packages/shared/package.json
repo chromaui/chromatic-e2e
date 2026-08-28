@@ -10,6 +10,10 @@
   },
   "license": "MIT",
   "author": "Chromatic <tom@chromatic.com>",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": "./src/index",
     "./test-utils": "./src/test-utils"

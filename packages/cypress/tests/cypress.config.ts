@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-import { installPlugin } from '../dist';
+import { installPlugin } from '../dist/index.mjs';
 import { existsSync } from 'node:fs';
 
 export default defineConfig({

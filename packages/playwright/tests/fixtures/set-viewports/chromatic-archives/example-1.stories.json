@@ -1,0 +1,36 @@
+{
+  "title": "example-1",
+  "stories": [
+    {
+      "name": "Snapshot #1",
+      "parameters": {
+        "__id": "example-1--snapshot-1",
+        "server": {
+          "id": "example-1-snapshot-1"
+        },
+        "chromatic": {
+          "ignoreSelectors": ["#objectUrl"],
+          "colorScheme": "light",
+          "modes": {
+            "w111h222": {
+              "viewport": "w111h222"
+            }
+          }
+        },
+        "viewport": {
+          "options": {
+            "w111h222": {
+              "name": "w111h222",
+              "type": "desktop",
+              "styles": {
+                "width": "111px",
+                "height": "222px"
+              }
+            }
+          },
+          "defaultViewport": "w111h222"
+        }
+      }
+    }
+  ]
+}

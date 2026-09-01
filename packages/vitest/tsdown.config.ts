@@ -1,6 +1,6 @@
 import { defineConfig, type UserConfig } from 'tsdown';
 
-const defaults: UserConfig = {
+const defaults = {
   format: ['esm'],
   platform: 'node',
   target: 'esnext',
@@ -9,7 +9,10 @@ const defaults: UserConfig = {
   minify: false,
   clean: true,
   fixedExtension: true,
-};
+
+  // tsgolint rejects `baseUrl` in tsconfig files, but tsdown's dts type inference needs it:
+  dts: { compilerOptions: { baseUrl: '../..' } },
+} satisfies UserConfig;
 
 export default defineConfig([
   {
@@ -21,7 +24,7 @@ export default defineConfig([
       'bin/build-archive-storybook': 'src/bin/build-archive-storybook.ts',
       'storybook-config/main': 'src/storybook-config/main.ts',
     },
-    dts: { entry: ['src/node/plugin.ts'] },
+    dts: { ...defaults.dts, entry: ['src/node/plugin.ts'] },
     deps: { onlyBundle: ['@rrweb/types', 'mime', 'srcset'] },
   },
   {
@@ -34,7 +37,7 @@ export default defineConfig([
       'storybook-config/preview': 'src/storybook-config/shared/preview.ts',
     },
     platform: 'browser',
-    dts: { entry: ['src/index.ts'] },
+    dts: { ...defaults.dts, entry: ['src/index.ts'] },
     deps: { onlyBundle: ['@rrweb/types'] },
   },
 ]);

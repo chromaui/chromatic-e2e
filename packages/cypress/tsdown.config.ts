@@ -22,7 +22,11 @@ export default defineConfig([
       'bin/build-archive-storybook': 'src/bin/build-archive-storybook.ts',
       'storybook-config/main': 'src/storybook-config/main.ts',
     },
-    dts: { entry: ['src/index.ts', 'src/support.ts'] },
+    dts: {
+      entry: ['src/index.ts', 'src/support.ts'],
+      // tsgolint rejects `baseUrl` in tsconfig files, but tsdown's dts type inference needs it:
+      compilerOptions: { baseUrl: '../..' },
+    },
     deps: { onlyBundle: ['@rrweb/types', 'mime', 'srcset'] },
   },
   {

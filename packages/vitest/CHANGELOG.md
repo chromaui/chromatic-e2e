@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 1.0.0
+
+### Major Changes
+
+- 684b258: Feat: Release v1
+
 ## 0.1.10
 
 ### Patch Changes

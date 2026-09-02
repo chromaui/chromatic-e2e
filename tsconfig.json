@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "paths": {
       "playwright-core/types/protocol": [
         "./packages/shared/node_modules/playwright-core/types/protocol.d.ts"
@@ -8,19 +7,15 @@
       "@chromatic-com/shared-e2e": ["./packages/shared/src/index.ts"],
       "@chromatic-com/shared-e2e/*": ["./packages/shared/src/*"]
     },
-    "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "incremental": false,
     "isolatedModules": true,
-    "strictBindCallApply": true,
-    "jsx": "react",
     "lib": ["es2023", "dom", "dom.iterable"],
     "module": "preserve",
-    "moduleResolution": "bundler",
-    "noImplicitAny": true,
     "skipLibCheck": true,
-    "target": "es2023"
+    "target": "es2023",
+
+    // TODO: Enable "strict: true" and remove these:
+    "noImplicitAny": true,
+    "strictBindCallApply": true
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "scripts/**/*.ts", "vitest.config.ts"]
+  "include": ["packages/**/*.ts", "scripts/**/*.ts", "vitest.config.ts"]
 }

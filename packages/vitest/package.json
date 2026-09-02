@@ -38,6 +38,7 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "typecheck": "tsc --noEmit",
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project 'Vitest Unit' --project 'Vitest Browser'",
     "test:vitest": "vitest --config test/vitest.config.e2e.ts"
   },
@@ -58,6 +59,7 @@
     "extend-to-be-announced": "2.0.0",
     "msw": "^2.12.10",
     "tsdown": "^0.22.14",
+    "typescript": "^5.9.3",
     "vitest": "^4.1.0"
   },
   "peerDependencies": {

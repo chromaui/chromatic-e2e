@@ -92,13 +92,13 @@ importers:
         version: 2.1.0
       '@storybook/builder-webpack5':
         specifier: 10.2.13
-        version: 10.2.13(esbuild@0.27.7)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
+        version: 10.2.13(esbuild@0.27.7)(postcss@8.5.19)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
       '@storybook/server':
         specifier: 10.2.13
         version: 10.2.13(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))
       '@storybook/server-webpack5':
         specifier: 10.2.13
-        version: 10.2.13(esbuild@0.27.7)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
+        version: 10.2.13(esbuild@0.27.7)(postcss@8.5.19)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
       cypress:
         specifier: 15.18.0
         version: 15.18.0
@@ -108,6 +108,9 @@ importers:
       tsdown:
         specifier: ^0.22.14
         version: 0.22.14(publint@0.3.24)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/playwright:
     dependencies:
@@ -151,6 +154,9 @@ importers:
       tsdown:
         specifier: ^0.22.14
         version: 0.22.14(publint@0.3.24)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/shared:
     dependencies:
@@ -159,13 +165,13 @@ importers:
         version: 2.0.0-alpha.19-noAbsolute
       '@storybook/builder-webpack5':
         specifier: 10.2.13
-        version: 10.2.13(esbuild@0.27.7)(postcss@8.5.19)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
+        version: 10.2.13(esbuild@0.27.7)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
       '@storybook/server':
         specifier: 10.2.13
         version: 10.2.13(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))
       '@storybook/server-webpack5':
         specifier: 10.2.13
-        version: 10.2.13(esbuild@0.27.7)(postcss@8.5.19)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
+        version: 10.2.13(esbuild@0.27.7)(storybook@10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7))(typescript@5.9.3)
       storybook:
         specifier: 10.2.13
         version: 10.2.13(@testing-library/dom@8.20.1)(prettier@3.9.5)(react@19.2.7)
@@ -258,6 +264,9 @@ importers:
       tsdown:
         specifier: ^0.22.14
         version: 0.22.14(publint@0.3.24)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
       vitest:
         specifier: ^4.1.0
         version: 4.1.10(@types/node@22.20.1)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(@types/node@22.20.1)(typescript@5.9.3))(vite@8.1.4(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))

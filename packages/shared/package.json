@@ -19,7 +19,8 @@
     "./test-utils": "./src/test-utils"
   },
   "scripts": {
-    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Shared"
+    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Shared",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",

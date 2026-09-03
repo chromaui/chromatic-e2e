@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 1.0.1
+
+### Patch Changes
+
+- 9c009cd: Fix: Extend support to Vitest 5
+
 ## 1.0.0
 
 ### Major Changes

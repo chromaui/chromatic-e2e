@@ -14,10 +14,7 @@ import {
   setupTelemetryServer,
 } from '../../../test/utils/node';
 
-vi.mock('node:fs', { spy: true });
-
 beforeEach(() => {
-  vi.mocked(existsSync).mockReset();
   vi.unstubAllEnvs();
   invalidateDotEnvCache();
 });
@@ -860,10 +857,9 @@ describe('events', () => {
     archivesDirectory,
     onRequest,
   }) => {
-    vi.mocked(existsSync).mockImplementation(
-      (path) => path !== `${archivesDirectory}/chromatic-archives`
-    );
-    await runBinary('archive-storybook', { archivesDirectory });
+    await runBinary('archive-storybook', {
+      archivesDirectory: resolve(archivesDirectory, 'non-existent'),
+    });
 
     const events = getSortedEvents(onRequest);
 
@@ -884,7 +880,7 @@ describe('events', () => {
           "eventType": "vitest_archives_resolved",
           "payload": {
             "command": "archiveStorybook",
-            "error": "Error: Chromatic archives directory cannot be found: <process-cwd>/packages/vitest/test/fixtures/.vitest/chromatic/chromatic-archives
+            "error": "Error: Chromatic archives directory cannot be found: <process-cwd>/packages/vitest/test/fixtures/.vitest/chromatic/non-existent/chromatic-archives
 
       Please make sure that you have run your E2E tests, or have set the CHROMATIC_ARCHIVE_LOCATION env var if the output directory for the tests is not in the standard location.",
             "isCustomLocation": true,
@@ -894,7 +890,7 @@ describe('events', () => {
         {
           "eventType": "vitest_storybook_dev_failed",
           "payload": {
-            "error": "Error: Chromatic archives directory cannot be found: <process-cwd>/packages/vitest/test/fixtures/.vitest/chromatic/chromatic-archives
+            "error": "Error: Chromatic archives directory cannot be found: <process-cwd>/packages/vitest/test/fixtures/.vitest/chromatic/non-existent/chromatic-archives
 
       Please make sure that you have run your E2E tests, or have set the CHROMATIC_ARCHIVE_LOCATION env var if the output directory for the tests is not in the standard location.",
           },

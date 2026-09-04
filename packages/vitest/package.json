@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-com/vitest",
-  "version": "0.1.10",
+  "version": "1.0.1",
   "description": "Chromatic Visual Regression Testing for Vitest",
   "repository": {
     "type": "git",
@@ -54,14 +54,14 @@
     "@storybook/builder-webpack5": "10.2.13",
     "@storybook/server": "10.2.13",
     "@storybook/server-webpack5": "10.2.13",
-    "@vitest/browser-playwright": "^4.1.0",
+    "@vitest/browser-playwright": "^5.0.0",
     "extend-to-be-announced": "2.0.0",
     "msw": "^2.12.10",
     "tsdown": "^0.22.14",
-    "vitest": "^4.1.0"
+    "vitest": "^5.0.0"
   },
   "peerDependencies": {
-    "vitest": "^4"
+    "vitest": "^4 || ^5"
   },
   "publishConfig": {
     "access": "public"

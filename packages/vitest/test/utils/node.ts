@@ -45,6 +45,7 @@ export async function runFixture(
     [],
     { config: options.config ?? false },
     {
+      publicDir: resolve(import.meta.dirname, '../fixtures/public-dir'),
       plugins: [
         ...(plugins ?? []),
         'disabled' in pluginOptions ? suiteImportPlugin() : chromaticPlugin(pluginOptions),

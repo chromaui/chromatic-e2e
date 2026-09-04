@@ -1,8 +1,9 @@
-import { beforeAll } from 'vitest';
-import { getCurrentSuite, getCurrentTest, type Test } from '../getCurrentTest';
-import { isChromium } from '../isChromium';
-import { trackEvent } from '../telemetry';
-import type { ConfigureOptions } from '../../types';
+import { beforeAll } from "vitest";
+
+import type { ConfigureOptions } from "../../types";
+import { getCurrentSuite, getCurrentTest, type Test } from "../getCurrentTest";
+import { isChromium } from "../isChromium";
+import { trackEvent } from "../telemetry";
 
 /**
  * Configure options for the current scope.
@@ -77,10 +78,10 @@ export function configure(options: ConfigureOptions) {
       ...options,
     };
 
-    return trackConfigure('test');
+    return trackConfigure("test");
   }
 
-  const scope = getCurrentSuite()?.suite ? 'suite' : 'file';
+  const scope = getCurrentSuite()?.suite ? "suite" : "file";
 
   // Called at top level or within describe().
   // Wrap suite traversal in beforeAll to make sure it runs after test collection.
@@ -91,7 +92,7 @@ export function configure(options: ConfigureOptions) {
     traverseTests(suite);
 
     function traverseTests(task: (typeof suite.tasks)[0]) {
-      if (task.type === 'test') {
+      if (task.type === "test") {
         const test = task as Test;
 
         test.meta.__chromatic_options = {
@@ -106,10 +107,10 @@ export function configure(options: ConfigureOptions) {
     }
   });
 
-  function trackConfigure(scope: 'test' | 'suite' | 'file') {
+  function trackConfigure(scope: "test" | "suite" | "file") {
     trackEvent({
-      eventType: 'configure_called',
-      level: 'info',
+      eventType: "configure_called",
+      level: "info",
       payload: {
         options: Object.keys(options) as (keyof typeof options)[],
         scope,

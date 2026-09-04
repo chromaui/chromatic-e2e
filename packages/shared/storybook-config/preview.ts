@@ -1,18 +1,18 @@
-import type { RenderContext, RenderToCanvas, WebRenderer } from 'storybook/internal/types';
-import type { serializedNodeWithId } from '@rrweb/types';
-import { NodeType } from '@rrweb/types';
-import { rebuild, createMirror, createCache } from '@chromaui/rrweb-snapshot';
-import { type SavedSnapshot } from '@chromatic-com/shared-e2e';
+import { type SavedSnapshot } from "@chromatic-com/shared-e2e";
 import {
   isElement,
   isIframeElement,
   isIframeSerializedNode,
-} from '@chromatic-com/shared-e2e/utils/nodes';
+} from "@chromatic-com/shared-e2e/utils/nodes";
+import { rebuild, createMirror, createCache } from "@chromaui/rrweb-snapshot";
+import type { serializedNodeWithId } from "@rrweb/types";
+import { NodeType } from "@rrweb/types";
+import type { RenderContext, RenderToCanvas, WebRenderer } from "storybook/internal/types";
 
 const pageUrl = new URL(window.location.href);
-pageUrl.pathname = '';
-pageUrl.search = '';
-const strippedUrl = pageUrl.toString().replace(/\/$/, '');
+pageUrl.pathname = "";
+pageUrl.search = "";
+const strippedUrl = pageUrl.toString().replace(/\/$/, "");
 
 export interface RRWebFramework extends WebRenderer {
   component: undefined;
@@ -20,11 +20,11 @@ export interface RRWebFramework extends WebRenderer {
 }
 
 const findHtmlNode = (node: serializedNodeWithId): serializedNodeWithId | undefined => {
-  if (node.type === NodeType.Element && node.tagName === 'html') {
+  if (node.type === NodeType.Element && node.tagName === "html") {
     return node;
   }
 
-  if ('childNodes' in node) {
+  if ("childNodes" in node) {
     return node.childNodes.find((childNode) => {
       return findHtmlNode(childNode);
     });
@@ -38,7 +38,7 @@ const findNodeById = (node: serializedNodeWithId, id: number): serializedNodeWit
     return node;
   }
 
-  if ('childNodes' in node) {
+  if ("childNodes" in node) {
     for (const childNode of node.childNodes) {
       const match = findNodeById(childNode, id);
 
@@ -53,8 +53,8 @@ const findNodeById = (node: serializedNodeWithId, id: number): serializedNodeWit
 
 // NOTE: This is duplicated in the shared package due to bundling issues
 function snapshotFileName(snapshotId: string, viewport: string) {
-  const fileNameParts = [snapshotId, viewport, 'snapshot.json'];
-  return fileNameParts.join('.');
+  const fileNameParts = [snapshotId, viewport, "snapshot.json"];
+  return fileNameParts.join(".");
 }
 
 async function fetchSnapshot(context: RenderContext<RRWebFramework>): Promise<SavedSnapshot> {
@@ -63,7 +63,7 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>): Promise<Sa
 
   // Viewport seems to be a string or an object
   let viewportName;
-  if (typeof viewport === 'string') {
+  if (typeof viewport === "string") {
     viewportName = viewport;
   } else {
     // NOTE: This is duplicated in the shared package due to bundling issues
@@ -166,6 +166,6 @@ export default {
   renderToCanvas,
   parameters: {
     server: { url: strippedUrl },
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
 };

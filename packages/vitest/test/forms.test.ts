@@ -1,5 +1,5 @@
-import { test } from './utils/browser';
+import { test } from "./utils/browser";
 
-test.override({ url: '/forms' });
+test.override({ url: "/forms" });
 
-test('form renders successfully', async () => {});
+test("form renders successfully", async () => {});

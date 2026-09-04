@@ -1,15 +1,16 @@
-import { afterEach, beforeEach, inject } from 'vitest';
-import { commands } from 'vitest/browser';
-import { takeSnapshot } from './public/takeSnapshot';
-import { waitForIdleNetwork } from './public/waitForIdleNetwork';
-import { trackEvent } from './telemetry';
-import { type InternalTestContext } from '../types';
-import type {} from '../node/commands';
-import type {} from '../node/plugin';
+import { afterEach, beforeEach, inject } from "vitest";
+import { commands } from "vitest/browser";
+
+import type {} from "../node/commands";
+import type {} from "../node/plugin";
+import { type InternalTestContext } from "../types";
+import { takeSnapshot } from "./public/takeSnapshot";
+import { waitForIdleNetwork } from "./public/waitForIdleNetwork";
+import { trackEvent } from "./telemetry";
 
 // Destructuring the context is important, so that possible user-provided fixtures work too
 beforeEach<InternalTestContext>(async ({ task }) => {
-  const options = inject('__chromatic_options');
+  const options = inject("__chromatic_options");
 
   if (options.tags) {
     // If user has defined plugin tags we register only the tests that match those tags
@@ -104,13 +105,13 @@ class PendingSnapshotsError extends AggregateError {
   constructor(public pendingCalls: Array<{ error: Error }>) {
     super(
       pendingCalls.map((call) => call.error),
-      `${pendingCalls.length} unawaited takeSnapshot() call(s)`
+      `${pendingCalls.length} unawaited takeSnapshot() call(s)`,
     );
-    this.name = 'PendingSnapshotsError';
+    this.name = "PendingSnapshotsError";
 
     trackEvent({
-      eventType: 'take_snapshot_invalid_call',
-      level: 'error',
+      eventType: "take_snapshot_invalid_call",
+      level: "error",
       payload: {
         isAwaited: false,
         isInsideTest: true,

@@ -1,8 +1,8 @@
-import { expectTypeOf, test } from 'vitest';
+import { expectTypeOf, test } from "vitest";
 
-import '../dist/support.mjs';
+import "../dist/support.mjs";
 
-test('takeSnapshot', () => {
+test("takeSnapshot", () => {
   expectTypeOf(cy.takeSnapshot).toBeFunction();
 
   expectTypeOf(cy.takeSnapshot).parameter(0).toEqualTypeOf<string | undefined>();

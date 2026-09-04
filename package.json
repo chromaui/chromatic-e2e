@@ -3,16 +3,13 @@
   "version": "0.0.56",
   "private": true,
   "description": "Archive end-to-end tests to be replayed in Storybook and Chromatic",
+  "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/chromaui/chromatic-e2e.git"
   },
-  "license": "MIT",
-  "author": "Chromatic <tom@chromatic.com>",
   "type": "module",
-  "engines": {
-    "node": ">=22"
-  },
   "scripts": {
     "archive-storybook:cypress": "CHROMATIC_ARCHIVE_LOCATION=tests/cypress/test-downloads pnpm -C packages/cypress exec dist/bin/archive-storybook.mjs",
     "archive-storybook:playwright": "CHROMATIC_ARCHIVE_LOCATION=test-results pnpm -C packages/playwright exec dist/bin/archive-storybook.mjs",
@@ -38,9 +35,6 @@
     "test:playwright": "pnpm --filter @chromatic-com/playwright test:playwright",
     "test:vitest": "pnpm --filter @chromatic-com/vitest test:vitest"
   },
-  "lint-staged": {
-    "*.{ts,js,css,md}": "oxfmt"
-  },
   "devDependencies": {
     "@changesets/cli": "^2.31.1",
     "@testing-library/dom": "^8.1.0",
@@ -63,6 +57,12 @@
     "publint": "^0.3.24",
     "typescript": "^5.9.3",
     "vitest": "^5.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "oxfmt"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "packageManager": "pnpm@11.5.3"
 }

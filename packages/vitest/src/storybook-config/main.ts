@@ -1,42 +1,44 @@
-import path from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { existsSync, readFileSync } from 'node:fs';
-import type { StorybookConfig } from '@storybook/server-webpack5';
-import { archivesDir } from '@chromatic-com/shared-e2e/utils/filePaths';
-import { storybookParentNodeModulesDir } from '@chromatic-com/shared-e2e/utils/storybookPaths';
-import { DEFAULT_OUTPUT_DIR } from '../constants';
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+import { archivesDir } from "@chromatic-com/shared-e2e/utils/filePaths";
+import { storybookParentNodeModulesDir } from "@chromatic-com/shared-e2e/utils/storybookPaths";
+import type { StorybookConfig } from "@storybook/server-webpack5";
+
+import { DEFAULT_OUTPUT_DIR } from "../constants";
 
 // Resolve embedded Storybook 10.x stack from package root (dist/storybook-config -> .. -> ..)
-const packageRoot = path.resolve(import.meta.dirname, '..', '..');
-const embeddedDir = path.join(packageRoot, 'embedded', 'node_modules');
+const packageRoot = path.resolve(import.meta.dirname, "..", "..");
+const embeddedDir = path.join(packageRoot, "embedded", "node_modules");
 
-type WebpackConfig = Awaited<ReturnType<NonNullable<StorybookConfig['webpackFinal']>>>;
-type WebpackPlugin = NonNullable<WebpackConfig['plugins']>[number];
+type WebpackConfig = Awaited<ReturnType<NonNullable<StorybookConfig["webpackFinal"]>>>;
+type WebpackPlugin = NonNullable<WebpackConfig["plugins"]>[number];
 type WebpackCompiler = Parameters<Extract<WebpackPlugin, (c: unknown) => unknown>>[0];
 
 export default <StorybookConfig>{
-  stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), '*.stories.json')],
-  managerEntries: [path.resolve(import.meta.dirname, 'manager.mjs')],
-  previewAnnotations: [path.resolve(import.meta.dirname, 'preview.mjs')],
+  stories: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), "*.stories.json")],
+  managerEntries: [path.resolve(import.meta.dirname, "manager.mjs")],
+  previewAnnotations: [path.resolve(import.meta.dirname, "preview.mjs")],
   framework: {
-    name: path.join(embeddedDir, '@storybook', 'server-webpack5'),
+    name: path.join(embeddedDir, "@storybook", "server-webpack5"),
     options: {},
   },
   core: {
     // ESM does not support directory imports; point to the package entry file.
     builder: pathToFileURL(
-      path.join(embeddedDir, '@storybook', 'builder-webpack5', 'dist', 'index.js')
+      path.join(embeddedDir, "@storybook", "builder-webpack5", "dist", "index.js"),
     ).href,
-    renderer: pathToFileURL(path.join(embeddedDir, '@storybook', 'server', 'preset.js')).href,
+    renderer: pathToFileURL(path.join(embeddedDir, "@storybook", "server", "preset.js")).href,
   },
-  staticDirs: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), 'archive')],
+  staticDirs: [path.resolve(archivesDir(DEFAULT_OUTPUT_DIR), "archive")],
   features: {
     sidebarOnboardingChecklist: false,
   },
   webpackFinal: async (config) => {
     // Webpack defaults to `target: 'browserslist'`, which makes 'storybook build' transform
     // files based on the user's `.browserslistrc`: https://webpack.js.org/configuration/target/
-    config.target = ['web'];
+    config.target = ["web"];
 
     config.plugins.push(new VitestStatsPlugin());
 
@@ -47,7 +49,7 @@ export default <StorybookConfig>{
     if (storybookNodeModules) {
       config.resolve ??= {};
       config.resolve.modules = [
-        ...(config.resolve.modules ?? ['node_modules']),
+        ...(config.resolve.modules ?? ["node_modules"]),
         storybookNodeModules,
       ];
     }
@@ -59,11 +61,11 @@ export default <StorybookConfig>{
 class VitestStatsPlugin {
   apply(compiler: WebpackCompiler) {
     const chromaticResults = path.dirname(archivesDir(DEFAULT_OUTPUT_DIR));
-    const previewStats = path.resolve(chromaticResults, 'preview-stats.json');
+    const previewStats = path.resolve(chromaticResults, "preview-stats.json");
 
     if (existsSync(previewStats)) {
-      compiler.hooks.done.tap('Vitest Stats Plugin', (stats) => {
-        const { modules } = JSON.parse(readFileSync(previewStats, 'utf-8'));
+      compiler.hooks.done.tap("Vitest Stats Plugin", (stats) => {
+        const { modules } = JSON.parse(readFileSync(previewStats, "utf-8"));
         const toJson = stats.toJson.bind(stats);
 
         /**

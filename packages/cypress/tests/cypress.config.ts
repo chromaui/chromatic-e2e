@@ -1,19 +1,21 @@
-import { defineConfig } from 'cypress';
-import { installPlugin } from '../dist/index.mjs';
-import { existsSync } from 'node:fs';
+import { existsSync } from "node:fs";
+
+import { defineConfig } from "cypress";
+
+import { installPlugin } from "../dist/index.mjs";
 
 export default defineConfig({
   // `downloadsFolder` cannot be overridden in tests, so we're setting
   // this to a non-default value for asserting in the tests
-  downloadsFolder: 'cypress/test-downloads',
+  downloadsFolder: "cypress/test-downloads",
   // needed since we use common mock images between Cypress and Playwright
-  fixturesFolder: '../../../test-server/fixtures',
+  fixturesFolder: "../../../test-server/fixtures",
   screenshotOnRunFailure: false,
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: "http://localhost:3000",
     setupNodeEvents(on, config) {
       installPlugin(on, config);
-      on('task', {
+      on("task", {
         directoryExists(directoryName) {
           return existsSync(directoryName);
         },

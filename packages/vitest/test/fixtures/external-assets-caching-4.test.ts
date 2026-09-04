@@ -1,1 +1,1 @@
-import './external-assets.test';
+import "./external-assets.test";

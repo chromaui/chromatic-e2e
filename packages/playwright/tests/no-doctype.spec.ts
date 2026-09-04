@@ -1,5 +1,5 @@
-import { test } from '../src';
+import { test } from "../src";
 
-test('pages without a doctype are archived', async ({ page }) => {
-  await page.goto('/no-doctype');
+test("pages without a doctype are archived", async ({ page }) => {
+  await page.goto("/no-doctype");
 });

@@ -1,19 +1,19 @@
-import { defineProject } from 'vitest/config';
+import { defineProject } from "vitest/config";
 
-const isWatch = process.argv.includes('--watch');
+const isWatch = process.argv.includes("--watch");
 
 // Prevent sending telemetry during test run
-process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+process.env.CHROMATIC_DISABLE_TELEMETRY = "1";
 
 export default defineProject({
   resolve: { tsconfigPaths: true },
-  publicDir: 'test/fixtures/public-dir',
+  publicDir: "test/fixtures/public-dir",
 
   test: {
-    name: { label: 'Vitest Unit', color: 'yellow' },
-    include: ['src/**/*.test.ts', 'embedded.test.ts'],
-    exclude: ['**/*.browser.test.ts'],
-    setupFiles: ['test/utils/setup.ts'],
+    name: { label: "Vitest Unit", color: "yellow" },
+    include: ["src/**/*.test.ts", "embedded.test.ts"],
+    exclude: ["**/*.browser.test.ts"],
+    setupFiles: ["test/utils/setup.ts"],
     clearMocks: true,
 
     // Isolate project into it's own group as we are spawning browser runners during tests
@@ -23,7 +23,7 @@ export default defineProject({
 
     typecheck: {
       enabled: true,
-      include: ['src/**/*.test-d.ts'],
+      include: ["src/**/*.test-d.ts"],
       ignoreSourceErrors: true,
     },
   },

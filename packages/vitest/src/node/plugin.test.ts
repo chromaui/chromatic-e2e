@@ -1,35 +1,37 @@
-import { resolve } from 'node:path';
-import { mkdir, readdir, rm } from 'node:fs/promises';
-import { beforeEach, expect, onTestFinished, test } from 'vitest';
-import { createVitest, type TestModule } from 'vitest/node';
-import { uniqueId } from '@chromatic-com/shared-e2e/write-archive/stories-files';
-import { chromaticPlugin } from './plugin';
+import { mkdir, readdir, rm } from "node:fs/promises";
+import { resolve } from "node:path";
+
+import { uniqueId } from "@chromatic-com/shared-e2e/write-archive/stories-files";
+import { beforeEach, expect, onTestFinished, test } from "vitest";
+import { createVitest, type TestModule } from "vitest/node";
+
 import {
   createOutputStreams,
   getBrowserConfig,
   getResolvedConfig,
   runFixture,
   setupTelemetryServer,
-} from '../../test/utils/node';
+} from "../../test/utils/node";
+import { chromaticPlugin } from "./plugin";
 
 beforeEach(() => {
   uniqueId.value = 1;
 });
 
 test.each([
-  { name: 'string', setupFiles: 'some-user-defined-setup.ts' },
-  { name: 'array', setupFiles: ['some-user-defined-setup.ts'] },
+  { name: "string", setupFiles: "some-user-defined-setup.ts" },
+  { name: "array", setupFiles: ["some-user-defined-setup.ts"] },
 ])("preserves user's $name setupFiles", async ({ setupFiles }) => {
   const config = await getResolvedConfig({ setupFiles });
 
-  const result = config.setupFiles.map((s) => s.replace(process.cwd(), '<process-cwd>'));
+  const result = config.setupFiles.map((s) => s.replace(process.cwd(), "<process-cwd>"));
 
   expect.soft(result).toHaveLength(2);
-  expect.soft(result[0]).toBe('<process-cwd>/some-user-defined-setup.ts');
-  expect.soft(result[1]).toBe('<process-cwd>/packages/vitest/src/browser/setupFile.ts');
+  expect.soft(result[0]).toBe("<process-cwd>/some-user-defined-setup.ts");
+  expect.soft(result[1]).toBe("<process-cwd>/packages/vitest/src/browser/setupFile.ts");
 });
 
-test('adds browser commands', async () => {
+test("adds browser commands", async () => {
   const config = await getResolvedConfig();
 
   expect(config.browser.commands).toMatchInlineSnapshot(`
@@ -46,8 +48,8 @@ test('adds browser commands', async () => {
   `);
 });
 
-test('adds tags', async () => {
-  const config = await getResolvedConfig(undefined, { tags: ['my-tag-for-vrt'] });
+test("adds tags", async () => {
+  const config = await getResolvedConfig(undefined, { tags: ["my-tag-for-vrt"] });
 
   expect(config.tags).toMatchInlineSnapshot(`
     [
@@ -59,12 +61,12 @@ test('adds tags', async () => {
   `);
 });
 
-test('does not override user-defined tags', async () => {
+test("does not override user-defined tags", async () => {
   const config = await getResolvedConfig(
     {
-      tags: [{ name: 'my-tag-for-vrt', description: 'Custom description' }],
+      tags: [{ name: "my-tag-for-vrt", description: "Custom description" }],
     },
-    { tags: ['my-tag-for-vrt'] }
+    { tags: ["my-tag-for-vrt"] },
   );
 
   expect(config.tags).toMatchInlineSnapshot(`
@@ -77,40 +79,40 @@ test('does not override user-defined tags', async () => {
   `);
 });
 
-test('warns if tags are used with Vitest 4.0', async () => {
+test("warns if tags are used with Vitest 4.0", async () => {
   const { cleanup, onRequest } = setupTelemetryServer();
   onTestFinished(cleanup);
 
   const { streams, getOutput } = createOutputStreams();
-  const plugin = chromaticPlugin({ tags: ['my-tag-for-vrt'] });
+  const plugin = chromaticPlugin({ tags: ["my-tag-for-vrt"] });
   const vitest = await createVitest(
-    'test',
+    "test",
     { config: false, standalone: true, watch: true },
     {},
-    streams
+    streams,
   );
   onTestFinished(() => vitest.close());
 
   const project = vitest.projects[0];
   project.config.browser.enabled = true;
-  project.config.browser.name = 'chromium';
+  project.config.browser.name = "chromium";
 
   // @ts-expect-error -- intentional
-  vitest.version = '4.0.1';
+  vitest.version = "4.0.1";
 
   // @ts-expect-error -- intentional
   plugin.configureVitest?.({ vitest, project });
 
   expect(getOutput().stderr).toContain(
-    'chromatic  Tags cannot be used with Vitest 4.0.1. Please upgrade to Vitest 4.1 or later to use this feature.'
+    "chromatic  Tags cannot be used with Vitest 4.0.1. Please upgrade to Vitest 4.1 or later to use this feature.",
   );
 
   await vitest.close();
 
   const tagsLowVersionEvents = onRequest.mock.calls.flatMap(([event]) =>
-    event.eventType === 'vitest_tags_low_version'
+    event.eventType === "vitest_tags_low_version"
       ? [{ eventType: event.eventType, payload: event.payload, level: event.level }]
-      : []
+      : [],
   );
 
   expect(tagsLowVersionEvents).toMatchInlineSnapshot(`
@@ -124,7 +126,7 @@ test('warns if tags are used with Vitest 4.0', async () => {
   `);
 });
 
-test('can be scoped to a Vitest project', async () => {
+test("can be scoped to a Vitest project", async () => {
   const tests: TestModule[] = [];
 
   await runFixture(
@@ -134,34 +136,34 @@ test('can be scoped to a Vitest project', async () => {
       projects: [
         {
           test: {
-            name: 'unit',
+            name: "unit",
             /** See {@link file://./../../test/fixtures/node-environment.test.ts} */
-            include: ['**/node-environment.test.ts'],
-            root: resolve(import.meta.dirname, '../../test/fixtures'),
+            include: ["**/node-environment.test.ts"],
+            root: resolve(import.meta.dirname, "../../test/fixtures"),
           },
         },
         {
           plugins: [chromaticPlugin()],
           test: {
-            name: 'vrt',
+            name: "vrt",
             /** See {@link file://./../../test/fixtures/dom.test.ts} */
-            include: ['**/dom.test.ts'],
-            root: resolve(import.meta.dirname, '../../test/fixtures'),
+            include: ["**/dom.test.ts"],
+            root: resolve(import.meta.dirname, "../../test/fixtures"),
             browser: getBrowserConfig(),
           },
         },
       ],
     },
-    { disabled: true }
+    { disabled: true },
   );
 
   expect(tests).toHaveLength(2);
-  expect(tests[0].state()).toBe('passed');
-  expect(tests[1].state()).toBe('passed');
+  expect(tests[0].state()).toBe("passed");
+  expect(tests[1].state()).toBe("passed");
 });
 
-test('writes results to root when in Vitest projects setup', async () => {
-  const root = resolve(import.meta.dirname, '../../test/custom-root');
+test("writes results to root when in Vitest projects setup", async () => {
+  const root = resolve(import.meta.dirname, "../../test/custom-root");
   await mkdir(root, { recursive: true });
   onTestFinished(() => rm(root, { recursive: true, force: true }));
 
@@ -173,29 +175,29 @@ test('writes results to root when in Vitest projects setup', async () => {
         {
           plugins: [chromaticPlugin()],
           test: {
-            name: 'first-project',
-            browser: getBrowserConfig('first-browser'),
-            include: ['**/dom.test.ts'],
-            root: resolve(import.meta.dirname, '../../test/fixtures'),
+            name: "first-project",
+            browser: getBrowserConfig("first-browser"),
+            include: ["**/dom.test.ts"],
+            root: resolve(import.meta.dirname, "../../test/fixtures"),
             sequence: { groupOrder: 1 },
           },
         },
         {
           plugins: [chromaticPlugin()],
           test: {
-            name: 'second-project',
-            browser: getBrowserConfig('second-browser'),
-            include: ['**/dom.test.ts'],
-            root: resolve(import.meta.dirname, '../../test/fixtures'),
+            name: "second-project",
+            browser: getBrowserConfig("second-browser"),
+            include: ["**/dom.test.ts"],
+            root: resolve(import.meta.dirname, "../../test/fixtures"),
             sequence: { groupOrder: 2 },
           },
         },
       ],
     },
-    { disabled: true }
+    { disabled: true },
   );
 
-  const results = await readdir(resolve(root, '.vitest/chromatic/chromatic-archives'));
+  const results = await readdir(resolve(root, ".vitest/chromatic/chromatic-archives"));
 
   // 1 for "archive" directory and 2 for each project's "*.stories.json" files
   expect.soft(results).toHaveLength(3);
@@ -209,7 +211,7 @@ test('writes results to root when in Vitest projects setup', async () => {
   `);
 });
 
-test('skips configuration when used on non-browser context', async () => {
+test("skips configuration when used on non-browser context", async () => {
   const config = await getResolvedConfig({
     browser: { enabled: false },
   });
@@ -220,27 +222,27 @@ test('skips configuration when used on non-browser context', async () => {
 test('does not clean existing output directory when "vitest --merge-reports" is run', async () => {
   const options = {
     /** See {@link file://./../../test/fixtures/dom.test.ts} */
-    include: ['**/dom.test.ts'],
-    root: resolve(import.meta.dirname, '../../test/fixtures'),
+    include: ["**/dom.test.ts"],
+    root: resolve(import.meta.dirname, "../../test/fixtures"),
   };
 
-  const outputDir = resolve(options.root, '.vitest-reports');
-  const outputFile = resolve(outputDir, 'blob.json');
+  const outputDir = resolve(options.root, ".vitest-reports");
+  const outputFile = resolve(outputDir, "blob.json");
 
   await rm(outputDir, { recursive: true, force: true });
 
   // First run to generate blob
-  await runFixture({ reporters: [['blob', { outputFile }]], ...options });
+  await runFixture({ reporters: [["blob", { outputFile }]], ...options });
 
   // Second with --merge-reports to see if .vitest/chromatic is accidentally removed
   const { stdout, stderr } = await runFixture({ mergeReports: outputDir, ...options });
 
-  expect(stdout).toContain('Test Files  1 passed (1)\n');
-  expect(stdout).toContain('Tests  1 passed (1)\n');
-  expect(stderr).toBe('');
+  expect(stdout).toContain("Test Files  1 passed (1)\n");
+  expect(stdout).toContain("Tests  1 passed (1)\n");
+  expect(stderr).toBe("");
 
   // Chromatic results should preserve on file system
-  const archives = resolve(options.root, '.vitest/chromatic/chromatic-archives');
+  const archives = resolve(options.root, ".vitest/chromatic/chromatic-archives");
   await expect(readdir(archives)).resolves.toMatchInlineSnapshot(`
     [
       "archive",
@@ -249,36 +251,36 @@ test('does not clean existing output directory when "vitest --merge-reports" is 
   `);
 });
 
-test('works in multi project instance setup', { timeout: 30_000 }, async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
+test("works in multi project instance setup", { timeout: 30_000 }, async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
   const tests: TestModule[] = [];
 
   const { stderr } = await runFixture({
-    name: 'custom-project-name',
+    name: "custom-project-name",
     browser: {
       ...getBrowserConfig(),
       instances: [
-        { browser: 'chromium', name: 'custom-name-for-chromium-browser' },
-        { browser: 'webkit', name: 'custom-name-for-webkit-browser' },
-        { browser: 'firefox', name: 'custom-name-for-firefox-browser' },
+        { browser: "chromium", name: "custom-name-for-chromium-browser" },
+        { browser: "webkit", name: "custom-name-for-webkit-browser" },
+        { browser: "firefox", name: "custom-name-for-firefox-browser" },
       ],
     },
-    reporters: ['default', { onTestRunEnd: (testModules) => void tests.push(...testModules) }],
+    reporters: ["default", { onTestRunEnd: (testModules) => void tests.push(...testModules) }],
     /** See {@link file://./../../test/fixtures/public-apis.test.ts} */
-    include: ['**/public-apis.test.ts'],
+    include: ["**/public-apis.test.ts"],
     root,
   });
 
-  expect(stderr).toBe('');
+  expect(stderr).toBe("");
 
   // Non-Chromium browsers should not crash
   expect.soft(tests).toHaveLength(3);
-  expect.soft(tests[0].state()).toBe('passed');
-  expect.soft(tests[1].state()).toBe('passed');
-  expect.soft(tests[2].state()).toBe('passed');
+  expect.soft(tests[0].state()).toBe("passed");
+  expect.soft(tests[1].state()).toBe("passed");
+  expect.soft(tests[2].state()).toBe("passed");
 
   // Results for Chromium should still be written to disk
-  const results = await readdir(resolve(root, '.vitest/chromatic/chromatic-archives'));
+  const results = await readdir(resolve(root, ".vitest/chromatic/chromatic-archives"));
 
   expect(results).toMatchInlineSnapshot(`
     [

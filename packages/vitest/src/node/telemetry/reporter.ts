@@ -1,10 +1,11 @@
-import { type Vitest } from 'vitest/node';
-import { type Reporter } from 'vitest/reporters';
-import { trackEvent } from './track';
-import { type TelemetryEvent } from './types';
-import { type ResolvedOptions } from '../../types';
+import { type Vitest } from "vitest/node";
+import { type Reporter } from "vitest/reporters";
 
-const REPORTER_NAME = 'chromatic-telemetry-reporter';
+import { type ResolvedOptions } from "../../types";
+import { trackEvent } from "./track";
+import { type TelemetryEvent } from "./types";
+
+const REPORTER_NAME = "chromatic-telemetry-reporter";
 
 export class TelemetryReporter implements Reporter {
   public name = REPORTER_NAME;
@@ -12,7 +13,7 @@ export class TelemetryReporter implements Reporter {
 
   private constructor(
     private ctx: Vitest,
-    private options: ResolvedOptions
+    private options: ResolvedOptions,
   ) {}
 
   /**
@@ -36,35 +37,35 @@ export class TelemetryReporter implements Reporter {
   /**
    * Custom reporter life-cycle called when `takeSnapshot()` is called.
    */
-  static onSnapshot(ctx: Vitest, payload: TelemetryEvent<'snapshot_captured'>['payload']) {
+  static onSnapshot(ctx: Vitest, payload: TelemetryEvent<"snapshot_captured">["payload"]) {
     const reporter = ctx.config.reporters.find(isTelemetryReporter);
 
     reporter?._onSnapshot(payload);
   }
 
-  private _onSnapshot(payload: TelemetryEvent<'snapshot_captured'>['payload']) {
+  private _onSnapshot(payload: TelemetryEvent<"snapshot_captured">["payload"]) {
     this.snapshotCount++;
 
-    trackEvent({ eventType: 'snapshot_captured', level: 'info', payload }, this.ctx, this.options);
+    trackEvent({ eventType: "snapshot_captured", level: "info", payload }, this.ctx, this.options);
   }
 
   onTestRunStart() {
     this.snapshotCount = 0;
 
-    trackEvent({ eventType: 'run_started', level: 'info', payload: {} }, this.ctx, this.options);
+    trackEvent({ eventType: "run_started", level: "info", payload: {} }, this.ctx, this.options);
   }
 
   onTestRunEnd() {
     trackEvent(
-      { eventType: 'run_ended', level: 'info', payload: { snapshotCount: this.snapshotCount } },
+      { eventType: "run_ended", level: "info", payload: { snapshotCount: this.snapshotCount } },
       this.ctx,
-      this.options
+      this.options,
     );
   }
 }
 
 function isTelemetryReporter(
-  reporter: Vitest['config']['reporters'][number]
+  reporter: Vitest["config"]["reporters"][number],
 ): reporter is TelemetryReporter {
-  return 'name' in reporter && reporter.name === REPORTER_NAME;
+  return "name" in reporter && reporter.name === REPORTER_NAME;
 }

@@ -1,30 +1,32 @@
-import assert from 'node:assert';
-import { resolve } from 'node:path';
-import { storyNameFromExport, toId } from 'storybook/internal/csf';
+import assert from "node:assert";
+import { resolve } from "node:path";
+
+import { ResourceArchiver, writeTestResult, type DOMSnapshots } from "@chromatic-com/shared-e2e";
+import { type serializedNodeWithId } from "@rrweb/types";
+import { type PlaywrightProviderOptions } from "@vitest/browser-playwright";
+import { storyNameFromExport, toId } from "storybook/internal/csf";
 import type {
   TestCase,
   TestModule,
   TestSuite,
   BrowserCommand,
   BrowserCommandContext,
-} from 'vitest/node';
-import { type PlaywrightProviderOptions } from '@vitest/browser-playwright';
-import { type serializedNodeWithId } from '@rrweb/types';
-import { ResourceArchiver, writeTestResult, type DOMSnapshots } from '@chromatic-com/shared-e2e';
+} from "vitest/node";
+
 import {
   type StoryParameters,
   type ChromaticNamespace,
   type ConfigureOptions,
   type ResolvedOptions,
-} from '../types';
-import { trackEvent } from './telemetry';
-import { NetworkIdleTracker } from './NetworkIdleTracker';
-import { ChromaticReporter } from './reporter';
-import { TelemetryReporter } from './telemetry';
-import { WebpackStatsReporter } from './webpack-stats-reporter';
+} from "../types";
+import { NetworkIdleTracker } from "./NetworkIdleTracker";
+import { ChromaticReporter } from "./reporter";
+import { trackEvent } from "./telemetry";
+import { TelemetryReporter } from "./telemetry";
+import { WebpackStatsReporter } from "./webpack-stats-reporter";
 
-type TestID = TestCase['id'];
-type SessionId = BrowserCommandContext['sessionId'];
+type TestID = TestCase["id"];
+type SessionId = BrowserCommandContext["sessionId"];
 type SnapshotName = keyof DOMSnapshots;
 
 export function createCommands(options: ResolvedOptions) {
@@ -38,9 +40,9 @@ export function createCommands(options: ResolvedOptions) {
       SnapshotName,
       {
         snapshot: serializedNodeWithId;
-        viewport: DOMSnapshots[string]['viewport'];
-        colorScheme: DOMSnapshots[string]['colorScheme'];
-        pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+        viewport: DOMSnapshots[string]["viewport"];
+        colorScheme: DOMSnapshots[string]["colorScheme"];
+        pseudoClassIds: DOMSnapshots[string]["pseudoClassIds"];
       }
     >
   >();
@@ -54,14 +56,14 @@ export function createCommands(options: ResolvedOptions) {
       context,
       id: TestID,
       snapshot: serializedNodeWithId,
-      pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'],
+      pseudoClassIds: DOMSnapshots[string]["pseudoClassIds"],
       name: string | undefined,
-      snapshotOptions?: { isAutomaticSnapshot: boolean }
+      snapshotOptions?: { isAutomaticSnapshot: boolean },
     ) {
       const entity = context.project.vitest.state.getReportedEntityById(id);
       assert(
-        entity?.type === 'test',
-        `Expected entity with id ${id} to be a test, found ${entity?.type}`
+        entity?.type === "test",
+        `Expected entity with id ${id} to be a test, found ${entity?.type}`,
       );
 
       let sessionSnapshots = snapshots.get(id);
@@ -79,10 +81,10 @@ export function createCommands(options: ResolvedOptions) {
         () =>
           ({
             viewport: { width: window.innerWidth, height: window.innerHeight },
-            colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? 'dark'
-              : 'light',
-          }) as const
+            colorScheme: window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light",
+          }) as const,
       );
 
       sessionSnapshots.set(name, { snapshot, viewport, colorScheme, pseudoClassIds });
@@ -129,7 +131,7 @@ export function createCommands(options: ResolvedOptions) {
           cdp,
           options.assetDomains,
           contextOptions?.httpCredentials,
-          new URL(context.page.url())
+          new URL(context.page.url()),
         );
 
         resourceArchivers.set(context.sessionId, resourceArchiver);
@@ -151,8 +153,8 @@ export function createCommands(options: ResolvedOptions) {
     async __chromatic_writeTestResult(context, id: TestID, testOptions: ConfigureOptions = {}) {
       const entity = context.project.vitest.state.getReportedEntityById(id);
       assert(
-        entity?.type === 'test',
-        `Expected entity with id ${id} to be a test, found ${entity?.type}`
+        entity?.type === "test",
+        `Expected entity with id ${id} to be a test, found ${entity?.type}`,
       );
 
       const { archive, sessionSnapshots } = await onTestCleanup(context, id);
@@ -203,7 +205,7 @@ export function createCommands(options: ResolvedOptions) {
           cropToViewport: testOptions.cropToViewport ?? options.cropToViewport,
           ignoreSelectors: testOptions.ignoreSelectors ?? options.ignoreSelectors,
         },
-        'vitest'
+        "vitest",
       );
 
       if (options.turboSnap) {
@@ -212,12 +214,12 @@ export function createCommands(options: ResolvedOptions) {
 
       trackEvent(
         {
-          eventType: 'archives_created',
-          level: 'info',
+          eventType: "archives_created",
+          level: "info",
           payload: { archiveCount: Object.keys(snapshotBuffers).length },
         },
         context.project.vitest,
-        options
+        options,
       );
     },
 
@@ -274,18 +276,18 @@ export function createCommands(options: ResolvedOptions) {
               throw error;
             }
           },
-        ]
-      )
+        ],
+      ),
     ) as typeof commands;
   }
 
   function trackCommandFailure(
     command: keyof ChromaticCommands,
     error: unknown,
-    context: BrowserCommandContext
+    context: BrowserCommandContext,
   ) {
     // Don't tracked failed telemetry events or test-only getSnapshots command
-    if (command === '__chromatic_telemetry' || command === '__chromatic_getSnapshots') {
+    if (command === "__chromatic_telemetry" || command === "__chromatic_getSnapshots") {
       return;
     }
 
@@ -299,9 +301,9 @@ export function createCommands(options: ResolvedOptions) {
 
     try {
       trackEvent(
-        { eventType: 'command_failed', level: 'error', payload: { command, error } },
+        { eventType: "command_failed", level: "error", payload: { command, error } },
         context.project.vitest,
-        options
+        options,
       );
     } catch {
       // Make sure failing trackEvent doesn't hide the original error
@@ -328,8 +330,8 @@ export function createCommands(options: ResolvedOptions) {
   }
 
   function generateUniqueSnapshotName(options: { snapshotName: string[]; titlePath: string[] }) {
-    const names = options.snapshotName.join(' / ');
-    const base = toId(options.titlePath.join(' / '), storyNameFromExport(names));
+    const names = options.snapshotName.join(" / ");
+    const base = toId(options.titlePath.join(" / "), storyNameFromExport(names));
 
     let key = base;
     let count = 1;
@@ -352,7 +354,7 @@ function getTitle(test: TestCase): string[] {
 
   // If Vitest was configured with multiple projects, namespace the results with project name
   const hasManyProjects =
-    test.project.vitest.projects.filter((project) => project.config.browser.name === 'chromium')
+    test.project.vitest.projects.filter((project) => project.config.browser.name === "chromium")
       .length > 1;
 
   if (hasManyProjects && test.project.name) {
@@ -366,10 +368,10 @@ function getSnapshotPrefix(test: TestCase): string[] {
   const names = [test.name];
   let current: TestCase | TestSuite | TestModule = test;
 
-  while ('parent' in current && current.parent) {
+  while ("parent" in current && current.parent) {
     current = current.parent;
 
-    if ('name' in current && current.name) {
+    if ("name" in current && current.name) {
       names.unshift(current.name);
     }
   }
@@ -378,17 +380,17 @@ function getSnapshotPrefix(test: TestCase): string[] {
 }
 
 function getSuiteNames(test: TestCase): string[] {
-  if (test.parent.type !== 'suite') {
+  if (test.parent.type !== "suite") {
     return [];
   }
 
   const names = [];
   let current: TestCase | TestSuite | TestModule = test;
 
-  while ('parent' in current && current.parent) {
+  while ("parent" in current && current.parent) {
     current = current.parent;
 
-    if (current.type === 'suite') {
+    if (current.type === "suite") {
       names.unshift(current.name);
     }
   }
@@ -397,19 +399,19 @@ function getSuiteNames(test: TestCase): string[] {
 }
 
 function removeFileExtensions(filepath: string) {
-  const parts = filepath.split('/');
-  const filename = parts.pop() || '';
+  const parts = filepath.split("/");
+  const filename = parts.pop() || "";
 
   return parts
     .concat(
       // Trim filenames like "src/components/accordion/Accordion.browser.spec.tsx" -> "src/components/accordion/Accordion"
-      filename.split('.')[0]
+      filename.split(".")[0],
     )
-    .join('/');
+    .join("/");
 }
 
 /** @internal */
-declare module 'vitest/browser' {
+declare module "vitest/browser" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface BrowserCommands extends ChromaticCommands {}
 }

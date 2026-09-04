@@ -2,17 +2,25 @@
   "name": "@chromatic-com/playwright",
   "version": "0.14.12",
   "description": "Chromatic Visual Regression Testing for Playwright",
+  "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/playwright"
   },
-  "license": "MIT",
-  "author": "Chromatic <tom@chromatic.com>",
-  "type": "module",
-  "engines": {
-    "node": ">=22"
+  "bin": {
+    "archive-storybook": "dist/bin/archive-storybook.mjs",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.mjs"
   },
+  "files": [
+    "dist",
+    "embedded",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
@@ -23,17 +31,9 @@
     "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.mjs",
     "./package.json": "./package.json"
   },
-  "main": "dist/index.mjs",
-  "types": "dist/index.d.mts",
-  "bin": {
-    "archive-storybook": "dist/bin/archive-storybook.mjs",
-    "build-archive-storybook": "dist/bin/build-archive-storybook.mjs"
+  "publishConfig": {
+    "access": "public"
   },
-  "files": [
-    "dist",
-    "embedded",
-    "README.md"
-  ],
   "scripts": {
     "build": "tsdown",
     "test:playwright": "playwright test",
@@ -59,7 +59,7 @@
   "peerDependencies": {
     "@playwright/test": "^1.0.0"
   },
-  "publishConfig": {
-    "access": "public"
+  "engines": {
+    "node": ">=22"
   }
 }

@@ -1,9 +1,10 @@
-import { defineConfig } from 'vitest/config';
-import { playwright } from '@vitest/browser-playwright';
-import { chromaticPlugin } from '../dist/plugin.mjs';
+import { playwright } from "@vitest/browser-playwright";
+import { defineConfig } from "vitest/config";
+
+import { chromaticPlugin } from "../dist/plugin.mjs";
 
 // Prevent sending telemetry during test run
-process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+process.env.CHROMATIC_DISABLE_TELEMETRY = "1";
 
 export default defineConfig({
   plugins: [chromaticPlugin()],
@@ -13,10 +14,10 @@ export default defineConfig({
   },
 
   test: {
-    root: './test',
+    root: "./test",
     watch: false,
-    include: ['./*.test.ts'],
-    globalSetup: './utils/global-setup.ts',
+    include: ["./*.test.ts"],
+    globalSetup: "./utils/global-setup.ts",
 
     slowTestThreshold: 2_000,
     hookTimeout: 2_000,
@@ -29,7 +30,7 @@ export default defineConfig({
       viewport: { width: 1280, height: 720 },
 
       commands: {
-        async emulateColorScheme(context, colorScheme: 'light' | 'dark' | 'no-preference') {
+        async emulateColorScheme(context, colorScheme: "light" | "dark" | "no-preference") {
           await context.page.emulateMedia({ colorScheme });
         },
 
@@ -49,16 +50,16 @@ export default defineConfig({
       provider: playwright({
         contextOptions: {
           httpCredentials: {
-            username: 'user',
-            password: 'secret',
+            username: "user",
+            password: "secret",
           },
         },
       }),
-      instances: [{ browser: 'chromium' }],
+      instances: [{ browser: "chromium" }],
     },
 
     onConsoleLog(log) {
-      if (log.includes('cdn.tailwindcss.com should not be used in production.')) {
+      if (log.includes("cdn.tailwindcss.com should not be used in production.")) {
         return false;
       }
     },
@@ -68,44 +69,44 @@ export default defineConfig({
 /** Proxies requests to {@link file://./../../../test-server/server.js} endpoints */
 function testServerProxy() {
   const testServerEndpoints = [
-    'img',
-    'css.urls.css',
-    'asset-paths',
-    'background-img',
-    'videos',
-    'scripts',
-    'fonts',
-    'images',
-    'manual-snapshots',
-    'blahblah',
-    'protected',
-    'admin',
-    'options',
-    'ignore',
-    'forms',
-    'no-doctype',
-    'viewports',
-    'constructable-stylesheets',
-    'createObjectUrl',
-    'canvas',
-    'amd',
-    'css-pseudo-states',
-    'color-scheme',
-    '@fz',
-    'embeds',
+    "img",
+    "css.urls.css",
+    "asset-paths",
+    "background-img",
+    "videos",
+    "scripts",
+    "fonts",
+    "images",
+    "manual-snapshots",
+    "blahblah",
+    "protected",
+    "admin",
+    "options",
+    "ignore",
+    "forms",
+    "no-doctype",
+    "viewports",
+    "constructable-stylesheets",
+    "createObjectUrl",
+    "canvas",
+    "amd",
+    "css-pseudo-states",
+    "color-scheme",
+    "@fz",
+    "embeds",
   ];
 
   return {
-    [`^/(${testServerEndpoints.join('|')})`]: {
-      target: 'http://localhost:3000',
+    [`^/(${testServerEndpoints.join("|")})`]: {
+      target: "http://localhost:3000",
     },
-    '/test-server-root': {
-      target: 'http://localhost:3000',
-      rewrite: (path: string) => path.replace('/test-server-root', ''),
+    "/test-server-root": {
+      target: "http://localhost:3000",
+      rewrite: (path: string) => path.replace("/test-server-root", ""),
     },
-    '/embed-server-root': {
-      target: 'http://localhost:3001',
-      rewrite: (path: string) => path.replace('/embed-server-root', ''),
+    "/embed-server-root": {
+      target: "http://localhost:3001",
+      rewrite: (path: string) => path.replace("/embed-server-root", ""),
     },
   };
 }

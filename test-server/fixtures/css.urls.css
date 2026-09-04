@@ -9,19 +9,19 @@ div {
 }
 
 .with-background-img {
-  background-image: url('/background-img.png');
+  background-image: url("/background-img.png");
 }
 
 .with-external-background-img {
-  background-image: url('https://www.chromatic.com/emails/icon-chroma-64x64.png?test=query');
+  background-image: url("https://www.chromatic.com/emails/icon-chroma-64x64.png?test=query");
 }
 
 .with-rewritten-background-img {
-  background-image: url('/img?url=fixtures/purple.png');
+  background-image: url("/img?url=fixtures/purple.png");
 }
 
 .with-background-img-as-after-content {
   &::after {
-    content: url('/img?url=fixtures/pink.png');
+    content: url("/img?url=fixtures/pink.png");
   }
 }

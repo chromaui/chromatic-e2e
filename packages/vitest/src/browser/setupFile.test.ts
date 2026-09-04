@@ -1,24 +1,25 @@
-import { expect, test, vi } from 'vitest';
-import { type TestModule } from 'vitest/node';
-import * as shared from '@chromatic-com/shared-e2e';
-import { runFixture } from '../../test/utils/node';
+import * as shared from "@chromatic-com/shared-e2e";
+import { expect, test, vi } from "vitest";
+import { type TestModule } from "vitest/node";
+
+import { runFixture } from "../../test/utils/node";
 
 /** See {@link file://./../../test/fixtures/tags.test.ts} */
-const include = ['tags.test.ts'];
+const include = ["tags.test.ts"];
 const tags = [
-  { name: 'example-1' },
-  { name: 'example-2' },
-  { name: 'example-3' },
-  { name: 'example-4' },
-  { name: 'example-5' },
+  { name: "example-1" },
+  { name: "example-2" },
+  { name: "example-3" },
+  { name: "example-4" },
+  { name: "example-5" },
 ];
 
-vi.mock('@chromatic-com/shared-e2e');
+vi.mock("@chromatic-com/shared-e2e");
 vi.mocked(shared.writeTestResult).mockImplementation(() =>
-  Promise.resolve({ storiesFile: 'test.stories.json' })
+  Promise.resolve({ storiesFile: "test.stories.json" }),
 );
 
-test('by default all tests are snapshotted', async () => {
+test("by default all tests are snapshotted", async () => {
   await runFixture({ include, tags });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
@@ -32,14 +33,14 @@ test('by default all tests are snapshotted', async () => {
   `);
 });
 
-test('plugin level disableAutoSnapshot', async () => {
+test("plugin level disableAutoSnapshot", async () => {
   await runFixture({ include, tags }, { disableAutoSnapshot: true });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`[]`);
 });
 
-test('plugin level options', async () => {
-  await runFixture({ include, tags }, { delay: 1234, forcedColors: 'hover', diffThreshold: 0.7 });
+test("plugin level options", async () => {
+  await runFixture({ include, tags }, { delay: 1234, forcedColors: "hover", diffThreshold: 0.7 });
 
   expect(getChromaticOptions()).toMatchInlineSnapshot(`
     {
@@ -85,10 +86,10 @@ test("does not require user to define Vitest's tags", async () => {
   `);
 });
 
-test('works even if user defines their own custom Vitest tags', async () => {
+test("works even if user defines their own custom Vitest tags", async () => {
   await runFixture(
-    { include, tags: [{ name: 'custom-tag', description: 'custom desc' }] },
-    { tags: tags.map((tag) => tag.name) }
+    { include, tags: [{ name: "custom-tag", description: "custom desc" }] },
+    { tags: tags.map((tag) => tag.name) },
   );
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
@@ -102,13 +103,13 @@ test('works even if user defines their own custom Vitest tags', async () => {
 });
 
 test("no tests are snapshotted when tag doesn't match any", async () => {
-  await runFixture({ include, tags }, { tags: ['example-5'] });
+  await runFixture({ include, tags }, { tags: ["example-5"] });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`[]`);
 });
 
-test('snapshots tests matching a single tag', async () => {
-  await runFixture({ include, tags }, { tags: ['example-1'] });
+test("snapshots tests matching a single tag", async () => {
+  await runFixture({ include, tags }, { tags: ["example-1"] });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
     [
@@ -117,8 +118,8 @@ test('snapshots tests matching a single tag', async () => {
   `);
 });
 
-test('snapshots tests matching multiple tags', async () => {
-  await runFixture({ include, tags }, { tags: ['example-1', 'example-2'] });
+test("snapshots tests matching multiple tags", async () => {
+  await runFixture({ include, tags }, { tags: ["example-1", "example-2"] });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
     [
@@ -128,8 +129,8 @@ test('snapshots tests matching multiple tags', async () => {
   `);
 });
 
-test('snapshots tests matching tag of describe()', async () => {
-  await runFixture({ include, tags }, { tags: ['example-3'] });
+test("snapshots tests matching tag of describe()", async () => {
+  await runFixture({ include, tags }, { tags: ["example-3"] });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
     [
@@ -139,8 +140,8 @@ test('snapshots tests matching tag of describe()', async () => {
   `);
 });
 
-test('snapshots tests matching tag of nested describe()', async () => {
-  await runFixture({ include, tags }, { tags: ['example-4'] });
+test("snapshots tests matching tag of nested describe()", async () => {
+  await runFixture({ include, tags }, { tags: ["example-4"] });
 
   expect(getSnapshottedTests()).toMatchInlineSnapshot(`
     [
@@ -149,7 +150,7 @@ test('snapshots tests matching tag of nested describe()', async () => {
   `);
 });
 
-test('cleans up internal test meta properties', async () => {
+test("cleans up internal test meta properties", async () => {
   const testModules: TestModule[] = [];
 
   await runFixture(
@@ -158,7 +159,7 @@ test('cleans up internal test meta properties', async () => {
       tags,
       reporters: [{ onTestRunEnd: (results) => void testModules.push(...results) }],
     },
-    { tags: ['example-1', 'example-2'] }
+    { tags: ["example-1", "example-2"] },
   );
 
   const tests = testModules.flatMap((testModule) => Array.from(testModule.children.allTests()));
@@ -177,19 +178,19 @@ test('cleans up internal test meta properties', async () => {
 
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-    return Object.keys(call[1])[0].split(' / ')[0];
+    return Object.keys(call[1])[0].split(" / ")[0];
   });
 }
 
 function getChromaticOptions() {
   return Object.fromEntries(
     vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-      const title = Object.keys(call[1])[0].split(' / ')[0];
+      const title = Object.keys(call[1])[0].split(" / ")[0];
 
       // Options are written to file system as JSON, simulate that in mocked writeTestResult stub:
       const options = JSON.parse(JSON.stringify(call[3]));
 
       return [title, options];
-    })
+    }),
   );
 }

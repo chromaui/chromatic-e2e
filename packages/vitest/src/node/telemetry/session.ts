@@ -1,9 +1,11 @@
-import { randomUUID } from 'node:crypto';
-import { rmSync } from 'node:fs';
-import { resolve } from 'node:path';
-import type { Vitest } from 'vitest/node';
-import { TELEMETRY_LOG_FILE, TELEMETRY_METADATA_FILE } from './constants';
-import type { TelemetryMetadata } from './metadata';
+import { randomUUID } from "node:crypto";
+import { rmSync } from "node:fs";
+import { resolve } from "node:path";
+
+import type { Vitest } from "vitest/node";
+
+import { TELEMETRY_LOG_FILE, TELEMETRY_METADATA_FILE } from "./constants";
+import type { TelemetryMetadata } from "./metadata";
 
 /** @internal */
 export const session = {

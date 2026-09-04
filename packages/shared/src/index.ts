@@ -1,8 +1,8 @@
-export * from './resource-archiver';
-export * from './write-archive';
-export * from './utils/logger';
-export * from './constants';
-export * from './utils/viewport';
+export * from "./resource-archiver";
+export * from "./write-archive";
+export * from "./utils/logger";
+export * from "./constants";
+export * from "./utils/viewport";
 
 export type {
   ChromaticConfig,
@@ -10,4 +10,4 @@ export type {
   DOMSnapshots,
   SavedSnapshot,
   SerializedIframeNode,
-} from './types';
+} from "./types";

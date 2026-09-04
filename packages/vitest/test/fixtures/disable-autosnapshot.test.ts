@@ -1,7 +1,8 @@
-import { describe, test, inject } from 'vitest';
-import { configure } from '../../src';
+import { describe, test, inject } from "vitest";
 
-const disable = inject('disableAutoSnapshot');
+import { configure } from "../../src";
+
+const disable = inject("disableAutoSnapshot");
 
 function disableIf(condition: boolean) {
   if (condition) {
@@ -9,36 +10,36 @@ function disableIf(condition: boolean) {
   }
 }
 
-disableIf(disable === 'module');
+disableIf(disable === "module");
 
-test('test #1', () => {
-  disableIf(disable === 'test');
+test("test #1", () => {
+  disableIf(disable === "test");
 });
 
-describe('', () => {
-  disableIf(disable === 'describe');
+describe("", () => {
+  disableIf(disable === "describe");
 
-  test('test #2', () => {
-    disableIf(disable === 'test' || disable === 'test-second');
+  test("test #2", () => {
+    disableIf(disable === "test" || disable === "test-second");
   });
 });
 
-describe('', () => {
-  disableIf(disable === 'describe');
+describe("", () => {
+  disableIf(disable === "describe");
 
-  describe('', () => {
-    disableIf(disable === 'describe-nested');
+  describe("", () => {
+    disableIf(disable === "describe-nested");
 
-    test('test #3', () => {
-      disableIf(disable === 'test');
+    test("test #3", () => {
+      disableIf(disable === "test");
     });
   });
 
-  test('test #4', () => {
-    disableIf(disable === 'test');
+  test("test #4", () => {
+    disableIf(disable === "test");
   });
 });
 
-test('test #5', () => {
-  disableIf(disable === 'test');
+test("test #5", () => {
+  disableIf(disable === "test");
 });

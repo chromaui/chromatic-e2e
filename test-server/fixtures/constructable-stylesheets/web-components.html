@@ -8,16 +8,16 @@
     <script type="text/javascript">
       class StyledComponent2 extends HTMLElement {
         connectedCallback() {
-          const container = document.createElement('div');
+          const container = document.createElement("div");
           this.appendChild(container);
 
-          const h2 = document.createElement('h2');
-          h2.innerHTML = 'This section is generated using a Web Component (I should be blue)';
+          const h2 = document.createElement("h2");
+          h2.innerHTML = "This section is generated using a Web Component (I should be blue)";
           container.appendChild(h2);
 
-          const p = document.createElement('p');
+          const p = document.createElement("p");
           p.innerHTML =
-            'This section is <strong>globally</strong> styled with constructable stylesheets created inside the Web Component. I should be <strong>green</strong> and the section background should be <strong>cyan</strong>.';
+            "This section is <strong>globally</strong> styled with constructable stylesheets created inside the Web Component. I should be <strong>green</strong> and the section background should be <strong>cyan</strong>.";
           container.appendChild(p);
 
           const stylesheet = new CSSStyleSheet();
@@ -36,7 +36,7 @@
           document.adoptedStyleSheets = [stylesheet];
         }
       }
-      customElements.define('styled-component-2', StyledComponent2);
+      customElements.define("styled-component-2", StyledComponent2);
     </script>
   </body>
 </html>

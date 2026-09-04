@@ -3,17 +3,14 @@
   "version": "0.11.6",
   "private": true,
   "description": "Shared Chromatic E2E",
+  "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/shared"
   },
-  "license": "MIT",
-  "author": "Chromatic <tom@chromatic.com>",
   "type": "module",
-  "engines": {
-    "node": ">=22"
-  },
   "exports": {
     ".": "./src/index",
     "./test-utils": "./src/test-utils"
@@ -43,5 +40,8 @@
     "srcset": "^4.0.0",
     "ts-dedent": "^2.2.0",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

@@ -1,8 +1,8 @@
-import type {} from '@vitest/browser-playwright';
-import type { CDPSession } from 'vitest/node';
+import type {} from "@vitest/browser-playwright";
+import type { CDPSession } from "vitest/node";
 
 class NetworkIdleTimeoutError extends Error {
-  name = 'NetworkIdleTimeoutError';
+  name = "NetworkIdleTimeoutError";
 }
 
 export class NetworkIdleTracker {
@@ -14,7 +14,7 @@ export class NetworkIdleTracker {
 
   private constructor(
     private cdp: CDPSession,
-    private idleTimeout: number
+    private idleTimeout: number,
   ) {}
 
   static async create(cdp: CDPSession, idleTimeout: number) {
@@ -23,22 +23,22 @@ export class NetworkIdleTracker {
   }
 
   async watch() {
-    this.cdp.on('Network.requestWillBeSent', this.onRequest);
-    this.cdp.on('Network.loadingFinished', this.onComplete);
-    this.cdp.on('Network.loadingFailed', this.onComplete);
+    this.cdp.on("Network.requestWillBeSent", this.onRequest);
+    this.cdp.on("Network.loadingFinished", this.onComplete);
+    this.cdp.on("Network.loadingFailed", this.onComplete);
 
-    await this.cdp.send('Network.enable');
+    await this.cdp.send("Network.enable");
   }
 
   async unwatch() {
-    this.cdp.off('Network.requestWillBeSent', this.onRequest);
-    this.cdp.off('Network.loadingFinished', this.onComplete);
-    this.cdp.off('Network.loadingFailed', this.onComplete);
+    this.cdp.off("Network.requestWillBeSent", this.onRequest);
+    this.cdp.off("Network.loadingFinished", this.onComplete);
+    this.cdp.off("Network.loadingFailed", this.onComplete);
 
     this.clearTimer();
     this.pending.clear();
     this.idleResolvers.splice(0).forEach((fn) => fn());
-    await this.cdp.send('Network.disable');
+    await this.cdp.send("Network.disable");
   }
 
   waitForIdle(rejectTimeout: number): Promise<void> {
@@ -48,8 +48,8 @@ export class NetworkIdleTracker {
 
     return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(
-        () => reject(new NetworkIdleTimeoutError('Timed out waiting for network to be idle')),
-        rejectTimeout
+        () => reject(new NetworkIdleTimeoutError("Timed out waiting for network to be idle")),
+        rejectTimeout,
       );
       this.idleResolvers.push(resolve, () => clearTimeout(timeout));
     });

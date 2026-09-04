@@ -1,10 +1,10 @@
-import { takeSnapshot, test } from '../src';
+import { takeSnapshot, test } from "../src";
 
-test.describe('', () => {
+test.describe("", () => {
   test.use({ javaScriptEnabled: false, disableAutoSnapshot: true });
 
-  test('visiting page while JavaScript disabled', async ({ page }, testInfo) => {
-    await page.goto('/');
+  test("visiting page while JavaScript disabled", async ({ page }, testInfo) => {
+    await page.goto("/");
 
     await takeSnapshot(page, testInfo);
   });

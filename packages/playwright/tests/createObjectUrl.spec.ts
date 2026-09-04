@@ -1,23 +1,24 @@
-import * as path from 'path';
-import { test, expect } from '../src';
+import * as path from "path";
 
-test.use({ ignoreSelectors: ['#objectUrl'] });
+import { test, expect } from "../src";
 
-test('Upload a Single file and Assert blob', async ({ page }) => {
-  await page.goto('/createObjectUrl');
-  const fileWithPath = path.join(import.meta.dirname, '../../../test-server/fixtures/blue.png');
+test.use({ ignoreSelectors: ["#objectUrl"] });
+
+test("Upload a Single file and Assert blob", async ({ page }) => {
+  await page.goto("/createObjectUrl");
+  const fileWithPath = path.join(import.meta.dirname, "../../../test-server/fixtures/blue.png");
   const [fileChooser] = await Promise.all([
-    page.waitForEvent('filechooser'),
-    page.locator('#fileInput').click(),
+    page.waitForEvent("filechooser"),
+    page.locator("#fileInput").click(),
   ]);
   await fileChooser.setFiles([fileWithPath]);
-  await page.locator('#fileInput').dispatchEvent('change');
-  await expect(page.locator('#objectUrl')).toHaveText(/blob:.*/);
+  await page.locator("#fileInput").dispatchEvent("change");
+  await expect(page.locator("#objectUrl")).toHaveText(/blob:.*/);
 });
 
 // adapted from https://fossies.org/linux/playwright/tests/library/trace-viewer.spec.ts
-test('Fetch data for blob', async ({ page }) => {
-  await page.goto('/createObjectUrl?noUpload=true');
-  const size = await page.locator('#blobImg').evaluate((e) => (e as HTMLImageElement).naturalWidth);
+test("Fetch data for blob", async ({ page }) => {
+  await page.goto("/createObjectUrl?noUpload=true");
+  const size = await page.locator("#blobImg").evaluate((e) => (e as HTMLImageElement).naturalWidth);
   expect(size).toBe(10);
 });

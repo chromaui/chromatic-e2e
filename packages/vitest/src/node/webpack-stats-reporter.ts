@@ -1,13 +1,15 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { dirname, relative, resolve, sep } from 'node:path';
-import { isCSSRequest, type TestCase, type TestModule, type Vite, type Vitest } from 'vitest/node';
-import type { Reporter } from 'vitest/reporters';
-import { trackEvent } from './telemetry';
-import type { ResolvedOptions } from '../types';
+import { existsSync, readFileSync } from "node:fs";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { dirname, relative, resolve, sep } from "node:path";
 
-const REPORTER_NAME = 'chromatic-webpack-stats-reporter';
-const VIRTUAL_MODULE_PREFIX = '\0';
+import { isCSSRequest, type TestCase, type TestModule, type Vite, type Vitest } from "vitest/node";
+import type { Reporter } from "vitest/reporters";
+
+import type { ResolvedOptions } from "../types";
+import { trackEvent } from "./telemetry";
+
+const REPORTER_NAME = "chromatic-webpack-stats-reporter";
+const VIRTUAL_MODULE_PREFIX = "\0";
 
 interface Options {
   /** Full resolved path to the `preview-stats.json` file */
@@ -36,7 +38,7 @@ export class WebpackStatsReporter implements Reporter {
   private constructor(
     private ctx: Vitest,
     private options: Options,
-    private moduleIdsToStoryFiles = new Map<TestModule['moduleId'], Set<StoryFilePath>>()
+    private moduleIdsToStoryFiles = new Map<TestModule["moduleId"], Set<StoryFilePath>>(),
   ) {}
 
   /**
@@ -47,12 +49,12 @@ export class WebpackStatsReporter implements Reporter {
 
     if (!exists) {
       const filename = [
-        'preview-stats',
+        "preview-stats",
         ctx.config.shard && `-${ctx.config.shard.index}-${ctx.config.shard.count}`,
-        '.json',
+        ".json",
       ]
         .filter(Boolean)
-        .join('');
+        .join("");
 
       const outputFile = resolve(ctx.config.root, pluginOptions.outputDirectory, filename);
 
@@ -97,12 +99,12 @@ export class WebpackStatsReporter implements Reporter {
     } catch (error) {
       trackEvent(
         {
-          eventType: 'turbosnap_error',
-          level: 'error',
-          payload: { operation: 'write-stats', error },
+          eventType: "turbosnap_error",
+          level: "error",
+          payload: { operation: "write-stats", error },
         },
         this.ctx,
-        this.options.pluginOptions
+        this.options.pluginOptions,
       );
 
       throw error;
@@ -113,7 +115,7 @@ export class WebpackStatsReporter implements Reporter {
    * Generate `preview-stats.json` from collected Story files and their dependent test modules
    */
   private async writePreviewStats(testModules: TestModule[]) {
-    const statsMap = new Map<Module['id'], Module>();
+    const statsMap = new Map<Module["id"], Module>();
 
     for (const testModule of testModules) {
       const storyFiles = this.moduleIdsToStoryFiles.get(testModule.moduleId);
@@ -151,8 +153,8 @@ export class WebpackStatsReporter implements Reporter {
         statsMap,
         vite.moduleGraph,
         vite.config.cacheDir,
-        new Set<Vite.ModuleNode['id']>(),
-        additionalModules
+        new Set<Vite.ModuleNode["id"]>(),
+        additionalModules,
       );
     }
 
@@ -163,17 +165,17 @@ export class WebpackStatsReporter implements Reporter {
     await writeFile(
       this.options.outputFile,
       JSON.stringify({ modules: Array.from(statsMap.values()) }, null, 2),
-      'utf-8'
+      "utf-8",
     );
   }
 
   private addModule(
-    id: Vite.ModuleNode['id'],
-    statsMap: Map<Module['id'], Module>,
+    id: Vite.ModuleNode["id"],
+    statsMap: Map<Module["id"], Module>,
     moduleGraph: Vite.ModuleGraph,
-    cacheDir: Vite.UserConfig['cacheDir'],
-    visited: Set<Vite.ModuleNode['id']>,
-    additionalModules: { id: string; isInModuleGraph?: boolean }[] = []
+    cacheDir: Vite.UserConfig["cacheDir"],
+    visited: Set<Vite.ModuleNode["id"]>,
+    additionalModules: { id: string; isInModuleGraph?: boolean }[] = [],
   ) {
     if (visited.has(id)) {
       return;
@@ -184,7 +186,7 @@ export class WebpackStatsReporter implements Reporter {
 
     if (!mod) {
       return this.ctx.logger.error(
-        `[chromatic] Could not find module for id ${id}. Excluding from TurboSnap.`
+        `[chromatic] Could not find module for id ${id}. Excluding from TurboSnap.`,
       );
     }
 
@@ -255,17 +257,17 @@ export class WebpackStatsReporter implements Reporter {
     return (
       relative(this.ctx.config.root, filePath)
         // Windows \\ to /
-        .replaceAll(sep, '/')
+        .replaceAll(sep, "/")
         // Remove query parameters to make filenames comparable against git
-        .split('?')[0]
+        .split("?")[0]
     );
   }
 }
 
 function isWebpackStatsReporter(
-  reporter: Vitest['config']['reporters'][number]
+  reporter: Vitest["config"]["reporters"][number],
 ): reporter is WebpackStatsReporter {
-  return 'name' in reporter && reporter.name === REPORTER_NAME;
+  return "name" in reporter && reporter.name === REPORTER_NAME;
 }
 
 /**
@@ -284,8 +286,8 @@ function isWebpackStatsReporter(
  */
 function resolveOptimizedDependencySources(
   mod: Vite.ModuleNode,
-  cacheDir: Vite.UserConfig['cacheDir'],
-  visited: Set<Vite.ModuleNode['id']>
+  cacheDir: Vite.UserConfig["cacheDir"],
+  visited: Set<Vite.ModuleNode["id"]>,
 ): { id: string; isInModuleGraph: boolean }[] {
   if (visited.has(mod.id)) {
     return [];
@@ -324,7 +326,7 @@ function resolveOptimizedDependencySources(
   return sources;
 }
 
-function getChunkSources(mod: Vite.ModuleNode, cacheDir: Vite.UserConfig['cacheDir']) {
+function getChunkSources(mod: Vite.ModuleNode, cacheDir: Vite.UserConfig["cacheDir"]) {
   const sources = resolveMapSources(mod, mod.transformResult?.map, cacheDir);
 
   if (sources.length) {
@@ -334,7 +336,7 @@ function getChunkSources(mod: Vite.ModuleNode, cacheDir: Vite.UserConfig['cacheD
   // Transform result doesn't always hold a source map.
   // Fallback to check if file system has one.
   try {
-    const diskMap = JSON.parse(readFileSync(`${mod.id.split('?')[0]}.map`, 'utf-8'));
+    const diskMap = JSON.parse(readFileSync(`${mod.id.split("?")[0]}.map`, "utf-8"));
 
     return resolveMapSources(mod, diskMap, cacheDir);
   } catch {
@@ -345,18 +347,18 @@ function getChunkSources(mod: Vite.ModuleNode, cacheDir: Vite.UserConfig['cacheD
 function resolveMapSources(
   mod: Vite.ModuleNode,
   map: unknown,
-  cacheDir: Vite.UserConfig['cacheDir']
+  cacheDir: Vite.UserConfig["cacheDir"],
 ): string[] {
-  if (!map || typeof map !== 'object' || !('sources' in map) || !Array.isArray(map.sources)) {
+  if (!map || typeof map !== "object" || !("sources" in map) || !Array.isArray(map.sources)) {
     return [];
   }
 
   return map.sources.flatMap((source) => {
-    if (typeof source !== 'string' || source.startsWith(VIRTUAL_MODULE_PREFIX)) {
+    if (typeof source !== "string" || source.startsWith(VIRTUAL_MODULE_PREFIX)) {
       return [];
     }
 
-    const resolved = resolve(dirname(mod.id), source).replaceAll(sep, '/');
+    const resolved = resolve(dirname(mod.id), source).replaceAll(sep, "/");
 
     // Sources must point outside the cache directory — e.g. an identity
     // sourcemap points the chunk back at itself, which is not a real source
@@ -378,12 +380,12 @@ function resolveMapSources(
  */
 export async function mergePreviewStats(options: { root: string; outputDirectory: string }) {
   const outputDirectory = resolve(options.root, options.outputDirectory);
-  const merged = new Map<Module['id'], Module>();
+  const merged = new Map<Module["id"], Module>();
 
   for (const filename of await readdir(outputDirectory)) {
-    if (filename.startsWith('preview-stats') && filename.endsWith('.json')) {
+    if (filename.startsWith("preview-stats") && filename.endsWith(".json")) {
       const fullFilename = resolve(outputDirectory, filename);
-      const stats: { modules: Module[] } = JSON.parse(await readFile(fullFilename, 'utf-8'));
+      const stats: { modules: Module[] } = JSON.parse(await readFile(fullFilename, "utf-8"));
 
       for (const mod of stats.modules) {
         const previous = merged.get(mod.id);
@@ -404,8 +406,8 @@ export async function mergePreviewStats(options: { root: string; outputDirectory
   }
 
   await writeFile(
-    resolve(outputDirectory, 'preview-stats.json'),
+    resolve(outputDirectory, "preview-stats.json"),
     JSON.stringify({ modules: Array.from(merged.values()) }, null, 2),
-    'utf-8'
+    "utf-8",
   );
 }

@@ -1,27 +1,29 @@
-import { randomUUID } from 'node:crypto';
-import { appendFile, mkdir } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { isCI, nodeVersion } from 'std-env';
-import type { Vitest } from 'vitest/node';
-import { version as pluginVersion } from '../../../package.json';
+import { randomUUID } from "node:crypto";
+import { appendFile, mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
+
+import { isCI, nodeVersion } from "std-env";
+import type { Vitest } from "vitest/node";
+
+import { version as pluginVersion } from "../../../package.json";
+import type { ResolvedOptions } from "../../types";
 import {
   EVENT_TYPE_PREFIX,
   TELEMETRY_FETCH_TIMEOUT_MS,
   TELEMETRY_LOG_FILE,
   TELEMETRY_URL,
-} from './constants';
-import { getEnv, resolveTelemetryOptions } from './env';
+} from "./constants";
+import { getEnv, resolveTelemetryOptions } from "./env";
 import {
   createProjectId,
   getChromaticVersion,
   packageManager,
   readTelemetryMetadata,
   writeTelemetryMetadata,
-} from './metadata';
-import { sanitizeError } from './sanitize';
-import { session } from './session';
-import type { EventType, TelemetryEvent, WireTelemetryEvent } from './types';
-import type { ResolvedOptions } from '../../types';
+} from "./metadata";
+import { sanitizeError } from "./sanitize";
+import { session } from "./session";
+import type { EventType, TelemetryEvent, WireTelemetryEvent } from "./types";
 
 /**
  * Track a telemetry event. Attaches all automatically generated fields.
@@ -29,7 +31,7 @@ import type { ResolvedOptions } from '../../types';
 export function trackEvent<T extends EventType = EventType>(
   event: TelemetryEvent<T>,
   vitest: Vitest,
-  options: ResolvedOptions
+  options: ResolvedOptions,
 ): void {
   if (!options.telemetry.enabled) {
     return;
@@ -47,7 +49,7 @@ export function trackEvent<T extends EventType = EventType>(
  */
 export async function trackCliEvent<T extends EventType = EventType>(
   event: TelemetryEvent<T>,
-  options: { outputDirectory: string }
+  options: { outputDirectory: string },
 ): Promise<void> {
   const telemetry = resolveTelemetryOptions();
 
@@ -61,7 +63,7 @@ export async function trackCliEvent<T extends EventType = EventType>(
     telemetryMetadata = await readTelemetryMetadata(options.outputDirectory);
     session.telemetryMetadata = telemetryMetadata;
 
-    if (!('disabled' in telemetryMetadata)) {
+    if (!("disabled" in telemetryMetadata)) {
       session.id = telemetryMetadata.sessionId;
       session.projectId = telemetryMetadata.projectId;
       session.chromaticVersion = telemetryMetadata.chromaticVersion;
@@ -78,20 +80,20 @@ export async function trackCliEvent<T extends EventType = EventType>(
     {
       outputDirectory: options.outputDirectory,
       telemetry,
-    }
+    },
   );
 }
 
 async function _trackEvent(
   event: TelemetryEvent,
   vitest: {
-    version: Vitest['version'];
-    config: Pick<Vitest['config'], 'root'>;
+    version: Vitest["version"];
+    config: Pick<Vitest["config"], "root">;
     projects: unknown[];
   },
-  options: Pick<ResolvedOptions, 'outputDirectory' | 'telemetry'>
+  options: Pick<ResolvedOptions, "outputDirectory" | "telemetry">,
 ) {
-  const url = getEnv('CHROMATIC_TELEMETRY_URL') || TELEMETRY_URL;
+  const url = getEnv("CHROMATIC_TELEMETRY_URL") || TELEMETRY_URL;
   const root = vitest.config.root;
   const timestamp = new Date().toISOString();
   const outputDirectory = resolve(root, options.outputDirectory);
@@ -110,7 +112,7 @@ async function _trackEvent(
     metadata: {
       isCI,
       pluginVersion,
-      nodeVersion: nodeVersion || 'unknown',
+      nodeVersion: nodeVersion || "unknown",
       vitestVersion: vitest.version,
       isVitestProjects: vitest.projects.length > 1,
       packageManager: packageManager.name,
@@ -119,7 +121,7 @@ async function _trackEvent(
     },
   };
 
-  if (wireEvent.level === 'error' && 'error' in wireEvent.payload) {
+  if (wireEvent.level === "error" && "error" in wireEvent.payload) {
     wireEvent.payload.error = sanitizeError(wireEvent.payload.error);
   }
 
@@ -127,8 +129,8 @@ async function _trackEvent(
 
   try {
     await fetch(`${url}/telemetry/v1/vitest/events`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(wireEvent),
       signal: AbortSignal.timeout(TELEMETRY_FETCH_TIMEOUT_MS),
     });
@@ -140,10 +142,10 @@ async function _trackEvent(
     const logFile = resolve(outputDirectory, TELEMETRY_LOG_FILE);
 
     await mkdir(outputDirectory, { recursive: true });
-    await appendFile(logFile, `${JSON.stringify(wireEvent)}\n`, 'utf8');
+    await appendFile(logFile, `${JSON.stringify(wireEvent)}\n`, "utf8");
 
     if (error) {
-      await appendFile(logFile, `${JSON.stringify({ telemetryPostError: error })}\n`, 'utf8');
+      await appendFile(logFile, `${JSON.stringify({ telemetryPostError: error })}\n`, "utf8");
     }
   }
 

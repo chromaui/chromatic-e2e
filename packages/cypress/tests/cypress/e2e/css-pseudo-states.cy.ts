@@ -1,57 +1,57 @@
 type Point = { x: number; y: number };
 
-it('captures :hover state', { expose: { disableAutoSnapshot: true } }, () => {
-  cy.visit('/css-pseudo-states');
-  withElementCenter('button#target', mouseMove);
+it("captures :hover state", { expose: { disableAutoSnapshot: true } }, () => {
+  cy.visit("/css-pseudo-states");
+  withElementCenter("button#target", mouseMove);
 
-  cy.get('button#target:hover').should('exist');
-  cy.takeSnapshot('hover');
+  cy.get("button#target:hover").should("exist");
+  cy.takeSnapshot("hover");
 });
 
-it('captures :focus state', { expose: { disableAutoSnapshot: true } }, () => {
-  cy.visit('/css-pseudo-states');
+it("captures :focus state", { expose: { disableAutoSnapshot: true } }, () => {
+  cy.visit("/css-pseudo-states");
 
-  withElementCenter('button#target', (point) =>
+  withElementCenter("button#target", (point) =>
     mouseMove(point)
       .then(() => mouseDown(point))
-      .then(() => mouseUp(point))
+      .then(() => mouseUp(point)),
   );
 
-  cy.get('button#target:focus').should('exist');
-  cy.takeSnapshot('focus');
+  cy.get("button#target:focus").should("exist");
+  cy.takeSnapshot("focus");
 });
 
-it('captures :active state', { expose: { disableAutoSnapshot: true } }, () => {
-  cy.visit('/css-pseudo-states');
+it("captures :active state", { expose: { disableAutoSnapshot: true } }, () => {
+  cy.visit("/css-pseudo-states");
 
   let pressedCoords: Point = { x: 0, y: 0 };
 
-  withElementCenter('button#target', (point) =>
+  withElementCenter("button#target", (point) =>
     mouseMove(point)
       .then(() => mouseDown(point))
       .then(() => {
         pressedCoords = point;
-      })
+      }),
   );
 
-  cy.get('button#target:active').should('exist');
-  cy.takeSnapshot('active');
+  cy.get("button#target:active").should("exist");
+  cy.takeSnapshot("active");
 
   cy.then(() => mouseUp(pressedCoords));
 });
 
-it('captures :focus-visible state', { expose: { disableAutoSnapshot: true } }, () => {
-  cy.visit('/css-pseudo-states');
-  cy.get('button#tab-cycle').focus();
+it("captures :focus-visible state", { expose: { disableAutoSnapshot: true } }, () => {
+  cy.visit("/css-pseudo-states");
+  cy.get("button#tab-cycle").focus();
 
   cy.wrap(null).then(keyboardTab);
 
-  cy.get('button#target:focus-visible').should('exist');
-  cy.takeSnapshot('focus-visible');
+  cy.get("button#target:focus-visible").should("exist");
+  cy.takeSnapshot("focus-visible");
 });
 
 function cdp(command: string, params: Record<string, unknown>) {
-  return Cypress.automation('remote:debugger:protocol', { command, params });
+  return Cypress.automation("remote:debugger:protocol", { command, params });
 }
 
 function getCdpElementCenter(el: HTMLElement): Point {
@@ -65,8 +65,8 @@ function getCdpElementCenter(el: HTMLElement): Point {
     };
   }
 
-  const autIframe = [...autWindow.parent.document.querySelectorAll('iframe')].find(
-    (frame) => frame.contentWindow === autWindow
+  const autIframe = [...autWindow.parent.document.querySelectorAll("iframe")].find(
+    (frame) => frame.contentWindow === autWindow,
   );
 
   if (!autIframe) {
@@ -90,51 +90,51 @@ function withElementCenter(selector: string, cb: (point: Point) => Promise<unkno
 }
 
 function mouseMove(point: Point) {
-  return cdp('Input.dispatchMouseEvent', {
-    type: 'mouseMoved',
+  return cdp("Input.dispatchMouseEvent", {
+    type: "mouseMoved",
     x: point.x,
     y: point.y,
-    button: 'none',
-    pointerType: 'mouse',
+    button: "none",
+    pointerType: "mouse",
   });
 }
 
 function mouseDown(point: Point) {
-  return cdp('Input.dispatchMouseEvent', {
-    type: 'mousePressed',
+  return cdp("Input.dispatchMouseEvent", {
+    type: "mousePressed",
     x: point.x,
     y: point.y,
-    button: 'left',
+    button: "left",
     buttons: 1,
     clickCount: 1,
-    pointerType: 'mouse',
+    pointerType: "mouse",
   });
 }
 
 function mouseUp(point: Point) {
-  return cdp('Input.dispatchMouseEvent', {
-    type: 'mouseReleased',
+  return cdp("Input.dispatchMouseEvent", {
+    type: "mouseReleased",
     x: point.x,
     y: point.y,
-    button: 'left',
+    button: "left",
     buttons: 0,
     clickCount: 1,
-    pointerType: 'mouse',
+    pointerType: "mouse",
   });
 }
 
 function keyboardTab() {
-  return cdp('Input.dispatchKeyEvent', {
-    type: 'rawKeyDown',
+  return cdp("Input.dispatchKeyEvent", {
+    type: "rawKeyDown",
     windowsVirtualKeyCode: 9,
-    key: 'Tab',
-    code: 'Tab',
+    key: "Tab",
+    code: "Tab",
   }).then(() =>
-    cdp('Input.dispatchKeyEvent', {
-      type: 'keyUp',
+    cdp("Input.dispatchKeyEvent", {
+      type: "keyUp",
       windowsVirtualKeyCode: 9,
-      key: 'Tab',
-      code: 'Tab',
-    })
+      key: "Tab",
+      code: "Tab",
+    }),
   );
 }

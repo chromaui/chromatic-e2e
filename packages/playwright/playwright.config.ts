@@ -1,21 +1,21 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: "http://localhost:3000",
     httpCredentials: {
-      username: 'user',
-      password: 'secret',
+      username: "user",
+      password: "secret",
     },
 
-    ...devices['Desktop Chrome'],
+    ...devices["Desktop Chrome"],
     viewport: { width: 1280, height: 720 },
   },
 
   webServer: {
-    command: 'pnpm --filter @chromaui/chromatic-e2e dev:server',
-    url: 'http://127.0.0.1:3000',
+    command: "pnpm --filter @chromaui/chromatic-e2e dev:server",
+    url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
   },
 });

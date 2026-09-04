@@ -1,6 +1,6 @@
-import { snapshot, createMirror } from '@chromaui/rrweb-snapshot';
-import { type DOMSnapshots } from '@chromatic-com/shared-e2e';
-import { type serializedNodeWithId } from '@rrweb/types';
+import { type DOMSnapshots } from "@chromatic-com/shared-e2e";
+import { snapshot, createMirror } from "@chromaui/rrweb-snapshot";
+import { type serializedNodeWithId } from "@rrweb/types";
 
 export type { takeSnapshot };
 
@@ -8,11 +8,11 @@ async function takeSnapshot() {
   const mirror = createMirror();
   const domSnapshot = snapshot(document, { recordCanvas: true, mirror });
 
-  const colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const colorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
-  const pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'] = {};
+  const pseudoClassIds: DOMSnapshots[string]["pseudoClassIds"] = {};
 
-  for (const className of [':hover', ':focus', ':focus-visible', ':active'] as const) {
+  for (const className of [":hover", ":focus", ":focus-visible", ":active"] as const) {
     const elements = document.querySelectorAll(className);
     const ids = Array.from(elements, (el) => mirror.getId(el)).filter((id) => id !== -1);
     pseudoClassIds[className] = ids;
@@ -24,26 +24,26 @@ async function takeSnapshot() {
 }
 
 async function replaceBlobUrls(node: serializedNodeWithId) {
-  if (!('childNodes' in node)) {
+  if (!("childNodes" in node)) {
     return;
   }
 
   await Promise.all(
     node.childNodes.map(async (childNode) => {
       if (
-        'tagName' in childNode &&
-        childNode.tagName === 'img' &&
-        typeof childNode.attributes.src === 'string' &&
-        childNode.attributes.src?.startsWith('blob:')
+        "tagName" in childNode &&
+        childNode.tagName === "img" &&
+        typeof childNode.attributes.src === "string" &&
+        childNode.attributes.src?.startsWith("blob:")
       ) {
         const base64Url = await toDataURL(childNode.attributes.src);
         childNode.attributes.src = base64Url;
       }
 
-      if ('childNodes' in childNode && childNode.childNodes?.length) {
+      if ("childNodes" in childNode && childNode.childNodes?.length) {
         await replaceBlobUrls(childNode);
       }
-    })
+    }),
   );
 }
 
@@ -52,7 +52,7 @@ async function toDataURL(url: string): Promise<string> {
 
   return new Promise<string>((resolveFileRead, reject) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolveFileRead(reader.result?.toString() || '');
+    reader.onloadend = () => resolveFileRead(reader.result?.toString() || "");
     reader.onerror = reject;
 
     // convert the blob to base64 string

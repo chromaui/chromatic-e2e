@@ -1,20 +1,22 @@
-import { relative, resolve } from 'node:path';
-import { TestCase, TestModule, Vitest } from 'vitest/node';
-import { Reporter } from 'vitest/reporters';
-import colors from 'tinyrainbow';
-import { DEFAULT_OUTPUT_DIR } from '../constants';
-import { TELEMETRY_LOG_FILE } from './telemetry';
-import { type ResolvedOptions } from '../types';
+import { relative, resolve } from "node:path";
 
-const REPORTER_NAME = 'chromatic-reporter';
+import colors from "tinyrainbow";
+import { TestCase, TestModule, Vitest } from "vitest/node";
+import { Reporter } from "vitest/reporters";
+
+import { DEFAULT_OUTPUT_DIR } from "../constants";
+import { type ResolvedOptions } from "../types";
+import { TELEMETRY_LOG_FILE } from "./telemetry";
+
+const REPORTER_NAME = "chromatic-reporter";
 
 interface Options
   extends
-    Pick<ResolvedOptions, 'outputDirectory' | 'turboSnap'>,
-    Pick<ResolvedOptions['reporter'], 'verbose'>,
-    Pick<ResolvedOptions['telemetry'], 'logToFile'> {
+    Pick<ResolvedOptions, "outputDirectory" | "turboSnap">,
+    Pick<ResolvedOptions["reporter"], "verbose">,
+    Pick<ResolvedOptions["telemetry"], "logToFile"> {
   /** User's Vitest built-in reporter */
-  builtInReporter: 'default' | 'verbose' | 'tree';
+  builtInReporter: "default" | "verbose" | "tree";
 }
 
 export class ChromaticReporter implements Reporter {
@@ -23,8 +25,8 @@ export class ChromaticReporter implements Reporter {
   private constructor(
     private ctx: Vitest,
     private options: Options,
-    private snapshotCountPerEntity = new Map<TestCase['id'] | TestModule['id'], number>(),
-    private isPluginActivated = false
+    private snapshotCountPerEntity = new Map<TestCase["id"] | TestModule["id"], number>(),
+    private isPluginActivated = false,
   ) {}
 
   /**
@@ -36,7 +38,7 @@ export class ChromaticReporter implements Reporter {
       outputDirectory: pluginOptions.outputDirectory,
       turboSnap: pluginOptions.turboSnap,
       logToFile: pluginOptions.telemetry.enabled && pluginOptions.telemetry.logToFile,
-      builtInReporter: 'default',
+      builtInReporter: "default",
     };
 
     for (const reporter of ctx.config.reporters) {
@@ -52,7 +54,7 @@ export class ChromaticReporter implements Reporter {
 
       const reporterName = reporter[0];
 
-      if (reporterName === 'tree' || reporterName === 'default' || reporterName === 'verbose') {
+      if (reporterName === "tree" || reporterName === "default" || reporterName === "verbose") {
         options.builtInReporter = reporterName as Exclude<typeof reporterName, string>;
       }
     }
@@ -79,7 +81,7 @@ export class ChromaticReporter implements Reporter {
   }
 
   onTestCaseResult(testCase: TestCase) {
-    if (this.options.builtInReporter !== 'verbose') {
+    if (this.options.builtInReporter !== "verbose") {
       return;
     }
 
@@ -91,7 +93,7 @@ export class ChromaticReporter implements Reporter {
   }
 
   onTestModuleEnd(testModule: TestModule) {
-    if (this.options.builtInReporter !== 'default' && this.options.builtInReporter !== 'tree') {
+    if (this.options.builtInReporter !== "default" && this.options.builtInReporter !== "tree") {
       return;
     }
 
@@ -104,7 +106,7 @@ export class ChromaticReporter implements Reporter {
       }
     }
 
-    const indentProjectName = noSlowTests && this.options.builtInReporter === 'default';
+    const indentProjectName = noSlowTests && this.options.builtInReporter === "default";
 
     this.logSnapshots({
       count: this.snapshotCountPerEntity.get(testModule.id) ?? 0,
@@ -117,17 +119,17 @@ export class ChromaticReporter implements Reporter {
     const snapshotCount = [...this.snapshotCountPerEntity.values()].reduce((a, b) => a + b, 0);
     this.snapshotCountPerEntity.clear();
 
-    const separator = colors.dim('─'.repeat(this.ctx.logger.getColumns()));
+    const separator = colors.dim("─".repeat(this.ctx.logger.getColumns()));
 
     if (!this.isPluginActivated) {
       return this.ctx.logger.log(
         `${separator}`,
 
-        `\n${colors.inverse(' Chromatic Visual Regression ')}`,
+        `\n${colors.inverse(" Chromatic Visual Regression ")}`,
 
-        `\n\n${colors.red('No archives captured. Chromatic plugin requires a browser mode project with Chromium project.')}`,
+        `\n\n${colors.red("No archives captured. Chromatic plugin requires a browser mode project with Chromium project.")}`,
 
-        `\n\n${separator}\n`
+        `\n\n${separator}\n`,
       );
     }
 
@@ -137,10 +139,10 @@ export class ChromaticReporter implements Reporter {
 
     const output = resolve(this.ctx.config.root, this.options.outputDirectory);
 
-    let uploadCommand = 'chromatic --vitest --project-token=<TOKEN>';
+    let uploadCommand = "chromatic --vitest --project-token=<TOKEN>";
 
     if (this.options.turboSnap) {
-      uploadCommand += ' --only-changed';
+      uploadCommand += " --only-changed";
     }
 
     // If user changed the output directory or Vitest root,
@@ -154,20 +156,20 @@ export class ChromaticReporter implements Reporter {
 
     const telemetryInfo = this.options.logToFile
       ? `\nTelemetry events logged to ${colors.dim(resolve(output, TELEMETRY_LOG_FILE))}`
-      : '';
+      : "";
 
     this.ctx.logger.log(
       `${separator}`,
 
-      `\n${colors.inverse(' Chromatic Visual Regression ')}`,
+      `\n${colors.inverse(" Chromatic Visual Regression ")}`,
 
-      `\n\n${colors.green('✓')} ${snapshotCount} ${pluralize(snapshotCount, 'archive')} captured`,
+      `\n\n${colors.green("✓")} ${snapshotCount} ${pluralize(snapshotCount, "archive")} captured`,
 
       `\n\nArchives saved in ${colors.dim(output)}`,
       telemetryInfo,
       `\nTo upload archives into Chromatic run ${colors.green(uploadCommand)}`,
 
-      `\n\n${separator}\n`
+      `\n\n${separator}\n`,
     );
   }
 
@@ -180,18 +182,18 @@ export class ChromaticReporter implements Reporter {
       return;
     }
 
-    const snapshots = `(${options.count} ${pluralize(options.count, 'archive')} captured)`;
+    const snapshots = `(${options.count} ${pluralize(options.count, "archive")} captured)`;
 
     if (options.projectName) {
       options.indentation += options.projectName.length + 2;
     }
 
-    this.ctx.logger.log(`${' '.repeat(options.indentation)} ${colors.dim(snapshots)}`);
+    this.ctx.logger.log(`${" ".repeat(options.indentation)} ${colors.dim(snapshots)}`);
   }
 
   private _onSnapshot(test: TestCase) {
     // Vitest's verbose reporter logs outputs of each test case, others after each test module:
-    const key = this.options.builtInReporter === 'verbose' ? test.id : test.module.id;
+    const key = this.options.builtInReporter === "verbose" ? test.id : test.module.id;
 
     const previousCount = this.snapshotCountPerEntity.get(key) ?? 0;
     this.snapshotCountPerEntity.set(key, previousCount + 1);
@@ -203,9 +205,9 @@ export class ChromaticReporter implements Reporter {
 }
 
 function isChromaticReporter(
-  reporter: Vitest['config']['reporters'][number]
+  reporter: Vitest["config"]["reporters"][number],
 ): reporter is ChromaticReporter {
-  return 'name' in reporter && reporter.name === REPORTER_NAME;
+  return "name" in reporter && reporter.name === REPORTER_NAME;
 }
 
 function pluralize(count: number, text: string) {

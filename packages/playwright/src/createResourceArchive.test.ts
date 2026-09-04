@@ -1,11 +1,12 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { dedent } from 'ts-dedent';
-import express, { type Request } from 'express';
-import { Server } from 'http';
-import { Browser, chromium, Page } from 'playwright';
+import { Server } from "http";
 
-import { logger } from '@chromatic-com/shared-e2e';
-import { createResourceArchive } from './createResourceArchive';
+import { logger } from "@chromatic-com/shared-e2e";
+import express, { type Request } from "express";
+import { Browser, chromium, Page } from "playwright";
+import { dedent } from "ts-dedent";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { createResourceArchive } from "./createResourceArchive";
 
 const TEST_PORT = 13337;
 
@@ -29,25 +30,25 @@ const styleCss = dedent`
 `;
 
 const imgPng =
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 // stubbed external imgs so we're not relying on a placeholder
-const externalImgPng = 'iamexternal';
-const anotherExternalImg = 'anotherone';
+const externalImgPng = "iamexternal";
+const anotherExternalImg = "anotherone";
 
 const pathToResponseInfo = {
-  '/': {
-    content: ({ query: { inject = '' } }: Request) =>
-      indexHtml.replace('</body>', `${[].concat(inject).map(decodeURIComponent).join('')}</body>`),
-    mimeType: 'text/html',
+  "/": {
+    content: ({ query: { inject = "" } }: Request) =>
+      indexHtml.replace("</body>", `${[].concat(inject).map(decodeURIComponent).join("")}</body>`),
+    mimeType: "text/html",
   },
-  '/style.css': {
+  "/style.css": {
     content: styleCss,
-    mimeType: 'text/css',
+    mimeType: "text/css",
   },
-  '/img.png': {
-    content: Buffer.from(imgPng, 'base64'),
-    mimeType: 'image/png',
+  "/img.png": {
+    content: Buffer.from(imgPng, "base64"),
+    mimeType: "image/png",
   },
 } as const;
 
@@ -59,8 +60,8 @@ beforeEach(async () => {
   Object.entries(pathToResponseInfo).forEach(([path, responseInfo]) => {
     app.get(path, (req, res) => {
       const { content, mimeType } = responseInfo;
-      res.header('content-type', mimeType);
-      res.send(typeof content === 'function' ? content(req) : content);
+      res.header("content-type", mimeType);
+      res.send(typeof content === "function" ? content(req) : content);
     });
   });
 
@@ -73,10 +74,10 @@ afterEach(async () => {
   await server.close();
 });
 
-describe('new', () => {
+describe("new", () => {
   let browser: Browser;
   let page: Page;
-  const mockWarn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+  const mockWarn = vi.spyOn(logger, "warn").mockImplementation(() => {});
 
   beforeEach(async () => {
     // create a bare-bones Playwright test launch (https://playwright.dev/docs/library)
@@ -84,16 +85,16 @@ describe('new', () => {
     page = await browser.newPage();
 
     // mock external image requests
-    await page.route('https://i-ama.fake/external/domain/image.png', async (route) => {
-      await route.fulfill({ body: Buffer.from(externalImgPng, 'base64') });
+    await page.route("https://i-ama.fake/external/domain/image.png", async (route) => {
+      await route.fulfill({ body: Buffer.from(externalImgPng, "base64") });
     });
 
-    await page.route('https://another-domain.com/picture.png', async (route) => {
-      await route.fulfill({ body: Buffer.from(anotherExternalImg, 'base64') });
+    await page.route("https://another-domain.com/picture.png", async (route) => {
+      await route.fulfill({ body: Buffer.from(anotherExternalImg, "base64") });
     });
 
-    await page.route('https://unwanted-domain.com/img.png', async (route) => {
-      await route.fulfill({ body: Buffer.from(anotherExternalImg, 'base64') });
+    await page.route("https://unwanted-domain.com/img.png", async (route) => {
+      await route.fulfill({ body: Buffer.from(anotherExternalImg, "base64") });
     });
   });
 
@@ -101,7 +102,7 @@ describe('new', () => {
     await browser.close();
   });
 
-  it('should log if the network times out waiting for requests', async () => {
+  it("should log if the network times out waiting for requests", async () => {
     const complete = await createResourceArchive({ page, networkTimeout: 1 });
 
     await page.goto(baseUrl);
@@ -111,7 +112,7 @@ describe('new', () => {
     expect(mockWarn).toBeCalledWith(`Global timeout of 1ms reached`);
   });
 
-  it('gathers basic resources used by the page', async () => {
+  it("gathers basic resources used by the page", async () => {
     const complete = await createResourceArchive({ page });
 
     await page.goto(baseUrl);
@@ -119,23 +120,23 @@ describe('new', () => {
     const archive = await complete();
 
     expect(archive).toEqual({
-      'http://localhost:13337/style.css': {
+      "http://localhost:13337/style.css": {
         statusCode: 200,
-        statusText: 'OK',
+        statusText: "OK",
         body: Buffer.from(styleCss),
-        contentType: 'text/css; charset=utf-8',
+        contentType: "text/css; charset=utf-8",
       },
-      'http://localhost:13337/img.png': {
+      "http://localhost:13337/img.png": {
         statusCode: 200,
-        statusText: 'OK',
-        body: Buffer.from(imgPng, 'base64'),
-        contentType: 'image/png',
+        statusText: "OK",
+        body: Buffer.from(imgPng, "base64"),
+        contentType: "image/png",
       },
     });
   });
 
-  it('ignores remote resources', async () => {
-    const externalUrl = 'https://i-ama.fake/external/domain/image.png';
+  it("ignores remote resources", async () => {
+    const externalUrl = "https://i-ama.fake/external/domain/image.png";
     const indexPath = `/?inject=${encodeURIComponent(`<img src="${externalUrl}">`)}`;
 
     const complete = await createResourceArchive({ page });
@@ -145,38 +146,38 @@ describe('new', () => {
     const archive = await complete();
 
     expect(archive).toEqual({
-      'http://localhost:13337/style.css': {
+      "http://localhost:13337/style.css": {
         statusCode: 200,
-        statusText: 'OK',
+        statusText: "OK",
         body: Buffer.from(styleCss),
-        contentType: 'text/css; charset=utf-8',
+        contentType: "text/css; charset=utf-8",
       },
-      'http://localhost:13337/img.png': {
+      "http://localhost:13337/img.png": {
         statusCode: 200,
-        statusText: 'OK',
-        body: Buffer.from(imgPng, 'base64'),
-        contentType: 'image/png',
+        statusText: "OK",
+        body: Buffer.from(imgPng, "base64"),
+        contentType: "image/png",
       },
     });
   });
 
-  it('includes remote resource when told to', async () => {
+  it("includes remote resource when told to", async () => {
     const externalUrls = [
-      'https://i-ama.fake/external/domain/image.png',
-      'https://another-domain.com/picture.png',
+      "https://i-ama.fake/external/domain/image.png",
+      "https://another-domain.com/picture.png",
       // this image won't be in allow-list
-      'https://unwanted-domain.com/img.png',
+      "https://unwanted-domain.com/img.png",
     ];
     const indexPath = `/?inject=${encodeURIComponent(
-      externalUrls.map((url) => `<img src="${url}">`).join()
+      externalUrls.map((url) => `<img src="${url}">`).join(),
     )}`;
 
     const complete = await createResourceArchive({
       page,
       assetDomains: [
         // external domains we allow-list
-        'i-ama.fake',
-        'another-domain.com',
+        "i-ama.fake",
+        "another-domain.com",
       ],
     });
 
@@ -185,29 +186,29 @@ describe('new', () => {
     const archive = await complete();
 
     expect(archive).toEqual({
-      'http://localhost:13337/style.css': {
+      "http://localhost:13337/style.css": {
         statusCode: 200,
-        statusText: 'OK',
+        statusText: "OK",
         body: Buffer.from(styleCss),
-        contentType: 'text/css; charset=utf-8',
+        contentType: "text/css; charset=utf-8",
       },
-      'http://localhost:13337/img.png': {
+      "http://localhost:13337/img.png": {
         statusCode: 200,
-        statusText: 'OK',
-        body: Buffer.from(imgPng, 'base64'),
-        contentType: 'image/png',
+        statusText: "OK",
+        body: Buffer.from(imgPng, "base64"),
+        contentType: "image/png",
       },
       // includes cross-origin images
-      'https://i-ama.fake/external/domain/image.png': {
+      "https://i-ama.fake/external/domain/image.png": {
         statusCode: 200,
-        statusText: 'OK',
-        body: Buffer.from(externalImgPng, 'base64'),
+        statusText: "OK",
+        body: Buffer.from(externalImgPng, "base64"),
         contentType: undefined,
       },
-      'https://another-domain.com/picture.png': {
+      "https://another-domain.com/picture.png": {
         statusCode: 200,
-        statusText: 'OK',
-        body: Buffer.from(anotherExternalImg, 'base64'),
+        statusText: "OK",
+        body: Buffer.from(anotherExternalImg, "base64"),
         contentType: undefined,
       },
     });

@@ -1,5 +1,6 @@
-import type { Protocol } from 'playwright-core/types/protocol';
-import { logger } from '../utils/logger';
+import type { Protocol } from "playwright-core/types/protocol";
+
+import { logger } from "../utils/logger";
 
 export type UrlString = string;
 
@@ -54,13 +55,13 @@ export class ResourceArchiver {
   /**
    * Currently active requests
    */
-  private pendingRequests = new Set<Protocol.Fetch.requestPausedPayload['requestId']>();
+  private pendingRequests = new Set<Protocol.Fetch.requestPausedPayload["requestId"]>();
 
   constructor(
     cdpClient: CDPClient,
     allowedDomains?: string[],
     httpCredentials?: HttpCredentials,
-    firstUrl?: URL
+    firstUrl?: URL,
   ) {
     this.client = cdpClient;
     this.httpCredentials = httpCredentials;
@@ -71,7 +72,7 @@ export class ResourceArchiver {
 
     // tack on the protocol so we can properly check if requests are cross-origin
     this.assetDomains = (allowedDomains || []).map((domain) => {
-      if (domain.startsWith('http')) {
+      if (domain.startsWith("http")) {
         return domain;
       }
 
@@ -81,15 +82,15 @@ export class ResourceArchiver {
   }
 
   async watch() {
-    this.client.on('Fetch.requestPaused', this.requestPaused);
-    this.client.on('Fetch.authRequired', this.authRequired);
-    await this.client.send('Fetch.enable', { handleAuthRequests: true });
+    this.client.on("Fetch.requestPaused", this.requestPaused);
+    this.client.on("Fetch.authRequired", this.authRequired);
+    await this.client.send("Fetch.enable", { handleAuthRequests: true });
   }
 
   async unwatch() {
-    this.client.off?.('Fetch.requestPaused', this.requestPaused);
-    this.client.off?.('Fetch.authRequired', this.authRequired);
-    await this.client.send('Fetch.disable');
+    this.client.off?.("Fetch.requestPaused", this.requestPaused);
+    this.client.off?.("Fetch.authRequired", this.authRequired);
+    await this.client.send("Fetch.disable");
     this.pendingRequests.clear();
   }
 
@@ -100,22 +101,22 @@ export class ResourceArchiver {
   async clientSend<T extends keyof Protocol.CommandParameters>(
     request: Protocol.Network.Request,
     method: T,
-    params?: Protocol.CommandParameters[T]
+    params?: Protocol.CommandParameters[T],
   ): Promise<Protocol.CommandReturnValues[T] | null> {
     try {
       return await this.client.send(method, params);
     } catch (error) {
-      logger.log('Client error', request.url, error);
+      logger.log("Client error", request.url, error);
       this.archive[request.url] = { error };
       return null;
     }
   }
 
   authRequired = async ({ requestId, request }: Protocol.Fetch.authRequiredPayload) => {
-    await this.clientSend(request, 'Fetch.continueWithAuth', {
+    await this.clientSend(request, "Fetch.continueWithAuth", {
       requestId,
       authChallengeResponse: {
-        response: 'ProvideCredentials',
+        response: "ProvideCredentials",
         ...this.httpCredentials,
       },
     });
@@ -134,13 +135,13 @@ export class ResourceArchiver {
     // We only need to capture assets that will render when the DOM snapshot is rendered,
     // so we only need to handle GET requests.
     if (!request.method.match(/get/i)) {
-      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
+      await this.clientSend(request, "Fetch.continueRequest", { requestId });
       return;
     }
 
     // There's no reponse body for us to archive on 304s
     if (responseStatusCode === 304) {
-      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
+      await this.clientSend(request, "Fetch.continueRequest", { requestId });
       return;
     }
 
@@ -152,18 +153,18 @@ export class ResourceArchiver {
       requestUrl.origin === this.firstUrl.origin || this.assetDomains.includes(requestUrl.origin);
 
     logger.log(
-      'requestPaused',
+      "requestPaused",
       requestUrl.toString(),
-      responseStatusCode || responseErrorReason ? 'response' : 'request',
+      responseStatusCode || responseErrorReason ? "response" : "request",
       this.firstUrl.toString(),
-      isRequestFromAllowedDomain
+      isRequestFromAllowedDomain,
     );
 
     // Pausing at response stage with an error, simply ignore
     // This can be for example when browser network cache serves the request
     if (responseErrorReason) {
       logger.log(`Got response error: ${responseErrorReason}`);
-      await this.clientSend(request, 'Fetch.continueRequest', { requestId });
+      await this.clientSend(request, "Fetch.continueRequest", { requestId });
       return;
     }
 
@@ -178,14 +179,14 @@ export class ResourceArchiver {
           responseHeaders,
         },
         requestUrl,
-        isRequestFromAllowedDomain
+        isRequestFromAllowedDomain,
       );
       return;
     }
 
     this.pendingRequests.add(requestId);
 
-    await this.clientSend(request, 'Fetch.continueRequest', {
+    await this.clientSend(request, "Fetch.continueRequest", {
       requestId,
       interceptResponse: true,
     });
@@ -194,23 +195,23 @@ export class ResourceArchiver {
   private async handleSuccessfulResponse(
     requestPausedPayload: Pick<
       Protocol.Fetch.requestPausedPayload,
-      'request' | 'requestId' | 'responseStatusCode' | 'responseStatusText' | 'responseHeaders'
+      "request" | "requestId" | "responseStatusCode" | "responseStatusText" | "responseHeaders"
     >,
     requestUrl: URL,
-    isRequestFromAllowedDomain: boolean
+    isRequestFromAllowedDomain: boolean,
   ) {
     const { request, requestId, responseStatusCode, responseStatusText, responseHeaders } =
       requestPausedPayload;
 
     if ([301, 302, 303, 307, 308].includes(responseStatusCode)) {
-      await this.clientSend(request, 'Fetch.continueRequest', {
+      await this.clientSend(request, "Fetch.continueRequest", {
         requestId,
         interceptResponse: true,
       });
       return;
     }
 
-    const result = await this.clientSend(request, 'Fetch.getResponseBody', {
+    const result = await this.clientSend(request, "Fetch.getResponseBody", {
       requestId,
     });
     // Something has gone wrong and will be logged above
@@ -221,13 +222,13 @@ export class ResourceArchiver {
 
     // If the Content-Type header is present, let's capture it.
     const contentTypeHeader: Protocol.Fetch.HeaderEntry = responseHeaders.find(
-      ({ name }) => name.toLowerCase() === 'content-type'
+      ({ name }) => name.toLowerCase() === "content-type",
     );
 
     // No need to capture the response of the top level page request
     const isFirstRequest = requestUrl.toString() === this.firstUrl.toString();
     if (isRequestFromAllowedDomain && !isFirstRequest) {
-      logger.log('Archiving request', {
+      logger.log("Archiving request", {
         url: request.url,
         statusCode: responseStatusCode,
         statusText: responseStatusText,
@@ -237,11 +238,11 @@ export class ResourceArchiver {
       this.archive[request.url] = {
         statusCode: responseStatusCode,
         statusText: responseStatusText,
-        body: Buffer.from(body, base64Encoded ? 'base64' : 'utf8'),
+        body: Buffer.from(body, base64Encoded ? "base64" : "utf8"),
         contentType: contentTypeHeader?.value,
       };
     } else {
-      logger.log('Skipping archiving of request', {
+      logger.log("Skipping archiving of request", {
         url: request.url,
         firstUrl: this.firstUrl.toString(),
         isFirstRequest,
@@ -249,6 +250,6 @@ export class ResourceArchiver {
       });
     }
 
-    await this.clientSend(request, 'Fetch.continueRequest', { requestId });
+    await this.clientSend(request, "Fetch.continueRequest", { requestId });
   }
 }

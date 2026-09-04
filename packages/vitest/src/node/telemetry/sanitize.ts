@@ -1,5 +1,5 @@
-import { sep } from 'node:path';
-import { homedir } from 'node:os';
+import { homedir } from "node:os";
+import { sep } from "node:path";
 
 export function sanitizeError(error: unknown): string {
   if (error instanceof Error && error.stack) {
@@ -15,14 +15,14 @@ export function sanitizeError(error: unknown): string {
 
 function sanitizeString(value: string): string {
   return value
-    .replaceAll(sep, '/')
-    .replace(toPathRegExp(process.cwd()), '<process-cwd>')
-    .replace(toPathRegExp(homedir()), '<homedir>');
+    .replaceAll(sep, "/")
+    .replace(toPathRegExp(process.cwd()), "<process-cwd>")
+    .replace(toPathRegExp(homedir()), "<homedir>");
 }
 
 function toPathRegExp(path: string): RegExp {
-  const normalized = path.replaceAll(sep, '/');
-  const escaped = normalized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const normalized = path.replaceAll(sep, "/");
+  const escaped = normalized.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-  return new RegExp(escaped, 'gi');
+  return new RegExp(escaped, "gi");
 }

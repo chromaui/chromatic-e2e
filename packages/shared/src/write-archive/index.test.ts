@@ -1,4 +1,4 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
 
 import { NodeType } from "@rrweb/types";
 import { afterEach, describe, expect, it, vi } from "vitest";

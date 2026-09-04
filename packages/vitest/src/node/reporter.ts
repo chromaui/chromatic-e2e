@@ -25,7 +25,7 @@ export class ChromaticReporter implements Reporter {
   private constructor(
     private ctx: Vitest,
     private options: Options,
-    private snapshotCountPerEntity = new Map<TestCase["id"] | TestModule["id"], number>(),
+    private snapshotCountPerEntity = new Map<TestCase["id"], number>(),
     private isPluginActivated = false,
   ) {}
 

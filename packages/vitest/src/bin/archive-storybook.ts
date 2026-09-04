@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import path from "path";
+import path from "node:path";
 
 import { archiveStorybook } from "@chromatic-com/shared-e2e/archive-storybook";
 import { archivesDir } from "@chromatic-com/shared-e2e/utils/filePaths";

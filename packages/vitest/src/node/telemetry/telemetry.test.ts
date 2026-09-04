@@ -47,7 +47,7 @@ describe("configuration", () => {
       vi.stubEnv(envVar, undefined);
 
       const original = process.cwd();
-      onTestFinished(() => void process.chdir(original));
+      onTestFinished(() => process.chdir(original));
 
       const cwd = resolve(import.meta.dirname, `../../../test/fixtures/dotenvs/${envVar}`);
       process.chdir(cwd);
@@ -1123,7 +1123,7 @@ function pickTypeAndPayload(events: WireTelemetryEvent[]) {
 }
 
 const childProcessHandles = vi.hoisted(() => ({ onClose: vi.fn(), onError: vi.fn() }));
-vi.mock(import("child_process"), async (importOriginal) => {
+vi.mock(import("node:child_process"), async (importOriginal) => {
   return {
     ...(await importOriginal()),
     spawn: vi.fn().mockReturnValue({

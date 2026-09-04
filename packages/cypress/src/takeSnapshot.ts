@@ -55,7 +55,7 @@ export const takeSnapshot = (
       );
     };
 
-    replaceBlobUrls(domSnapshot).then(() => {
+    void replaceBlobUrls(domSnapshot).then(() => {
       resolve({ snapshot: domSnapshot, viewport, colorScheme, pseudoClassIds });
     });
   });

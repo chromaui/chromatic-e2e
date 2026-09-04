@@ -72,7 +72,7 @@ afterEach(() => {
                     ...manualSnapshots,
                     ...(automaticSnapshot ? [automaticSnapshot] : []),
                   ],
-                  chromaticStorybookParams: buildChromaticParams(Cypress.expose),
+                  chromaticStorybookParams: buildChromaticParams(Cypress.expose.bind(Cypress)),
                   pageUrl: url,
                   outputDir: Cypress.config("downloadsFolder"),
                 },

@@ -1,6 +1,6 @@
 import { defineConfig, type UserConfig } from "tsdown";
 
-const defaults: UserConfig = {
+const defaults = {
   format: ["esm"],
   platform: "node",
   target: "esnext",
@@ -9,7 +9,7 @@ const defaults: UserConfig = {
   minify: false,
   clean: true,
   fixedExtension: true,
-};
+} satisfies UserConfig;
 
 export default defineConfig([
   {

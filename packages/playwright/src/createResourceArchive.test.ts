@@ -1,4 +1,4 @@
-import { Server } from "http";
+import { Server } from "node:http";
 
 import { logger } from "@chromatic-com/shared-e2e";
 import express, { type Request } from "express";
@@ -70,8 +70,8 @@ beforeEach(async () => {
   });
 });
 
-afterEach(async () => {
-  await server.close();
+afterEach(() => {
+  server.close();
 });
 
 describe("new", () => {

@@ -52,6 +52,7 @@ async function toDataURL(url: string): Promise<string> {
 
   return new Promise<string>((resolveFileRead, reject) => {
     const reader = new FileReader();
+    // oxlint-disable-next-line typescript/no-base-to-string
     reader.onloadend = () => resolveFileRead(reader.result?.toString() || "");
     reader.onerror = reject;
 

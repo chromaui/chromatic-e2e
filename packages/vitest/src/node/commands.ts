@@ -234,7 +234,7 @@ export function createCommands(options: ResolvedOptions) {
      * Forward a browser-side telemetry event to the Node side.
      */
     async __chromatic_telemetry(context, event: Parameters<typeof trackEvent>[0]) {
-      void trackEvent(event, context.project.vitest, options);
+      trackEvent(event, context.project.vitest, options);
     },
 
     /**

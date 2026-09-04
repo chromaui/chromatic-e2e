@@ -23,7 +23,7 @@ describe.runIf(inject("testName") === "two")("suite", async () => {
 test.runIf(inject("testName") === "three")("test #3", async () => {
   const worker = setupWorker();
   await worker.start({ quiet: true });
-  onTestFinished(() => void worker.stop());
+  onTestFinished(() => worker.stop());
 
   const onRequest = new Promise((resolve) =>
     worker.use(http.get("/example", () => new Promise(resolve))),

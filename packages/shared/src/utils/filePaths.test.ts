@@ -1,5 +1,5 @@
-import fs from "fs";
-import fsPromises from "fs/promises";
+import fs from "node:fs";
+import fsPromises from "node:fs/promises";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 

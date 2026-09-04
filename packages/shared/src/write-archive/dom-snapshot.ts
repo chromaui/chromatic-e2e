@@ -130,7 +130,7 @@ export class DOMSnapshot {
 
   private mapPictureElement(node: serializedElementNodeWithId, sourceMap: Map<string, string>) {
     const allSourceUrls: string[] = node.childNodes
-      .filter(this.isSourceElement)
+      .filter((element) => this.isSourceElement(element))
       .map((childNode: serializedElementNodeWithId) => {
         // there can be multiple values in a single srcset, extract all of them
         const sourceSetValues = srcset.parse(

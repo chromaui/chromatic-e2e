@@ -8,7 +8,7 @@ test('pages with AMD modules are archived', async ({ page }) => {
 
   // why are we testing blob URL stuff here? Because with AMD,
   // we need to call this blob stuff separately than non-AMD
-  const fileWithPath = path.join(__dirname, '../../../test-server/fixtures/blue.png');
+  const fileWithPath = path.join(import.meta.dirname, '../../../test-server/fixtures/blue.png');
   const [fileChooser] = await Promise.all([
     page.waitForEvent('filechooser'),
     page.locator('#fileInput').click(),

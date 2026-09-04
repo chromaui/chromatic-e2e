@@ -1,7 +1,7 @@
-import { existsSync, mkdirSync } from 'fs';
-import { writeFile } from 'fs/promises';
+import { existsSync, mkdirSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import path from 'path';
+import path from 'node:path';
 
 function rootDir() {
   return process.cwd();

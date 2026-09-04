@@ -1,6 +1,6 @@
-import mime from 'mime';
-import path from 'path';
+import path from 'node:path';
 import { createHash } from 'node:crypto';
+import mime from 'mime';
 import { logger } from '../utils/logger';
 import type { ArchiveResponse, UrlString } from '../resource-archiver';
 

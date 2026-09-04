@@ -4,43 +4,38 @@
   "description": "Chromatic Visual Regression Testing for Playwright",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/chromatic-e2e.git",
+    "url": "git+https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/playwright"
   },
   "license": "MIT",
   "author": "Chromatic <tom@chromatic.com>",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./browser": "./dist/browser.mjs",
-    "./bin/archive-storybook": "./dist/bin/archive-storybook.js",
-    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js",
+    "./bin/archive-storybook": "./dist/bin/archive-storybook.mjs",
+    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.mjs",
     "./package.json": "./package.json"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "bin": {
-    "archive-storybook": "dist/bin/archive-storybook.js",
-    "build-archive-storybook": "dist/bin/build-archive-storybook.js"
+    "archive-storybook": "dist/bin/archive-storybook.mjs",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.mjs"
   },
   "files": [
-    "dist/**/*",
-    "embedded/**",
-    "README.md",
-    "*.js",
-    "*.d.ts"
+    "dist",
+    "embedded",
+    "README.md"
   ],
   "scripts": {
-    "build": "rimraf ./dist ./embedded && tsup",
+    "build": "tsdown",
     "test:playwright": "playwright test",
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Playwright"
   },
@@ -58,9 +53,8 @@
     "express": "^4.18.2",
     "playwright": "^1.46.1",
     "playwright-core": "^1.46.1",
-    "rimraf": "^3.0.2",
-    "tsup": "^7.3.0",
-    "ts-dedent": "^2.2.0"
+    "ts-dedent": "^2.2.0",
+    "tsdown": "^0.22.14"
   },
   "peerDependencies": {
     "@playwright/test": "^1.0.0"

@@ -4,52 +4,41 @@
   "description": "Chromatic Visual Regression Testing for Cypress",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/chromatic-e2e.git",
+    "url": "git+https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/cypress"
   },
   "license": "MIT",
   "author": "Chromatic <tom@chromatic.com>",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./support": {
-      "import": {
-        "types": "./dist/support.d.mts",
-        "default": "./dist/support.mjs"
-      },
-      "require": {
-        "types": "./dist/support.d.ts",
-        "default": "./dist/support.js"
-      }
+      "types": "./dist/support.d.mts",
+      "default": "./dist/support.mjs"
     },
-    "./bin/archive-storybook": "./dist/bin/archive-storybook.js",
-    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js",
+    "./bin/archive-storybook": "./dist/bin/archive-storybook.mjs",
+    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.mjs",
     "./package.json": "./package.json"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "bin": {
-    "archive-storybook": "dist/bin/archive-storybook.js",
-    "build-archive-storybook": "dist/bin/build-archive-storybook.js"
+    "archive-storybook": "dist/bin/archive-storybook.mjs",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.mjs"
   },
   "files": [
-    "dist/**/*",
-    "embedded/**",
-    "README.md",
-    "*.js",
-    "*.d.ts"
+    "dist",
+    "embedded",
+    "README.md"
   ],
   "scripts": {
-    "build": "rimraf ./dist ./embedded && tsup",
+    "build": "tsdown",
     "test:cypress": "start-server-and-test 'pnpm --filter @chromaui/chromatic-e2e dev:server' 3000 'pnpm test:do-cypress'",
     "test:do-cypress": "ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=8192 cypress run --project tests",
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Cypress"
@@ -66,9 +55,8 @@
     "@storybook/server": "10.2.13",
     "@storybook/server-webpack5": "10.2.13",
     "cypress": "15.18.0",
-    "rimraf": "^3.0.2",
     "start-server-and-test": "^2.0.3",
-    "tsup": "^7.3.0"
+    "tsdown": "^0.22.14"
   },
   "peerDependencies": {
     "cypress": ">=15.10.0"

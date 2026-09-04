@@ -1,6 +1,6 @@
-const path = require('path');
-const express = require('express');
-const basicAuth = require('express-basic-auth');
+import path from 'node:path';
+import express from 'express';
+import basicAuth from 'express-basic-auth';
 
 const htmlIntro = `<!doctype html><html>`;
 const htmlOutro = `</html>`;
@@ -11,10 +11,10 @@ const app = express();
 // Minimal second origin for cross-origin iframe embed tests (same document as `/` on this app).
 const embedApp = express();
 embedApp.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, `fixtures/embeds/embedded-page.html`));
+  res.sendFile(path.join(import.meta.dirname, `fixtures/embeds/embedded-page.html`));
 });
 embedApp.get('/img', (req, res) => {
-  res.sendFile(path.join(__dirname, req.query.url));
+  res.sendFile(path.join(import.meta.dirname, req.query.url));
 });
 
 const port = 3000;
@@ -37,67 +37,67 @@ app.use(
 );
 
 app.get('/css.urls.css', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/css.urls.css'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/css.urls.css'));
 });
 
 app.get(
   '/blahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahbblahblahblahblahblahblahblahblahblahblahb',
   (req, res) => {
-    res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
+    res.sendFile(path.join(import.meta.dirname, 'fixtures/blue.png'));
   }
 );
 
 app.get('/img', (req, res) => {
   if (req.query.url) {
-    res.sendFile(path.join(__dirname, req.query.url));
+    res.sendFile(path.join(import.meta.dirname, req.query.url));
   } else {
-    res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
+    res.sendFile(path.join(import.meta.dirname, 'fixtures/blue.png'));
   }
 });
 
 app.get('/protected', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/auth/index.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/auth/index.html'));
 });
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/auth/index.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/auth/index.html'));
 });
 
 app.get('/img/another', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/pink.png'));
 });
 
 app.get('/img/another/no-content-type', (req, res) => {
   res.setHeader('content-type', 'fake/content'); // Simulate no matching file extension from mime lib
-  res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/purple.png'));
 });
 
 app.get('/img/another/no-content-type/first', (req, res) => {
   res.setHeader('content-type', 'fake/content'); // Simulate no matching file extension from mime lib
-  res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/blue.png'));
 });
 
 app.get('/img/another%Cwith%Cpercents', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/pink.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/pink.png'));
 });
 
 app.get('/asset-paths/@fz/C:/img/another:Cwith:colons/image.png', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/blue.png'));
 });
 
 app.get('/@fz/C:/img/another:Cwith:colons/image.png', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/blue.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/blue.png'));
 });
 
 app.get('/asset-paths/relative/purple.png', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/purple.png'));
 });
 
 app.get('/background-img.png', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/purple.png'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/purple.png'));
 });
 
-app.use(express.static(path.join(__dirname, 'fixtures/assets')));
+app.use(express.static(path.join(import.meta.dirname, 'fixtures/assets')));
 
 // Pages
 app.get('/', (req, res) => {
@@ -106,32 +106,32 @@ app.get('/', (req, res) => {
 
 // Asset path pages
 app.get('/asset-paths/:page', (req, res) => {
-  res.sendFile(path.join(__dirname, `fixtures/asset-paths/${req.params.page}.html`));
+  res.sendFile(path.join(import.meta.dirname, `fixtures/asset-paths/${req.params.page}.html`));
 });
 
 // Options pages
 app.get('/options/:page', (req, res) => {
-  res.sendFile(path.join(__dirname, `fixtures/options/${req.params.page}.html`));
+  res.sendFile(path.join(import.meta.dirname, `fixtures/options/${req.params.page}.html`));
 });
 
 app.get('/ignore', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/dynamic-content.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/dynamic-content.html'));
 });
 
 app.get('/forms', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/forms.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/forms.html'));
 });
 
 app.get('/no-doctype', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/no-doctype.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/no-doctype.html'));
 });
 
 app.get('/deeply-nested-dom', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/deeply-nested-dom.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/deeply-nested-dom.html'));
 });
 
 app.get('/viewports', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/viewports.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/viewports.html'));
 });
 
 // Send a redirect to the GET handler with the same path to ensure we're not caching POST responses and serving
@@ -147,36 +147,36 @@ app.get('/form-success', (req, res) => {
 });
 
 app.get('/manual-snapshots', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/manual-snapshots.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/manual-snapshots.html'));
 });
 
 app.get('/css-pseudo-states', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/css-pseudo-states.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/css-pseudo-states.html'));
 });
 
 app.get('/constructable-stylesheets/:page', (req, res) => {
   const page = req.params.page.replace(/[^a-zA-Z0-9-]/g, '');
-  res.sendFile(path.join(__dirname, `fixtures/constructable-stylesheets/${page}.html`));
+  res.sendFile(path.join(import.meta.dirname, `fixtures/constructable-stylesheets/${page}.html`));
 });
 
 app.get('/embeds/:page', (req, res) => {
-  res.sendFile(path.join(__dirname, `fixtures/embeds/${req.params.page}.html`));
+  res.sendFile(path.join(import.meta.dirname, `fixtures/embeds/${req.params.page}.html`));
 });
 
 app.get('/amd', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/amd.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/amd.html'));
 });
 
 app.get('/createObjectUrl', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/createObjectUrl.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/createObjectUrl.html'));
 });
 
 app.get('/canvas', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/canvas.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/canvas.html'));
 });
 
 app.get('/color-scheme', (req, res) => {
-  res.sendFile(path.join(__dirname, 'fixtures/color-scheme.html'));
+  res.sendFile(path.join(import.meta.dirname, 'fixtures/color-scheme.html'));
 });
 
 const server = app.listen(port, () => {
@@ -191,4 +191,4 @@ const embedServer = embedApp.listen(embedPort, () => {
 process.on('SIGINT', () => process.exit(0));
 process.on('SIGTERM', () => process.exit(0));
 
-module.exports = { server, embedServer };
+export { server, embedServer };

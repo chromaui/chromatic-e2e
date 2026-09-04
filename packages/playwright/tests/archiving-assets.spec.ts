@@ -28,9 +28,12 @@ test('external asset is not archived (but still renders)', async ({ page }) => {
 test('external asset is archived', async ({ page }) => {
   // mock the external image (which we'll archive)
   await page.route('https://some.external/domain/image.png', async (route) => {
-    const file = await fs.readFile(path.join(__dirname, '../../../test-server/fixtures/pink.png'), {
-      encoding: 'base64',
-    });
+    const file = await fs.readFile(
+      path.join(import.meta.dirname, '../../../test-server/fixtures/pink.png'),
+      {
+        encoding: 'base64',
+      }
+    );
     await route.fulfill({ body: Buffer.from(file, 'base64') });
   });
 

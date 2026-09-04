@@ -15,7 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
-import '../../../dist/support';
+import '../../../dist/support.mjs';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

@@ -6,17 +6,13 @@ import { DEFAULT_OUTPUT_DIR } from '../constants';
 
 // Discard first two entries (exec path and file path)
 const args = process.argv.slice(2);
-const configDir = path.resolve(__dirname, '../storybook-config');
+const configDir = path.resolve(import.meta.dirname, '../storybook-config');
 
-run();
-
-async function run() {
-  try {
-    await archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);
-  } catch (err) {
-    // Throwing the error results in a large output of minified code and a stacktrace that is
-    // likely not helpful to users, so this should hide the noise.
-    console.error(err.message);
-    process.exitCode = 1;
-  }
+try {
+  await archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);
+} catch (err) {
+  // Throwing the error results in a large output of minified code and a stacktrace that is
+  // likely not helpful to users, so this should hide the noise.
+  console.error(err.message);
+  process.exitCode = 1;
 }

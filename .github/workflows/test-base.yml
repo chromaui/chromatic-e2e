@@ -48,6 +48,7 @@ jobs:
       - name: Run lint
         run: |
           pnpm lint
+          pnpm publint
 
       - name: Run tests
         run: |

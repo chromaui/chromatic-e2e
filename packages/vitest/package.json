@@ -4,34 +4,40 @@
   "description": "Chromatic Visual Regression Testing for Vitest",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chromaui/chromatic-e2e.git",
+    "url": "git+https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/vitest"
   },
   "author": "Chromatic <tom@chromatic.com>",
   "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./plugin": {
-      "types": "./dist/plugin.d.ts",
-      "import": "./dist/plugin.js"
+      "types": "./dist/plugin.d.mts",
+      "default": "./dist/plugin.mjs"
     },
-    "./bin/archive-storybook": "./dist/bin/archive-storybook.js",
-    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.js"
+    "./bin/archive-storybook": "./dist/bin/archive-storybook.mjs",
+    "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.mjs",
+    "./package.json": "./package.json"
   },
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "bin": {
-    "archive-storybook": "dist/bin/archive-storybook.js",
-    "build-archive-storybook": "dist/bin/build-archive-storybook.js"
+    "archive-storybook": "dist/bin/archive-storybook.mjs",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.mjs"
   },
   "files": [
     "dist",
     "embedded"
   ],
   "scripts": {
-    "build": "rimraf ./dist ./embedded && tsup",
+    "build": "tsdown",
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project 'Vitest Unit' --project 'Vitest Browser'",
     "test:vitest": "vitest --config test/vitest.config.e2e.ts"
   },
@@ -51,8 +57,7 @@
     "@vitest/browser-playwright": "^5.0.0",
     "extend-to-be-announced": "2.0.0",
     "msw": "^2.12.10",
-    "rimraf": "^3.0.2",
-    "tsup": "^7.3.0",
+    "tsdown": "^0.22.14",
     "vitest": "^5.0.0"
   },
   "peerDependencies": {

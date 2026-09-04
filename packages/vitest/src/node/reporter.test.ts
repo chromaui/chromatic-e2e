@@ -267,7 +267,7 @@ test('summary when custom output directory', async () => {
   `);
 });
 
-test('summary when no eligible projects', { timeout: 15_000 },  async () => {
+test('summary when no eligible projects', { timeout: 15_000 }, async () => {
   const { stdout } = await runFixture({
     reporters: 'default',
     browser: { ...getBrowserConfig(), instances: [{ browser: 'webkit' }] },

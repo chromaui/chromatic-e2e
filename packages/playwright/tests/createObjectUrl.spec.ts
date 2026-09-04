@@ -5,7 +5,7 @@ test.use({ ignoreSelectors: ['#objectUrl'] });
 
 test('Upload a Single file and Assert blob', async ({ page }) => {
   await page.goto('/createObjectUrl');
-  const fileWithPath = path.join(__dirname, '../../../test-server/fixtures/blue.png');
+  const fileWithPath = path.join(import.meta.dirname, '../../../test-server/fixtures/blue.png');
   const [fileChooser] = await Promise.all([
     page.waitForEvent('filechooser'),
     page.locator('#fileInput').click(),

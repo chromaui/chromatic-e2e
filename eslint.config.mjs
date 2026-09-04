@@ -12,7 +12,7 @@ export default tseslint.config(
       '**/.cache/**',
       '**/*.d.ts',
       '**/storybook-static/**',
-      '**/tsup.config.ts',
+      '**/tsdown.config.ts',
       '**/playwright.config.ts',
       '**/tests/**',
       '**/__playwright-tests__/**',
@@ -22,23 +22,10 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['test-server/**/*.js'],
-    languageOptions: { globals: { ...globals.node } },
-    rules: { '@typescript-eslint/no-require-imports': 'off' },
-  },
-  {
-    files: ['**/.babelrc.js', '**/*.config.js'],
-    languageOptions: {
-      globals: { ...globals.node },
-      sourceType: 'commonjs',
-      parserOptions: { ecmaVersion: 'latest' },
-    },
-  },
-  {
     files: ['**/*.js'],
     languageOptions: {
       globals: { ...globals.node },
-      sourceType: 'commonjs',
+      sourceType: 'module',
       parserOptions: { ecmaVersion: 'latest' },
     },
   },

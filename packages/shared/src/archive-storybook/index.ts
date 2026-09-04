@@ -1,14 +1,14 @@
-import { spawn } from 'child_process';
-import { resolve, dirname } from 'path';
-import { readFileSync } from 'fs';
-import { createRequire } from 'module';
+import { spawn } from 'node:child_process';
+import { resolve, dirname } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { checkArchivesDirExists } from '../utils/filePaths';
 
 interface Callbacks {
   onArchivesCheck: (error?: unknown) => void;
 }
 
-const req = require.resolve ? require : createRequire(import.meta.url);
+const req = createRequire(import.meta.url);
 
 export async function archiveStorybook(
   processArgs: string[],

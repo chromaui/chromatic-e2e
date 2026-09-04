@@ -8,10 +8,24 @@ export default defineConfig({
       username: 'user',
       password: 'secret',
     },
-
-    ...devices['Desktop Chrome'],
-    viewport: { width: 1280, height: 720 },
   },
+
+  projects: [
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 },
+      },
+    },
+    {
+      name: 'Mobile',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 500, height: 600 },
+      },
+    },
+  ],
 
   webServer: {
     command: 'pnpm --filter @chromaui/chromatic-e2e dev:server',

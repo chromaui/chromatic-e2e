@@ -1,9 +1,10 @@
-import { inject, test } from 'vitest';
-import { takeSnapshot } from '../../src';
+import { inject, test } from "vitest";
 
-const delay = inject('delay');
+import { takeSnapshot } from "../../src";
 
-test.each([1, 2, 3, 4])('test #%i', async (index) => {
+const delay = inject("delay");
+
+test.each([1, 2, 3, 4])("test #%i", async (index) => {
   if (delay && index > 2) {
     await new Promise((resolve) => setTimeout(resolve, delay));
   }

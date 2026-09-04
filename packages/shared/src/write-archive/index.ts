@@ -1,13 +1,14 @@
-import { join } from 'node:path';
-import { existsSync } from 'node:fs';
-import { outputFile, ensureDir, outputJSONFile } from '../utils/filePaths';
-import { logger } from '../utils/logger';
-import { ArchiveFile } from './archive-file';
-import { DOMSnapshot } from './dom-snapshot';
-import type { ResourceArchive } from '../resource-archiver';
-import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
-import { snapshotFileName, snapshotId } from './snapshot-files';
-import { createStories, storiesFileName } from './stories-files';
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+import type { ResourceArchive } from "../resource-archiver";
+import type { ChromaticStorybookParameters, DOMSnapshots } from "../types";
+import { outputFile, ensureDir, outputJSONFile } from "../utils/filePaths";
+import { logger } from "../utils/logger";
+import { ArchiveFile } from "./archive-file";
+import { DOMSnapshot } from "./dom-snapshot";
+import { snapshotFileName, snapshotId } from "./snapshot-files";
+import { createStories, storiesFileName } from "./stories-files";
 
 // We write a collection of DOM snapshots and a resource archive in the following locations:
 // <test-title>.stories.json
@@ -30,7 +31,7 @@ export async function writeTestResult(
   domSnapshots: DOMSnapshots,
   archive: ResourceArchive,
   chromaticStorybookParams: RequiredButOptional<ChromaticStorybookParameters>,
-  testRunner?: 'cypress' | 'playwright' | 'vitest'
+  testRunner?: "cypress" | "playwright" | "vitest",
 ) {
   const { titlePath, outputDir, pageUrl } = e2eTestInfo;
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
@@ -39,21 +40,21 @@ export async function writeTestResult(
     // possible extensions:
     // playwright: https://playwright.dev/docs/test-configuration#filtering-tests
     // cypress: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Spec-files
-    pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, '').replace(/\.(spec|test|cy)$/, '')
+    pathPart.replace(/\.(ts|js|mjs|cjs|tsx|jsx|cjsx|coffee)$/, "").replace(/\.(spec|test|cy)$/, ""),
   );
   // in Storybook, `/` splits the title out into hierarchies (folders)
   const title = titlePathWithoutFileExtensions
-    .join('/')
+    .join("/")
     // Make sure we don't end up with folders with just special characters
     // Transforms paths like "src/components/accordion/<Accordion/>/opens and closes" to "src/components/accordion/<Accordion>/opens and closes "
     // eslint-disable-next-line no-useless-escape
-    .replace(/\/([ ’–—―′¿'`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\]+)\//gi, '$1/');
+    .replace(/\/([ ’–—―′¿'`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\]+)\//gi, "$1/");
 
-  const finalOutputDir = join(outputDir, 'chromatic-archives');
+  const finalOutputDir = join(outputDir, "chromatic-archives");
 
-  const archiveDir = join(finalOutputDir, 'archive');
+  const archiveDir = join(finalOutputDir, "archive");
 
-  await ensureDir(archiveDir);
+  ensureDir(archiveDir);
 
   logger.log(`Writing test results for "${title}"`);
 
@@ -63,7 +64,7 @@ export async function writeTestResult(
 
   await Promise.all(
     Object.entries(archive).map(async ([url, response]) => {
-      if ('error' in response) return;
+      if ("error" in response) return;
 
       const archiveFile = new ArchiveFile(url, response, pageUrl);
       const origSrcPath = archiveFile.originalSrc();
@@ -77,7 +78,7 @@ export async function writeTestResult(
       if (!existsSync(responsePath)) {
         await outputFile(responsePath, response.body);
       }
-    })
+    }),
   );
 
   await Promise.all(
@@ -89,14 +90,14 @@ export async function writeTestResult(
 
       const snapshotFile = snapshotFileName(snapshotId(title, name), domSnapshot.viewport);
       await outputFile(join(archiveDir, snapshotFile), mappedSnapshot);
-    })
+    }),
   );
 
-  const storiesFile = join(finalOutputDir, storiesFileName(title, testRunner !== 'vitest'));
+  const storiesFile = join(finalOutputDir, storiesFileName(title, testRunner !== "vitest"));
   const storiesJson = createStories(title, domSnapshots, chromaticStorybookParams);
   await outputJSONFile(storiesFile, storiesJson);
 
-  const errors = Object.entries(archive).filter(([, r]) => 'error' in r);
+  const errors = Object.entries(archive).filter(([, r]) => "error" in r);
   if (errors.length > 0) {
     logger.log(`Encountered ${errors.length} errors archiving resources, writing to 'errors.json'`);
     await outputJSONFile(join(archiveDir, `errors.json`), {

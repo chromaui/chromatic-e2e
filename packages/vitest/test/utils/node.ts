@@ -1,12 +1,14 @@
 // v8 ignore file
 
-import { resolve } from 'node:path';
-import { Writable } from 'node:stream';
-import { stripVTControlCharacters } from 'node:util';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
-import { type Mock, vi } from 'vitest';
-import { type ViteUserConfig } from 'vitest/config';
+import { resolve } from "node:path";
+import { Writable } from "node:stream";
+import { stripVTControlCharacters } from "node:util";
+
+import { playwright } from "@vitest/browser-playwright";
+import { http, HttpResponse } from "msw";
+import { setupServer } from "msw/node";
+import { type Mock, vi } from "vitest";
+import { type ViteUserConfig } from "vitest/config";
 import {
   type CliOptions,
   createVitest,
@@ -15,19 +17,19 @@ import {
   TestSequencer,
   version as vitestVersion,
   type TestSpecification,
-} from 'vitest/node';
-import { playwright } from '@vitest/browser-playwright';
-import { chromaticPlugin } from '../../src/node/plugin';
-import { TELEMETRY_URL, type WireTelemetryEvent } from '../../src/node/telemetry';
+} from "vitest/node";
 
-export function getBrowserConfig(name = 'chromium') {
+import { chromaticPlugin } from "../../src/node/plugin";
+import { TELEMETRY_URL, type WireTelemetryEvent } from "../../src/node/telemetry";
+
+export function getBrowserConfig(name = "chromium") {
   return {
     enabled: true,
     headless: true,
     screenshotFailures: false,
     provider: playwright(),
-    instances: [{ browser: 'chromium', name }],
-  } satisfies NonNullable<InlineConfig['browser']>;
+    instances: [{ browser: "chromium", name }],
+  } satisfies NonNullable<InlineConfig["browser"]>;
 }
 
 export async function runFixture(
@@ -35,29 +37,29 @@ export async function runFixture(
     stdout,
     plugins,
     ...options
-  }: CliOptions & { stdout?: 'inherit'; plugins?: ViteUserConfig['plugins'] },
-  pluginOptions: Parameters<typeof chromaticPlugin>[0] | { disabled: true } = {}
+  }: CliOptions & { stdout?: "inherit"; plugins?: ViteUserConfig["plugins"] },
+  pluginOptions: Parameters<typeof chromaticPlugin>[0] | { disabled: true } = {},
 ) {
   const { streams, getOutput } = createOutputStreams();
 
   const vitest = await startVitest(
-    'test',
+    "test",
     [],
     { config: options.config ?? false },
     {
-      publicDir: resolve(import.meta.dirname, '../fixtures/public-dir'),
+      publicDir: resolve(import.meta.dirname, "../fixtures/public-dir"),
       plugins: [
         ...(plugins ?? []),
-        'disabled' in pluginOptions ? suiteImportPlugin() : chromaticPlugin(pluginOptions),
+        "disabled" in pluginOptions ? suiteImportPlugin() : chromaticPlugin(pluginOptions),
       ],
       test: {
         watch: false,
-        root: resolve(import.meta.dirname, '../fixtures'),
+        root: resolve(import.meta.dirname, "../fixtures"),
         browser: getBrowserConfig(),
         ...options,
       },
     },
-    stdout === 'inherit' ? {} : streams
+    stdout === "inherit" ? {} : streams,
   );
   await vitest.close();
 
@@ -65,12 +67,12 @@ export async function runFixture(
 
   function suiteImportPlugin() {
     return {
-      name: 'test:suite-import-rewrite',
-      enforce: 'pre',
+      name: "test:suite-import-rewrite",
+      enforce: "pre",
       config() {
         // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
-        if (!vitestVersion.startsWith('4.0')) {
-          return { resolve: { alias: { 'vitest/suite': 'vitest' } } };
+        if (!vitestVersion.startsWith("4.0")) {
+          return { resolve: { alias: { "vitest/suite": "vitest" } } };
         }
       },
     };
@@ -79,16 +81,16 @@ export async function runFixture(
 
 export async function getResolvedConfig(
   options: InlineConfig & { shard?: string } = {},
-  pluginOptions: Parameters<typeof chromaticPlugin>[0] = {}
+  pluginOptions: Parameters<typeof chromaticPlugin>[0] = {},
 ) {
   const vitest = await createVitest(
-    'test',
+    "test",
     { config: false, watch: false },
     {
       plugins: [chromaticPlugin(pluginOptions)],
       test: { ...options, browser: options.browser || getBrowserConfig() },
     },
-    createOutputStreams().streams
+    createOutputStreams().streams,
   );
   await vitest.close();
 
@@ -106,7 +108,7 @@ export function createOutputStreams() {
 }
 
 function formatStreamCalls({ mock }: Mock) {
-  return stripVTControlCharacters(mock.calls.map(([chunk]) => chunk).join('')).trimEnd();
+  return stripVTControlCharacters(mock.calls.map(([chunk]) => chunk).join("")).trimEnd();
 }
 
 /** Run test files in stable order */
@@ -131,14 +133,14 @@ export class StableTestFileOrderSorter implements TestSequencer {
 }
 
 export function isVitest5() {
-  return vitestVersion.startsWith('5.');
+  return vitestVersion.startsWith("5.");
 }
 
 export function setupTelemetryServer(_server?: ReturnType<typeof setupServer>) {
   const server = _server || setupServer();
   const onRequest = vi.fn<(event: WireTelemetryEvent) => void>();
 
-  server.listen({ onUnhandledRequest: 'warn' });
+  server.listen({ onUnhandledRequest: "warn" });
 
   server.use(
     http.post<undefined, WireTelemetryEvent>(
@@ -146,14 +148,14 @@ export function setupTelemetryServer(_server?: ReturnType<typeof setupServer>) {
       async ({ request }) => {
         onRequest(await request.json());
         return HttpResponse.json({ ok: true });
-      }
-    )
+      },
+    ),
   );
 
-  process.env.CHROMATIC_DISABLE_TELEMETRY = '0';
+  process.env.CHROMATIC_DISABLE_TELEMETRY = "0";
 
   function cleanup() {
-    process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+    process.env.CHROMATIC_DISABLE_TELEMETRY = "1";
 
     server.resetHandlers();
     server.close();

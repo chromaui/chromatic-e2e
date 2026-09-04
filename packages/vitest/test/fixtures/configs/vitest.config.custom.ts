@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    name: 'custom-config-in-use',
+    name: "custom-config-in-use",
   },
 });

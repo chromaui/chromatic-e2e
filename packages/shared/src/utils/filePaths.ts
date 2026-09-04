@@ -1,7 +1,7 @@
-import { existsSync, mkdirSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
-import path from 'node:path';
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
+import path from "node:path";
 
 function rootDir() {
   return process.cwd();
@@ -14,14 +14,14 @@ function outputDirOverride() {
 
 export function archivesDir(defaultOutputDir: string) {
   const outputDir = outputDirOverride() || defaultOutputDir;
-  return path.resolve(rootDir(), outputDir, 'chromatic-archives');
+  return path.resolve(rootDir(), outputDir, "chromatic-archives");
 }
 
 export function checkArchivesDirExists(defaultOutputDir: string) {
   const dir = archivesDir(defaultOutputDir);
   if (!existsSync(dir)) {
     throw new Error(
-      `Chromatic archives directory cannot be found: ${dir}\n\nPlease make sure that you have run your E2E tests, or have set the CHROMATIC_ARCHIVE_LOCATION env var if the output directory for the tests is not in the standard location.`
+      `Chromatic archives directory cannot be found: ${dir}\n\nPlease make sure that you have run your E2E tests, or have set the CHROMATIC_ARCHIVE_LOCATION env var if the output directory for the tests is not in the standard location.`,
     );
   }
 }
@@ -44,7 +44,7 @@ export async function outputJSONFile(filePath: string, data: any) {
 // Generates a fixed length hash for the given `data`
 function hash(data: string) {
   // `outputLength` of 2 bytes is 4 chars
-  return createHash('shake256', { outputLength: 2 }).update(data).digest('hex');
+  return createHash("shake256", { outputLength: 2 }).update(data).digest("hex");
 }
 
 // 255 bytes is a good upper bound on file name size to work on most platforms
@@ -57,12 +57,12 @@ export const MAX_FILE_NAME_BYTE_LENGTH = 255;
 // at the end that is truncated.
 export function truncateFileName(
   filePath: string,
-  maxByteLength: number = MAX_FILE_NAME_BYTE_LENGTH
+  maxByteLength: number = MAX_FILE_NAME_BYTE_LENGTH,
 ) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  const filePathParts = filePath.split('/');
+  const filePathParts = filePath.split("/");
   const fileName = filePathParts.pop();
 
   const fileNameByteArray = encoder.encode(fileName);
@@ -71,9 +71,9 @@ export function truncateFileName(
   }
 
   const hashedFileName = hash(fileName);
-  const [baseName, ...extensions] = fileName.split('.');
+  const [baseName, ...extensions] = fileName.split(".");
   const baseNameByteArray = encoder.encode(baseName);
-  const ext = extensions.join('.');
+  const ext = extensions.join(".");
   const extLength = ext.length === 0 ? 0 : encoder.encode(ext).byteLength + 1; // +1 for leading `.` if needed
 
   const lengthHashAndExt = encoder.encode(hashedFileName).byteLength + extLength;
@@ -81,9 +81,9 @@ export function truncateFileName(
   const truncatedBaseName = decoder.decode(truncatedBaseNameByteArray);
   const truncatedFileName = [`${truncatedBaseName}${hashedFileName}`, ext]
     .filter(Boolean)
-    .join('.');
+    .join(".");
 
-  return [...filePathParts, truncatedFileName].join('/');
+  return [...filePathParts, truncatedFileName].join("/");
 }
 
 /**
@@ -94,7 +94,7 @@ export const removeLocalhostFromBaseUrl = (href: string) => {
   let baseUrl;
   try {
     baseUrl = new URL(href);
-    if (baseUrl.hostname === 'localhost') {
+    if (baseUrl.hostname === "localhost") {
       return baseUrl.pathname + baseUrl.search + baseUrl.hash;
     }
     return href;

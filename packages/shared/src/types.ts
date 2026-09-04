@@ -1,5 +1,6 @@
-import { NodeType, serializedNodeWithId } from '@rrweb/types';
-import { Viewport } from './utils/viewport';
+import { NodeType, serializedNodeWithId } from "@rrweb/types";
+
+import { Viewport } from "./utils/viewport";
 
 export interface ChromaticConfig {
   /** https://www.chromatic.com/docs/delay/ */
@@ -45,7 +46,7 @@ export interface ChromaticConfig {
 
 export type ChromaticStorybookParameters = Omit<
   ChromaticConfig,
-  'disableAutoSnapshot' | 'resourceArchiveTimeout' | 'assetDomains'
+  "disableAutoSnapshot" | "resourceArchiveTimeout" | "assetDomains"
 >;
 
 export type DOMSnapshots = Record<
@@ -58,11 +59,11 @@ export type DOMSnapshots = Record<
     viewport: Viewport;
 
     /** Color scheme from the exact time the snapshot was taken */
-    colorScheme: 'light' | 'dark';
+    colorScheme: "light" | "dark";
 
     /** Mapping of pseudo-class names to their corresponding rrweb-snapshot element IDs */
     pseudoClassIds: Partial<
-      Record<':active' | ':focus' | ':focus-visible' | ':hover', serializedNodeWithId['id'][]>
+      Record<":active" | ":focus" | ":focus-visible" | ":hover", serializedNodeWithId["id"][]>
     >;
 
     /** Optional parameters for the Story JSON */
@@ -73,12 +74,12 @@ export type DOMSnapshots = Record<
 /** Shape of the snapshot that is written to **the file system** */
 export interface SavedSnapshot {
   snapshot: serializedNodeWithId;
-  pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+  pseudoClassIds: DOMSnapshots[string]["pseudoClassIds"];
 }
 
 export type SerializedIframeNode = serializedNodeWithId & {
   type: NodeType.Element;
-  tagName: 'iframe';
+  tagName: "iframe";
   contentDocument?: serializedNodeWithId;
-  pseudoClassIds?: DOMSnapshots[string]['pseudoClassIds'];
+  pseudoClassIds?: DOMSnapshots[string]["pseudoClassIds"];
 };

@@ -1,6 +1,6 @@
 /* Types consumed by both browser and Node context */
 
-import { type ChromaticConfig } from '@chromatic-com/shared-e2e/types';
+import { type ChromaticConfig } from "@chromatic-com/shared-e2e/types";
 
 /**
  * Prefix to avoid conflicting with user-defined browser commands, task meta and others.
@@ -85,7 +85,7 @@ export interface StoryParameters {
 }
 
 /** Options that don't have internal default values */
-type UnresolvedOptionKeys = 'tags' | Exclude<keyof ChromaticConfig, 'resourceArchiveTimeout'>;
+type UnresolvedOptionKeys = "tags" | Exclude<keyof ChromaticConfig, "resourceArchiveTimeout">;
 
 /** Options with resolved values - derived from internal default values when not passed by user. */
 type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;
@@ -94,8 +94,8 @@ type ResolvedOptionKeys = Exclude<keyof Options, UnresolvedOptionKeys>;
 export interface ResolvedOptions
   extends
     Required<Pick<Options, ResolvedOptionKeys>>,
-    Pick<Options, UnresolvedOptionKeys | 'reporter'> {
-  reporter: Required<Exclude<Options['reporter'], boolean>>;
+    Pick<Options, UnresolvedOptionKeys | "reporter"> {
+  reporter: Required<Exclude<Options["reporter"], boolean>>;
 
   telemetry: {
     /**
@@ -123,7 +123,7 @@ export interface ResolvedOptions
 export type ConfigureOptions = {
   /** Custom title to be shown in Chromatic. Default is derived from test file name. */
   title?: string;
-} & Omit<ChromaticConfig, 'assetDomains'>;
+} & Omit<ChromaticConfig, "assetDomains">;
 
 /** @internal */
 type InternalMeta = Record<ChromaticNamespace, unknown> & {

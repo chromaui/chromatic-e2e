@@ -1,22 +1,23 @@
-import { beforeEach, test } from 'vitest';
-import { takeSnapshot, waitForIdleNetwork, configure } from '../../src';
+import { beforeEach, test } from "vitest";
+
+import { takeSnapshot, waitForIdleNetwork, configure } from "../../src";
 
 beforeEach(() => {
-  document.body.innerHTML = '<h1>Example heading</h1>';
+  document.body.innerHTML = "<h1>Example heading</h1>";
 
   return () => {
-    document.body.innerHTML = '';
+    document.body.innerHTML = "";
   };
 });
 
-test('calls configure({ disableAutoSnapshot: true })', async () => {
+test("calls configure({ disableAutoSnapshot: true })", async () => {
   configure({ disableAutoSnapshot: true });
 });
 
-test('calls waitForIdleNetwork()', async () => {
+test("calls waitForIdleNetwork()", async () => {
   await waitForIdleNetwork(1);
 });
 
-test('calls takeSnapshot()', async () => {
-  await takeSnapshot('manual snapshot');
+test("calls takeSnapshot()", async () => {
+  await takeSnapshot("manual snapshot");
 });

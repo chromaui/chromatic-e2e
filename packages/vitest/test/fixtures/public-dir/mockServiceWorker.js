@@ -7,21 +7,21 @@
  * - Please do NOT modify this file.
  */
 
-const PACKAGE_VERSION = '2.15.0';
-const INTEGRITY_CHECKSUM = '03cb67ac84128e63d7cd722a6e5b7f1e';
-const IS_MOCKED_RESPONSE = Symbol('isMockedResponse');
+const PACKAGE_VERSION = "2.15.0";
+const INTEGRITY_CHECKSUM = "03cb67ac84128e63d7cd722a6e5b7f1e";
+const IS_MOCKED_RESPONSE = Symbol("isMockedResponse");
 const activeClientIds = new Set();
 
-addEventListener('install', function () {
+addEventListener("install", function () {
   self.skipWaiting();
 });
 
-addEventListener('activate', function (event) {
+addEventListener("activate", function (event) {
   event.waitUntil(self.clients.claim());
 });
 
-addEventListener('message', async function (event) {
-  const clientId = Reflect.get(event.source || {}, 'id');
+addEventListener("message", async function (event) {
+  const clientId = Reflect.get(event.source || {}, "id");
 
   if (!clientId || !self.clients) {
     return;
@@ -34,20 +34,20 @@ addEventListener('message', async function (event) {
   }
 
   const allClients = await self.clients.matchAll({
-    type: 'window',
+    type: "window",
   });
 
   switch (event.data) {
-    case 'KEEPALIVE_REQUEST': {
+    case "KEEPALIVE_REQUEST": {
       sendToClient(client, {
-        type: 'KEEPALIVE_RESPONSE',
+        type: "KEEPALIVE_RESPONSE",
       });
       break;
     }
 
-    case 'INTEGRITY_CHECK_REQUEST': {
+    case "INTEGRITY_CHECK_REQUEST": {
       sendToClient(client, {
-        type: 'INTEGRITY_CHECK_RESPONSE',
+        type: "INTEGRITY_CHECK_RESPONSE",
         payload: {
           packageVersion: PACKAGE_VERSION,
           checksum: INTEGRITY_CHECKSUM,
@@ -56,11 +56,11 @@ addEventListener('message', async function (event) {
       break;
     }
 
-    case 'MOCK_ACTIVATE': {
+    case "MOCK_ACTIVATE": {
       activeClientIds.add(clientId);
 
       sendToClient(client, {
-        type: 'MOCKING_ENABLED',
+        type: "MOCKING_ENABLED",
         payload: {
           client: {
             id: client.id,
@@ -71,7 +71,7 @@ addEventListener('message', async function (event) {
       break;
     }
 
-    case 'CLIENT_CLOSED': {
+    case "CLIENT_CLOSED": {
       activeClientIds.delete(clientId);
 
       const remainingClients = allClients.filter((client) => {
@@ -88,17 +88,17 @@ addEventListener('message', async function (event) {
   }
 });
 
-addEventListener('fetch', function (event) {
+addEventListener("fetch", function (event) {
   const requestInterceptedAt = Date.now();
 
   // Bypass navigation requests.
-  if (event.request.mode === 'navigate') {
+  if (event.request.mode === "navigate") {
     return;
   }
 
   // Opening the DevTools triggers the "only-if-cached" request
   // that cannot be handled by the worker. Bypass such requests.
-  if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
+  if (event.request.cache === "only-if-cached" && event.request.mode !== "same-origin") {
     return;
   }
 
@@ -135,9 +135,9 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
     // source once both of its branches cancel) and would buffer the
     // entire stream into the unconsumed clone indefinitely.
     const isEventStreamResponse = response.headers
-      .get('content-type')
+      .get("content-type")
       ?.toLowerCase()
-      .startsWith('text/event-stream');
+      .startsWith("text/event-stream");
 
     // Clone the response so both the client and the library could consume it.
     const responseClone = isEventStreamResponse ? null : response.clone();
@@ -145,7 +145,7 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
     sendToClient(
       client,
       {
-        type: 'RESPONSE',
+        type: "RESPONSE",
         payload: {
           isMockedResponse: IS_MOCKED_RESPONSE in response,
           request: {
@@ -161,7 +161,7 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
           },
         },
       },
-      responseClone && responseClone.body ? [serializedRequest.body, responseClone.body] : []
+      responseClone && responseClone.body ? [serializedRequest.body, responseClone.body] : [],
     );
   }
 
@@ -183,18 +183,18 @@ async function resolveMainClient(event) {
     return client;
   }
 
-  if (client?.frameType === 'top-level') {
+  if (client?.frameType === "top-level") {
     return client;
   }
 
   const allClients = await self.clients.matchAll({
-    type: 'window',
+    type: "window",
   });
 
   return allClients
     .filter((client) => {
       // Get only those clients that are currently visible.
-      return client.visibilityState === 'visible';
+      return client.visibilityState === "visible";
     })
     .find((client) => {
       // Find the client ID that's recorded in the
@@ -223,15 +223,15 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
     // Remove the "accept" header value that marked this request as passthrough.
     // This prevents request alteration and also keeps it compliant with the
     // user-defined CORS policies.
-    const acceptHeader = headers.get('accept');
+    const acceptHeader = headers.get("accept");
     if (acceptHeader) {
-      const values = acceptHeader.split(',').map((value) => value.trim());
-      const filteredValues = values.filter((value) => value !== 'msw/passthrough');
+      const values = acceptHeader.split(",").map((value) => value.trim());
+      const filteredValues = values.filter((value) => value !== "msw/passthrough");
 
       if (filteredValues.length > 0) {
-        headers.set('accept', filteredValues.join(', '));
+        headers.set("accept", filteredValues.join(", "));
       } else {
-        headers.delete('accept');
+        headers.delete("accept");
       }
     }
 
@@ -256,22 +256,22 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
   const clientMessage = await sendToClient(
     client,
     {
-      type: 'REQUEST',
+      type: "REQUEST",
       payload: {
         id: requestId,
         interceptedAt: requestInterceptedAt,
         ...serializedRequest,
       },
     },
-    [serializedRequest.body]
+    [serializedRequest.body],
   );
 
   switch (clientMessage.type) {
-    case 'MOCK_RESPONSE': {
+    case "MOCK_RESPONSE": {
       return respondWithMock(clientMessage.data);
     }
 
-    case 'PASSTHROUGH': {
+    case "PASSTHROUGH": {
       return passthrough();
     }
   }

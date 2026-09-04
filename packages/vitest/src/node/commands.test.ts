@@ -1,23 +1,24 @@
-import { expect, test, vi } from 'vitest';
-import * as shared from '@chromatic-com/shared-e2e';
-import type { BrowserCommandContext } from 'vitest/node';
-import { runFixture } from '../../test/utils/node';
-import { createCommands } from './commands';
-import { trackEvent } from './telemetry';
-import type { ResolvedOptions } from '../types';
+import * as shared from "@chromatic-com/shared-e2e";
+import { expect, test, vi } from "vitest";
+import type { BrowserCommandContext } from "vitest/node";
 
-vi.mock('@chromatic-com/shared-e2e/write-archive/index');
+import { runFixture } from "../../test/utils/node";
+import type { ResolvedOptions } from "../types";
+import { createCommands } from "./commands";
+import { trackEvent } from "./telemetry";
+
+vi.mock("@chromatic-com/shared-e2e/write-archive/index");
 vi.mocked(shared.writeTestResult).mockImplementation(() =>
-  Promise.resolve({ storiesFile: 'test.stories.json' })
+  Promise.resolve({ storiesFile: "test.stories.json" }),
 );
 
 // Prevent trackEvent from sending real events while keeping call records
-vi.mock('./telemetry', { spy: true });
+vi.mock("./telemetry", { spy: true });
 vi.mocked(trackEvent).mockImplementation(() => {});
 
-test('writes test results with full test name', async () => {
+test("writes test results with full test name", async () => {
   /** See {@link file://./../../test/fixtures/test-names.test.ts} */
-  await runFixture({ include: ['test-names.test.ts'] });
+  await runFixture({ include: ["test-names.test.ts"] });
 
   const tests = vi
     .mocked(shared.writeTestResult)
@@ -69,10 +70,10 @@ test('writes test results with full test name', async () => {
   `);
 });
 
-test('writes test title without extensions', async () => {
+test("writes test title without extensions", async () => {
   /** See {@link file://./../../test/fixtures/nested/directories/expected-name.this-should-be-ignored.and-this.test.ts} */
   await runFixture({
-    include: ['nested/directories/expected-name.this-should-be-ignored.and-this.test.ts'],
+    include: ["nested/directories/expected-name.this-should-be-ignored.and-this.test.ts"],
   });
 
   expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
@@ -87,15 +88,15 @@ test('writes test title without extensions', async () => {
   `);
 });
 
-test('writes test results with DOM snapshot', async () => {
+test("writes test results with DOM snapshot", async () => {
   /** See {@link file://./../../test/fixtures/dom.test.ts} */
-  await runFixture({ include: ['dom.test.ts'] });
+  await runFixture({ include: ["dom.test.ts"] });
 
   const snapshots = vi.mocked(shared.writeTestResult).mock.calls.map((call) => call[1]);
 
-  expect(snapshots[0]).toHaveProperty('mount some elements / Snapshot #1');
+  expect(snapshots[0]).toHaveProperty("mount some elements / Snapshot #1");
 
-  const { snapshot } = snapshots[0]['mount some elements / Snapshot #1'];
+  const { snapshot } = snapshots[0]["mount some elements / Snapshot #1"];
   const json = JSON.parse(Buffer.from(snapshot).toString());
 
   expect(json).toMatchInlineSnapshot(`
@@ -130,9 +131,9 @@ test('writes test results with DOM snapshot', async () => {
   `);
 });
 
-test('writes test results with custom parameters', async () => {
+test("writes test results with custom parameters", async () => {
   /** See {@link file://./../../test/fixtures/take-snapshot.test.ts} */
-  await runFixture({ include: ['take-snapshot.test.ts'], provide: { testName: 'five' } });
+  await runFixture({ include: ["take-snapshot.test.ts"], provide: { testName: "five" } });
 
   const snapshots = vi.mocked(shared.writeTestResult).mock.calls.map((call) => call[1]);
   const parameters = snapshots
@@ -188,14 +189,14 @@ test('writes test results with custom parameters', async () => {
   `);
 });
 
-test('writes archived assets even from first URL archiver sees', async () => {
+test("writes archived assets even from first URL archiver sees", async () => {
   /** See {@link file://./../../test/fixtures/external-assets.test.ts} */
-  await runFixture({ include: ['external-assets.test.ts'] });
+  await runFixture({ include: ["external-assets.test.ts"] });
 
   const assets = vi.mocked(shared.writeTestResult).mock.calls[0][2];
   const url = Object.keys(assets)[0];
 
-  expect(url, 'Expected to archive assets.external.css').toBeDefined();
+  expect(url, "Expected to archive assets.external.css").toBeDefined();
   expect(url).toMatch(/assets\/external.css$/);
 
   expect(parseArchive(assets[url])).toMatchInlineSnapshot(`
@@ -208,20 +209,20 @@ test('writes archived assets even from first URL archiver sees', async () => {
   `);
 });
 
-test('writes archived assets even when browser cached them', { timeout: 30_000 }, async () => {
+test("writes archived assets even when browser cached them", { timeout: 30_000 }, async () => {
   await runFixture({
     include: [
       /** See {@link file://./../../test/fixtures/external-assets.test.ts} */
-      'external-assets.test.ts',
+      "external-assets.test.ts",
 
       /** See {@link file://./../../test/fixtures/external-assets-caching-1.test.ts} */
-      'external-assets-caching-1.test.ts',
-      'external-assets-caching-2.test.ts',
-      'external-assets-caching-3.test.ts',
-      'external-assets-caching-4.test.ts',
-      'external-assets-caching-5.test.ts',
+      "external-assets-caching-1.test.ts",
+      "external-assets-caching-2.test.ts",
+      "external-assets-caching-3.test.ts",
+      "external-assets-caching-4.test.ts",
+      "external-assets-caching-5.test.ts",
     ],
-    provide: { testName: 'both' },
+    provide: { testName: "both" },
 
     // Run 2 browser contexts parallel, 3 test files in each.
     // This triggers complex caching case where 3 files share same cache, but the other 3 don't.
@@ -256,7 +257,7 @@ test('writes archived assets even when browser cached them', { timeout: 30_000 }
 
   expect(
     assets,
-    `Expected to archive 12 assets, got ${formatResourceArchives(assets)}`
+    `Expected to archive 12 assets, got ${formatResourceArchives(assets)}`,
   ).toHaveLength(2 * 6);
 
   for (const [index, asset] of assets.entries()) {
@@ -266,39 +267,39 @@ test('writes archived assets even when browser cached them', { timeout: 30_000 }
     expect(url).toMatch(/assets\/external.css$/);
 
     expect(parseArchive(asset[url])).toMatchObject({
-      contentType: 'text/css',
+      contentType: "text/css",
       statusCode: 200,
-      statusText: 'OK',
-      body: 'body { background-color: red; }',
+      statusText: "OK",
+      body: "body { background-color: red; }",
     });
   }
 });
 
-test('tracks command_failed when a command fails', async () => {
+test("tracks command_failed when a command fails", async () => {
   const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
   const context = createContext();
 
   await expect(commands.__chromatic_waitForIdleNetwork(context, 1)).rejects.toThrow(
-    'No network idle tracker found for session session-1'
+    "No network idle tracker found for session session-1",
   );
 
   expect(trackEvent).toHaveBeenCalledWith(
     {
-      eventType: 'command_failed',
-      level: 'error',
+      eventType: "command_failed",
+      level: "error",
       payload: {
-        command: '__chromatic_waitForIdleNetwork',
+        command: "__chromatic_waitForIdleNetwork",
         error: expect.objectContaining({
-          message: 'No network idle tracker found for session session-1',
+          message: "No network idle tracker found for session session-1",
         }),
       },
     },
     context.project.vitest,
-    expect.anything()
+    expect.anything(),
   );
 });
 
-test('identical failures are tracked only once', async () => {
+test("identical failures are tracked only once", async () => {
   const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
   const context = createContext();
 
@@ -308,7 +309,7 @@ test('identical failures are tracked only once', async () => {
   expect(getCommandFailedEvents()).toHaveLength(1);
 });
 
-test('identical failures are tracked again after reset', async () => {
+test("identical failures are tracked again after reset", async () => {
   const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
   const context = createContext();
 
@@ -319,19 +320,19 @@ test('identical failures are tracked again after reset', async () => {
   expect(getCommandFailedEvents()).toHaveLength(2);
 });
 
-test('telemetry command failures are not tracked', async () => {
-  vi.mocked(trackEvent).mockThrow(new Error('Mock error'));
+test("telemetry command failures are not tracked", async () => {
+  vi.mocked(trackEvent).mockThrow(new Error("Mock error"));
 
   const commands = createCommands({ telemetry: { enabled: true } } as ResolvedOptions);
   const context = createContext();
 
   await expect(
     commands.__chromatic_telemetry(context, {
-      eventType: 'run_started',
-      level: 'info',
+      eventType: "run_started",
+      level: "info",
       payload: {},
-    })
-  ).rejects.toThrow('Mock error');
+    }),
+  ).rejects.toThrow("Mock error");
 
   expect(getCommandFailedEvents()).toHaveLength(0);
 });
@@ -340,25 +341,25 @@ function formatResourceArchives(archives: shared.ResourceArchive[]) {
   return JSON.stringify(
     archives.map((archive) => Object.keys(archive).map((url) => parseArchive(archive[url]))),
     null,
-    2
+    2,
   );
 }
 
 function parseArchive(asset: shared.ArchiveResponse) {
-  if ('error' in asset) {
+  if ("error" in asset) {
     return asset;
   }
 
   return {
     ...asset,
-    body: Buffer.from(asset.body).toString().trim().replace(/\s+/g, ' '),
+    body: Buffer.from(asset.body).toString().trim().replace(/\s+/g, " "),
   };
 }
 
 function createContext() {
-  return { sessionId: 'session-1', project: { vitest: {} } } as unknown as BrowserCommandContext;
+  return { sessionId: "session-1", project: { vitest: {} } } as unknown as BrowserCommandContext;
 }
 
 function getCommandFailedEvents() {
-  return vi.mocked(trackEvent).mock.calls.filter(([event]) => event.eventType === 'command_failed');
+  return vi.mocked(trackEvent).mock.calls.filter(([event]) => event.eventType === "command_failed");
 }

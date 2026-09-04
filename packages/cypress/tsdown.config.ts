@@ -1,10 +1,10 @@
-import { defineConfig, type UserConfig } from 'tsdown';
+import { defineConfig, type UserConfig } from "tsdown";
 
 const defaults: UserConfig = {
-  format: ['esm'],
-  platform: 'node',
-  target: 'esnext',
-  tsconfig: './tsconfig.json',
+  format: ["esm"],
+  platform: "node",
+  target: "esnext",
+  tsconfig: "./tsconfig.json",
   outputOptions: { comments: false },
   minify: false,
   clean: true,
@@ -14,25 +14,29 @@ const defaults: UserConfig = {
 export default defineConfig([
   {
     ...defaults,
-    name: 'Node',
+    name: "Node",
     entry: {
-      index: 'src/index.ts',
-      support: 'src/support.ts',
-      'bin/archive-storybook': 'src/bin/archive-storybook.ts',
-      'bin/build-archive-storybook': 'src/bin/build-archive-storybook.ts',
-      'storybook-config/main': 'src/storybook-config/main.ts',
+      index: "src/index.ts",
+      support: "src/support.ts",
+      "bin/archive-storybook": "src/bin/archive-storybook.ts",
+      "bin/build-archive-storybook": "src/bin/build-archive-storybook.ts",
+      "storybook-config/main": "src/storybook-config/main.ts",
     },
-    dts: { entry: ['src/index.ts', 'src/support.ts'] },
-    deps: { onlyBundle: ['@rrweb/types', 'mime', 'srcset'] },
+    dts: {
+      entry: ["src/index.ts", "src/support.ts"],
+      // tsgolint rejects `baseUrl` in tsconfig files, but tsdown's dts type inference needs it:
+      compilerOptions: { baseUrl: "../.." },
+    },
+    deps: { onlyBundle: ["@rrweb/types", "mime", "srcset"] },
   },
   {
     ...defaults,
-    name: 'Browser',
+    name: "Browser",
     entry: {
-      'storybook-config/manager': 'src/storybook-config/shared/manager.ts',
-      'storybook-config/preview': 'src/storybook-config/shared/preview.ts',
+      "storybook-config/manager": "src/storybook-config/shared/manager.ts",
+      "storybook-config/preview": "src/storybook-config/shared/preview.ts",
     },
-    platform: 'browser',
-    deps: { onlyBundle: ['@rrweb/types'] },
+    platform: "browser",
+    deps: { onlyBundle: ["@rrweb/types"] },
   },
 ]);

@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-import { buildArchiveStorybook } from '@chromatic-com/shared-e2e/archive-storybook';
-import path from 'path';
-import { DEFAULT_OUTPUT_DIR } from '../constants';
+import path from "node:path";
+
+import { buildArchiveStorybook } from "@chromatic-com/shared-e2e/archive-storybook";
+
+import { DEFAULT_OUTPUT_DIR } from "../constants";
 
 // Discard first two entries (exec path and file path)
 const args = process.argv.slice(2);
-const configDir = path.resolve(import.meta.dirname, '../storybook-config');
+const configDir = path.resolve(import.meta.dirname, "../storybook-config");
 
 try {
   await buildArchiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR);

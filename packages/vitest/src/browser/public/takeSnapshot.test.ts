@@ -1,25 +1,26 @@
-import { expect, test, vi } from 'vitest';
-import * as shared from '@chromatic-com/shared-e2e';
-import { getBrowserConfig, isVitest5, runFixture } from '../../../test/utils/node';
+import * as shared from "@chromatic-com/shared-e2e";
+import { expect, test, vi } from "vitest";
 
-vi.mock('@chromatic-com/shared-e2e');
+import { getBrowserConfig, isVitest5, runFixture } from "../../../test/utils/node";
+
+vi.mock("@chromatic-com/shared-e2e");
 vi.mocked(shared.writeTestResult).mockImplementation(() =>
-  Promise.resolve({ storiesFile: 'test.stories.json' })
+  Promise.resolve({ storiesFile: "test.stories.json" }),
 );
 
 /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
-const takeSnapshotTest = 'take-snapshot.test.ts';
+const takeSnapshotTest = "take-snapshot.test.ts";
 
 /** See {@link file://./../../../test/fixtures/viewports.test.ts} */
-const viewportsTest = 'viewports.test.ts';
+const viewportsTest = "viewports.test.ts";
 
-test('provides descriptive error when called in non-registered test', async () => {
+test("provides descriptive error when called in non-registered test", async () => {
   const { stderr } = await runFixture(
     {
       include: [takeSnapshotTest],
-      provide: { testName: 'one' },
+      provide: { testName: "one" },
     },
-    { disabled: true }
+    { disabled: true },
   );
 
   if (isVitest5()) {
@@ -30,13 +31,13 @@ test('provides descriptive error when called in non-registered test', async () =
        FAIL   chromium  take-snapshot.test.ts > test #1
       TypeError: takeSnapshot() cannot be called in a test that is not registered for Chromatic plugin.
       Make sure chromium project has chromaticPlugin() enabled.
-       ❯ take-snapshot.test.ts:7:9
-            5|   document.body.innerHTML = '<h1>Example heading</h1>';
-            6|
-            7|   await takeSnapshot();
+       ❯ take-snapshot.test.ts:8:9
+            6|   document.body.innerHTML = "<h1>Example heading</h1>";
+            7|
+            8|   await takeSnapshot();
              |         ^
-            8|
-            9|   expect.fail('Should not reach this point');
+            9|
+           10|   expect.fail("Should not reach this point");
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);
@@ -48,23 +49,23 @@ test('provides descriptive error when called in non-registered test', async () =
        FAIL   chromium  take-snapshot.test.ts > test #1
       TypeError: takeSnapshot() cannot be called in a test that is not registered for Chromatic plugin.
       Make sure chromium project has chromaticPlugin() enabled.
-       ❯ take-snapshot.test.ts:7:8
-            5|   document.body.innerHTML = '<h1>Example heading</h1>';
-            6|
-            7|   await takeSnapshot();
+       ❯ take-snapshot.test.ts:8:8
+            6|   document.body.innerHTML = "<h1>Example heading</h1>";
+            7|
+            8|   await takeSnapshot();
              |        ^
-            8|
-            9|   expect.fail('Should not reach this point');
+            9|
+           10|   expect.fail("Should not reach this point");
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);
   }
 });
 
-test('provides descriptive error when called outside of a test()', async () => {
+test("provides descriptive error when called outside of a test()", async () => {
   const { stderr } = await runFixture({
     include: [takeSnapshotTest],
-    provide: { testName: 'two' },
+    provide: { testName: "two" },
   });
 
   if (isVitest5()) {
@@ -74,13 +75,13 @@ test('provides descriptive error when called outside of a test()', async () => {
 
        FAIL   chromium  take-snapshot.test.ts > suite
       TypeError: takeSnapshot() must be called within a test()
-       ❯ take-snapshot.test.ts:14:11
-           12| describe.runIf(inject('testName') === 'two')('suite', async () => {
-           13|   beforeAll(async () => {
-           14|     await takeSnapshot();
+       ❯ take-snapshot.test.ts:15:11
+           13| describe.runIf(inject("testName") === "two")("suite", async () => {
+           14|   beforeAll(async () => {
+           15|     await takeSnapshot();
              |           ^
-           15|   });
-           16|
+           16|   });
+           17|
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);
@@ -91,23 +92,23 @@ test('provides descriptive error when called outside of a test()', async () => {
 
        FAIL   chromium  take-snapshot.test.ts > suite
       TypeError: takeSnapshot() must be called within a test()
-       ❯ take-snapshot.test.ts:14:10
-           12| describe.runIf(inject('testName') === 'two')('suite', async () => {
-           13|   beforeAll(async () => {
-           14|     await takeSnapshot();
+       ❯ take-snapshot.test.ts:15:10
+           13| describe.runIf(inject("testName") === "two")("suite", async () => {
+           14|   beforeAll(async () => {
+           15|     await takeSnapshot();
              |          ^
-           15|   });
-           16|
+           16|   });
+           17|
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
     `);
   }
 });
 
-test('provides descriptive error when not awaited', async () => {
+test("provides descriptive error when not awaited", async () => {
   const { stderr } = await runFixture({
     include: [takeSnapshotTest],
-    provide: { testName: 'three' },
+    provide: { testName: "three" },
   });
 
   if (isVitest5()) {
@@ -117,25 +118,25 @@ test('provides descriptive error when not awaited', async () => {
 
        FAIL   chromium  take-snapshot.test.ts > test #3
       Error: takeSnapshot() call was not awaited!
-       ❯ take-snapshot.test.ts:23:3
-           21|   document.body.innerHTML = '<h1>Example heading</h1>';
-           22|
-           23|   takeSnapshot(); // Leave the promise floating, no await
+       ❯ take-snapshot.test.ts:24:3
+           22|   document.body.innerHTML = "<h1>Example heading</h1>";
+           23|
+           24|   takeSnapshot(); // Leave the promise floating, no await
              |   ^
-           24|
-           25|   // another
+           25|
+           26|   // another
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
 
        FAIL   chromium  take-snapshot.test.ts > test #3
       Error: takeSnapshot() call was not awaited!
-       ❯ take-snapshot.test.ts:26:3
-           24|
-           25|   // another
-           26|   takeSnapshot();
+       ❯ take-snapshot.test.ts:27:3
+           25|
+           26|   // another
+           27|   takeSnapshot();
              |   ^
-           27| });
-           28|
+           28| });
+           29|
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯"
     `);
@@ -146,32 +147,32 @@ test('provides descriptive error when not awaited', async () => {
 
        FAIL   chromium  take-snapshot.test.ts > test #3
       Error: takeSnapshot() call was not awaited!
-       ❯ take-snapshot.test.ts:23:2
-           21|   document.body.innerHTML = '<h1>Example heading</h1>';
-           22|
-           23|   takeSnapshot(); // Leave the promise floating, no await
+       ❯ take-snapshot.test.ts:24:2
+           22|   document.body.innerHTML = "<h1>Example heading</h1>";
+           23|
+           24|   takeSnapshot(); // Leave the promise floating, no await
              |  ^
-           24|
-           25|   // another
+           25|
+           26|   // another
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
 
        FAIL   chromium  take-snapshot.test.ts > test #3
       Error: takeSnapshot() call was not awaited!
-       ❯ take-snapshot.test.ts:26:2
-           24|
-           25|   // another
-           26|   takeSnapshot();
+       ❯ take-snapshot.test.ts:27:2
+           25|
+           26|   // another
+           27|   takeSnapshot();
              |  ^
-           27| });
-           28|
+           28| });
+           29|
 
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯"
     `);
   }
 });
 
-test('viewports are correct when --browser.ui=true', async () => {
+test("viewports are correct when --browser.ui=true", async () => {
   await runFixture({
     include: [viewportsTest],
     browser: { ...getBrowserConfig(), ui: true, viewport: { width: 1280, height: 720 } },
@@ -189,7 +190,7 @@ test('viewports are correct when --browser.ui=true', async () => {
   `);
 });
 
-test('viewports are correct when --browser.ui=false', async () => {
+test("viewports are correct when --browser.ui=false", async () => {
   await runFixture({
     include: [viewportsTest],
     browser: { ...getBrowserConfig(), ui: false, viewport: { width: 1280, height: 720 } },
@@ -207,22 +208,22 @@ test('viewports are correct when --browser.ui=false', async () => {
   `);
 });
 
-test.each(['list', 'stack'] as const)(
+test.each(["list", "stack"] as const)(
   "autosnapshot is taken before user registered afterEach runs when {sequence.hooks: '%s'}",
   async (hooks) => {
     await runFixture({
       include: [takeSnapshotTest],
-      provide: { testName: 'four' },
-      setupFiles: ['custom-setup-file.ts'],
+      provide: { testName: "four" },
+      setupFiles: ["custom-setup-file.ts"],
       sequence: { hooks },
     });
 
     expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
 
     const [, snapshots] = vi.mocked(shared.writeTestResult).mock.calls[0];
-    expect(snapshots).toHaveProperty('test #4 / Snapshot #1');
+    expect(snapshots).toHaveProperty("test #4 / Snapshot #1");
 
-    const { snapshot } = snapshots['test #4 / Snapshot #1'];
+    const { snapshot } = snapshots["test #4 / Snapshot #1"];
 
     expect(JSON.parse(snapshot.toString())).toMatchInlineSnapshot(`
     {
@@ -239,39 +240,39 @@ test.each(['list', 'stack'] as const)(
       "type": 2,
     }
   `);
-  }
+  },
 );
 
 test("warns when {sequence.hooks: 'parallel'} is used", async () => {
   const { stderr } = await runFixture({
     include: [takeSnapshotTest],
-    provide: { testName: 'four' },
-    setupFiles: ['custom-setup-file.ts'],
-    sequence: { hooks: 'parallel' },
+    provide: { testName: "four" },
+    setupFiles: ["custom-setup-file.ts"],
+    sequence: { hooks: "parallel" },
   });
 
   expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
 
   expect(stderr).toMatchInlineSnapshot(
-    `" chromatic  Using { sequence.hooks: 'parallel' } may cause unstable snapshots. Please set 'sequence.hooks' to 'list' or 'stack' to ensure reliable snapshot ordering."`
+    `" chromatic  Using { sequence.hooks: 'parallel' } may cause unstable snapshots. Please set 'sequence.hooks' to 'list' or 'stack' to ensure reliable snapshot ordering."`,
   );
 });
 
-test('user defined afterEach can call takeSnapshot()', async () => {
+test("user defined afterEach can call takeSnapshot()", async () => {
   await runFixture({
     include: [takeSnapshotTest],
-    provide: { testName: 'four' },
-    setupFiles: ['takesnapshot-setup-file.ts'],
+    provide: { testName: "four" },
+    setupFiles: ["takesnapshot-setup-file.ts"],
   });
 
   expect(shared.writeTestResult).toHaveBeenCalledTimes(1);
 
   const [, snapshots] = vi.mocked(shared.writeTestResult).mock.calls[0];
 
-  expect.soft(snapshots).toHaveProperty('test #4 / Snapshot #1');
+  expect.soft(snapshots).toHaveProperty("test #4 / Snapshot #1");
   expect.soft(snapshots).toHaveProperty("test #4 / user's after each snapshot!");
 
-  const autoSnapshot = snapshots['test #4 / Snapshot #1'].snapshot;
+  const autoSnapshot = snapshots["test #4 / Snapshot #1"].snapshot;
   const userSnapshot = snapshots["test #4 / user's after each snapshot!"].snapshot;
 
   expect(JSON.parse(autoSnapshot.toString())).toMatchInlineSnapshot(`
@@ -317,7 +318,7 @@ function getSnapshottedTests() {
       Object.entries(domSnapshots).map(([name, { viewport }]) => [
         name,
         `width=${viewport.width}, height=${viewport.height}`,
-      ])
+      ]),
     );
 
     return { ...all, ...snapshots };

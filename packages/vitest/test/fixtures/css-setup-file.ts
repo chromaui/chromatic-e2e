@@ -1,6 +1,6 @@
-import { beforeEach } from 'vitest';
+import { beforeEach } from "vitest";
 
-import './css-setup.css';
+import "./css-setup.css";
 
 beforeEach(() => {
   // Some setup

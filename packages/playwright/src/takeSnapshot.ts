@@ -1,14 +1,16 @@
-import { readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import type { Frame, Page, TestInfo } from '@playwright/test';
-import { NodeType, type serializedNodeWithId } from '@rrweb/types';
-import { type DOMSnapshots, type SerializedIframeNode, logger } from '@chromatic-com/shared-e2e';
-import type { takeSnapshot as browserTakeSnapshot } from './browser';
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 
-const browserEntry = createRequire(import.meta.url).resolve('@chromatic-com/playwright/browser');
-const browserScript = readFileSync(browserEntry, 'utf-8');
+import { type DOMSnapshots, type SerializedIframeNode, logger } from "@chromatic-com/shared-e2e";
+import type { Frame, Page, TestInfo } from "@playwright/test";
+import { NodeType, type serializedNodeWithId } from "@rrweb/types";
 
-type TestID = TestInfo['testId'];
+import type { takeSnapshot as browserTakeSnapshot } from "./browser";
+
+const browserEntry = createRequire(import.meta.url).resolve("@chromatic-com/playwright/browser");
+const browserScript = readFileSync(browserEntry, "utf-8");
+
+type TestID = TestInfo["testId"];
 type SnapshotName = keyof DOMSnapshots;
 export const chromaticSnapshots: Map<
   TestID,
@@ -20,12 +22,12 @@ async function takeSnapshot(page: Page, name: string, testInfo: TestInfo): Promi
 async function takeSnapshot(
   page: Page,
   nameOrTestInfo: string | TestInfo,
-  maybeTestInfo?: TestInfo
+  maybeTestInfo?: TestInfo,
 ): Promise<void> {
   let name: string;
   let testId: string;
-  if (typeof nameOrTestInfo === 'string') {
-    if (!maybeTestInfo) throw new Error('Incorrect usage');
+  if (typeof nameOrTestInfo === "string") {
+    if (!maybeTestInfo) throw new Error("Incorrect usage");
     testId = maybeTestInfo.testId;
     name = nameOrTestInfo;
   } else {
@@ -34,7 +36,7 @@ async function takeSnapshot(
     name = `Snapshot #${number}`;
   }
 
-  page.on('console', (msg) => {
+  page.on("console", (msg) => {
     logger.log(`CONSOLE: "${msg.text()}"`);
   });
 
@@ -92,7 +94,7 @@ async function executeSnapshotScript(context: Page | Frame) {
       ${browserScript}
 
       return JSON.stringify(await takeSnapshot());
-    }()`
+    }()`,
   );
 
   // Additional JSON.stringify + parse needed for deeply nested DOMs: https://github.com/chromaui/chromatic-e2e/issues/307
@@ -100,13 +102,13 @@ async function executeSnapshotScript(context: Page | Frame) {
 }
 
 function findIframes(
-  node: serializedNodeWithId
-): (serializedNodeWithId & { type: NodeType.Element; tagName: 'iframe' })[] {
-  if (node.type === NodeType.Element && node.tagName === 'iframe') {
-    return [node as serializedNodeWithId & { type: NodeType.Element; tagName: 'iframe' }];
+  node: serializedNodeWithId,
+): (serializedNodeWithId & { type: NodeType.Element; tagName: "iframe" })[] {
+  if (node.type === NodeType.Element && node.tagName === "iframe") {
+    return [node as serializedNodeWithId & { type: NodeType.Element; tagName: "iframe" }];
   }
 
-  if ('childNodes' in node) {
+  if ("childNodes" in node) {
     return node.childNodes.flatMap((childNode) => {
       return findIframes(childNode);
     });
@@ -118,7 +120,7 @@ function findIframes(
 function filterIframes(
   nodes: SerializedIframeNode[],
   url: string,
-  usedIndexes: Set<number>
+  usedIndexes: Set<number>,
 ): SerializedIframeNode | undefined {
   return nodes.find((node, index) => {
     if (usedIndexes.has(index)) {

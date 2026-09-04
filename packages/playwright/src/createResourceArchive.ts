@@ -1,11 +1,11 @@
-import type { Page } from '@playwright/test';
 import {
   ResourceArchiver,
   ResourceArchive,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
   logger,
   HttpCredentials,
-} from '@chromatic-com/shared-e2e';
+} from "@chromatic-com/shared-e2e";
+import type { Page } from "@playwright/test";
 
 const idle = async (page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS) => {
   let globalNetworkTimerId: null | ReturnType<typeof setTimeout> = null;
@@ -26,7 +26,7 @@ const idle = async (page: Page, networkTimeoutMs = DEFAULT_GLOBAL_RESOURCE_ARCHI
 
   // The second promise wraps a network idle timeout. This uses playwright's built-in functionality to detect when the network
   // is idle.
-  const networkIdlePromise = page.waitForLoadState('networkidle').finally(() => {
+  const networkIdlePromise = page.waitForLoadState("networkidle").finally(() => {
     clearTimeout(globalNetworkTimerId);
   });
 

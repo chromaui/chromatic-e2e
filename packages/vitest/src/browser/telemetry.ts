@@ -1,7 +1,8 @@
-import { commands } from 'vitest/browser';
-import { inject } from 'vitest';
-import type {} from '../node/commands';
-import type { EventType, TelemetryEvent } from '../node/telemetry/types';
+import { inject } from "vitest";
+import { commands } from "vitest/browser";
+
+import type {} from "../node/commands";
+import type { EventType, TelemetryEvent } from "../node/telemetry/types";
 
 /**
  * Forward a telemetry event to the Node process, where metadata and other automatically
@@ -10,7 +11,7 @@ import type { EventType, TelemetryEvent } from '../node/telemetry/types';
  * @internal
  */
 export function trackEvent<T extends EventType = EventType>(event: TelemetryEvent<T>): void {
-  const enabled = inject('__chromatic_options')?.telemetry.enabled ?? false;
+  const enabled = inject("__chromatic_options")?.telemetry.enabled ?? false;
 
   if (enabled) {
     void commands.__chromatic_telemetry(event).catch(() => {});

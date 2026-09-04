@@ -1,26 +1,28 @@
-import { existsSync, readFileSync, rmSync } from 'node:fs';
-import { copyFile, mkdir, readdir, rm, rename } from 'node:fs/promises';
-import { basename, dirname, resolve } from 'node:path';
-import { afterEach, assert, expect, onTestFinished, test } from 'vitest';
-import { uniqueId } from '@chromatic-com/shared-e2e/write-archive/stories-files';
-import type { Module } from './webpack-stats-reporter';
-import { DEFAULT_OUTPUT_DIR } from '../constants';
+import { existsSync, readFileSync, rmSync } from "node:fs";
+import { copyFile, mkdir, readdir, rm, rename } from "node:fs/promises";
+import { basename, dirname, resolve } from "node:path";
+
+import { uniqueId } from "@chromatic-com/shared-e2e/write-archive/stories-files";
+import { afterEach, assert, expect, onTestFinished, test } from "vitest";
+
 import {
   runFixture as baseRunFixture,
   isVitest5,
   StableTestFileOrderSorter,
-} from '../../test/utils/node';
+} from "../../test/utils/node";
+import { DEFAULT_OUTPUT_DIR } from "../constants";
+import type { Module } from "./webpack-stats-reporter";
 
 afterEach(() => {
   uniqueId.value = 1;
 });
 
-test('TurboSnap enabled, source files', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
+test("TurboSnap enabled, source files", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
   await runFixture(
     /** {@link file://./../../test/fixtures/css-setup-file.ts} */
-    { root, setupFiles: [resolve(import.meta.dirname, '../../test/fixtures/css-setup-file.ts')] },
-    { turboSnap: true }
+    { root, setupFiles: [resolve(import.meta.dirname, "../../test/fixtures/css-setup-file.ts")] },
+    { turboSnap: true },
   );
 
   const stats = readStats(root);
@@ -113,26 +115,26 @@ test('TurboSnap enabled, source files', async () => {
   `);
 });
 
-test('TurboSnap enabled, dependency files', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
+test("TurboSnap enabled, dependency files", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
   await runFixture({ root }, { turboSnap: true });
 
   const stats = readStats(root);
 
   expect
     .soft(
-      stats.modules.find((mod) => mod.id.includes('node_modules/vitest')),
-      'Stats should contain Vitest dependency'
+      stats.modules.find((mod) => mod.id.includes("node_modules/vitest")),
+      "Stats should contain Vitest dependency",
     )
     .toBeDefined();
 
   // Optimized dependencies must be remapped to their sources, never reported as cache files
-  expect(stats.modules.filter((mod) => mod.id.includes('.vite'))).toEqual([]);
+  expect(stats.modules.filter((mod) => mod.id.includes(".vite"))).toEqual([]);
 
   // extend-to-be-announced has a single dependency aria-live-capture, which is 0 deps.
   // This should be stable enough for snapshot testing. Exclude all other deps as they might change frequently.
   const modules = stats.modules.filter(
-    (mod) => mod.id.includes('extend-to-be-announced') || mod.id.includes('aria-live-capture')
+    (mod) => mod.id.includes("extend-to-be-announced") || mod.id.includes("aria-live-capture"),
   );
 
   for (const mod of modules) {
@@ -227,16 +229,16 @@ test('TurboSnap enabled, dependency files', async () => {
   `);
 });
 
-test('TurboSnap enabled, circular imports', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
+test("TurboSnap enabled, circular imports", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
 
   await runFixture(
     {
       root,
       /** {@link file://./../../test/fixtures/turbo-snap-cycle.test.ts} */
-      include: [resolve(root, 'turbo-snap-cycle.test.ts')],
+      include: [resolve(root, "turbo-snap-cycle.test.ts")],
     },
-    { turboSnap: true }
+    { turboSnap: true },
   );
 
   const stats = readStats(root);
@@ -290,15 +292,15 @@ test('TurboSnap enabled, circular imports', async () => {
   `);
 });
 
-test('TurboSnap enabled, sharded run', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
-  const reportsDirectory = resolve(root, '.vitest');
+test("TurboSnap enabled, sharded run", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
+  const reportsDirectory = resolve(root, ".vitest");
   let blobReportsDir: string | undefined;
 
   const outputDirectories = {
-    base: resolve(reportsDirectory, 'chromatic'),
-    first: resolve(reportsDirectory, 'chromatic-first-run'),
-    second: resolve(reportsDirectory, 'chromatic-second-run'),
+    base: resolve(reportsDirectory, "chromatic"),
+    first: resolve(reportsDirectory, "chromatic-first-run"),
+    second: resolve(reportsDirectory, "chromatic-second-run"),
   };
 
   await rm(reportsDirectory, { force: true, recursive: true });
@@ -306,8 +308,8 @@ test('TurboSnap enabled, sharded run', async () => {
   // Run "vitest --shard=1/2", "vitest --shard=2/2"
   for (const [index, output] of [outputDirectories.first, outputDirectories.second].entries()) {
     const { stdout } = await runFixture(
-      { root, shard: `${1 + index}/2`, reporters: 'blob' },
-      { turboSnap: true }
+      { root, shard: `${1 + index}/2`, reporters: "blob" },
+      { turboSnap: true },
     );
 
     if (!blobReportsDir) {
@@ -399,23 +401,23 @@ test('TurboSnap enabled, sharded run', async () => {
   `);
 });
 
-test('TurboSnap enabled, CSS imports', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
+test("TurboSnap enabled, CSS imports", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
 
   await runFixture(
     {
       root,
       /** {@link file://./../../test/fixtures/turbo-snap-css.test.ts} */
-      include: [resolve(root, 'turbo-snap-css.test.ts')],
+      include: [resolve(root, "turbo-snap-css.test.ts")],
     },
-    { turboSnap: true }
+    { turboSnap: true },
   );
 
   const stats = readStats(root);
 
   // `base.css` is imported via CSS `@import`, so it only exists in the module
   // graph as a file-only entry without an id, similar to Sass partials
-  const modules = stats.modules.filter((mod) => mod.id.includes('components/styled'));
+  const modules = stats.modules.filter((mod) => mod.id.includes("components/styled"));
 
   expect(modules).toMatchInlineSnapshot(`
     [
@@ -459,18 +461,18 @@ test('TurboSnap enabled, CSS imports', async () => {
   `);
 });
 
-test('TurboSnap enabled, Tailwind-like content scanner watch files', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
+test("TurboSnap enabled, Tailwind-like content scanner watch files", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
 
   await runFixture(
     {
       root,
       /** {@link file://./../../test/fixtures/configs/vitest.config.fake-tailwind.ts} */
-      config: resolve(root, 'configs/vitest.config.fake-tailwind.ts'),
+      config: resolve(root, "configs/vitest.config.fake-tailwind.ts"),
       /** {@link file://./../../test/fixtures/turbo-snap-css.test.ts} */
-      include: [resolve(root, 'turbo-snap-css.test.ts')],
+      include: [resolve(root, "turbo-snap-css.test.ts")],
     },
-    { turboSnap: true }
+    { turboSnap: true },
   );
 
   const stats = readStats(root);
@@ -478,25 +480,25 @@ test('TurboSnap enabled, Tailwind-like content scanner watch files', async () =>
 
   // Non-CSS files and glob patterns watched by the CSS module are content
   // scanner registrations, not real dependencies, and must be filtered out
-  expect(ids).not.toContain('turbo-snap-1.test.ts');
-  expect(ids.filter((id) => id.includes('*'))).toEqual([]);
+  expect(ids).not.toContain("turbo-snap-1.test.ts");
+  expect(ids.filter((id) => id.includes("*"))).toEqual([]);
 
   // CSS files watched by the CSS module are real dependencies and are kept
   expect(stats.modules).toContainEqual({
-    id: 'css-setup.css',
-    name: 'css-setup.css',
-    reasons: [{ moduleName: 'components/styled/styles.css' }],
+    id: "css-setup.css",
+    name: "css-setup.css",
+    reasons: [{ moduleName: "components/styled/styles.css" }],
   });
 
   // Regular CSS `@import` chain is unaffected
   expect(stats.modules).toContainEqual(
-    expect.objectContaining({ id: 'components/styled/base.css' })
+    expect.objectContaining({ id: "components/styled/base.css" }),
   );
 });
 
-test('TurboSnap enabled with custom output directory', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
-  const outputDirectory = '.vitest/custom-output-directory';
+test("TurboSnap enabled with custom output directory", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
+  const outputDirectory = ".vitest/custom-output-directory";
 
   onTestFinished(() => {
     const reports = resolve(root, outputDirectory);
@@ -577,14 +579,14 @@ test('TurboSnap enabled with custom output directory', async () => {
   `);
 });
 
-test('TurboSnap enabled with Vitest configuration file', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
-  const configFile = 'configs/vitest.config.custom.ts';
+test("TurboSnap enabled with Vitest configuration file", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
+  const configFile = "configs/vitest.config.custom.ts";
 
   await runFixture({ root, config: resolve(root, configFile) }, { turboSnap: true });
 
   const stats = readStats(root) as { modules: Module[] };
-  assert(stats.modules?.length, 'Modules missing from stats');
+  assert(stats.modules?.length, "Modules missing from stats");
 
   const configEntries = stats.modules.filter((m) => m.id === configFile);
   expect(configEntries.length).toBe(1);
@@ -605,11 +607,11 @@ test('TurboSnap enabled with Vitest configuration file', async () => {
   `);
 });
 
-test('TurboSnap disabled', async () => {
-  const root = resolve(import.meta.dirname, '../../test/fixtures');
+test("TurboSnap disabled", async () => {
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
   await runFixture({ root }, { turboSnap: false });
 
-  let error = '';
+  let error = "";
 
   try {
     readStats(root);
@@ -617,19 +619,19 @@ test('TurboSnap disabled', async () => {
     error = e.message;
   }
 
-  expect(error).toContain('ENOENT: no such file or directory');
-  expect(error).toContain('.vitest/chromatic/preview-stats.json');
+  expect(error).toContain("ENOENT: no such file or directory");
+  expect(error).toContain(".vitest/chromatic/preview-stats.json");
 });
 
 function readStats(root = process.cwd(), outputDir = DEFAULT_OUTPUT_DIR): { modules: Module[] } {
-  const statsPath = resolve(root, outputDir, 'preview-stats.json');
+  const statsPath = resolve(root, outputDir, "preview-stats.json");
 
-  return JSON.parse(readFileSync(statsPath, 'utf-8'));
+  return JSON.parse(readFileSync(statsPath, "utf-8"));
 }
 
 function runFixture(
   options?: Parameters<typeof baseRunFixture>[0],
-  pluginOptions?: Parameters<typeof baseRunFixture>[1]
+  pluginOptions?: Parameters<typeof baseRunFixture>[1],
 ) {
   return baseRunFixture(
     {
@@ -637,50 +639,50 @@ function runFixture(
       sequence: { sequencer: StableTestFileOrderSorter },
       include: [
         /** {@link file://./../../test/fixtures/turbo-snap-1.test.ts} */
-        resolve(import.meta.dirname, '../../test/fixtures/turbo-snap-1.test.ts'),
+        resolve(import.meta.dirname, "../../test/fixtures/turbo-snap-1.test.ts"),
         /** {@link file://./../../test/fixtures/turbo-snap-2.test.ts} */
-        resolve(import.meta.dirname, '../../test/fixtures/turbo-snap-2.test.ts'),
+        resolve(import.meta.dirname, "../../test/fixtures/turbo-snap-2.test.ts"),
       ],
       ...options,
     },
-    pluginOptions
+    pluginOptions,
   );
 }
 
 function excludeNodeModules(mod: Module) {
-  return !mod.id.includes('node_modules');
+  return !mod.id.includes("node_modules");
 }
 
 // Exclude plugin source files from the stats report, as they are not relevant to the test results.
 function excludePluginSources(mod: Module) {
-  return !mod.id.includes('src/browser/') && !mod.id.includes('src/index.ts');
+  return !mod.id.includes("src/browser/") && !mod.id.includes("src/index.ts");
 }
 
 function excludeVitest5OnlyModules(mod: Module) {
   return isVitest5()
-    ? !mod.reasons.find((reason) => reason.moduleName.includes('src/browser/getCurrentTest.ts'))
+    ? !mod.reasons.find((reason) => reason.moduleName.includes("src/browser/getCurrentTest.ts"))
     : true;
 }
 
 async function mergeChromaticDirectories(target: string, sources: string[]) {
-  await mkdir(resolve(target, 'chromatic-archives', 'archive'), { recursive: true });
+  await mkdir(resolve(target, "chromatic-archives", "archive"), { recursive: true });
 
   for (const source of sources) {
-    const previewStats = await findFile(source, 'preview-stats');
+    const previewStats = await findFile(source, "preview-stats");
     await copyFile(previewStats, resolve(target, basename(previewStats)));
 
-    for (const filename of await readdir(resolve(source, 'chromatic-archives'))) {
-      if (filename === 'archive') continue;
+    for (const filename of await readdir(resolve(source, "chromatic-archives"))) {
+      if (filename === "archive") continue;
 
-      const from = resolve(source, 'chromatic-archives', filename);
-      const to = resolve(target, 'chromatic-archives', filename);
+      const from = resolve(source, "chromatic-archives", filename);
+      const to = resolve(target, "chromatic-archives", filename);
 
       await copyFile(from, to);
     }
 
-    for (const filename of await readdir(resolve(source, 'chromatic-archives', 'archive'))) {
-      const from = resolve(source, 'chromatic-archives', 'archive', filename);
-      const to = resolve(target, 'chromatic-archives', 'archive', filename);
+    for (const filename of await readdir(resolve(source, "chromatic-archives", "archive"))) {
+      const from = resolve(source, "chromatic-archives", "archive", filename);
+      const to = resolve(target, "chromatic-archives", "archive", filename);
 
       await copyFile(from, to);
     }
@@ -693,11 +695,11 @@ async function findFile(directory: string, partialName: string) {
 
   assert(
     matches.length !== 0,
-    `Expected ${directory} to contain file matching ${partialName}. Found ${files.join()}.`
+    `Expected ${directory} to contain file matching ${partialName}. Found ${files.join()}.`,
   );
   assert(
     matches.length === 1,
-    `Found ${matches.length} matches for ${partialName} in ${directory}: ${matches.join()}.`
+    `Found ${matches.length} matches for ${partialName} in ${directory}: ${matches.join()}.`,
   );
 
   return resolve(directory, matches[0]);

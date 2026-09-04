@@ -1,25 +1,26 @@
-import { defineProject } from 'vitest/config';
-import { playwright } from '@vitest/browser-playwright';
-import { chromaticPlugin } from './src/node/plugin';
-import { type ConfigureOptions } from './src/types';
+import { playwright } from "@vitest/browser-playwright";
+import { defineProject } from "vitest/config";
 
-const isWatch = process.argv.includes('--watch');
+import { chromaticPlugin } from "./src/node/plugin";
+import { type ConfigureOptions } from "./src/types";
+
+const isWatch = process.argv.includes("--watch");
 
 // Prevent sending telemetry during test run
-process.env.CHROMATIC_DISABLE_TELEMETRY = '1';
+process.env.CHROMATIC_DISABLE_TELEMETRY = "1";
 
 export default defineProject({
   resolve: { tsconfigPaths: true },
   plugins: [chromaticPlugin()],
-  publicDir: 'test/fixtures/public-dir',
+  publicDir: "test/fixtures/public-dir",
 
   // To always catch errors that happen on first test run
   optimizeDeps: { force: true },
 
   test: {
-    name: { label: 'Vitest Browser', color: 'yellow' },
-    include: ['src/**/*.browser.test.ts'],
-    setupFiles: ['test/utils/setup.ts'],
+    name: { label: "Vitest Browser", color: "yellow" },
+    include: ["src/**/*.browser.test.ts"],
+    setupFiles: ["test/utils/setup.ts"],
 
     // Isolate project into it's own group as we are running multiple projects with browsers
     sequence: { groupOrder: 3 },
@@ -31,7 +32,7 @@ export default defineProject({
       headless: true,
       screenshotFailures: false,
       provider: playwright(),
-      instances: [{ browser: 'chromium' }],
+      instances: [{ browser: "chromium" }],
     },
 
     provide: {
@@ -40,13 +41,13 @@ export default defineProject({
   },
 });
 
-declare module 'vitest' {
+declare module "vitest" {
   export interface ProvidedContext {
     processCwd: string;
     testName?: string;
     delay?: number;
-    disableAutoSnapshot: 'module' | 'describe' | 'describe-nested' | 'test' | 'test-second';
-    configureScope: 'module' | 'describe' | 'describe-nested' | 'test' | 'test-second';
+    disableAutoSnapshot: "module" | "describe" | "describe-nested" | "test" | "test-second";
+    configureScope: "module" | "describe" | "describe-nested" | "test" | "test-second";
     configureOptions: ConfigureOptions;
   }
 }

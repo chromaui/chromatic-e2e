@@ -1,7 +1,7 @@
-import { test, expect, inject } from 'vitest';
+import { test, expect, inject } from "vitest";
 
-test('provided __chromatic_options', async () => {
-  expect(inject('__chromatic_options')).toMatchInlineSnapshot(`
+test("provided __chromatic_options", async () => {
+  expect(inject("__chromatic_options")).toMatchInlineSnapshot(`
     {
       "assetDomains": [],
       "disableAutoSnapshot": false,

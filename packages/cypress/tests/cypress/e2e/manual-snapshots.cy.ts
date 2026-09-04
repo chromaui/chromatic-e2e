@@ -1,20 +1,20 @@
-it('multiple snapshots are taken', () => {
-  cy.visit('/manual-snapshots');
+it("multiple snapshots are taken", () => {
+  cy.visit("/manual-snapshots");
   // manual snapshot with name
-  cy.takeSnapshot('accordion collapsed');
+  cy.takeSnapshot("accordion collapsed");
   cy.contains("I'm an accordion, click me!").click();
   // manual snapshot without name
   cy.takeSnapshot();
   cy.contains("I'm an accordion, click me!").click();
-  cy.get('details').should('not.have.attr', 'open');
+  cy.get("details").should("not.have.attr", "open");
 });
 
 it(
-  'manual snapshot is taken even when automatic snapshots are turned off',
+  "manual snapshot is taken even when automatic snapshots are turned off",
   { expose: { disableAutoSnapshot: true } },
   () => {
-    cy.visit('/manual-snapshots');
+    cy.visit("/manual-snapshots");
     cy.contains("I'm an accordion, click me!").click();
-    cy.takeSnapshot('Manual snapshot without automatic snapshot');
-  }
+    cy.takeSnapshot("Manual snapshot without automatic snapshot");
+  },
 );

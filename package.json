@@ -28,10 +28,10 @@
     "build-archive-storybook:vitest": "CHROMATIC_ARCHIVE_LOCATION=test/.vitest/chromatic pnpm -C packages/vitest exec dist/bin/build-archive-storybook.mjs",
     "changeset": "changeset",
     "dev:server": "node test-server/server",
-    "lint": "eslint .",
+    "lint": "oxlint",
+    "fmt": "oxfmt",
     "publint": "pnpm -r --parallel --filter !@chromatic-com/shared-e2e exec publint",
     "prepare": "husky install",
-    "prettier": "prettier",
     "release": "pnpm build && pnpm changeset publish",
     "test:unit": "vitest run --configLoader=runner",
     "test:cypress": "pnpm --filter @chromatic-com/cypress test:cypress",
@@ -39,11 +39,10 @@
     "test:vitest": "pnpm --filter @chromatic-com/vitest test:vitest"
   },
   "lint-staged": {
-    "*.{ts,js,css,md}": "prettier --write"
+    "*.{ts,js,css,md}": "oxfmt"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.1",
-    "@eslint/js": "^9.15.0",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -52,18 +51,17 @@
     "@types/node": "^22.0.0",
     "@types/node-fetch": "^2.6.6",
     "@vitest/coverage-v8": "^5.0.0",
-    "eslint": "^9.15.0",
-    "eslint-config-prettier": "^9.1.0",
     "express": "^4.18.2",
     "express-basic-auth": "^1.2.1",
     "globals": "^15.12.0",
     "husky": ">=6",
     "lint-staged": ">=10",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "playwright": "^1.46.1",
-    "prettier": "^3.5.3",
     "publint": "^0.3.24",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.15.0",
     "vitest": "^5.0.0"
   },
   "packageManager": "pnpm@11.5.3"

@@ -1,5 +1,5 @@
-import path from 'node:path';
-import { createRequire } from 'node:module';
+import { createRequire } from "node:module";
+import path from "node:path";
 
 /**
  * Directory of the `node_modules` that contains the `storybook` package this package depends on.
@@ -13,10 +13,10 @@ import { createRequire } from 'node:module';
  */
 export function storybookParentNodeModulesDir(importMetaUrl: string): string | null {
   const require = createRequire(importMetaUrl);
-  const dir = path.dirname(path.dirname(require.resolve('storybook/package.json')));
+  const dir = path.dirname(path.dirname(require.resolve("storybook/package.json")));
 
   // If `storybook` resolves through a link to a source checkout (e.g. `pnpm link`, `portal:`),
   // its parent directory is not a node_modules dir and its siblings are not packages, so it
   // must not be offered to webpack as a module directory.
-  return path.basename(dir) === 'node_modules' ? dir : null;
+  return path.basename(dir) === "node_modules" ? dir : null;
 }

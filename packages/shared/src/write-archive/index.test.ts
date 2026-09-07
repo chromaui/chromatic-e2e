@@ -1,11 +1,13 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { resolve } from 'path';
-import { NodeType } from '@rrweb/types';
-import * as filePaths from '../utils/filePaths';
-import { writeTestResult } from '.';
-import { uniqueId } from './stories-files';
+import { resolve } from "node:path";
 
-vi.mock(import('../utils/filePaths'), async (importOriginal) => ({
+import { NodeType } from "@rrweb/types";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { writeTestResult } from ".";
+import * as filePaths from "../utils/filePaths";
+import { uniqueId } from "./stories-files";
+
+vi.mock(import("../utils/filePaths"), async (importOriginal) => ({
   ...(await importOriginal()),
   ensureDir: vi.fn(),
   outputFile: vi.fn(),
@@ -17,13 +19,13 @@ const snapshotJson = {
     {
       type: NodeType.Element,
       attributes: {
-        src: 'http://localhost:3000/home/',
+        src: "http://localhost:3000/home/",
       },
     },
     {
       type: NodeType.Element,
       attributes: {
-        src: 'http://localhost:3000/img?src=some-path',
+        src: "http://localhost:3000/img?src=some-path",
       },
     },
   ],
@@ -34,14 +36,14 @@ afterEach(() => {
   uniqueId.value = 1;
 });
 
-describe('writeTestResult', () => {
-  it('successfully generates test results', async () => {
+describe("writeTestResult", () => {
+  it("successfully generates test results", async () => {
     await writeTestResult(
       // the default output directory in playwright
       {
-        titlePath: ['file.spec.ts', 'Test Story'],
-        outputDir: resolve('test-results'),
-        pageUrl: 'http://localhost:3000/',
+        titlePath: ["file.spec.ts", "Test Story"],
+        outputDir: resolve("test-results"),
+        pageUrl: "http://localhost:3000/",
       },
       {
         home: {
@@ -49,61 +51,61 @@ describe('writeTestResult', () => {
           viewport: { height: 800, width: 800 },
         },
       },
-      { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
+      { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
       {
         diffThreshold: 5,
         pauseAnimationAtEnd: true,
-      }
+      },
     );
     expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./test-results/chromatic-archives/file-test-story.stories.json'),
+      resolve("./test-results/chromatic-archives/file-test-story.stories.json"),
       {
         stories: [
           {
-            name: 'home',
-            globals: { viewport: 'w800h800' },
+            name: "home",
+            globals: { viewport: "w800h800" },
             parameters: {
-              __id: 'file-test-story--home',
+              __id: "file-test-story--home",
               chromatic: {
                 diffThreshold: 5,
                 pauseAnimationAtEnd: true,
-                modes: { w800h800: { viewport: 'w800h800' } },
+                modes: { w800h800: { viewport: "w800h800" } },
               },
-              server: { id: 'file-test-story-home' },
+              server: { id: "file-test-story-home" },
               viewport: {
-                defaultViewport: 'w800h800',
+                defaultViewport: "w800h800",
                 options: {
                   w800h800: {
-                    name: 'w800h800',
-                    type: 'tablet',
-                    styles: { height: '800px', width: '800px' },
+                    name: "w800h800",
+                    type: "tablet",
+                    styles: { height: "800px", width: "800px" },
                   },
                 },
               },
             },
           },
         ],
-        title: 'file/Test Story',
-      }
+        title: "file/Test Story",
+      },
     );
   });
 
-  it('successfully generates test results with mapped source entries', async () => {
+  it("successfully generates test results with mapped source entries", async () => {
     const expectedMappedJson = {
       childNodes: [
         {
           type: NodeType.Element,
           attributes: {
-            src: '/home/index.html',
+            src: "/home/index.html",
           },
         },
         {
           type: NodeType.Element,
           attributes: {
-            src: '/img-fe2b41833610050d950fb9112407d3b3.png',
+            src: "/img-fe2b41833610050d950fb9112407d3b3.png",
           },
         },
       ],
@@ -112,9 +114,9 @@ describe('writeTestResult', () => {
     await writeTestResult(
       // the default output directory in playwright
       {
-        titlePath: ['file.spec.ts', 'Toy Story'],
-        outputDir: resolve('test-results'),
-        pageUrl: 'http://localhost:3000/',
+        titlePath: ["file.spec.ts", "Toy Story"],
+        outputDir: resolve("test-results"),
+        pageUrl: "http://localhost:3000/",
       },
       {
         home: {
@@ -123,17 +125,17 @@ describe('writeTestResult', () => {
         },
       },
       {
-        'http://localhost:3000/home/': {
+        "http://localhost:3000/home/": {
           statusCode: 200,
           body: Buffer.from(JSON.stringify(snapshotJson)),
         },
-        'http://localhost:3000/img?src=some-path': {
+        "http://localhost:3000/img?src=some-path": {
           statusCode: 200,
-          body: Buffer.from('image'),
-          contentType: 'image/png',
+          body: Buffer.from("image"),
+          contentType: "image/png",
         },
       },
-      {}
+      {},
     );
 
     expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
@@ -141,19 +143,19 @@ describe('writeTestResult', () => {
     expect(filePaths.outputFile).toHaveBeenCalledTimes(3);
     expect(filePaths.outputFile).toHaveBeenCalledWith(
       resolve(
-        './test-results/chromatic-archives/archive/file-toy-story-home.w800h800.snapshot.json'
+        "./test-results/chromatic-archives/archive/file-toy-story-home.w800h800.snapshot.json",
       ),
-      JSON.stringify({ snapshot: expectedMappedJson })
+      JSON.stringify({ snapshot: expectedMappedJson }),
     );
   });
 
-  it('stores archives in custom directory', async () => {
+  it("stores archives in custom directory", async () => {
     await writeTestResult(
       {
-        titlePath: ['file.spec.ts', 'Test Story'],
+        titlePath: ["file.spec.ts", "Test Story"],
         // simulates setting a custom output directory in Playwright
-        outputDir: resolve('some-custom-directory/directory'),
-        pageUrl: 'http://localhost:3000/',
+        outputDir: resolve("some-custom-directory/directory"),
+        pageUrl: "http://localhost:3000/",
       },
       {
         home: {
@@ -161,45 +163,45 @@ describe('writeTestResult', () => {
           viewport: { height: 800, width: 800 },
         },
       },
-      { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-      {}
+      { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
+      {},
     );
     expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
     expect(filePaths.outputJSONFile).toHaveBeenCalledTimes(1);
     expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
-      resolve('./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json'),
-      expect.anything()
+      resolve("./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json"),
+      expect.anything(),
     );
   });
 
-  it('sanitizes story titles', async () => {
+  it("sanitizes story titles", async () => {
     await writeTestResult(
       {
-        titlePath: ['src/components/accordion.test.tsx', '<Accordion />', 'opens and closes'],
-        outputDir: resolve('test-results'),
-        pageUrl: 'http://localhost:3000/',
+        titlePath: ["src/components/accordion.test.tsx", "<Accordion />", "opens and closes"],
+        outputDir: resolve("test-results"),
+        pageUrl: "http://localhost:3000/",
       },
       {
         home: { snapshot: Buffer.from(JSON.stringify({})), viewport: { height: 800, width: 800 } },
       },
       {},
-      {}
+      {},
     );
 
     const { title } = vi.mocked(filePaths.outputJSONFile).mock.calls[0][1];
-    expect(title).toBe('src/components/accordion/<Accordion >/opens and closes');
+    expect(title).toBe("src/components/accordion/<Accordion >/opens and closes");
   });
 
-  describe('archive file system path windows', () => {
-    it('handles system paths', async () => {
+  describe("archive file system path windows", () => {
+    it("handles system paths", async () => {
       await writeTestResult(
         {
-          titlePath: ['file.spec.ts', 'Test Story'],
+          titlePath: ["file.spec.ts", "Test Story"],
           // simulates a system path (for windows)
           outputDir:
-            'C:/Users/testuser/dev/test-results/dist/.playwright/apps/web-react-demo/test-output/',
-          pageUrl: 'http://localhost:3000/',
+            "C:/Users/testuser/dev/test-results/dist/.playwright/apps/web-react-demo/test-output/",
+          pageUrl: "http://localhost:3000/",
         },
         {
           home: {
@@ -208,29 +210,29 @@ describe('writeTestResult', () => {
           },
         },
         {
-          'http://localhost:3000/@fs/C:/Users/testuser/dev/test-results/node_modules/vite/dist/client/index.html':
+          "http://localhost:3000/@fs/C:/Users/testuser/dev/test-results/node_modules/vite/dist/client/index.html":
             {
               statusCode: 200,
-              body: Buffer.from('Chromatic'),
+              body: Buffer.from("Chromatic"),
             },
         },
-        {}
+        {},
       );
 
       expect(filePaths.outputFile).toHaveBeenCalledWith(
-        'C:/Users/testuser/dev/test-results/dist/.playwright/apps/web-react-demo/test-output/chromatic-archives/archive/fs/C/Users/testuser/dev/test-results/node_modules/vite/dist/client/index.html',
-        Buffer.from('Chromatic')
+        "C:/Users/testuser/dev/test-results/dist/.playwright/apps/web-react-demo/test-output/chromatic-archives/archive/fs/C/Users/testuser/dev/test-results/node_modules/vite/dist/client/index.html",
+        Buffer.from("Chromatic"),
       );
     });
   });
 
-  describe('smart story naming', () => {
-    it('derives story title from test info, using all of the title path', async () => {
+  describe("smart story naming", () => {
+    it("derives story title from test info, using all of the title path", async () => {
       await writeTestResult(
         {
-          titlePath: ['file.spec.ts', 'A grouping', 'Test Story'],
-          outputDir: resolve('test-results'),
-          pageUrl: 'http://localhost:3000/',
+          titlePath: ["file.spec.ts", "A grouping", "Test Story"],
+          outputDir: resolve("test-results"),
+          pageUrl: "http://localhost:3000/",
         },
         {
           home: {
@@ -238,27 +240,27 @@ describe('writeTestResult', () => {
             viewport: { height: 800, width: 800 },
           },
         },
-        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        {}
+        { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
+        {},
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          title: 'file/A grouping/Test Story',
-        })
+          title: "file/A grouping/Test Story",
+        }),
       );
     });
 
-    it('preserves dots in directories, describe blocks, and test titles', async () => {
+    it("preserves dots in directories, describe blocks, and test titles", async () => {
       await writeTestResult(
         {
           titlePath: [
-            'a.directory/file.spec.ts',
-            '.someFunction',
-            '.someFunction() calls something',
+            "a.directory/file.spec.ts",
+            ".someFunction",
+            ".someFunction() calls something",
           ],
-          outputDir: resolve('test-results'),
-          pageUrl: 'http://localhost:3000/',
+          outputDir: resolve("test-results"),
+          pageUrl: "http://localhost:3000/",
         },
         {
           home: {
@@ -266,23 +268,23 @@ describe('writeTestResult', () => {
             viewport: { height: 800, width: 800 },
           },
         },
-        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        {}
+        { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
+        {},
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          title: 'a.directory/file/.someFunction/.someFunction() calls something',
-        })
+          title: "a.directory/file/.someFunction/.someFunction() calls something",
+        }),
       );
     });
 
-    it('preserves dots in file name, besides file extension (Playwright)', async () => {
+    it("preserves dots in file name, besides file extension (Playwright)", async () => {
       await writeTestResult(
         {
-          titlePath: ['some.file.spec.ts', 'Test Story'],
-          outputDir: resolve('test-results'),
-          pageUrl: 'http://localhost:3000/',
+          titlePath: ["some.file.spec.ts", "Test Story"],
+          outputDir: resolve("test-results"),
+          pageUrl: "http://localhost:3000/",
         },
         {
           home: {
@@ -290,23 +292,23 @@ describe('writeTestResult', () => {
             viewport: { height: 800, width: 800 },
           },
         },
-        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        {}
+        { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
+        {},
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          title: 'some.file/Test Story',
-        })
+          title: "some.file/Test Story",
+        }),
       );
     });
 
-    it('preserves dots in file name, besides file extension (Cypress)', async () => {
+    it("preserves dots in file name, besides file extension (Cypress)", async () => {
       await writeTestResult(
         {
-          titlePath: ['some.file.cy.ts', 'Test Story'],
-          outputDir: resolve('test-results'),
-          pageUrl: 'http://localhost:3000/',
+          titlePath: ["some.file.cy.ts", "Test Story"],
+          outputDir: resolve("test-results"),
+          pageUrl: "http://localhost:3000/",
         },
         {
           home: {
@@ -314,23 +316,23 @@ describe('writeTestResult', () => {
             viewport: { height: 800, width: 800 },
           },
         },
-        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        {}
+        { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
+        {},
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          title: 'some.file/Test Story',
-        })
+          title: "some.file/Test Story",
+        }),
       );
     });
 
-    it('removes file extension, even if .spec or .cy are not used', async () => {
+    it("removes file extension, even if .spec or .cy are not used", async () => {
       await writeTestResult(
         {
-          titlePath: ['file.ts', 'Test Story'],
-          outputDir: resolve('test-results'),
-          pageUrl: 'http://localhost:3000/',
+          titlePath: ["file.ts", "Test Story"],
+          outputDir: resolve("test-results"),
+          pageUrl: "http://localhost:3000/",
         },
         {
           home: {
@@ -338,14 +340,14 @@ describe('writeTestResult', () => {
             viewport: { height: 800, width: 800 },
           },
         },
-        { 'http://localhost:3000/home': { statusCode: 200, body: Buffer.from('Chromatic') } },
-        {}
+        { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
+        {},
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          title: 'file/Test Story',
-        })
+          title: "file/Test Story",
+        }),
       );
     });
   });

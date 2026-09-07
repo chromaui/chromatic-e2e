@@ -15,19 +15,19 @@
         shadowHostId,
         backgroundColor,
         headerColor,
-        paragraphColor
+        paragraphColor,
       ) => {
         const shadowElement = document.getElementById(shadowHostId);
-        const shadow = shadowElement.attachShadow({ mode: 'open' });
+        const shadow = shadowElement.attachShadow({ mode: "open" });
 
-        const container = document.createElement('div');
+        const container = document.createElement("div");
         shadow.appendChild(container);
 
-        const subHeading = document.createElement('h2');
+        const subHeading = document.createElement("h2");
         subHeading.innerHTML = `This section is generated using shadow DOM (I should be ${headerColor})`;
         container.appendChild(subHeading);
 
-        const paragraph = document.createElement('p');
+        const paragraph = document.createElement("p");
         paragraph.innerHTML = `This section is <strong>locally</strong> styled with constructable stylesheets created inside the shadow DOM. I should be <strong>${paragraphColor}</strong> and the section background should be <strong>${backgroundColor}</strong>.`;
         container.appendChild(paragraph);
 
@@ -53,8 +53,8 @@
         shadow.adoptedStyleSheets = [bodyStyleSheet, headerStyleSheet, paragraphStyleSheet];
       };
 
-      attachShadowDomElement('shadowHost', 'cyan', 'blue', 'green');
-      attachShadowDomElement('shadowHost2', 'yellow', 'red', 'purple');
+      attachShadowDomElement("shadowHost", "cyan", "blue", "green");
+      attachShadowDomElement("shadowHost2", "yellow", "red", "purple");
     </script>
   </body>
 </html>

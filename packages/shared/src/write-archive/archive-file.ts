@@ -1,20 +1,22 @@
-import path from 'node:path';
-import { createHash } from 'node:crypto';
-import mime from 'mime';
-import { logger } from '../utils/logger';
-import type { ArchiveResponse, UrlString } from '../resource-archiver';
+import { createHash } from "node:crypto";
+import path from "node:path";
+
+import mime from "mime";
+
+import type { ArchiveResponse, UrlString } from "../resource-archiver";
+import { logger } from "../utils/logger";
 
 const RESERVED_PATHNAMES: string[] = [
   // This is a list of filenames that are reserved for Storybook as a dev target.
   // If we encounter these filenames, we will rename them to avoid collisions.
   // If we do not rename them, the build-archive-storybook will not be able to serve the correct archives
   // and the tests will fail.
-  '/index.json',
-  '/iframe.html',
-  '/index.html',
-  '/main.iframe.bundle.js',
-  '/runtime~main.iframe.bundle.js',
-  '/sb-preview/runtime.js',
+  "/index.json",
+  "/iframe.html",
+  "/index.html",
+  "/main.iframe.bundle.js",
+  "/runtime~main.iframe.bundle.js",
+  "/sb-preview/runtime.js",
 ];
 
 /**
@@ -67,7 +69,7 @@ export class ArchiveFile {
   }
 
   private ensureNonDirectory(pathname: string) {
-    return pathname.endsWith('/') ? `${pathname}index.html` : pathname;
+    return pathname.endsWith("/") ? `${pathname}index.html` : pathname;
   }
 
   private encodeQueryString(pathname: string) {
@@ -86,7 +88,7 @@ export class ArchiveFile {
 
   private truncateFileName(pathname: string) {
     // Split this path to get all of the pieces
-    const pathPieces = pathname.split('/');
+    const pathPieces = pathname.split("/");
     const rebuiltPieces: Array<string> = [];
 
     // Shorten each individual piece
@@ -101,21 +103,21 @@ export class ArchiveFile {
     });
 
     // Re-join the pieces
-    return rebuiltPieces.join('/');
+    return rebuiltPieces.join("/");
   }
 
   private removeSpecialChars(pathname: string) {
     // The storybook server seems to have a problem with percents in file names
-    return pathname.replace(/[%:@]/g, '');
+    return pathname.replace(/[%:@]/g, "");
   }
 
   private addExtension(pathname: string) {
-    if ('error' in this.response) return pathname;
+    if ("error" in this.response) return pathname;
 
     // Add an extension if needed
     let nameWithExtension = pathname;
     if (!path.extname(nameWithExtension)) {
-      const fileExtension = mime.getExtension(this.response.contentType) || 'tmp';
+      const fileExtension = mime.getExtension(this.response.contentType) || "tmp";
       nameWithExtension = `${pathname}.${fileExtension}`;
     }
 
@@ -134,7 +136,7 @@ export class ArchiveFile {
   }
 
   private hash(name: string) {
-    return createHash('md5').update(name).digest('hex');
+    return createHash("md5").update(name).digest("hex");
   }
 
   private renameReservedPathnames(pathname: string) {

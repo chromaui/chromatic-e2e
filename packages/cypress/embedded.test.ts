@@ -1,19 +1,19 @@
-import { expect, it } from 'vitest';
 import {
   collectEmbeddedFiles,
   generateEmbeddedChecksum,
-} from '@chromatic-com/shared-e2e/test-utils';
+} from "@chromatic-com/shared-e2e/test-utils";
+import { expect, it } from "vitest";
 
-it('/embedded/node_modules has not changed', () => {
+it("/embedded/node_modules has not changed", () => {
   const { hash, fileCount } = generateEmbeddedChecksum(import.meta.dirname);
 
   expect(fileCount).toMatchInlineSnapshot(`8198`);
   expect(hash).toMatchInlineSnapshot(
-    `"fb7a3c92fbe7930617d966322c4b20b3918a3e197422c2850b6f8838a9d8ad8c"`
+    `"fb7a3c92fbe7930617d966322c4b20b3918a3e197422c2850b6f8838a9d8ad8c"`,
   );
 });
 
-it('/embedded/node_modules tree snapshot', () => {
+it("/embedded/node_modules tree snapshot", () => {
   expect(collectEmbeddedFiles(import.meta.dirname)).toMatchInlineSnapshot(`
     [
       "@babel/code-frame@7.29.7",

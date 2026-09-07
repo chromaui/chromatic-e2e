@@ -1,5 +1,5 @@
-import { takeSnapshot as takeChromaticSnapshot } from './takeSnapshot';
-import { CypressSnapshot } from './types';
+import { takeSnapshot as takeChromaticSnapshot } from "./takeSnapshot";
+import { CypressSnapshot } from "./types";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -16,15 +16,15 @@ declare global {
   }
 }
 
-Cypress.Commands.add('takeSnapshot', (name?: string) => {
+Cypress.Commands.add("takeSnapshot", (name?: string) => {
   // don't take snapshots when running `cypress open`
-  if (!Cypress.config('isTextTerminal')) {
+  if (!Cypress.config("isTextTerminal")) {
     return;
   }
 
   cy.window().then((win) => {
     const viewport = { width: win.innerWidth, height: win.innerHeight };
-    const colorScheme = win.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const colorScheme = win.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
     cy.document().then((doc) => {
       // here, handle the source map
@@ -32,12 +32,12 @@ Cypress.Commands.add('takeSnapshot', (name?: string) => {
       cy.wrap(takeChromaticSnapshot(doc, viewport, colorScheme, true)).then(
         (manualSnapshot: CypressSnapshot) => {
           // reassign manualSnapshots so it includes this new snapshot
-          cy.get('@manualSnapshots')
+          cy.get("@manualSnapshots")
             .then((snapshots: CypressSnapshot[]) => {
               return [...snapshots, { ...manualSnapshot, name }];
             })
-            .as('manualSnapshots');
-        }
+            .as("manualSnapshots");
+        },
       );
     });
   });

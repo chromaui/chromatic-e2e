@@ -1,1 +1,1 @@
-export const DEFAULT_OUTPUT_DIR = 'cypress/downloads';
+export const DEFAULT_OUTPUT_DIR = "cypress/downloads";

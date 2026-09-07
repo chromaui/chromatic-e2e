@@ -1,11 +1,12 @@
-import { storyNameFromExport, toId } from 'storybook/internal/csf';
-import type { ChromaticStorybookParameters, DOMSnapshots } from '../types';
-import { snapshotId } from './snapshot-files';
-import { collapseNewlines, sanitize } from './storybook-sanitize';
-import { Viewport, viewportToString } from '../utils/viewport';
-import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from '../utils/filePaths';
+import { storyNameFromExport, toId } from "storybook/internal/csf";
 
-const STORIES_FILE_EXT = 'stories.json';
+import type { ChromaticStorybookParameters, DOMSnapshots } from "../types";
+import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from "../utils/filePaths";
+import { Viewport, viewportToString } from "../utils/viewport";
+import { snapshotId } from "./snapshot-files";
+import { collapseNewlines, sanitize } from "./storybook-sanitize";
+
+const STORIES_FILE_EXT = "stories.json";
 
 export const uniqueId = { value: 1 };
 
@@ -15,10 +16,10 @@ export function storiesFileName(testTitle: string, overwriteDuplicateNames = tru
 
   // If multiple test runner project generate the same name, it's random which one ends up on file system
   if (!overwriteDuplicateNames) {
-    title += '-' + uniqueId.value++;
+    title += "-" + uniqueId.value++;
   }
 
-  const fileName = [title, STORIES_FILE_EXT].join('.');
+  const fileName = [title, STORIES_FILE_EXT].join(".");
 
   // Leave room for built storybook extensions that may be added (like `-stories.iframe.bundle.js`)
   const maxByteLength = MAX_FILE_NAME_BYTE_LENGTH - 25;
@@ -29,7 +30,7 @@ export function storiesFileName(testTitle: string, overwriteDuplicateNames = tru
 export function createStories(
   storyTitle: string,
   domSnapshots: DOMSnapshots,
-  chromaticStorybookParams: ChromaticStorybookParameters
+  chromaticStorybookParams: ChromaticStorybookParameters,
 ) {
   const title = collapseNewlines(storyTitle);
 
@@ -98,14 +99,14 @@ export function buildStoryViewportsConfig(viewports: Viewport[]) {
   }, {});
 }
 
-function viewportAddonType(viewport: Viewport): 'mobile' | 'tablet' | 'desktop' | 'other' {
+function viewportAddonType(viewport: Viewport): "mobile" | "tablet" | "desktop" | "other" {
   if (viewport.width < 600) {
-    return 'mobile';
+    return "mobile";
   }
   if (viewport.width < 1024) {
-    return 'tablet';
+    return "tablet";
   }
-  return 'desktop';
+  return "desktop";
 }
 
 // Finds a viewport to use as the default.

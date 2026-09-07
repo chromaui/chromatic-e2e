@@ -2,17 +2,24 @@
   "name": "@chromatic-com/vitest",
   "version": "1.0.1",
   "description": "Chromatic Visual Regression Testing for Vitest",
+  "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chromaui/chromatic-e2e.git",
     "directory": "packages/vitest"
   },
-  "author": "Chromatic <tom@chromatic.com>",
-  "license": "MIT",
-  "type": "module",
-  "engines": {
-    "node": ">=22"
+  "bin": {
+    "archive-storybook": "dist/bin/archive-storybook.mjs",
+    "build-archive-storybook": "dist/bin/build-archive-storybook.mjs"
   },
+  "files": [
+    "dist",
+    "embedded"
+  ],
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
@@ -26,16 +33,9 @@
     "./bin/build-archive-storybook": "./dist/bin/build-archive-storybook.mjs",
     "./package.json": "./package.json"
   },
-  "main": "dist/index.mjs",
-  "types": "dist/index.d.mts",
-  "bin": {
-    "archive-storybook": "dist/bin/archive-storybook.mjs",
-    "build-archive-storybook": "dist/bin/build-archive-storybook.mjs"
+  "publishConfig": {
+    "access": "public"
   },
-  "files": [
-    "dist",
-    "embedded"
-  ],
   "scripts": {
     "build": "tsdown",
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project 'Vitest Unit' --project 'Vitest Browser'",
@@ -43,8 +43,8 @@
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
-    "storybook": "10.2.13",
     "std-env": "^4.2.0",
+    "storybook": "10.2.13",
     "tinyexec": "^1.2.4",
     "tinyrainbow": "^3.1.0"
   },
@@ -63,7 +63,7 @@
   "peerDependencies": {
     "vitest": "^4 || ^5"
   },
-  "publishConfig": {
-    "access": "public"
+  "engines": {
+    "node": ">=22"
   }
 }

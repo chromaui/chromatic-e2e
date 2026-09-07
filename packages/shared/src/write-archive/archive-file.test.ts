@@ -1,164 +1,165 @@
-import { describe, expect, it } from 'vitest';
-import { ArchiveFile } from './archive-file';
-import type { ArchiveResponse, UrlString } from '../resource-archiver';
+import { describe, expect, it } from "vitest";
+
+import type { ArchiveResponse, UrlString } from "../resource-archiver";
+import { ArchiveFile } from "./archive-file";
 
 const imgPng =
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 const response = {
   statusCode: 200,
-  statusText: 'ok',
-  body: Buffer.from(imgPng, 'base64'),
-  contentType: 'image/png',
+  statusText: "ok",
+  body: Buffer.from(imgPng, "base64"),
+  contentType: "image/png",
 };
 
-describe('ArchiveFile', () => {
+describe("ArchiveFile", () => {
   const createArchiveFile = (fileUrl: UrlString, archiveResponse: ArchiveResponse = response) => {
-    return new ArchiveFile(fileUrl, archiveResponse, 'http://localhost:333');
+    return new ArchiveFile(fileUrl, archiveResponse, "http://localhost:333");
   };
 
-  describe('toFileSystemPath', () => {
-    it('has no effect on valid paths', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/some/directory/hi.png');
+  describe("toFileSystemPath", () => {
+    it("has no effect on valid paths", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/some/directory/hi.png");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/some/directory/hi.png');
+      expect(filePath).toEqual("/some/directory/hi.png");
     });
 
-    it('ensures path is not a directory', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/some/directory/');
+    it("ensures path is not a directory", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/some/directory/");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/some/directory/index.html');
+      expect(filePath).toEqual("/some/directory/index.html");
     });
 
-    it('appends encoded query string to file name', () => {
+    it("appends encoded query string to file name", () => {
       const archiveFile = createArchiveFile(
-        'http://localhost:333/some/directory/img?src=https://someotherdomain.com/image.jpg'
+        "http://localhost:333/some/directory/img?src=https://someotherdomain.com/image.jpg",
       );
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toMatch(new RegExp('/some/directory/img-[a-z0-9]+.png'));
+      expect(filePath).toMatch(new RegExp("/some/directory/img-[a-z0-9]+.png"));
     });
 
-    it('keeps a valid extension when an extensioned asset has a query string', () => {
+    it("keeps a valid extension when an extensioned asset has a query string", () => {
       const archiveFile = createArchiveFile(
-        'http://localhost:333/assets/logo-light.somehash.svg?dpl=abc123',
+        "http://localhost:333/assets/logo-light.somehash.svg?dpl=abc123",
         {
           statusCode: 200,
-          statusText: 'ok',
+          statusText: "ok",
           body: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'),
-          contentType: 'image/svg+xml',
-        }
+          contentType: "image/svg+xml",
+        },
       );
 
       expect(archiveFile.toFileSystemPath()).toMatchInlineSnapshot(
-        `"/assets/logo-light.somehash-53ba8980be568e19a9248ff35298ebb4.svg"`
+        `"/assets/logo-light.somehash-53ba8980be568e19a9248ff35298ebb4.svg"`,
       );
     });
 
-    it('truncates long file names and path parts', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/some/directory/ok.jpg');
+    it("truncates long file names and path parts", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/some/directory/ok.jpg");
       archiveFile.shortenedFileNameLength = 5;
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/some/direc/ok.jp');
+      expect(filePath).toEqual("/some/direc/ok.jp");
     });
 
-    it('adds a file extension based on content type when there is not one already', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/some/directory/ok');
+    it("adds a file extension based on content type when there is not one already", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/some/directory/ok");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/some/directory/ok.png');
+      expect(filePath).toEqual("/some/directory/ok.png");
     });
 
-    it('adds a default tmp file extension when response has no content type', () => {
+    it("adds a default tmp file extension when response has no content type", () => {
       const noContentType = { ...response };
       delete noContentType.contentType;
 
       const archiveFile = createArchiveFile(
-        'http://localhost:333/some/directory/ok',
-        noContentType
+        "http://localhost:333/some/directory/ok",
+        noContentType,
       );
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/some/directory/ok.tmp');
+      expect(filePath).toEqual("/some/directory/ok.tmp");
     });
 
-    it('prepends domain name (if archiving additional domains)', () => {
-      const archiveFile = createArchiveFile('http://subdomain.some-other-host/some-path/me.png');
+    it("prepends domain name (if archiving additional domains)", () => {
+      const archiveFile = createArchiveFile("http://subdomain.some-other-host/some-path/me.png");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/subdomain.some-other-host/some-path/me.png');
+      expect(filePath).toEqual("/subdomain.some-other-host/some-path/me.png");
     });
 
-    it('prepends domain name if port is all that differs', () => {
-      const archiveFile = createArchiveFile('http://localhost:9999/some/directory/hi.png');
+    it("prepends domain name if port is all that differs", () => {
+      const archiveFile = createArchiveFile("http://localhost:9999/some/directory/hi.png");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toEqual('/localhost3A9999/some/directory/hi.png');
+      expect(filePath).toEqual("/localhost3A9999/some/directory/hi.png");
     });
 
-    it('appends encoded string to reserved SB files', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/index.json');
+    it("appends encoded string to reserved SB files", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/index.json");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toMatch(new RegExp('/index-[a-z0-9]+.json'));
+      expect(filePath).toMatch(new RegExp("/index-[a-z0-9]+.json"));
     });
 
-    it('appends encoded string to reserved SB files: main.iframe', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/main.iframe.bundle.js');
+    it("appends encoded string to reserved SB files: main.iframe", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/main.iframe.bundle.js");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toMatch(new RegExp('/main.iframe.bundle-[a-z0-9]+.js'));
+      expect(filePath).toMatch(new RegExp("/main.iframe.bundle-[a-z0-9]+.js"));
     });
 
-    it('appends encoded string to reserved SB files: runtime~main.iframe', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/runtime~main.iframe.bundle.js');
+    it("appends encoded string to reserved SB files: runtime~main.iframe", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/runtime~main.iframe.bundle.js");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toMatch(new RegExp('/runtime~main.iframe.bundle-[a-z0-9]+.js'));
+      expect(filePath).toMatch(new RegExp("/runtime~main.iframe.bundle-[a-z0-9]+.js"));
     });
 
-    it('appends encoded string to reserved SB files: sb-preview/runtime.js', () => {
-      const archiveFile = createArchiveFile('http://localhost:333/sb-preview/runtime.js');
+    it("appends encoded string to reserved SB files: sb-preview/runtime.js", () => {
+      const archiveFile = createArchiveFile("http://localhost:333/sb-preview/runtime.js");
 
       const filePath = archiveFile.toFileSystemPath();
 
-      expect(filePath).toMatch(new RegExp('/sb-preview/runtime-[a-z0-9]+.js'));
+      expect(filePath).toMatch(new RegExp("/sb-preview/runtime-[a-z0-9]+.js"));
     });
   });
 
-  describe('originalSrc', () => {
-    it('retains the original source from the asset URL', () => {
+  describe("originalSrc", () => {
+    it("retains the original source from the asset URL", () => {
       const archiveFile = createArchiveFile(
-        'http://localhost:333/some/directory/ok?src=some-other-url'
+        "http://localhost:333/some/directory/ok?src=some-other-url",
       );
 
       archiveFile.toFileSystemPath();
       const originalSrc = archiveFile.originalSrc();
 
-      expect(originalSrc).toEqual('http://localhost:333/some/directory/ok?src=some-other-url');
+      expect(originalSrc).toEqual("http://localhost:333/some/directory/ok?src=some-other-url");
     });
 
-    it('retains the domain from the asset URL if cross-domain', () => {
-      const archiveFile = createArchiveFile('http://subdomain.some-other-host/some-path/me.png');
+    it("retains the domain from the asset URL if cross-domain", () => {
+      const archiveFile = createArchiveFile("http://subdomain.some-other-host/some-path/me.png");
 
       archiveFile.toFileSystemPath();
       const originalSrc = archiveFile.originalSrc();
 
-      expect(originalSrc).toEqual('http://subdomain.some-other-host/some-path/me.png');
+      expect(originalSrc).toEqual("http://subdomain.some-other-host/some-path/me.png");
     });
   });
 });

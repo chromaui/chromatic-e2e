@@ -49,14 +49,14 @@ If you wish to run the site-under-tests's server separately (e.g. to debug a spe
 
 ### Linting & formatting
 
-We use `eslint` and `prettier` to ensure code consistency.
+We use `oxlint` and `oxfmt` to ensure code consistency.
 
 To have all formatting and linting auto-fixed (so much as possible) run this at the project root:
 
 ```
 pnpm lint --fix
 
-pnpm prettier . --write
+pnpm fmt
 ```
 
 ### PR Workflow with Changesets

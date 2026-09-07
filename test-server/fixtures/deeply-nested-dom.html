@@ -10,15 +10,15 @@
       // Minimal reproduction for https://github.com/chromaui/chromatic-e2e/issues/307
       const DEPTH = 100;
 
-      let node = document.getElementById('root');
+      let node = document.getElementById("root");
 
       for (let i = 0; i < DEPTH; i++) {
-        const child = document.createElement('div');
+        const child = document.createElement("div");
         node.appendChild(child);
         node = child;
       }
 
-      node.textContent = 'Deeply nested content';
+      node.textContent = "Deeply nested content";
     </script>
   </body>
 </html>

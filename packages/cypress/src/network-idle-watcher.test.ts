@@ -1,14 +1,15 @@
-import { expect, it, vi } from 'vitest';
-import { NetworkIdleWatcher } from './network-idle-watcher';
+import { expect, it, vi } from "vitest";
+
+import { NetworkIdleWatcher } from "./network-idle-watcher";
 
 vi.useFakeTimers();
 
-it('Resolves when there is no network activity', async () => {
+it("Resolves when there is no network activity", async () => {
   const watcher = new NetworkIdleWatcher();
   await expect(watcher.idle()).resolves.toBeDefined();
 });
 
-it('Resolves when there is a single request and response', async () => {
+it("Resolves when there is a single request and response", async () => {
   const watcher = new NetworkIdleWatcher();
 
   watcher.onRequest();
@@ -17,7 +18,7 @@ it('Resolves when there is a single request and response', async () => {
   await expect(watcher.idle()).resolves.toBeDefined();
 });
 
-it('Resolves when there are an equal amount of requests and responses', async () => {
+it("Resolves when there are an equal amount of requests and responses", async () => {
   const watcher = new NetworkIdleWatcher();
   // in total 4 requests, and 4 responses
   watcher.onRequest();
@@ -35,7 +36,7 @@ it('Resolves when there are an equal amount of requests and responses', async ()
   await expect(watcher.idle()).resolves.toBeDefined();
 });
 
-it('Rejects if response never sent for request', async () => {
+it("Rejects if response never sent for request", async () => {
   const watcher = new NetworkIdleWatcher();
   // fire off request
   watcher.onRequest();

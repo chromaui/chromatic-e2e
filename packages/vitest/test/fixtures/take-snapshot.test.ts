@@ -1,24 +1,25 @@
-import { beforeAll, describe, expect, test, inject } from 'vitest';
-import { takeSnapshot } from '../../src';
+import { beforeAll, describe, expect, test, inject } from "vitest";
 
-test.runIf(inject('testName') === 'one')('test #1', async () => {
-  document.body.innerHTML = '<h1>Example heading</h1>';
+import { takeSnapshot } from "../../src";
+
+test.runIf(inject("testName") === "one")("test #1", async () => {
+  document.body.innerHTML = "<h1>Example heading</h1>";
 
   await takeSnapshot();
 
-  expect.fail('Should not reach this point');
+  expect.fail("Should not reach this point");
 });
 
-describe.runIf(inject('testName') === 'two')('suite', async () => {
+describe.runIf(inject("testName") === "two")("suite", async () => {
   beforeAll(async () => {
     await takeSnapshot();
   });
 
-  test('test #2', async () => {});
+  test("test #2", async () => {});
 });
 
-test.runIf(inject('testName') === 'three')('test #3', async () => {
-  document.body.innerHTML = '<h1>Example heading</h1>';
+test.runIf(inject("testName") === "three")("test #3", async () => {
+  document.body.innerHTML = "<h1>Example heading</h1>";
 
   takeSnapshot(); // Leave the promise floating, no await
 
@@ -26,21 +27,21 @@ test.runIf(inject('testName') === 'three')('test #3', async () => {
   takeSnapshot();
 });
 
-test.runIf(inject('testName') === 'four')('test #4', async () => {
-  document.body.innerHTML = '<h1>Example heading</h1>';
+test.runIf(inject("testName") === "four")("test #4", async () => {
+  document.body.innerHTML = "<h1>Example heading</h1>";
 });
 
-describe.runIf(inject('testName') === 'five')('suite #2', async () => {
-  describe('suite #3', () => {
-    describe('suite #4', () => {
-      test('test #5', async () => {
-        document.body.innerHTML = '<h1>Example heading</h1>';
-        await takeSnapshot('Named snapshot #1');
-        await takeSnapshot('Named snapshot #2');
+describe.runIf(inject("testName") === "five")("suite #2", async () => {
+  describe("suite #3", () => {
+    describe("suite #4", () => {
+      test("test #5", async () => {
+        document.body.innerHTML = "<h1>Example heading</h1>";
+        await takeSnapshot("Named snapshot #1");
+        await takeSnapshot("Named snapshot #2");
       });
     });
 
-    test('test #6', async () => {
+    test("test #6", async () => {
       await takeSnapshot();
     });
   });

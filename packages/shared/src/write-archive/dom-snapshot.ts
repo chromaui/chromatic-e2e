@@ -1,9 +1,10 @@
-import type { serializedElementNodeWithId, serializedNodeWithId } from '@rrweb/types';
-import { NodeType } from '@rrweb/types';
-import srcset from 'srcset';
-import { removeLocalhostFromBaseUrl } from '../utils/filePaths';
-import { isIframeSerializedNode } from '../utils/nodes';
-import type { DOMSnapshots, SavedSnapshot } from '../types';
+import type { serializedElementNodeWithId, serializedNodeWithId } from "@rrweb/types";
+import { NodeType } from "@rrweb/types";
+import srcset from "srcset";
+
+import type { DOMSnapshots, SavedSnapshot } from "../types";
+import { removeLocalhostFromBaseUrl } from "../utils/filePaths";
+import { isIframeSerializedNode } from "../utils/nodes";
 
 // Matches `url(...)` function in CSS text, excluding data URLs
 const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
@@ -13,17 +14,17 @@ const CSS_URL_REGEX = /url\((?!['"]?(?:data):)['"]?([^'")]*)['"]?\)/gi;
  */
 export class DOMSnapshot {
   snapshot: serializedNodeWithId;
-  pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+  pseudoClassIds: DOMSnapshots[string]["pseudoClassIds"];
 
   constructor({
     snapshot,
     pseudoClassIds,
   }: {
-    snapshot: DOMSnapshots[string]['snapshot'] | string;
-    pseudoClassIds: DOMSnapshots[string]['pseudoClassIds'];
+    snapshot: DOMSnapshots[string]["snapshot"] | string;
+    pseudoClassIds: DOMSnapshots[string]["pseudoClassIds"];
   }) {
     if (Buffer.isBuffer(snapshot)) {
-      const bufferAsString = snapshot.toString('utf-8');
+      const bufferAsString = snapshot.toString("utf-8");
       this.snapshot = JSON.parse(bufferAsString);
     } else {
       this.snapshot = JSON.parse(snapshot);
@@ -45,11 +46,11 @@ export class DOMSnapshot {
     node = this.mapNodeAttributes(node, sourceMap);
     node = this.mapTextElement(node, sourceMap);
 
-    if ('childNodes' in node) {
+    if ("childNodes" in node) {
       node.childNodes = await Promise.all(
         node.childNodes.map(async (childNode) => {
           return this.mapNode(childNode, sourceMap);
-        })
+        }),
       );
     }
 
@@ -83,17 +84,17 @@ export class DOMSnapshot {
         node.attributes._cssText = mappedCssText;
       }
 
-      if (['link', 'use'].includes(node.tagName) && node.attributes.href) {
+      if (["link", "use"].includes(node.tagName) && node.attributes.href) {
         const hrefVal = node.attributes.href as string;
 
         // SVGs and other href values can have an anchor which will not be included
         // in the source map lookup. We'll remove it to do the lookup and add it back
         // onto the found value.
-        const hrefValAndAnchor = hrefVal.split('#');
+        const hrefValAndAnchor = hrefVal.split("#");
         const hrefValWithoutAnchor = hrefValAndAnchor[0];
         if (sourceMap.has(hrefValWithoutAnchor)) {
           hrefValAndAnchor[0] = sourceMap.get(hrefValWithoutAnchor);
-          node.attributes.href = hrefValAndAnchor.join('#');
+          node.attributes.href = hrefValAndAnchor.join("#");
         }
       }
 
@@ -105,7 +106,7 @@ export class DOMSnapshot {
       // the one asset that the browser decided to load when this was rendered. We don't want
       // the browser to try to load one of the others when this snapshot is rendered in Chromatic
       // because we won't have archived them.
-      if (node.tagName === 'img' && node.attributes.srcset) {
+      if (node.tagName === "img" && node.attributes.srcset) {
         const srcsetValue = node.attributes.srcset as string;
         const currentSrc = this.mapSrcsetUrls(srcsetValue, sourceMap);
         if (currentSrc) {
@@ -114,12 +115,12 @@ export class DOMSnapshot {
         }
       }
 
-      if (node.tagName === 'picture') {
+      if (node.tagName === "picture") {
         this.mapPictureElement(node, sourceMap);
       }
 
       // If the element is a base tag, we remove the localhost from the href
-      if (node.tagName === 'base' && node.attributes.href) {
+      if (node.tagName === "base" && node.attributes.href) {
         node.attributes.href = removeLocalhostFromBaseUrl(node.attributes.href as string);
       }
     }
@@ -129,11 +130,11 @@ export class DOMSnapshot {
 
   private mapPictureElement(node: serializedElementNodeWithId, sourceMap: Map<string, string>) {
     const allSourceUrls: string[] = node.childNodes
-      .filter(this.isSourceElement)
+      .filter((element) => this.isSourceElement(element))
       .map((childNode: serializedElementNodeWithId) => {
         // there can be multiple values in a single srcset, extract all of them
         const sourceSetValues = srcset.parse(
-          (childNode.attributes?.srcset as string | undefined) ?? ''
+          (childNode.attributes?.srcset as string | undefined) ?? "",
         );
         return sourceSetValues.map((srcSetValue) => srcSetValue.url);
       })
@@ -153,7 +154,7 @@ export class DOMSnapshot {
 
       // replace the <img> tag's `src` with this asset-mapped URL
       const imageElement = node.childNodes.find(
-        (childNode) => childNode.type === NodeType.Element && childNode.tagName === 'img'
+        (childNode) => childNode.type === NodeType.Element && childNode.tagName === "img",
       ) as serializedElementNodeWithId;
       if (imageElement && imageElement.attributes) {
         // we're assuming that whatever was archived is an image URL
@@ -166,7 +167,7 @@ export class DOMSnapshot {
   }
 
   private isSourceElement(childNode: serializedNodeWithId) {
-    return childNode.type === NodeType.Element && childNode.tagName === 'source';
+    return childNode.type === NodeType.Element && childNode.tagName === "source";
   }
 
   private mapTextElement(node: serializedNodeWithId, sourceMap: Map<string, string>) {
@@ -202,7 +203,7 @@ export class DOMSnapshot {
     return currentSrc;
   }
 
-  private removeResponsiveImageAttributes(attributes: serializedElementNodeWithId['attributes']) {
+  private removeResponsiveImageAttributes(attributes: serializedElementNodeWithId["attributes"]) {
     // Remove srcset attributes since we'll only have the one that
     // loaded on render archived
     delete attributes.srcset;

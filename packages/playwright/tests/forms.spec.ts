@@ -1,7 +1,7 @@
-import { test, expect } from '../src';
+import { test, expect } from "../src";
 
-test('form submits successfully', async ({ page }) => {
-  await page.goto('/forms');
+test("form submits successfully", async ({ page }) => {
+  await page.goto("/forms");
   await page.locator('#form-success input[type="submit"]').click();
-  await expect(page.getByText('OK!')).toBeVisible();
+  await expect(page.getByText("OK!")).toBeVisible();
 });

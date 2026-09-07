@@ -1,23 +1,25 @@
-import { existsSync, rmSync } from 'node:fs';
-import { normalize, resolve } from 'node:path';
-import { expect, onTestFinished, test, vi } from 'vitest';
-import * as shared from '@chromatic-com/shared-e2e';
+import { existsSync, rmSync } from "node:fs";
+import { normalize, resolve } from "node:path";
+
+import * as shared from "@chromatic-com/shared-e2e";
+import { expect, onTestFinished, test, vi } from "vitest";
+
 import {
   runFixture as baseRunFixture,
   getBrowserConfig,
   isVitest5,
   setupTelemetryServer,
   StableTestFileOrderSorter,
-} from '../../test/utils/node';
-import { DEFAULT_OUTPUT_DIR } from '../constants';
+} from "../../test/utils/node";
+import { DEFAULT_OUTPUT_DIR } from "../constants";
 
-vi.mock('@chromatic-com/shared-e2e');
+vi.mock("@chromatic-com/shared-e2e");
 vi.mocked(shared.writeTestResult).mockImplementation(() =>
-  Promise.resolve({ storiesFile: 'test.stories.json' })
+  Promise.resolve({ storiesFile: "test.stories.json" }),
 );
 
-test('default reporter', async () => {
-  const { stdout } = await runFixture({ reporters: 'default' });
+test("default reporter", async () => {
+  const { stdout } = await runFixture({ reporters: "default" });
 
   expect(trimReporterOutput(stdout)).toMatchInlineSnapshot(`
     " RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
@@ -32,9 +34,9 @@ test('default reporter', async () => {
   `);
 });
 
-test('default reporter with slow tests', { timeout: 10_000 }, async () => {
+test("default reporter with slow tests", { timeout: 10_000 }, async () => {
   const { stdout } = await runFixture({
-    reporters: 'default',
+    reporters: "default",
     provide: { delay: 500 },
     slowTestThreshold: 499,
   });
@@ -78,8 +80,8 @@ test('default reporter with slow tests', { timeout: 10_000 }, async () => {
   }
 });
 
-test('tree reporter', async () => {
-  const { stdout } = await runFixture({ reporters: 'tree' });
+test("tree reporter", async () => {
+  const { stdout } = await runFixture({ reporters: "tree" });
 
   expect(trimReporterOutput(stdout)).toMatchInlineSnapshot(`
     " RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
@@ -106,8 +108,8 @@ test('tree reporter', async () => {
   `);
 });
 
-test('verbose reporter', async () => {
-  const { stdout } = await runFixture({ reporters: 'verbose' });
+test("verbose reporter", async () => {
+  const { stdout } = await runFixture({ reporters: "verbose" });
 
   expect(trimReporterOutput(stdout)).toMatchInlineSnapshot(`
     " RUN  v[...] <process-cwd>/packages/vitest/test/fixtures
@@ -140,22 +142,22 @@ test('verbose reporter', async () => {
   `);
 });
 
-test.each(['default', 'tree', 'verbose'] as const)(
-  '%s reporter with { verbose: false }',
+test.each(["default", "tree", "verbose"] as const)(
+  "%s reporter with { verbose: false }",
   async (builtInReporter) => {
     const { stdout } = await runFixture(
       { reporters: builtInReporter },
-      { reporter: { verbose: false } }
+      { reporter: { verbose: false } },
     );
 
     const output = trimReporterOutput(stdout);
 
-    expect(output).not.toContain('archive');
-    expect(output).not.toContain('captured');
-  }
+    expect(output).not.toContain("archive");
+    expect(output).not.toContain("captured");
+  },
 );
 
-test('summary when default root', async () => {
+test("summary when default root", async () => {
   onTestFinished(() => {
     const reports = resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
 
@@ -164,7 +166,7 @@ test('summary when default root', async () => {
     }
   });
 
-  const { stdout } = await runFixture({ reporters: 'default', root: process.cwd() });
+  const { stdout } = await runFixture({ reporters: "default", root: process.cwd() });
 
   expect(trimSummary(stdout)).toMatchInlineSnapshot(`
     "Chromatic Visual Regression
@@ -176,8 +178,8 @@ test('summary when default root', async () => {
   `);
 });
 
-test('summary when custom root', async () => {
-  const { stdout } = await runFixture({ reporters: 'default' });
+test("summary when custom root", async () => {
+  const { stdout } = await runFixture({ reporters: "default" });
 
   expect(trimSummary(stdout)).toMatchInlineSnapshot(`
     "Chromatic Visual Regression
@@ -189,7 +191,7 @@ test('summary when custom root', async () => {
   `);
 });
 
-test('summary with TurboSnap enabled', async () => {
+test("summary with TurboSnap enabled", async () => {
   onTestFinished(() => {
     const reports = resolve(process.cwd(), DEFAULT_OUTPUT_DIR);
 
@@ -199,8 +201,8 @@ test('summary with TurboSnap enabled', async () => {
   });
 
   const { stdout } = await runFixture(
-    { reporters: 'default', root: process.cwd() },
-    { turboSnap: true }
+    { reporters: "default", root: process.cwd() },
+    { turboSnap: true },
   );
 
   expect(trimSummary(stdout)).toMatchInlineSnapshot(`
@@ -213,9 +215,9 @@ test('summary with TurboSnap enabled', async () => {
   `);
 });
 
-test('summary with `CHROMATIC_TELEMETRY_LOG_TO_FILE` enabled', async () => {
+test("summary with `CHROMATIC_TELEMETRY_LOG_TO_FILE` enabled", async () => {
   const { cleanup } = setupTelemetryServer();
-  vi.stubEnv('CHROMATIC_TELEMETRY_LOG_TO_FILE', '1');
+  vi.stubEnv("CHROMATIC_TELEMETRY_LOG_TO_FILE", "1");
 
   onTestFinished(() => {
     vi.unstubAllEnvs();
@@ -228,7 +230,7 @@ test('summary with `CHROMATIC_TELEMETRY_LOG_TO_FILE` enabled', async () => {
     }
   });
 
-  const { stdout } = await runFixture({ reporters: 'default', root: process.cwd() });
+  const { stdout } = await runFixture({ reporters: "default", root: process.cwd() });
 
   expect(trimSummary(stdout)).toMatchInlineSnapshot(`
     "Chromatic Visual Regression
@@ -241,8 +243,8 @@ test('summary with `CHROMATIC_TELEMETRY_LOG_TO_FILE` enabled', async () => {
   `);
 });
 
-test('summary when custom output directory', async () => {
-  const outputDirectory = '.vitest/custom-output-directory';
+test("summary when custom output directory", async () => {
+  const outputDirectory = ".vitest/custom-output-directory";
 
   onTestFinished(() => {
     const reports = resolve(process.cwd(), outputDirectory);
@@ -253,8 +255,8 @@ test('summary when custom output directory', async () => {
   });
 
   const { stdout } = await runFixture(
-    { reporters: 'default', root: process.cwd() },
-    { outputDirectory }
+    { reporters: "default", root: process.cwd() },
+    { outputDirectory },
   );
 
   expect(trimSummary(stdout)).toMatchInlineSnapshot(`
@@ -267,10 +269,10 @@ test('summary when custom output directory', async () => {
   `);
 });
 
-test('summary when no eligible projects', { timeout: 15_000 }, async () => {
+test("summary when no eligible projects", { timeout: 15_000 }, async () => {
   const { stdout } = await runFixture({
-    reporters: 'default',
-    browser: { ...getBrowserConfig(), instances: [{ browser: 'webkit' }] },
+    reporters: "default",
+    browser: { ...getBrowserConfig(), instances: [{ browser: "webkit" }] },
   });
 
   expect(trimSummary(stdout)).toMatchInlineSnapshot(`
@@ -280,8 +282,8 @@ test('summary when no eligible projects', { timeout: 15_000 }, async () => {
   `);
 });
 
-test('reporter can be disabled', async () => {
-  const { stdout } = await runFixture({ reporters: 'default' }, { reporter: false });
+test("reporter can be disabled", async () => {
+  const { stdout } = await runFixture({ reporters: "default" }, { reporter: false });
 
   if (isVitest5()) {
     expect(trimReporterOutput(stdout, 0, Infinity)).toMatchInlineSnapshot(`
@@ -316,7 +318,7 @@ test('reporter can be disabled', async () => {
 
 function runFixture(
   options: Parameters<typeof baseRunFixture>[0],
-  pluginOptions?: Parameters<typeof baseRunFixture>[1]
+  pluginOptions?: Parameters<typeof baseRunFixture>[1],
 ) {
   return baseRunFixture(
     {
@@ -324,43 +326,43 @@ function runFixture(
       sequence: { sequencer: StableTestFileOrderSorter },
       include: [
         /** {@link file://./../../test/fixtures/reporter-1.test.ts} */
-        resolve(import.meta.dirname, '../../test/fixtures/reporter-1.test.ts'),
+        resolve(import.meta.dirname, "../../test/fixtures/reporter-1.test.ts"),
         /** {@link file://./../../test/fixtures/reporter-2.test.ts} */
-        resolve(import.meta.dirname, '../../test/fixtures/reporter-2.test.ts'),
+        resolve(import.meta.dirname, "../../test/fixtures/reporter-2.test.ts"),
         /** {@link file://./../../test/fixtures/reporter-3.test.ts} */
-        resolve(import.meta.dirname, '../../test/fixtures/reporter-3.test.ts'),
+        resolve(import.meta.dirname, "../../test/fixtures/reporter-3.test.ts"),
       ],
       ...options,
     },
-    pluginOptions
+    pluginOptions,
   );
 }
 
 function trimReporterOutput(report: string, start?: number, end?: number) {
-  const lines = report.split('\n');
-  const startIndex = start ?? lines.findIndex((line) => line.includes('RUN  v'));
-  const endIndex = end ?? lines.findIndex((line) => line.includes('Test Files'));
+  const lines = report.split("\n");
+  const startIndex = start ?? lines.findIndex((line) => line.includes("RUN  v"));
+  const endIndex = end ?? lines.findIndex((line) => line.includes("Test Files"));
 
   return lines
     .slice(startIndex, endIndex)
-    .join('\n')
-    .replaceAll(/\d+ms/g, '<time>')
-    .replaceAll(/\d+\.\d+s/g, '<time>')
-    .replaceAll(/\d+%/g, '<time>')
-    .replaceAll(normalize(process.cwd()), '<process-cwd>')
-    .replaceAll(/RUN {2}v([\w\-.]+) /g, 'RUN  v[...] ')
-    .replaceAll(/.*API started at.*/gm, '')
-    .replaceAll(/\s*\n\s*\n/g, '\n\n')
-    .replaceAll(/(Start at {1,2})\d+:\d+:\d+/g, '$1<time>');
+    .join("\n")
+    .replaceAll(/\d+ms/g, "<time>")
+    .replaceAll(/\d+\.\d+s/g, "<time>")
+    .replaceAll(/\d+%/g, "<time>")
+    .replaceAll(normalize(process.cwd()), "<process-cwd>")
+    .replaceAll(/RUN {2}v([\w\-.]+) /g, "RUN  v[...] ")
+    .replaceAll(/.*API started at.*/gm, "")
+    .replaceAll(/\s*\n\s*\n/g, "\n\n")
+    .replaceAll(/(Start at {1,2})\d+:\d+:\d+/g, "$1<time>");
 }
 
 function trimSummary(report: string) {
-  const lines = report.split('\n');
-  const start = lines.findIndex((line) => line.includes('Chromatic Visual Regression'));
+  const lines = report.split("\n");
+  const start = lines.findIndex((line) => line.includes("Chromatic Visual Regression"));
 
   return lines
     .slice(start, -2)
     .map((line) => line.trim())
-    .join('\n')
-    .replaceAll(normalize(process.cwd()), '<process-cwd>');
+    .join("\n")
+    .replaceAll(normalize(process.cwd()), "<process-cwd>");
 }

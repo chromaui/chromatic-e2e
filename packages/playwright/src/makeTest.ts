@@ -1,3 +1,10 @@
+import { join } from "node:path";
+
+import type { ChromaticConfig } from "@chromatic-com/shared-e2e";
+import {
+  writeTestResult,
+  DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
+} from "@chromatic-com/shared-e2e";
 import type {
   TestType,
   PlaywrightTestArgs,
@@ -6,15 +13,10 @@ import type {
   PlaywrightWorkerOptions,
   TestInfo,
   Page,
-} from '@playwright/test';
-import type { ChromaticConfig } from '@chromatic-com/shared-e2e';
-import {
-  writeTestResult,
-  DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
-} from '@chromatic-com/shared-e2e';
-import { join } from 'node:path';
-import { chromaticSnapshots, takeSnapshot } from './takeSnapshot';
-import { createResourceArchive } from './createResourceArchive';
+} from "@playwright/test";
+
+import { createResourceArchive } from "./createResourceArchive";
+import { chromaticSnapshots, takeSnapshot } from "./takeSnapshot";
 
 export const performChromaticSnapshot = async (
   {
@@ -32,7 +34,7 @@ export const performChromaticSnapshot = async (
     ignoreSelectors,
   }: ChromaticConfig & { page: Page },
   use: () => Promise<void>,
-  testInfo: TestInfo
+  testInfo: TestInfo,
 ) => {
   const { testId, project } = testInfo;
   const httpCredentials = project?.use?.httpCredentials;
@@ -42,7 +44,7 @@ export const performChromaticSnapshot = async (
     // We can later snapshot them in different browsers in the cloud.
     // TODO: I'm not sure if this is the best way to detect the browser version, but
     // it seems to work
-    if (page.context().browser().browserType().name() !== 'chromium') {
+    if (page.context().browser().browserType().name() !== "chromium") {
       await use();
       return;
     }
@@ -65,7 +67,7 @@ export const performChromaticSnapshot = async (
 
     // TestInfo.outputDir gives us the test-specific subfolder (https://playwright.dev/docs/api/class-testconfig#test-config-output-dir);
     // we want to write one level above that
-    const outputDir = join(testInfo.outputDir, '..');
+    const outputDir = join(testInfo.outputDir, "..");
     await writeTestResult(
       { ...testInfo, outputDir, pageUrl: page.url() },
       Object.fromEntries(snapshots),
@@ -80,7 +82,7 @@ export const performChromaticSnapshot = async (
         cropToViewport,
         ignoreSelectors,
       },
-      'playwright'
+      "playwright",
     );
   } finally {
     // make sure we clear the value associated with this test ID, so the shared chromaticSnapshots object stays small
@@ -97,7 +99,7 @@ export const makeTest = (
   base: TestType<
     PlaywrightTestArgs & PlaywrightTestOptions,
     PlaywrightWorkerArgs & PlaywrightWorkerOptions
-  >
+  >,
 ) =>
   base.extend<ChromaticConfig & { chromaticSnapshot: void }>({
     // ChromaticConfig defaults

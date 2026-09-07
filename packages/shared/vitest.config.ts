@@ -1,9 +1,9 @@
-import { defineProject } from 'vitest/config';
+import { defineProject } from "vitest/config";
 
 export default defineProject({
   resolve: { tsconfigPaths: true },
   test: {
-    name: { label: 'Shared', color: 'cyan' },
-    include: ['src/**/*.test.ts'],
+    name: { label: "Shared", color: "cyan" },
+    include: ["src/**/*.test.ts"],
   },
 });

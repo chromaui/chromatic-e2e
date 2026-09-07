@@ -1,15 +1,16 @@
-import { test, expect } from 'vitest';
-import { commands } from 'vitest/browser';
-import { InternalTestContext } from '../types';
+import { test, expect } from "vitest";
+import { commands } from "vitest/browser";
 
-test<InternalTestContext>('setupFile is registered', async (context) => {
+import { InternalTestContext } from "../types";
+
+test<InternalTestContext>("setupFile is registered", async (context) => {
   expect(context.task.meta.__chromatic_isRegistered).toBe(true);
   expect(context.task.meta.__chromatic_isTakeSnapshotCalled).toBe(false);
 });
 
-test('browser commands are available', () => {
+test("browser commands are available", () => {
   const chromaticCommands = Object.entries(commands).filter(([name]) =>
-    name.startsWith('__chromatic_')
+    name.startsWith("__chromatic_"),
   );
 
   expect(Object.fromEntries(chromaticCommands)).toMatchInlineSnapshot(`

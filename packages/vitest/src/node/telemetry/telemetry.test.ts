@@ -1,51 +1,53 @@
-import { rm } from 'node:fs/promises';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { spawn } from 'node:child_process';
-import { homedir } from 'node:os';
-import { beforeEach, describe, expect, onTestFinished, test as base, vi } from 'vitest';
-import { http, HttpResponse } from 'msw';
-import { chromaticPlugin } from '../plugin';
-import { invalidateDotEnvCache, TELEMETRY_METADATA_FILE, type WireTelemetryEvent } from './index';
+import { spawn } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { rm } from "node:fs/promises";
+import { homedir } from "node:os";
+import { resolve } from "node:path";
+
+import { http, HttpResponse } from "msw";
+import { beforeEach, describe, expect, onTestFinished, test as base, vi } from "vitest";
+
 import {
   getBrowserConfig,
   runFixture,
   getResolvedConfig as runVitest,
   setupTelemetryServer,
-} from '../../../test/utils/node';
+} from "../../../test/utils/node";
+import { chromaticPlugin } from "../plugin";
+import { invalidateDotEnvCache, TELEMETRY_METADATA_FILE, type WireTelemetryEvent } from "./index";
 
 beforeEach(() => {
   vi.unstubAllEnvs();
   invalidateDotEnvCache();
 });
 
-describe('configuration', () => {
-  test('telemetry is enabled by default', async ({ onRequest }) => {
+describe("configuration", () => {
+  test("telemetry is enabled by default", async ({ onRequest }) => {
     await runVitest();
 
     expect(onRequest).toHaveBeenCalled();
   });
 
-  test.for(['CHROMATIC_DISABLE_TELEMETRY', 'DO_NOT_TRACK'])(
-    'telemetry is disabled when %s is set',
+  test.for(["CHROMATIC_DISABLE_TELEMETRY", "DO_NOT_TRACK"])(
+    "telemetry is disabled when %s is set",
     async (envVar, { onRequest }) => {
-      vi.stubEnv(envVar, '1');
+      vi.stubEnv(envVar, "1");
       const { root } = await runVitest();
 
       expect(onRequest).not.toHaveBeenCalled();
 
       const metadataJson = resolve(root, `.vitest/chromatic/${TELEMETRY_METADATA_FILE}`);
       expect(existsSync(metadataJson), `Expected ${metadataJson} not to exist`).toBe(false);
-    }
+    },
   );
 
-  test.for(['CHROMATIC_DISABLE_TELEMETRY', 'DO_NOT_TRACK'])(
-    'telemetry is disabled when %s is set in .env',
+  test.for(["CHROMATIC_DISABLE_TELEMETRY", "DO_NOT_TRACK"])(
+    "telemetry is disabled when %s is set in .env",
     async (envVar, { onRequest }) => {
       vi.stubEnv(envVar, undefined);
 
       const original = process.cwd();
-      onTestFinished(() => void process.chdir(original));
+      onTestFinished(() => process.chdir(original));
 
       const cwd = resolve(import.meta.dirname, `../../../test/fixtures/dotenvs/${envVar}`);
       process.chdir(cwd);
@@ -53,53 +55,53 @@ describe('configuration', () => {
       await runVitest();
 
       expect(onRequest).not.toHaveBeenCalled();
-    }
+    },
   );
 
-  test('telemetry is sent to custom endpoint when CHROMATIC_TELEMETRY_URL is set', async ({
+  test("telemetry is sent to custom endpoint when CHROMATIC_TELEMETRY_URL is set", async ({
     onRequest,
     server,
   }) => {
-    const url = 'https://custom-endpoint.chromatic.com/telemetry';
-    vi.stubEnv('CHROMATIC_TELEMETRY_URL', url);
+    const url = "https://custom-endpoint.chromatic.com/telemetry";
+    vi.stubEnv("CHROMATIC_TELEMETRY_URL", url);
 
     const onCustomEndpointRequest = vi.fn();
 
     server.use(
       http.post(`${url}/telemetry/v1/vitest/events`, async () => {
-        onCustomEndpointRequest('called here');
+        onCustomEndpointRequest("called here");
         return HttpResponse.json({ ok: true });
-      })
+      }),
     );
     await runVitest();
 
     expect.soft(onRequest).not.toHaveBeenCalled();
-    expect.soft(onCustomEndpointRequest).toHaveBeenCalledWith('called here');
+    expect.soft(onCustomEndpointRequest).toHaveBeenCalledWith("called here");
   });
 
-  test('telemetry is logged to file when CHROMATIC_TELEMETRY_LOG_TO_FILE is set', async () => {
-    vi.stubEnv('CHROMATIC_TELEMETRY_LOG_TO_FILE', '1');
+  test("telemetry is logged to file when CHROMATIC_TELEMETRY_LOG_TO_FILE is set", async () => {
+    vi.stubEnv("CHROMATIC_TELEMETRY_LOG_TO_FILE", "1");
     const { root } = await runVitest();
 
     const rows = readLogFile(root);
 
-    const configureEvents = rows.filter((row) => row.eventType === 'vitest_plugin_configured');
+    const configureEvents = rows.filter((row) => row.eventType === "vitest_plugin_configured");
     expect(configureEvents.length).toBe(1);
   });
 
-  test('telemetry is not logged to file by default ', async () => {
+  test("telemetry is not logged to file by default ", async () => {
     const { root } = await runVitest();
 
-    expect(existsSync(resolve(root, '.vitest/chromatic/telemetry.jsonl'))).toBe(false);
+    expect(existsSync(resolve(root, ".vitest/chromatic/telemetry.jsonl"))).toBe(false);
   });
 
-  test('metadata file is written', async () => {
+  test("metadata file is written", async () => {
     const { root } = await runVitest();
 
     const filename = resolve(root, `.vitest/chromatic/${TELEMETRY_METADATA_FILE}`);
     expect(existsSync(filename), `Expected metadata file to exist at ${filename}`).toBe(true);
 
-    const json = JSON.parse(readFileSync(filename, 'utf8'));
+    const json = JSON.parse(readFileSync(filename, "utf8"));
 
     expect(json).toMatchObject({
       sessionId: expect.any(String),
@@ -109,13 +111,13 @@ describe('configuration', () => {
       nodeVersion: expect.any(String),
       vitestVersion: expect.any(String),
       isVitestProjects: false,
-      packageManager: 'pnpm',
+      packageManager: "pnpm",
       packageManagerVersion: expect.any(String),
       chromaticVersion: expect.any(String),
     });
   });
 
-  test('hanging telemetry endpoint does not block Vitest shutdown', async ({ server }) => {
+  test("hanging telemetry endpoint does not block Vitest shutdown", async ({ server }) => {
     // Patch AbortSignal as Sinon does not support mocking it: https://github.com/sinonjs/fake-timers/issues/521
     {
       const timeout = AbortSignal.timeout;
@@ -128,19 +130,19 @@ describe('configuration', () => {
       };
     }
 
-    const url = 'https://unresponsive-endpoint.chromatic.com/telemetry';
-    vi.stubEnv('CHROMATIC_TELEMETRY_URL', url);
+    const url = "https://unresponsive-endpoint.chromatic.com/telemetry";
+    vi.stubEnv("CHROMATIC_TELEMETRY_URL", url);
 
     const isFetching = new Promise<void>((fetchStarted) => {
       server.use(
         http.post(`${url}/telemetry/v1/vitest/events`, async () => {
           fetchStarted();
           await new Promise((_resolve) => {});
-        })
+        }),
       );
     });
 
-    vi.useFakeTimers({ toFake: ['setTimeout'] });
+    vi.useFakeTimers({ toFake: ["setTimeout"] });
     onTestFinished(() => void vi.useRealTimers());
 
     let done = false;
@@ -161,9 +163,9 @@ describe('configuration', () => {
   });
 });
 
-describe('automatic fields', () => {
-  test('attaches common fields and metadata to telemetry events', async ({ onRequest }) => {
-    const time = '2026-01-01T00:00:00.000Z';
+describe("automatic fields", () => {
+  test("attaches common fields and metadata to telemetry events", async ({ onRequest }) => {
+    const time = "2026-01-01T00:00:00.000Z";
     vi.setSystemTime(new Date(time));
     onTestFinished(() => void vi.useRealTimers());
 
@@ -177,7 +179,7 @@ describe('automatic fields', () => {
       projectId: expect.any(String),
       timestamp: time,
       eventType: expect.any(String),
-      level: expect.toBeOneOf(['info', 'warn', 'error']),
+      level: expect.toBeOneOf(["info", "warn", "error"]),
       payload: expect.any(Object),
       metadata: {
         isCI: expect.toBeOneOf([true, false]),
@@ -185,47 +187,47 @@ describe('automatic fields', () => {
         pluginVersion: expect.any(String),
         nodeVersion: process.versions.node,
         vitestVersion: expect.any(String),
-        packageManager: 'pnpm',
+        packageManager: "pnpm",
         packageManagerVersion: expect.any(String),
         chromaticVersion: expect.any(String),
       },
     });
   });
 
-  test('sets isVitestProjects true when multiple Vitest projects', async ({ onRequest }) => {
+  test("sets isVitestProjects true when multiple Vitest projects", async ({ onRequest }) => {
     await runFixture(
       {
         projects: [
           {
             plugins: [chromaticPlugin()],
             test: {
-              include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../../test/fixtures'),
-              browser: getBrowserConfig('first-browser'),
+              include: ["**/dom.test.ts"],
+              root: resolve(import.meta.dirname, "../../../test/fixtures"),
+              browser: getBrowserConfig("first-browser"),
             },
           },
           {
             plugins: [chromaticPlugin()],
             test: {
-              include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../../test/fixtures'),
-              browser: getBrowserConfig('second-browser'),
+              include: ["**/dom.test.ts"],
+              root: resolve(import.meta.dirname, "../../../test/fixtures"),
+              browser: getBrowserConfig("second-browser"),
             },
           },
         ],
       },
-      { disabled: true }
+      { disabled: true },
     );
     const events = vi.mocked(onRequest).mock.calls.map(([event]) => event);
 
     expect.soft(events.length).toBeGreaterThanOrEqual(2);
-    expect.soft(events[0]?.metadata).toHaveProperty('isVitestProjects', true);
-    expect.soft(events[1]?.metadata).toHaveProperty('isVitestProjects', true);
+    expect.soft(events[0]?.metadata).toHaveProperty("isVitestProjects", true);
+    expect.soft(events[1]?.metadata).toHaveProperty("isVitestProjects", true);
   });
 });
 
-describe('events', () => {
-  test('all events in order', async ({ getEvents }) => {
+describe("events", () => {
+  test("all events in order", async ({ getEvents }) => {
     expect(getEvents().map((event) => event.eventType)).toMatchInlineSnapshot(`
       [
         "vitest_plugin_configured",
@@ -242,8 +244,8 @@ describe('events', () => {
     `);
   });
 
-  test('plugin_configured', async ({ getEvents }) => {
-    const pluginConfiguredEvents = getEvents('vitest_plugin_configured');
+  test("plugin_configured", async ({ getEvents }) => {
+    const pluginConfiguredEvents = getEvents("vitest_plugin_configured");
 
     expect(pickTypeAndPayload(pluginConfiguredEvents)).toMatchInlineSnapshot(`
       [
@@ -266,14 +268,14 @@ describe('events', () => {
     `);
   });
 
-  test('plugin_configured in Vitest sharded run', async ({ onRequest }) => {
+  test("plugin_configured in Vitest sharded run", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
-    await runVitest({ shard: '1/2' });
+    await runVitest({ shard: "1/2" });
 
     const pluginConfiguredEvents = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_plugin_configured'
-        ? [event as WireTelemetryEvent<'plugin_configured'>]
-        : []
+      event.eventType === "vitest_plugin_configured"
+        ? [event as WireTelemetryEvent<"plugin_configured">]
+        : [],
     );
 
     expect(pickTypeAndPayload(pluginConfiguredEvents)).toMatchInlineSnapshot(`
@@ -297,51 +299,51 @@ describe('events', () => {
     `);
   });
 
-  test('plugin_configured in Vitest projects setup', async ({ onRequest }) => {
+  test("plugin_configured in Vitest projects setup", async ({ onRequest }) => {
     await runFixture(
       {
         projects: [
           {
             plugins: [chromaticPlugin({ delay: 1111 })],
             test: {
-              name: 'first-project',
-              browser: getBrowserConfig('first-browser'),
-              include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../../test/fixtures'),
+              name: "first-project",
+              browser: getBrowserConfig("first-browser"),
+              include: ["**/dom.test.ts"],
+              root: resolve(import.meta.dirname, "../../../test/fixtures"),
             },
           },
           {
             plugins: [chromaticPlugin({ delay: 2222 })],
             test: {
-              name: 'second-project',
-              browser: getBrowserConfig('second-browser'),
-              include: ['**/dom.test.ts'],
-              root: resolve(import.meta.dirname, '../../../test/fixtures'),
+              name: "second-project",
+              browser: getBrowserConfig("second-browser"),
+              include: ["**/dom.test.ts"],
+              root: resolve(import.meta.dirname, "../../../test/fixtures"),
             },
           },
         ],
       },
-      { disabled: true }
+      { disabled: true },
     );
 
     const configuredEvents = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_plugin_configured'
-        ? [event as WireTelemetryEvent<'plugin_configured'>]
-        : []
+      event.eventType === "vitest_plugin_configured"
+        ? [event as WireTelemetryEvent<"plugin_configured">]
+        : [],
     );
 
     expect.soft(configuredEvents).toHaveLength(2);
     expect.soft(configuredEvents.map((event) => event.payload.delay).sort()).toEqual([1111, 2222]);
   });
 
-  test('project_ineligible', async ({ onRequest }) => {
+  test("project_ineligible", async ({ onRequest }) => {
     await runFixture({
-      include: ['**/dom.test.ts'],
+      include: ["**/dom.test.ts"],
       browser: { enabled: false },
     });
 
     const projectIneligibleEvents = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_project_ineligible' ? [event] : []
+      event.eventType === "vitest_project_ineligible" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(projectIneligibleEvents)).toMatchInlineSnapshot(`
@@ -357,8 +359,8 @@ describe('events', () => {
     `);
   });
 
-  test('run_started', async ({ getEvents }) => {
-    const startEvents = getEvents('vitest_run_started');
+  test("run_started", async ({ getEvents }) => {
+    const startEvents = getEvents("vitest_run_started");
 
     expect(pickTypeAndPayload(startEvents)).toMatchInlineSnapshot(`
       [
@@ -370,8 +372,8 @@ describe('events', () => {
     `);
   });
 
-  test('run_ended', async ({ getEvents }) => {
-    const endEvents = getEvents('vitest_run_ended');
+  test("run_ended", async ({ getEvents }) => {
+    const endEvents = getEvents("vitest_run_ended");
 
     expect(pickTypeAndPayload(endEvents)).toMatchInlineSnapshot(`
       [
@@ -385,8 +387,8 @@ describe('events', () => {
     `);
   });
 
-  test('snapshot_captured', async ({ getEvents }) => {
-    const snapshotsCapturedEvents = getEvents('vitest_snapshot_captured');
+  test("snapshot_captured", async ({ getEvents }) => {
+    const snapshotsCapturedEvents = getEvents("vitest_snapshot_captured");
 
     expect(pickTypeAndPayload(snapshotsCapturedEvents)).toMatchInlineSnapshot(`
       [
@@ -434,15 +436,15 @@ describe('events', () => {
     `);
   });
 
-  test('take_snapshot_invalid_call - called outside test', async ({ onRequest }) => {
+  test("take_snapshot_invalid_call - called outside test", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture({
-      include: ['**/take-snapshot.test.ts'],
-      provide: { testName: 'two' },
+      include: ["**/take-snapshot.test.ts"],
+      provide: { testName: "two" },
     });
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_take_snapshot_invalid_call' ? [event] : []
+      event.eventType === "vitest_take_snapshot_invalid_call" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -457,19 +459,19 @@ describe('events', () => {
     `);
   });
 
-  test('take_snapshot_invalid_call - not registered test', async ({ onRequest }) => {
+  test("take_snapshot_invalid_call - not registered test", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture(
       {
-        include: ['**/take-snapshot.test.ts'],
-        provide: { testName: 'one' },
-        tags: [{ name: 'example' }],
+        include: ["**/take-snapshot.test.ts"],
+        provide: { testName: "one" },
+        tags: [{ name: "example" }],
       },
-      { tags: ['example'] }
+      { tags: ["example"] },
     );
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_take_snapshot_invalid_call' ? [event] : []
+      event.eventType === "vitest_take_snapshot_invalid_call" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -485,15 +487,15 @@ describe('events', () => {
     `);
   });
 
-  test('take_snapshot_invalid_call - not awaited', async ({ onRequest }) => {
+  test("take_snapshot_invalid_call - not awaited", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture({
-      include: ['**/take-snapshot.test.ts'],
-      provide: { testName: 'three' },
+      include: ["**/take-snapshot.test.ts"],
+      provide: { testName: "three" },
     });
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_take_snapshot_invalid_call' ? [event] : []
+      event.eventType === "vitest_take_snapshot_invalid_call" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -510,8 +512,8 @@ describe('events', () => {
     `);
   });
 
-  test('archives_created', async ({ getEvents }) => {
-    const archivesCreatedEvents = getEvents('vitest_archives_created');
+  test("archives_created", async ({ getEvents }) => {
+    const archivesCreatedEvents = getEvents("vitest_archives_created");
 
     expect(pickTypeAndPayload(archivesCreatedEvents)).toMatchInlineSnapshot(`
       [
@@ -531,12 +533,12 @@ describe('events', () => {
     `);
   });
 
-  test('configure_called', async ({ onRequest }) => {
+  test("configure_called", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/configure-calls.test.ts} */
-    await runFixture({ include: ['**/configure-calls.test.ts'] });
+    await runFixture({ include: ["**/configure-calls.test.ts"] });
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_configure_called' ? [event] : []
+      event.eventType === "vitest_configure_called" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -574,15 +576,15 @@ describe('events', () => {
     `);
   });
 
-  test('wait_for_idle_network_called', async ({ onRequest }) => {
+  test("wait_for_idle_network_called", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture({
-      include: ['**/wait-for-idle-network.test.ts'],
-      provide: { testName: 'three' },
+      include: ["**/wait-for-idle-network.test.ts"],
+      provide: { testName: "three" },
     });
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_wait_for_idle_network_called' ? [event] : []
+      event.eventType === "vitest_wait_for_idle_network_called" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -597,15 +599,15 @@ describe('events', () => {
     `);
   });
 
-  test('wait_for_idle_network_invalid_call - called outside test', async ({ onRequest }) => {
+  test("wait_for_idle_network_invalid_call - called outside test", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture({
-      include: ['**/wait-for-idle-network.test.ts'],
-      provide: { testName: 'two' },
+      include: ["**/wait-for-idle-network.test.ts"],
+      provide: { testName: "two" },
     });
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_wait_for_idle_network_invalid_call' ? [event] : []
+      event.eventType === "vitest_wait_for_idle_network_invalid_call" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -621,19 +623,19 @@ describe('events', () => {
     `);
   });
 
-  test('wait_for_idle_network_invalid_call - not registered test', async ({ onRequest }) => {
+  test("wait_for_idle_network_invalid_call - not registered test", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture(
       {
-        include: ['**/wait-for-idle-network.test.ts'],
-        provide: { testName: 'one' },
-        tags: [{ name: 'example' }],
+        include: ["**/wait-for-idle-network.test.ts"],
+        provide: { testName: "one" },
+        tags: [{ name: "example" }],
       },
-      { tags: ['example'] }
+      { tags: ["example"] },
     );
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_wait_for_idle_network_invalid_call' ? [event] : []
+      event.eventType === "vitest_wait_for_idle_network_invalid_call" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -650,18 +652,18 @@ describe('events', () => {
     `);
   });
 
-  test('wait_for_idle_network_timeout', async ({ onRequest }) => {
+  test("wait_for_idle_network_timeout", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/wait-for-idle-network.test.ts} */
     await runFixture(
       {
-        include: ['**/wait-for-idle-network.test.ts'],
-        provide: { testName: 'three' },
+        include: ["**/wait-for-idle-network.test.ts"],
+        provide: { testName: "three" },
       },
-      { idleNetworkInterval: 1 }
+      { idleNetworkInterval: 1 },
     );
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_wait_for_idle_network_timeout' ? [event] : []
+      event.eventType === "vitest_wait_for_idle_network_timeout" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -677,17 +679,17 @@ describe('events', () => {
     `);
   });
 
-  test('setup_files_parallel', async ({ onRequest }) => {
+  test("setup_files_parallel", async ({ onRequest }) => {
     /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
     await runFixture({
-      include: ['**/take-snapshot.test.ts'],
-      provide: { testName: 'four' },
-      setupFiles: ['custom-setup-file.ts'],
-      sequence: { hooks: 'parallel' },
+      include: ["**/take-snapshot.test.ts"],
+      provide: { testName: "four" },
+      setupFiles: ["custom-setup-file.ts"],
+      sequence: { hooks: "parallel" },
     });
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_setup_files_parallel' ? [event] : []
+      event.eventType === "vitest_setup_files_parallel" ? [event] : [],
     );
 
     expect(pickTypeAndPayload(events)).toMatchInlineSnapshot(`
@@ -702,35 +704,35 @@ describe('events', () => {
     `);
   });
 
-  test('turbosnap_error - preview stats merge failure', async ({ onRequest }) => {
-    const root = resolve(import.meta.dirname, '../../../test/fixtures');
+  test("turbosnap_error - preview stats merge failure", async ({ onRequest }) => {
+    const root = resolve(import.meta.dirname, "../../../test/fixtures");
 
     /** See {@link file://./../../../test/fixtures/corrupt-stats/preview-stats-1-2.json} */
-    const outputDirectory = resolve(root, 'corrupt-stats');
+    const outputDirectory = resolve(root, "corrupt-stats");
 
     await expect(
       runFixture(
-        { root, mergeReports: outputDirectory, include: ['dom.test.ts'] },
-        { turboSnap: true, outputDirectory }
-      )
+        { root, mergeReports: outputDirectory, include: ["dom.test.ts"] },
+        { turboSnap: true, outputDirectory },
+      ),
     ).rejects.toThrow();
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_turbosnap_error' ? [event] : []
+      event.eventType === "vitest_turbosnap_error" ? [event] : [],
     );
 
     expect.soft(events).toHaveLength(1);
 
-    expect.soft(events[0].level).toBe('error');
+    expect.soft(events[0].level).toBe("error");
     expect.soft(events[0].payload).toMatchObject({
-      operation: 'merge-stats',
-      error: expect.stringContaining('JSON'),
+      operation: "merge-stats",
+      error: expect.stringContaining("JSON"),
     });
   });
 
-  test('turbosnap_error - writing preview stats fails', async ({ onRequest }) => {
-    const root = resolve(import.meta.dirname, '../../../test/fixtures');
-    const statsFile = resolve(root, '.vitest/chromatic/preview-stats.json');
+  test("turbosnap_error - writing preview stats fails", async ({ onRequest }) => {
+    const root = resolve(import.meta.dirname, "../../../test/fixtures");
+    const statsFile = resolve(root, ".vitest/chromatic/preview-stats.json");
 
     // Leftover directory would crash the next test run's output directory cleanup
     onTestFinished(() => rm(statsFile, { recursive: true, force: true }));
@@ -738,41 +740,41 @@ describe('events', () => {
     await runFixture(
       {
         root,
-        include: ['dom.test.ts'],
+        include: ["dom.test.ts"],
         // Block the stats file location with a directory so that writing the stats fails.
         reporters: [{ onTestCaseReady: () => void mkdirSync(statsFile, { recursive: true }) }],
       },
-      { turboSnap: true }
+      { turboSnap: true },
     ).catch(() => {});
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_turbosnap_error' ? [event] : []
+      event.eventType === "vitest_turbosnap_error" ? [event] : [],
     );
 
     expect.soft(events).toHaveLength(1);
 
-    expect.soft(events[0].level).toBe('error');
+    expect.soft(events[0].level).toBe("error");
     expect.soft(events[0].payload).toMatchObject({
-      operation: 'write-stats',
-      error: expect.stringContaining('EISDIR'),
+      operation: "write-stats",
+      error: expect.stringContaining("EISDIR"),
     });
   });
 
-  test('plugin_error - configuring Vitest fails', async ({ onRequest }) => {
+  test("plugin_error - configuring Vitest fails", async ({ onRequest }) => {
     await runFixture({
-      include: ['dom.test.ts'],
+      include: ["dom.test.ts"],
       plugins: [
         {
-          name: 'simulate-configuring-error',
-          enforce: 'pre',
+          name: "simulate-configuring-error",
+          enforce: "pre",
           configureVitest(context) {
             const setupFiles = context.project.config.setupFiles;
             const push = setupFiles.push.bind(setupFiles);
 
             // Throw error when built-in plugin pushes setupFile
             setupFiles.push = function mockedArrayPush(file) {
-              if (file.includes('src/browser/setupFile.ts')) {
-                throw new Error('Example error');
+              if (file.includes("src/browser/setupFile.ts")) {
+                throw new Error("Example error");
               }
 
               return push(file);
@@ -783,20 +785,20 @@ describe('events', () => {
     }).catch(() => {});
 
     const events = onRequest.mock.calls.flatMap(([event]) =>
-      event.eventType === 'vitest_plugin_error' ? [event] : []
+      event.eventType === "vitest_plugin_error" ? [event] : [],
     );
 
     expect.soft(events).toHaveLength(1);
 
-    expect.soft(events[0]?.level).toBe('error');
+    expect.soft(events[0]?.level).toBe("error");
     expect.soft(events[0]?.payload).toMatchObject({
-      operation: 'configure',
-      error: expect.stringContaining('Example error'),
+      operation: "configure",
+      error: expect.stringContaining("Example error"),
     });
   });
 
-  test('archive-storybook called successfully', async ({ archivesDirectory, onRequest }) => {
-    await runBinary('archive-storybook', { archivesDirectory });
+  test("archive-storybook called successfully", async ({ archivesDirectory, onRequest }) => {
+    await runBinary("archive-storybook", { archivesDirectory });
 
     const events = getSortedEvents(onRequest);
 
@@ -818,11 +820,11 @@ describe('events', () => {
     `);
   });
 
-  test('archive-storybook called erroneously', async ({ archivesDirectory, onRequest }) => {
+  test("archive-storybook called erroneously", async ({ archivesDirectory, onRequest }) => {
     const error = new Error(`Example error with ${process.cwd()} and ${homedir()}`);
     error.stack = `Example stack:\nwith cwd ${process.cwd()}\nand homedir ${homedir()}`;
 
-    await runBinary('archive-storybook', { archivesDirectory, error });
+    await runBinary("archive-storybook", { archivesDirectory, error });
 
     const events = getSortedEvents(onRequest);
 
@@ -853,19 +855,19 @@ describe('events', () => {
     `);
   });
 
-  test('archive-storybook called with directory without chromatic-archives', async ({
+  test("archive-storybook called with directory without chromatic-archives", async ({
     archivesDirectory,
     onRequest,
   }) => {
-    await runBinary('archive-storybook', {
-      archivesDirectory: resolve(archivesDirectory, 'non-existent'),
+    await runBinary("archive-storybook", {
+      archivesDirectory: resolve(archivesDirectory, "non-existent"),
     });
 
     const events = getSortedEvents(onRequest);
 
     // Normalize error stack
     events.forEach((event) => {
-      if ('error' in event.payload && typeof event.payload.error === 'string') {
+      if ("error" in event.payload && typeof event.payload.error === "string") {
         event.payload.error = event.payload.error.split(/^\s+at /gm)[0]?.trim();
       }
     });
@@ -899,8 +901,8 @@ describe('events', () => {
     `);
   });
 
-  test('build-archive-storybook called successfully', async ({ archivesDirectory, onRequest }) => {
-    await runBinary('build-archive-storybook', { archivesDirectory });
+  test("build-archive-storybook called successfully", async ({ archivesDirectory, onRequest }) => {
+    await runBinary("build-archive-storybook", { archivesDirectory });
 
     const events = getSortedEvents(onRequest);
 
@@ -933,14 +935,14 @@ describe('events', () => {
     `);
   });
 
-  test('build-archive-storybook called successfully from CLI', async ({
+  test("build-archive-storybook called successfully from CLI", async ({
     archivesDirectory,
     onRequest,
   }) => {
-    vi.stubEnv('STORYBOOK_INVOKED_BY', 'chromatic');
-    vi.stubEnv('CHROMATIC_PROJECT_ID', 'example-project-id');
+    vi.stubEnv("STORYBOOK_INVOKED_BY", "chromatic");
+    vi.stubEnv("CHROMATIC_PROJECT_ID", "example-project-id");
 
-    await runBinary('build-archive-storybook', { archivesDirectory });
+    await runBinary("build-archive-storybook", { archivesDirectory });
 
     const events = getSortedEvents(onRequest);
 
@@ -973,11 +975,11 @@ describe('events', () => {
     `);
   });
 
-  test('build-archive-storybook called erroneously', async ({ archivesDirectory, onRequest }) => {
+  test("build-archive-storybook called erroneously", async ({ archivesDirectory, onRequest }) => {
     const error = new Error(`Example error with ${process.cwd()} and ${homedir()}`);
     error.stack = `Example stack:\nwith cwd ${process.cwd()}\nand homedir ${homedir()}`;
 
-    await runBinary('build-archive-storybook', { archivesDirectory, error });
+    await runBinary("build-archive-storybook", { archivesDirectory, error });
 
     const events = getSortedEvents(onRequest);
 
@@ -1014,8 +1016,8 @@ describe('events', () => {
     `);
   });
 
-  test.for(['archive-storybook', 'build-archive-storybook'] as const)(
-    '%s based events contain metadata from test run',
+  test.for(["archive-storybook", "build-archive-storybook"] as const)(
+    "%s based events contain metadata from test run",
     async (command, { archivesDirectory, onRequest, getEvents }) => {
       await runBinary(command, { archivesDirectory });
 
@@ -1023,55 +1025,55 @@ describe('events', () => {
       const testRunEvent = getEvents()[0];
 
       for (const event of onRequest.mock.calls.map(([event]) => event)) {
-        expect.soft(event).toHaveProperty('sessionId', testRunEvent.sessionId);
-        expect.soft(event).toHaveProperty('projectId', testRunEvent.projectId);
+        expect.soft(event).toHaveProperty("sessionId", testRunEvent.sessionId);
+        expect.soft(event).toHaveProperty("projectId", testRunEvent.projectId);
         expect.soft(event.metadata).toMatchObject(testRunEvent.metadata);
       }
-    }
+    },
   );
 
-  test.for(['archive-storybook', 'build-archive-storybook'] as const)(
-    '%s based events contain fallback metadata when previous test run data is malformed',
+  test.for(["archive-storybook", "build-archive-storybook"] as const)(
+    "%s based events contain fallback metadata when previous test run data is malformed",
     async (command, { onRequest }) => {
       const archivesDirectory = resolve(
         import.meta.dirname,
-        '../../test/fixtures/.vitest/malformed-metadata'
+        "../../test/fixtures/.vitest/malformed-metadata",
       );
 
       mkdirSync(`${archivesDirectory}/chromatic-archives`, { recursive: true });
-      writeFileSync(resolve(archivesDirectory, TELEMETRY_METADATA_FILE), 'malformed json');
+      writeFileSync(resolve(archivesDirectory, TELEMETRY_METADATA_FILE), "malformed json");
 
       await runBinary(command, { archivesDirectory });
 
       for (const event of onRequest.mock.calls.map(([event]) => event)) {
-        expect.soft(event).toHaveProperty('sessionId', 'unknown');
-        expect.soft(event).toHaveProperty('projectId', 'unknown');
+        expect.soft(event).toHaveProperty("sessionId", "unknown");
+        expect.soft(event).toHaveProperty("projectId", "unknown");
         expect.soft(event.metadata).toMatchObject({
-          chromaticVersion: 'unknown',
-          vitestVersion: 'unknown',
+          chromaticVersion: "unknown",
+          vitestVersion: "unknown",
           isVitestProjects: false,
         });
       }
-    }
+    },
   );
 });
 
 const test = base
-  .extend('telemetry', { scope: 'file' }, async ({}, { onCleanup }) => {
+  .extend("telemetry", { scope: "file" }, async ({}, { onCleanup }) => {
     const { cleanup, server, onRequest } = setupTelemetryServer();
 
     // Run a common fixture once before any tests start.
     // Tests that aren't validating edge cases can assert this data.
     const { stdout } = await runFixture(
       /** See {@link file://./../../../test/fixtures/take-snapshot.test.ts} */
-      { include: ['take-snapshot.test.ts'], provide: { testName: 'five' } },
+      { include: ["take-snapshot.test.ts"], provide: { testName: "five" } },
       {
-        ignoreSelectors: ['.ignore-me'],
-        assetDomains: ['https://one.chromatic.com', 'https://two.chromatic.com'],
+        ignoreSelectors: [".ignore-me"],
+        assetDomains: ["https://one.chromatic.com", "https://two.chromatic.com"],
         turboSnap: true,
         resourceArchiveTimeout: 1234,
         disableAutoSnapshot: false,
-      }
+      },
     );
 
     const archivesDirectory = stdout.match(/Archives saved in (.*)/m)[1].trim();
@@ -1083,11 +1085,11 @@ const test = base
 
     return { events, cleanup, server, onRequest, archivesDirectory };
   })
-  .extend('server', ({ telemetry }) => telemetry.server)
-  .extend('onRequest', ({ telemetry }) => telemetry.onRequest)
-  .extend('archivesDirectory', ({ telemetry }) => telemetry.archivesDirectory)
-  .extend('getEvents', ({ telemetry }) => {
-    return function getEvents(type?: WireTelemetryEvent['eventType']) {
+  .extend("server", ({ telemetry }) => telemetry.server)
+  .extend("onRequest", ({ telemetry }) => telemetry.onRequest)
+  .extend("archivesDirectory", ({ telemetry }) => telemetry.archivesDirectory)
+  .extend("getEvents", ({ telemetry }) => {
+    return function getEvents(type?: WireTelemetryEvent["eventType"]) {
       if (!type) {
         return telemetry.events;
       }
@@ -1095,17 +1097,17 @@ const test = base
     };
   });
 
-function getSortedEvents(onRequest: ReturnType<typeof setupTelemetryServer>['onRequest']) {
+function getSortedEvents(onRequest: ReturnType<typeof setupTelemetryServer>["onRequest"]) {
   return onRequest.mock.calls
     .map((call) => call[0])
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 }
 
 function readLogFile(root: string) {
-  const output = readFileSync(resolve(root, '.vitest/chromatic/telemetry.jsonl'), 'utf8');
+  const output = readFileSync(resolve(root, ".vitest/chromatic/telemetry.jsonl"), "utf8");
   const rows: Record<string, unknown>[] = [];
 
-  for (const row of output.split('\n')) {
+  for (const row of output.split("\n")) {
     const content = row.trim();
 
     if (content) {
@@ -1121,15 +1123,15 @@ function pickTypeAndPayload(events: WireTelemetryEvent[]) {
 }
 
 const childProcessHandles = vi.hoisted(() => ({ onClose: vi.fn(), onError: vi.fn() }));
-vi.mock(import('child_process'), async (importOriginal) => {
+vi.mock(import("node:child_process"), async (importOriginal) => {
   return {
     ...(await importOriginal()),
     spawn: vi.fn().mockReturnValue({
       on: (event: any, callback: any) => {
-        if (event === 'close') {
+        if (event === "close") {
           childProcessHandles.onClose = callback;
         }
-        if (event === 'error') {
+        if (event === "error") {
           childProcessHandles.onError = callback;
         }
       },
@@ -1138,10 +1140,10 @@ vi.mock(import('child_process'), async (importOriginal) => {
 });
 
 async function runBinary(
-  name: 'archive-storybook' | 'build-archive-storybook',
-  options: { archivesDirectory: string; error?: Error }
+  name: "archive-storybook" | "build-archive-storybook",
+  options: { archivesDirectory: string; error?: Error },
 ) {
-  vi.stubEnv('CHROMATIC_ARCHIVE_LOCATION', options.archivesDirectory);
+  vi.stubEnv("CHROMATIC_ARCHIVE_LOCATION", options.archivesDirectory);
   vi.resetModules();
 
   let isDone = false;

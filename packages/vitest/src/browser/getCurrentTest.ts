@@ -1,8 +1,9 @@
-import * as vitest from 'vitest';
-import { InternalTestContext } from '../types';
+import * as vitest from "vitest";
+
+import { InternalTestContext } from "../types";
 
 export type Test = ReturnType<typeof vitest.TestRunner.getCurrentTest> &
-  InternalTestContext['task'];
+  InternalTestContext["task"];
 
 const hooks = await resolveHooks();
 
@@ -21,5 +22,5 @@ async function resolveHooks() {
   }
 
   // Fallback to older API. Using this with 4.1.0 logs deprecation warning.
-  return await import('vitest/suite');
+  return await import("vitest/suite");
 }

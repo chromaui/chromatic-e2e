@@ -1,11 +1,11 @@
-it('in snapshot name', { expose: { disableAutoSnapshot: true } }, () => {
-  cy.visit('/');
+it("in snapshot name", { expose: { disableAutoSnapshot: true } }, () => {
+  cy.visit("/");
 
-  cy.takeSnapshot('あ');
+  cy.takeSnapshot("あ");
 });
 
-it('in test case name あ', { expose: { disableAutoSnapshot: true } }, () => {
-  cy.visit('/');
+it("in test case name あ", { expose: { disableAutoSnapshot: true } }, () => {
+  cy.visit("/");
 
   cy.takeSnapshot();
 });

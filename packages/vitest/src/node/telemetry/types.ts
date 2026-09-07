@@ -1,21 +1,21 @@
 /** These types are consumed by both browser and node sides */
 
-import type { ChromaticNamespace, ConfigureOptions } from '../../types';
-import { EVENT_TYPE_PREFIX } from './constants';
+import type { ChromaticNamespace, ConfigureOptions } from "../../types";
+import { EVENT_TYPE_PREFIX } from "./constants";
 
 export type EventType = keyof TelemetryPayloads;
 
 /** Telemetry event before automatically generated fields are attached. */
 export interface TelemetryEvent<T extends EventType = EventType> {
   eventType: T;
-  level: 'info' | 'warn' | 'error';
+  level: "info" | "warn" | "error";
   payload: TelemetryPayloads[T];
 }
 
 /** Telemetry event in the exact shape it leaves the process. */
 export interface WireTelemetryEvent<T extends EventType = EventType> extends Omit<
   TelemetryEvent<T>,
-  'eventType'
+  "eventType"
 > {
   id: string;
   sessionId: string;
@@ -41,7 +41,7 @@ type TelemetryPayloads = {
     resourceArchiveTimeout: number;
     idleNetworkInterval: number;
     turboSnap: boolean;
-    reporter: 'verbose' | 'non-verbose' | 'off';
+    reporter: "verbose" | "non-verbose" | "off";
     tagsCount: number | undefined;
     delay: number | undefined;
     diffIncludeAntiAliasing: boolean | undefined;
@@ -88,24 +88,24 @@ type TelemetryPayloads = {
   };
 
   turbosnap_error: {
-    operation: 'write-stats' | 'merge-stats';
+    operation: "write-stats" | "merge-stats";
     error: unknown;
   };
 
   plugin_error: {
-    operation: 'configure';
+    operation: "configure";
     error: unknown;
   };
 
   snapshot_error: {
-    operation: 'capture' | 'replace-blob-urls' | 'upload';
+    operation: "capture" | "replace-blob-urls" | "upload";
     isAutomaticSnapshot: boolean;
     error: unknown;
   };
 
   configure_called: {
     options: (keyof ConfigureOptions)[];
-    scope: 'test' | 'suite' | 'file';
+    scope: "test" | "suite" | "file";
   };
 
   wait_for_idle_network_called: {
@@ -133,7 +133,7 @@ type TelemetryPayloads = {
     isCustomLocation: boolean;
     success: boolean;
     error: unknown;
-    command: 'archiveStorybook' | 'buildArchiveStorybook';
+    command: "archiveStorybook" | "buildArchiveStorybook";
     chromaticProjectId: string | undefined;
   };
 

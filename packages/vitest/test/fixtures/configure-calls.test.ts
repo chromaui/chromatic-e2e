@@ -1,14 +1,15 @@
-import { describe, test } from 'vitest';
-import { configure } from '../../src';
+import { describe, test } from "vitest";
 
-configure({ delay: 1234, title: 'Configure calls on different scopes' });
+import { configure } from "../../src";
 
-test('test #1', () => {
+configure({ delay: 1234, title: "Configure calls on different scopes" });
+
+test("test #1", () => {
   configure({ diffThreshold: 1, resourceArchiveTimeout: 1234 });
 });
 
-describe('', () => {
-  configure({ ignoreSelectors: ['.example'] });
+describe("", () => {
+  configure({ ignoreSelectors: [".example"] });
 
-  test('test #2', () => {});
+  test("test #2", () => {});
 });

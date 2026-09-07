@@ -1,17 +1,17 @@
-import { test as base, vi } from 'vitest';
+import { test as base, vi } from "vitest";
 
 export const test = base
-  .extend('url', (): string | undefined => undefined)
-  .extend('goTo', () => goTo)
-  .extend('defaultDOM', document.documentElement)
+  .extend("url", (): string | undefined => undefined)
+  .extend("goTo", () => goTo)
+  .extend("defaultDOM", document.documentElement)
 
   // Cleanup DOM before any test
-  .extend('beforeEach', { auto: true }, ({ defaultDOM }) => {
+  .extend("beforeEach", { auto: true }, ({ defaultDOM }) => {
     document.documentElement.replaceWith(defaultDOM.cloneNode(true));
   })
 
   // Automatically mount the DOM if url fixture is set
-  .extend('setupDOM', { auto: true }, async ({ url, beforeEach: _beforeEach }) => {
+  .extend("setupDOM", { auto: true }, async ({ url, beforeEach: _beforeEach }) => {
     if (url) {
       await goTo(url);
     }
@@ -26,18 +26,18 @@ async function goTo(url: string): Promise<void> {
   if (!response.ok) {
     /** Proxy is set in {@link file://./../vitest.config.e2e.ts} */
     throw new Error(
-      `Failed to fetch "${url}": ${response.statusText}. Does test/vitest.config.ts have proxy set for this?`
+      `Failed to fetch "${url}": ${response.statusText}. Does test/vitest.config.ts have proxy set for this?`,
     );
   }
 
   const html = await response.text();
-  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const doc = new DOMParser().parseFromString(html, "text/html");
 
   document.documentElement.replaceWith(doc.documentElement);
 
   // DOMParser cannot execute scripts, so we need to manually load them
-  document.querySelectorAll('script').forEach((before) => {
-    const after = document.createElement('script');
+  document.querySelectorAll("script").forEach((before) => {
+    const after = document.createElement("script");
 
     if (before.src) {
       after.src = before.src;
@@ -51,11 +51,11 @@ async function goTo(url: string): Promise<void> {
   if (document.head.querySelector('script[src*="tailwind"]')) {
     await vi.waitUntil(() => {
       // Tailwind uses MutationObserver, we need to trigger it so that it mounts the style tag
-      const div = document.createElement('div');
+      const div = document.createElement("div");
       document.body.appendChild(div);
       document.body.removeChild(div);
 
-      return document.head.querySelector('style');
+      return document.head.querySelector("style");
     });
   }
 }

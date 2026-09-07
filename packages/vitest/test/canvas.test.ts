@@ -1,5 +1,5 @@
-import { test } from './utils/browser';
+import { test } from "./utils/browser";
 
-test.override({ url: '/canvas' });
+test.override({ url: "/canvas" });
 
-test('captures basic canvas elements', async () => {});
+test("captures basic canvas elements", async () => {});

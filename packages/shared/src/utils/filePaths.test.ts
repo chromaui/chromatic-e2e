@@ -1,13 +1,15 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import fsPromises from 'fs/promises';
-import fs from 'fs';
-import { archivesDir, ensureDir, outputFile, outputJSONFile, truncateFileName } from './filePaths';
-import { removeLocalhostFromBaseUrl } from './filePaths';
+import fs from "node:fs";
+import fsPromises from "node:fs/promises";
 
-vi.mock('fs');
-vi.mock('fs/promises');
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const currentDir = '/base/dir';
+import { archivesDir, ensureDir, outputFile, outputJSONFile, truncateFileName } from "./filePaths";
+import { removeLocalhostFromBaseUrl } from "./filePaths";
+
+vi.mock("fs");
+vi.mock("fs/promises");
+
+const currentDir = "/base/dir";
 const originalProcess = process;
 
 afterEach(() => {
@@ -15,7 +17,7 @@ afterEach(() => {
   vi.resetAllMocks();
 });
 
-describe('default output dir', () => {
+describe("default output dir", () => {
   beforeEach(() => {
     global.process = {
       ...originalProcess,
@@ -23,99 +25,99 @@ describe('default output dir', () => {
     };
   });
 
-  describe('archivesDir', () => {
-    it('returns a full path to the archives dir', async () => {
-      const fullPath = archivesDir('default/dir');
-      expect(fullPath).toEqual('/base/dir/default/dir/chromatic-archives');
+  describe("archivesDir", () => {
+    it("returns a full path to the archives dir", async () => {
+      const fullPath = archivesDir("default/dir");
+      expect(fullPath).toEqual("/base/dir/default/dir/chromatic-archives");
     });
   });
 });
 
-describe('overridden output dir', () => {
+describe("overridden output dir", () => {
   beforeEach(() => {
     global.process = {
       ...originalProcess,
       cwd: () => currentDir,
       env: {
         ...originalProcess.env,
-        CHROMATIC_ARCHIVE_LOCATION: 'overridden/dir',
+        CHROMATIC_ARCHIVE_LOCATION: "overridden/dir",
       },
     };
   });
 
-  describe('archivesDir', () => {
-    it('returns a full path to the archives dir', async () => {
-      const fullPath = archivesDir('default/dir');
-      expect(fullPath).toEqual('/base/dir/overridden/dir/chromatic-archives');
+  describe("archivesDir", () => {
+    it("returns a full path to the archives dir", async () => {
+      const fullPath = archivesDir("default/dir");
+      expect(fullPath).toEqual("/base/dir/overridden/dir/chromatic-archives");
     });
   });
 });
 
-describe('ensureDir', () => {
-  it('creates the directory if it does not exist', async () => {
+describe("ensureDir", () => {
+  it("creates the directory if it does not exist", async () => {
     vi.mocked(fs.existsSync).mockReturnValueOnce(false);
 
-    ensureDir('/some/path');
-    expect(fs.mkdirSync).toHaveBeenCalledWith('/some/path', { recursive: true });
+    ensureDir("/some/path");
+    expect(fs.mkdirSync).toHaveBeenCalledWith("/some/path", { recursive: true });
   });
 
-  it('does nothing if directory does exist', async () => {
+  it("does nothing if directory does exist", async () => {
     vi.mocked(fs.existsSync).mockReturnValueOnce(true);
 
-    ensureDir('/some/path');
+    ensureDir("/some/path");
     expect(fs.mkdirSync).not.toHaveBeenCalled();
   });
 });
 
-describe('outputFile', () => {
-  it('writes the given data to the given file', async () => {
-    await outputFile('/some/path', 'some data');
-    expect(fsPromises.writeFile).toHaveBeenCalledWith('/some/path', 'some data', { mode: 511 });
+describe("outputFile", () => {
+  it("writes the given data to the given file", async () => {
+    await outputFile("/some/path", "some data");
+    expect(fsPromises.writeFile).toHaveBeenCalledWith("/some/path", "some data", { mode: 511 });
   });
 });
 
-describe('outputJSONFile', () => {
-  it('writes the given JSON data to the given file', async () => {
-    await outputJSONFile('/some/path', { data: 'some data ' });
+describe("outputJSONFile", () => {
+  it("writes the given JSON data to the given file", async () => {
+    await outputJSONFile("/some/path", { data: "some data " });
     expect(fsPromises.writeFile).toHaveBeenCalledWith(
-      '/some/path',
-      JSON.stringify({ data: 'some data ' }),
-      { mode: 511 }
+      "/some/path",
+      JSON.stringify({ data: "some data " }),
+      { mode: 511 },
     );
   });
 });
 
-describe('truncateFileName', () => {
-  it('does nothing if file name is within valid length', () => {
-    const filePath = 'this/is/a/valid.file.length';
+describe("truncateFileName", () => {
+  it("does nothing if file name is within valid length", () => {
+    const filePath = "this/is/a/valid.file.length";
 
     const truncated = truncateFileName(filePath);
 
     expect(truncated).toEqual(filePath);
-    expect(truncated.split('/').at(-1)).toEqual('valid.file.length');
+    expect(truncated.split("/").at(-1)).toEqual("valid.file.length");
   });
 
-  it('ignores length of path parts before the file name', () => {
+  it("ignores length of path parts before the file name", () => {
     const encoder = new TextEncoder();
     const filePath =
-      '/a/bunch/of/paths/that/donot/affect-size/this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js';
+      "/a/bunch/of/paths/that/donot/affect-size/this-title-has-260-chars-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js";
     const filePathLength = encoder.encode(filePath).byteLength;
     expect(filePathLength).toBeGreaterThan(255);
 
     const truncated = truncateFileName(filePath);
 
-    expect(encoder.encode(truncated.split('/').at(-1)).byteLength).toEqual(255);
+    expect(encoder.encode(truncated.split("/").at(-1)).byteLength).toEqual(255);
     expect(truncated).toMatch(
       new RegExp(
-        '^/a/bunch/of/paths/that/donot/affect-size/this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$'
-      )
+        "^/a/bunch/of/paths/that/donot/affect-size/this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$",
+      ),
     );
   });
 
-  it('truncates long file names without changing extension', () => {
+  it("truncates long file names without changing extension", () => {
     const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js';
+      "this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.js";
     const fileNameLength = encoder.encode(fileName).byteLength;
     expect(fileNameLength).toBeGreaterThan(255);
 
@@ -123,13 +125,13 @@ describe('truncateFileName', () => {
     const truncatedLength = encoder.encode(truncated).byteLength;
 
     expect(truncatedLength).toEqual(255);
-    expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$'));
+    expect(truncated).toMatch(new RegExp("^this-title-.*ok-this-right-here-this-i[a-z0-9]{4}.js$"));
   });
 
-  it('correctly truncates file names with multi-byte characters', () => {
+  it("correctly truncates file names with multi-byte characters", () => {
     const encoder = new TextEncoder();
     const fileName =
-      'このタイトルは260byteあります-私が数えたので間違いないです-そしてそれはファイルシステムにとっては大きすぎます-ああだこうだ-ああだこうだ-ああだこうだ-ああだこうだ-これで終わりです.js';
+      "このタイトルは260byteあります-私が数えたので間違いないです-そしてそれはファイルシステムにとっては大きすぎます-ああだこうだ-ああだこうだ-ああだこうだ-ああだこうだ-これで終わりです.js";
     const fileNameLength = encoder.encode(fileName).byteLength;
     expect(fileNameLength).toBeGreaterThan(255);
 
@@ -138,14 +140,14 @@ describe('truncateFileName', () => {
 
     expect(truncatedLength).toEqual(255);
     expect(truncated).toMatch(
-      new RegExp('^このタイトルは260byteあります-.*-ああだこうだ-これで終[a-z0-9]{4}.js$')
+      new RegExp("^このタイトルは260byteあります-.*-ああだこうだ-これで終[a-z0-9]{4}.js$"),
     );
   });
 
-  it('truncates long file names without changing multiple extensions', () => {
+  it("truncates long file names without changing multiple extensions", () => {
     const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.one.js';
+      "this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end.one.js";
     const fileNameLength = encoder.encode(fileName).byteLength;
     expect(fileNameLength).toBeGreaterThan(255);
 
@@ -153,13 +155,13 @@ describe('truncateFileName', () => {
     const truncatedLength = encoder.encode(truncated).byteLength;
 
     expect(truncatedLength).toEqual(255);
-    expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-th[a-z0-9]{4}.one.js$'));
+    expect(truncated).toMatch(new RegExp("^this-title-.*ok-this-right-here-th[a-z0-9]{4}.one.js$"));
   });
 
-  it('truncates long names without an extension', () => {
+  it("truncates long names without an extension", () => {
     const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
+      "this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end";
     const fileNameLength = encoder.encode(fileName).byteLength;
     expect(fileNameLength).toBeGreaterThan(255);
 
@@ -167,13 +169,13 @@ describe('truncateFileName', () => {
     const truncatedLength = encoder.encode(truncated).byteLength;
 
     expect(truncatedLength).toEqual(255);
-    expect(truncated).toMatch(new RegExp('^this-title-.*ok-this-right-here-this-is-t[a-z0-9]{4}$'));
+    expect(truncated).toMatch(new RegExp("^this-title-.*ok-this-right-here-this-is-t[a-z0-9]{4}$"));
   });
 
-  it('truncates long names to given size', () => {
+  it("truncates long names to given size", () => {
     const encoder = new TextEncoder();
     const fileName =
-      'this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end';
+      "this-title-has-260-bytes-exactly-i-know-because-i-counted-and-that-is-too-big-for-a-file-system-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-b-ok-this-right-here-this-is-the-end";
     const fileNameLength = encoder.encode(fileName).byteLength;
     expect(fileNameLength).toBeGreaterThan(255);
 
@@ -181,35 +183,35 @@ describe('truncateFileName', () => {
     const truncatedLength = encoder.encode(truncated).byteLength;
 
     expect(truncatedLength).toEqual(100);
-    expect(truncated).toMatch(new RegExp('^this-title-.*-a-file-system-[a-z0-9]{4}$'));
+    expect(truncated).toMatch(new RegExp("^this-title-.*-a-file-system-[a-z0-9]{4}$"));
   });
-  describe('removeLocalhostFromBaseUrl', () => {
-    it('should remove localhost from href but keeps the relative path', () => {
-      const href = 'http://localhost:3000/some/path/';
+  describe("removeLocalhostFromBaseUrl", () => {
+    it("should remove localhost from href but keeps the relative path", () => {
+      const href = "http://localhost:3000/some/path/";
       const result = removeLocalhostFromBaseUrl(href);
-      expect(result).toBe('/some/path/');
+      expect(result).toBe("/some/path/");
     });
 
-    it('should remove localhost from href but keeps the search and hash paramters', () => {
-      const href = 'http://localhost:3000/some/path/?query=value#fragment';
+    it("should remove localhost from href but keeps the search and hash paramters", () => {
+      const href = "http://localhost:3000/some/path/?query=value#fragment";
       const result = removeLocalhostFromBaseUrl(href);
-      expect(result).toBe('/some/path/?query=value#fragment');
+      expect(result).toBe("/some/path/?query=value#fragment");
     });
 
-    it('should remove localhost from href', () => {
-      const href = 'http://localhost:3000/';
+    it("should remove localhost from href", () => {
+      const href = "http://localhost:3000/";
       const result = removeLocalhostFromBaseUrl(href);
-      expect(result).toBe('/');
+      expect(result).toBe("/");
     });
 
-    it('should return the exact href if it is already relative', () => {
-      const href = '/some/path/';
+    it("should return the exact href if it is already relative", () => {
+      const href = "/some/path/";
       const result = removeLocalhostFromBaseUrl(href);
-      expect(result).toBe('/some/path/');
+      expect(result).toBe("/some/path/");
     });
 
-    it('should return the exact href if locahost is not the host name', () => {
-      const href = 'https://www.example.com/';
+    it("should return the exact href if locahost is not the host name", () => {
+      const href = "https://www.example.com/";
       const result = removeLocalhostFromBaseUrl(href);
       expect(result).toBe(href);
     });

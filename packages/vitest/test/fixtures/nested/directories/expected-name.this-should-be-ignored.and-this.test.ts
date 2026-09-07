@@ -1,3 +1,3 @@
-import { test } from 'vitest';
+import { test } from "vitest";
 
-test('test #1', () => {});
+test("test #1", () => {});

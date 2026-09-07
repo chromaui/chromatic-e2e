@@ -16,7 +16,7 @@ export class NetworkIdleWatcher {
         resolve(true);
       } else {
         this.idleTimer = setTimeout(() => {
-          reject(new Error('some responses have not returned'));
+          reject(new Error("some responses have not returned"));
         }, TOTAL_TIMEOUT_DURATION);
 
         // assign a function that'll be called as soon as responses are all back

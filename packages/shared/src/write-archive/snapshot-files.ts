@@ -1,8 +1,8 @@
-import { Viewport, viewportToString } from '../utils/viewport';
-import { sanitize } from './storybook-sanitize';
-import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from '../utils/filePaths';
+import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from "../utils/filePaths";
+import { Viewport, viewportToString } from "../utils/viewport";
+import { sanitize } from "./storybook-sanitize";
 
-const SNAPSHOT_FILE_EXT = 'snapshot.json';
+const SNAPSHOT_FILE_EXT = "snapshot.json";
 
 export function snapshotId(testTitle: string, snapshotName: string) {
   const fullSnapshotId = `${sanitize(testTitle)}-${sanitize(snapshotName)}`;
@@ -16,5 +16,5 @@ export function snapshotId(testTitle: string, snapshotName: string) {
 export function snapshotFileName(snapshotId: string, viewport: Viewport) {
   const fileNameParts = [snapshotId, viewportToString(viewport), SNAPSHOT_FILE_EXT];
 
-  return fileNameParts.join('.');
+  return fileNameParts.join(".");
 }

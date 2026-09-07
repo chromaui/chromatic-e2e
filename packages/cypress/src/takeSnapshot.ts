@@ -1,24 +1,25 @@
-import { createMirror, snapshot } from '@chromaui/rrweb-snapshot';
-import { CypressSnapshot } from './types';
-import type { serializedNodeWithId } from '@rrweb/types';
+import { createMirror, snapshot } from "@chromaui/rrweb-snapshot";
+import type { serializedNodeWithId } from "@rrweb/types";
+
+import { CypressSnapshot } from "./types";
 
 export const takeSnapshot = (
   doc: Document,
   viewport: { width: number; height: number },
-  colorScheme: 'light' | 'dark',
-  isManualSnapshot?: boolean
+  colorScheme: "light" | "dark",
+  isManualSnapshot?: boolean,
 ): Promise<CypressSnapshot | null> => {
   return new Promise((resolve) => {
-    if (!isManualSnapshot && Cypress.expose('disableAutoSnapshot')) {
+    if (!isManualSnapshot && Cypress.expose("disableAutoSnapshot")) {
       resolve(null);
     }
 
     const mirror = createMirror();
     const domSnapshot = snapshot(doc, { recordCanvas: true, mirror })!;
 
-    const pseudoClassIds: CypressSnapshot['pseudoClassIds'] = {};
+    const pseudoClassIds: CypressSnapshot["pseudoClassIds"] = {};
 
-    for (const className of [':hover', ':focus', ':focus-visible', ':active'] as const) {
+    for (const className of [":hover", ":focus", ":focus-visible", ":active"] as const) {
       const elements = doc.querySelectorAll(className);
       const ids = Array.from(elements, (el) => mirror.getId(el)).filter((id) => id !== -1);
       pseudoClassIds[className] = ids;
@@ -42,7 +43,7 @@ export const takeSnapshot = (
       await Promise.all(
         // @ts-expect-error we assume childNodes will be on there
         node.childNodes.map(async (childNode) => {
-          if (childNode.tagName === 'img' && childNode.attributes.src?.startsWith('blob:')) {
+          if (childNode.tagName === "img" && childNode.attributes.src?.startsWith("blob:")) {
             const base64Url = await toDataURL(childNode.attributes.src);
             childNode.attributes.src = base64Url;
           }
@@ -50,11 +51,11 @@ export const takeSnapshot = (
           if (childNode.childNodes?.length) {
             await replaceBlobUrls(childNode);
           }
-        })
+        }),
       );
     };
 
-    replaceBlobUrls(domSnapshot).then(() => {
+    void replaceBlobUrls(domSnapshot).then(() => {
       resolve({ snapshot: domSnapshot, viewport, colorScheme, pseudoClassIds });
     });
   });

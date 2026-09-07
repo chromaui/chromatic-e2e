@@ -1,17 +1,18 @@
-import { describe, expect, test, vi } from 'vitest';
-import * as shared from '@chromatic-com/shared-e2e';
-import { runFixture } from '../../../test/utils/node';
+import * as shared from "@chromatic-com/shared-e2e";
+import { describe, expect, test, vi } from "vitest";
 
-vi.mock('@chromatic-com/shared-e2e');
+import { runFixture } from "../../../test/utils/node";
+
+vi.mock("@chromatic-com/shared-e2e");
 vi.mocked(shared.writeTestResult).mockImplementation(() =>
-  Promise.resolve({ storiesFile: 'test.stories.json' })
+  Promise.resolve({ storiesFile: "test.stories.json" }),
 );
 
-describe('configure({ disableAutoSnapshot })', () => {
+describe("configure({ disableAutoSnapshot })", () => {
   /** See {@link file://./../../../test/fixtures/disable-autosnapshot.test.ts} */
-  const include = ['disable-autosnapshot.test.ts'];
+  const include = ["disable-autosnapshot.test.ts"];
 
-  test('by default does not disable anything', async () => {
+  test("by default does not disable anything", async () => {
     await runFixture({ include });
 
     expect(getSnapshottedTests()).toMatchInlineSnapshot(`
@@ -25,19 +26,19 @@ describe('configure({ disableAutoSnapshot })', () => {
     `);
   });
 
-  test('{ disableAutoSnapshot: true } on module level affects all tests', async () => {
+  test("{ disableAutoSnapshot: true } on module level affects all tests", async () => {
     await runFixture({
       include,
-      provide: { disableAutoSnapshot: 'module' },
+      provide: { disableAutoSnapshot: "module" },
     });
 
     expect(getSnapshottedTests()).toMatchInlineSnapshot(`[]`);
   });
 
-  test('{ disableAutoSnapshot: true } on suite level', async () => {
+  test("{ disableAutoSnapshot: true } on suite level", async () => {
     await runFixture({
       include,
-      provide: { disableAutoSnapshot: 'describe' },
+      provide: { disableAutoSnapshot: "describe" },
     });
 
     expect(getSnapshottedTests()).toMatchInlineSnapshot(`
@@ -48,10 +49,10 @@ describe('configure({ disableAutoSnapshot })', () => {
     `);
   });
 
-  test('{ disableAutoSnapshot: true } on nested suite level', async () => {
+  test("{ disableAutoSnapshot: true } on nested suite level", async () => {
     await runFixture({
       include,
-      provide: { disableAutoSnapshot: 'describe-nested' },
+      provide: { disableAutoSnapshot: "describe-nested" },
     });
 
     expect(getSnapshottedTests()).toMatchInlineSnapshot(`
@@ -64,19 +65,19 @@ describe('configure({ disableAutoSnapshot })', () => {
     `);
   });
 
-  test('{ disableAutoSnapshot: true } on test level', async () => {
+  test("{ disableAutoSnapshot: true } on test level", async () => {
     await runFixture({
       include,
-      provide: { disableAutoSnapshot: 'test' },
+      provide: { disableAutoSnapshot: "test" },
     });
 
     expect(getSnapshottedTests()).toMatchInlineSnapshot(`[]`);
   });
 
-  test('{ disableAutoSnapshot: true } on a single test', async () => {
+  test("{ disableAutoSnapshot: true } on a single test", async () => {
     await runFixture({
       include,
-      provide: { disableAutoSnapshot: 'test-second' },
+      provide: { disableAutoSnapshot: "test-second" },
     });
 
     expect(getSnapshottedTests()).toMatchInlineSnapshot(`
@@ -90,26 +91,26 @@ describe('configure({ disableAutoSnapshot })', () => {
   });
 });
 
-describe('configure(ChromaticConfig)', () => {
+describe("configure(ChromaticConfig)", () => {
   /** See {@link file://./../../../test/fixtures/configure-options.test.ts} */
-  const include = ['configure-options.test.ts'];
+  const include = ["configure-options.test.ts"];
 
-  test('configure() on module level affects all tests', async () => {
+  test("configure() on module level affects all tests", async () => {
     const configureOptions = {
       delay: 300,
       diffIncludeAntiAliasing: true,
       diffThreshold: 0.5,
-      forcedColors: 'active',
+      forcedColors: "active",
       pauseAnimationAtEnd: true,
-      prefersReducedMotion: 'reduce',
+      prefersReducedMotion: "reduce",
       cropToViewport: true,
-      ignoreSelectors: ['.ignore-me'],
+      ignoreSelectors: [".ignore-me"],
     };
 
     await runFixture({
       include,
       provide: {
-        configureScope: 'module',
+        configureScope: "module",
         configureOptions,
       },
     });
@@ -122,12 +123,12 @@ describe('configure(ChromaticConfig)', () => {
     }
   });
 
-  test('configure() on suite level', async () => {
+  test("configure() on suite level", async () => {
     await runFixture({
       include,
       provide: {
-        configureScope: 'describe',
-        configureOptions: { delay: 300, ignoreSelectors: ['.example'] },
+        configureScope: "describe",
+        configureOptions: { delay: 300, ignoreSelectors: [".example"] },
       },
     });
 
@@ -157,11 +158,11 @@ describe('configure(ChromaticConfig)', () => {
     `);
   });
 
-  test('configure() on nested suite level', async () => {
+  test("configure() on nested suite level", async () => {
     await runFixture({
       include,
       provide: {
-        configureScope: 'describe-nested',
+        configureScope: "describe-nested",
         configureOptions: { cropToViewport: true, diffThreshold: 0.5 },
       },
     });
@@ -180,12 +181,12 @@ describe('configure(ChromaticConfig)', () => {
     `);
   });
 
-  test('configure() on test level affects all tests', async () => {
+  test("configure() on test level affects all tests", async () => {
     await runFixture({
       include,
       provide: {
-        configureScope: 'test',
-        configureOptions: { pauseAnimationAtEnd: true, prefersReducedMotion: 'reduce' },
+        configureScope: "test",
+        configureOptions: { pauseAnimationAtEnd: true, prefersReducedMotion: "reduce" },
       },
     });
 
@@ -212,12 +213,12 @@ describe('configure(ChromaticConfig)', () => {
     `);
   });
 
-  test('configure() on a single test', async () => {
+  test("configure() on a single test", async () => {
     await runFixture({
       include,
       provide: {
-        configureScope: 'test-second',
-        configureOptions: { diffIncludeAntiAliasing: true, forcedColors: 'active' },
+        configureScope: "test-second",
+        configureOptions: { diffIncludeAntiAliasing: true, forcedColors: "active" },
       },
     });
 
@@ -235,16 +236,16 @@ describe('configure(ChromaticConfig)', () => {
     `);
   });
 
-  test('configured options override the global plugin options', async () => {
+  test("configured options override the global plugin options", async () => {
     await runFixture(
       {
         include,
         provide: {
-          configureScope: 'test-second',
-          configureOptions: { delay: 300, forcedColors: 'changed value here' },
+          configureScope: "test-second",
+          configureOptions: { delay: 300, forcedColors: "changed value here" },
         },
       },
-      { delay: 100, diffThreshold: 0.1, forcedColors: 'active' }
+      { delay: 100, diffThreshold: 0.1, forcedColors: "active" },
     );
 
     // Test #2 should have overriden options
@@ -279,13 +280,13 @@ describe('configure(ChromaticConfig)', () => {
     `);
   });
 
-  test('disableAutoSnapshot and assetDomains are not written to the result', async () => {
+  test("disableAutoSnapshot and assetDomains are not written to the result", async () => {
     await runFixture(
       {
         include,
-        provide: { configureScope: 'module', configureOptions: { disableAutoSnapshot: false } },
+        provide: { configureScope: "module", configureOptions: { disableAutoSnapshot: false } },
       },
-      { assetDomains: ['www.example.com'] }
+      { assetDomains: ["www.example.com"] },
     );
 
     expect(getChromaticOptions()).toMatchInlineSnapshot(`
@@ -299,12 +300,12 @@ describe('configure(ChromaticConfig)', () => {
     `);
   });
 
-  test('configure({ title })', async () => {
+  test("configure({ title })", async () => {
     await runFixture({
       include,
       provide: {
-        configureScope: 'module',
-        configureOptions: { title: 'Components/Accordion' },
+        configureScope: "module",
+        configureOptions: { title: "Components/Accordion" },
       },
     });
 
@@ -326,19 +327,19 @@ describe('configure(ChromaticConfig)', () => {
 
 function getSnapshottedTests() {
   return vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-    return Object.keys(call[1])[0].split(' / ')[0];
+    return Object.keys(call[1])[0].split(" / ")[0];
   });
 }
 
 function getChromaticOptions() {
   return Object.fromEntries(
     vi.mocked(shared.writeTestResult).mock.calls.map((call) => {
-      const title = Object.keys(call[1])[0].split(' / ')[0];
+      const title = Object.keys(call[1])[0].split(" / ")[0];
 
       // Options are written to file system as JSON, simulate that in mocked writeTestResult stub:
       const options = JSON.parse(JSON.stringify(call[3]));
 
       return [title, options];
-    })
+    }),
   );
 }

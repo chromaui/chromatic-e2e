@@ -1,11 +1,16 @@
-import { existsSync, readdirSync, rmSync } from 'node:fs';
-import { resolve } from 'node:path';
-import type {} from 'vitest/config';
-import type { Vite } from 'vitest/node';
-import { version as vitestVersion } from 'vitest/node';
-import colors from 'tinyrainbow';
-import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from '@chromatic-com/shared-e2e';
-import { createCommands } from './commands';
+import { existsSync, readdirSync, rmSync } from "node:fs";
+import { resolve } from "node:path";
+
+import { DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS } from "@chromatic-com/shared-e2e";
+import colors from "tinyrainbow";
+import type {} from "vitest/config";
+import type { Vite } from "vitest/node";
+import { version as vitestVersion } from "vitest/node";
+
+import { DEFAULT_OUTPUT_DIR } from "../constants";
+import { type ResolvedOptions, type Options } from "../types";
+import { createCommands } from "./commands";
+import { ChromaticReporter } from "./reporter";
 import {
   cleanTelemetryLogFiles,
   resolveTelemetryOptions,
@@ -13,14 +18,11 @@ import {
   trackEvent as _trackEvent,
   type EventType,
   type TelemetryEvent,
-} from './telemetry';
-import { ChromaticReporter } from './reporter';
-import { TelemetryReporter } from './telemetry';
-import { mergePreviewStats, WebpackStatsReporter } from './webpack-stats-reporter';
-import { DEFAULT_OUTPUT_DIR } from '../constants';
-import { type ResolvedOptions, type Options } from '../types';
+} from "./telemetry";
+import { TelemetryReporter } from "./telemetry";
+import { mergePreviewStats, WebpackStatsReporter } from "./webpack-stats-reporter";
 
-const DEFAULT_TAG_DESCRIPTION = 'Visual Regression Tests for `@chromatic-com/vitest`';
+const DEFAULT_TAG_DESCRIPTION = "Visual Regression Tests for `@chromatic-com/vitest`";
 
 /**
  * Vitest plugin for integrating with Chromatic's visual regression testing.
@@ -38,15 +40,15 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
     telemetry: resolveTelemetryOptions(),
   };
 
-  const isDist = import.meta.url.includes('dist/plugin.mjs');
+  const isDist = import.meta.url.includes("dist/plugin.mjs");
 
   const setupFile = resolve(
     import.meta.dirname,
-    isDist ? './setupFile.mjs' : '../browser/setupFile.ts'
+    isDist ? "./setupFile.mjs" : "../browser/setupFile.ts",
   );
 
   return {
-    name: 'vitest:chromatic',
+    name: "vitest:chromatic",
 
     config() {
       return {
@@ -55,9 +57,9 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         },
 
         // vitest/suite is available in 4.0 only. Importing it in 4.1 logs error, in 5.0 it's removed.
-        resolve: vitestVersion.startsWith('4.0')
+        resolve: vitestVersion.startsWith("4.0")
           ? undefined
-          : { alias: { 'vitest/suite': 'vitest' } },
+          : { alias: { "vitest/suite": "vitest" } },
 
         test: {
           provide: {
@@ -82,8 +84,8 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
         setupTelemetryCleanup(context.vitest);
 
         trackEvent({
-          eventType: 'plugin_configured',
-          level: 'info',
+          eventType: "plugin_configured",
+          level: "info",
           payload: {
             isShardedRun: project.config.shard != null,
             cropToViewport: options.cropToViewport,
@@ -98,10 +100,10 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
             resourceArchiveTimeout: options.resourceArchiveTimeout,
             turboSnap: options.turboSnap,
             reporter: !options.reporter.enabled
-              ? 'off'
+              ? "off"
               : options.reporter.verbose
-                ? 'verbose'
-                : 'non-verbose',
+                ? "verbose"
+                : "non-verbose",
 
             // Don't attach any user-defined strings values:
             isCustomOutputDirectory: options.outputDirectory !== DEFAULT_OUTPUT_DIR,
@@ -117,11 +119,11 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       }
 
       // browser.name is instances[].browser, not instances[].name: https://github.com/vitest-dev/vitest/blob/d22b029ae056b9515033d75c1249e9db26612770/packages/vitest/src/node/projects/resolveProjects.ts#L307
-      if (!browser.enabled || browser.name !== 'chromium') {
+      if (!browser.enabled || browser.name !== "chromium") {
         trackEvent({
-          eventType: 'project_ineligible',
-          level: 'warn',
-          payload: { isBrowser: browser.enabled, isChromium: browser.name === 'chromium' },
+          eventType: "project_ineligible",
+          level: "warn",
+          payload: { isBrowser: browser.enabled, isChromium: browser.name === "chromium" },
         });
 
         return clean();
@@ -138,37 +140,37 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       }
 
       // Ensure our setup file is registered first so that afterEach runs before any user-defined hooks.
-      if (sequence.hooks === 'stack') {
+      if (sequence.hooks === "stack") {
         project.config.setupFiles.push(setupFile);
-      } else if (sequence.hooks === 'list') {
+      } else if (sequence.hooks === "list") {
         project.config.setupFiles.unshift(setupFile);
       } else {
         trackEvent({
-          eventType: 'setup_files_parallel',
-          level: 'warn',
+          eventType: "setup_files_parallel",
+          level: "warn",
           payload: { setupFileCount: project.config.setupFiles.length },
         });
 
         project.config.setupFiles.push(setupFile);
 
         context.vitest.logger.warn(
-          colors.bgYellow(colors.black(' chromatic ')),
+          colors.bgYellow(colors.black(" chromatic ")),
           colors.yellow(
-            `Using { sequence.hooks: 'parallel' } may cause unstable snapshots. Please set 'sequence.hooks' to 'list' or 'stack' to ensure reliable snapshot ordering.`
-          )
+            `Using { sequence.hooks: 'parallel' } may cause unstable snapshots. Please set 'sequence.hooks' to 'list' or 'stack' to ensure reliable snapshot ordering.`,
+          ),
         );
       }
 
       // We support Vitest 4.0.0, but tags were introduced in 4.1.0
-      if (options.tags && context.vitest.version.startsWith('4.0')) {
+      if (options.tags && context.vitest.version.startsWith("4.0")) {
         context.vitest.logger.warn(
-          colors.bgYellow(colors.black(' chromatic ')),
+          colors.bgYellow(colors.black(" chromatic ")),
           colors.yellow(
-            `Tags cannot be used with Vitest ${context.vitest.version}. Please upgrade to Vitest 4.1 or later to use this feature.`
-          )
+            `Tags cannot be used with Vitest ${context.vitest.version}. Please upgrade to Vitest 4.1 or later to use this feature.`,
+          ),
         );
 
-        trackEvent({ eventType: 'tags_low_version', level: 'warn', payload: {} });
+        trackEvent({ eventType: "tags_low_version", level: "warn", payload: {} });
       }
 
       if (options.tags) {
@@ -192,9 +194,9 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
             });
           } catch (error) {
             trackEvent({
-              eventType: 'turbosnap_error',
-              level: 'error',
-              payload: { operation: 'merge-stats', error },
+              eventType: "turbosnap_error",
+              level: "error",
+              payload: { operation: "merge-stats", error },
             });
 
             throw error;
@@ -206,18 +208,18 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
       project.onTestsRerun(async () => {
         clean();
-        await project.browser?.triggerCommand('__chromatic_reset', {} as any);
+        await project.browser?.triggerCommand("__chromatic_reset", {} as any);
       });
 
       function clean() {
         const outputDirectory = resolve(project.vitest.config.root, options.outputDirectory);
 
-        rmSync(resolve(outputDirectory, 'chromatic-archives'), { recursive: true, force: true });
+        rmSync(resolve(outputDirectory, "chromatic-archives"), { recursive: true, force: true });
         cleanTelemetryLogFiles(outputDirectory);
 
         if (existsSync(outputDirectory)) {
           for (const file of readdirSync(outputDirectory)) {
-            if (file.startsWith('preview-stats') && file.endsWith('.json')) {
+            if (file.startsWith("preview-stats") && file.endsWith(".json")) {
               rmSync(resolve(outputDirectory, file), { force: true });
             }
           }
@@ -233,16 +235,17 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
 
 function withErrorTracking(
   options: ResolvedOptions,
-  configureVitest: Vite.Plugin['configureVitest']
-): Vite.Plugin['configureVitest'] {
+  configureVitest: Vite.Plugin["configureVitest"],
+): Vite.Plugin["configureVitest"] {
   return async (context) => {
     try {
+      // oxlint-disable-next-line typescript/await-thenable -- this is really promise
       return await configureVitest(context);
     } catch (error) {
       _trackEvent(
-        { eventType: 'plugin_error', level: 'error', payload: { operation: 'configure', error } },
+        { eventType: "plugin_error", level: "error", payload: { operation: "configure", error } },
         context.vitest,
-        options
+        options,
       );
 
       throw error;
@@ -250,7 +253,7 @@ function withErrorTracking(
   };
 }
 
-function resolveReporterOptions(reporter: Options['reporter']): ResolvedOptions['reporter'] {
+function resolveReporterOptions(reporter: Options["reporter"]): ResolvedOptions["reporter"] {
   if (reporter == undefined || reporter === true) {
     return { enabled: true, verbose: true };
   }
@@ -266,7 +269,7 @@ function resolveReporterOptions(reporter: Options['reporter']): ResolvedOptions[
 }
 
 /** @internal */
-declare module 'vitest' {
+declare module "vitest" {
   export interface ProvidedContext {
     __chromatic_options: ResolvedOptions;
   }

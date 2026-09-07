@@ -1,12 +1,13 @@
-import CDP, { Version } from 'chrome-remote-interface';
 import {
   ResourceArchiver,
   writeTestResult,
   ChromaticStorybookParameters,
   ResourceArchive,
   Viewport,
-} from '@chromatic-com/shared-e2e';
-import { CypressSnapshot } from './types';
+} from "@chromatic-com/shared-e2e";
+import CDP, { Version } from "chrome-remote-interface";
+
+import { CypressSnapshot } from "./types";
 
 interface WriteParams {
   testTitlePath: string[];
@@ -34,7 +35,7 @@ const writeArchives = async ({
     domSnapshots.map(({ name, snapshot, viewport, colorScheme, pseudoClassIds }, index) => [
       name ?? `Snapshot #${index + 1}`,
       { snapshot: Buffer.from(JSON.stringify(snapshot)), viewport, colorScheme, pseudoClassIds },
-    ])
+    ]),
   );
 
   await writeTestResult(
@@ -46,7 +47,7 @@ const writeArchives = async ({
     allSnapshots,
     resourceArchive,
     chromaticStorybookParams,
-    'cypress'
+    "cypress",
   );
 };
 
@@ -56,7 +57,7 @@ const writeArchives = async ({
 // Cypress doesn't give us a way to share variables between the "before test" and "after test" lifecycle events on the server.
 let resourceArchiver: ResourceArchiver = null;
 
-let host = '';
+let host = "";
 let port = 0;
 
 const setupNetworkListener = async ({
@@ -79,7 +80,7 @@ const setupNetworkListener = async ({
       await resourceArchiver.watch();
     }
   } catch (err) {
-    console.log('err', err);
+    console.log("err", err);
   }
 
   return null;
@@ -98,7 +99,7 @@ const saveArchives = (archiveInfo: WriteParams) => {
 };
 
 interface TaskParams {
-  action: 'setup-network-listener' | 'save-archives';
+  action: "setup-network-listener" | "save-archives";
   payload?: any;
 }
 
@@ -107,9 +108,9 @@ interface TaskParams {
 // (they can just import and register prepareArchives)
 export const prepareArchives = async ({ action, payload }: TaskParams) => {
   switch (action) {
-    case 'setup-network-listener':
+    case "setup-network-listener":
       return setupNetworkListener(payload);
-    case 'save-archives':
+    case "save-archives":
       return saveArchives(payload);
     default:
       return null;
@@ -122,31 +123,31 @@ export const onBeforeBrowserLaunch = (
   // (this way users wouldn't have to change their cypress.config file as it's already passed to us)
   browser: Cypress.Browser,
   launchOptions: Cypress.BeforeBrowserLaunchOptions,
-  config: Cypress.PluginConfigOptions
+  config: Cypress.PluginConfigOptions,
 ) => {
   // don't take snapshots when running `cypress open`
   if (!config.isTextTerminal) {
     return launchOptions;
   }
 
-  const hostArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-address='));
-  host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';
+  const hostArg = launchOptions.args.find((arg) => arg.startsWith("--remote-debugging-address="));
+  host = hostArg ? hostArg.split("=")[1] : "127.0.0.1";
 
-  const portArg = launchOptions.args.find((arg) => arg.startsWith('--remote-debugging-port='));
-  let portString = '';
+  const portArg = launchOptions.args.find((arg) => arg.startsWith("--remote-debugging-port="));
+  let portString = "";
 
   if (portArg) {
-    [, portString] = portArg.split('=');
+    [, portString] = portArg.split("=");
   } else if (process.env.ELECTRON_EXTRA_LAUNCH_ARGS) {
     // Electron doesn't pass along the address and port in the launch options, so we need to read the port from the
     // environment variable that we'll require the user to use (this assumes the host will be 127.0.0.1).
-    const entry = process.env.ELECTRON_EXTRA_LAUNCH_ARGS.split(' ').find((item) =>
-      item.startsWith('--remote-debugging-port')
+    const entry = process.env.ELECTRON_EXTRA_LAUNCH_ARGS.split(" ").find((item) =>
+      item.startsWith("--remote-debugging-port"),
     );
-    [, portString] = entry.split('=');
+    [, portString] = entry.split("=");
   } else {
     throw new Error(
-      'Please provide a port number \nExample: ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=<port-number> yarn cypress run'
+      "Please provide a port number \nExample: ELECTRON_EXTRA_LAUNCH_ARGS=--remote-debugging-port=<port-number> yarn cypress run",
     );
   }
 
@@ -157,13 +158,13 @@ export const onBeforeBrowserLaunch = (
 
 export const installPlugin = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
   // these events are run on the server (in Node)
-  on('task', {
+  on("task", {
     prepareArchives,
   });
   on(
-    'before:browser:launch',
+    "before:browser:launch",
     (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
       onBeforeBrowserLaunch(browser, launchOptions, config);
-    }
+    },
   );
 };

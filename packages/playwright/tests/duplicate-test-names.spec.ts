@@ -5,13 +5,13 @@
  * So let's only test duplicate snapshot names.
  */
 
-import { takeSnapshot, test } from '../src';
+import { takeSnapshot, test } from "../src";
 
 test.use({ disableAutoSnapshot: true });
 
-test('duplicate snapshot names', async ({ page }, testInfo) => {
-  await page.goto('/');
+test("duplicate snapshot names", async ({ page }, testInfo) => {
+  await page.goto("/");
 
-  await takeSnapshot(page, 'example', testInfo);
-  await takeSnapshot(page, 'example', testInfo);
+  await takeSnapshot(page, "example", testInfo);
+  await takeSnapshot(page, "example", testInfo);
 });

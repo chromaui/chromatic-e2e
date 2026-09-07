@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "paths": {
       "playwright-core/types/protocol": [
-        "packages/shared/node_modules/playwright-core/types/protocol.d.ts"
+        "./packages/shared/node_modules/playwright-core/types/protocol.d.ts"
       ],
-      "@chromatic-com/shared-e2e": ["packages/shared/src/index.ts"],
-      "@chromatic-com/shared-e2e/*": ["packages/shared/src/*"]
+      "@chromatic-com/shared-e2e": ["./packages/shared/src/index.ts"],
+      "@chromatic-com/shared-e2e/*": ["./packages/shared/src/*"]
     },
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,

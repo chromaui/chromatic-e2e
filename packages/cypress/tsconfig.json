@@ -3,6 +3,6 @@
   "compilerOptions": {
     "types": ["node", "cypress"]
   },
-  "include": ["src", "scripts", "vitest.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "scripts", "tests", "embedded.test.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist", "tests/cypress/test-downloads"]
 }

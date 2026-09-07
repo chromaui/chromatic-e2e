@@ -3,5 +3,12 @@
   "compilerOptions": {
     "stripInternal": true
   },
-  "include": ["src", "test", "vitest.config.unit.ts", "vitest.config.browser.ts"]
+  "include": [
+    "src",
+    "test",
+    "embedded.test.ts",
+    "vitest.config.unit.ts",
+    "vitest.config.browser.ts"
+  ],
+  "exclude": ["test/fixtures"]
 }

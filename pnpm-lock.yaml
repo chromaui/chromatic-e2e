@@ -108,6 +108,9 @@ importers:
       tsdown:
         specifier: ^0.22.14
         version: 0.22.14(publint@0.3.24)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/playwright:
     dependencies:
@@ -151,6 +154,9 @@ importers:
       tsdown:
         specifier: ^0.22.14
         version: 0.22.14(publint@0.3.24)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/shared:
     dependencies:
@@ -258,6 +264,9 @@ importers:
       tsdown:
         specifier: ^0.22.14
         version: 0.22.14(publint@0.3.24)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
       vitest:
         specifier: ^5.0.0
         version: 5.0.0(@types/node@22.20.1)(@vitest/browser-playwright@5.0.0)(@vitest/coverage-v8@5.0.0)(@vitest/ui@5.0.0)(msw@2.15.0(@types/node@22.20.1)(typescript@5.9.3))(vite@8.1.4(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))

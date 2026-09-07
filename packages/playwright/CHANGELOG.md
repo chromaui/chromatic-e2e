@@ -1,5 +1,11 @@
 # chromatic-playwright
 
+## 0.15.0
+
+### Minor Changes
+
+- 0f24a4a: Feat: Convert all packages to ESM-only, require Node.js 22
+
 ## 0.14.12
 
 ### Patch Changes

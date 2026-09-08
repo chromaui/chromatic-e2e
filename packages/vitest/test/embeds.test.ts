@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import { Locator, locators, page } from "vitest/browser";
+import { type Locator, locators, page } from "vitest/browser";
 
 import { takeSnapshot, configure } from "../dist/index.mjs";
 import { test } from "./utils/browser";

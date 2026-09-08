@@ -5,8 +5,20 @@ export default defineConfig({
     typeAware: true,
   },
 
+  plugins: [
+    "import",
+
+    // Defaults:
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+  ],
+
   rules: {
     "unicorn/prefer-node-protocol": "error",
+    "typescript/consistent-type-imports": ["error", { fixStyle: "inline-type-imports" }],
+    "import/no-duplicates": "error",
   },
 
   overrides: [

@@ -1,5 +1,5 @@
-import { Browser, chromium, Page } from "playwright";
-import { TestInfo } from "playwright/test";
+import { type Browser, chromium, type Page } from "playwright";
+import { type TestInfo } from "playwright/test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { performChromaticSnapshot } from "./makeTest";

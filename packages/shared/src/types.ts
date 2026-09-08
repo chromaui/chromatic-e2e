@@ -1,6 +1,6 @@
-import { NodeType, serializedNodeWithId } from "@rrweb/types";
+import { type NodeType, type serializedNodeWithId } from "@rrweb/types";
 
-import { Viewport } from "./utils/viewport";
+import { type Viewport } from "./utils/viewport";
 
 export interface ChromaticConfig {
   /** https://www.chromatic.com/docs/delay/ */

@@ -1,5 +1,4 @@
-import { type Vitest } from "vitest/node";
-import { type Reporter } from "vitest/reporters";
+import { type Reporter, type Vitest } from "vitest/node";
 
 import { type ResolvedOptions } from "../../types";
 import { trackEvent } from "./track";

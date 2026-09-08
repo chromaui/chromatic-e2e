@@ -49,13 +49,15 @@ describe("writeTestResult", () => {
         home: {
           snapshot: Buffer.from(JSON.stringify(snapshotJson)),
           viewport: { height: 800, width: 800 },
+          colorScheme: "dark",
+          pseudoClassIds: {},
         },
       },
       { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
       {
         diffThreshold: 5,
         pauseAnimationAtEnd: true,
-      },
+      } as any,
     );
     expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
@@ -70,6 +72,7 @@ describe("writeTestResult", () => {
             parameters: {
               __id: "file-test-story--home",
               chromatic: {
+                colorScheme: "dark",
                 diffThreshold: 5,
                 pauseAnimationAtEnd: true,
                 modes: { w800h800: { viewport: "w800h800" } },
@@ -122,6 +125,8 @@ describe("writeTestResult", () => {
         home: {
           snapshot: Buffer.from(JSON.stringify(snapshotJson)),
           viewport: { height: 800, width: 800 },
+          colorScheme: "dark",
+          pseudoClassIds: {},
         },
       },
       {
@@ -135,7 +140,7 @@ describe("writeTestResult", () => {
           contentType: "image/png",
         },
       },
-      {},
+      {} as any,
     );
 
     expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
@@ -145,7 +150,7 @@ describe("writeTestResult", () => {
       resolve(
         "./test-results/chromatic-archives/archive/file-toy-story-home.w800h800.snapshot.json",
       ),
-      JSON.stringify({ snapshot: expectedMappedJson }),
+      JSON.stringify({ snapshot: expectedMappedJson, pseudoClassIds: {} }),
     );
   });
 
@@ -161,10 +166,12 @@ describe("writeTestResult", () => {
         home: {
           snapshot: Buffer.from(JSON.stringify(snapshotJson)),
           viewport: { height: 800, width: 800 },
+          colorScheme: "dark",
+          pseudoClassIds: {},
         },
       },
       { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
-      {},
+      {} as any,
     );
     expect(filePaths.ensureDir).toHaveBeenCalledTimes(1);
     expect(filePaths.outputFile).toHaveBeenCalledTimes(2);
@@ -183,10 +190,15 @@ describe("writeTestResult", () => {
         pageUrl: "http://localhost:3000/",
       },
       {
-        home: { snapshot: Buffer.from(JSON.stringify({})), viewport: { height: 800, width: 800 } },
+        home: {
+          snapshot: Buffer.from(JSON.stringify({})),
+          viewport: { height: 800, width: 800 },
+          colorScheme: "dark",
+          pseudoClassIds: {},
+        },
       },
       {},
-      {},
+      {} as any,
     );
 
     const { title } = vi.mocked(filePaths.outputJSONFile).mock.calls[0][1];
@@ -207,6 +219,8 @@ describe("writeTestResult", () => {
           home: {
             snapshot: Buffer.from(JSON.stringify(snapshotJson)),
             viewport: { height: 800, width: 800 },
+            colorScheme: "dark",
+            pseudoClassIds: {},
           },
         },
         {
@@ -216,7 +230,7 @@ describe("writeTestResult", () => {
               body: Buffer.from("Chromatic"),
             },
         },
-        {},
+        {} as any,
       );
 
       expect(filePaths.outputFile).toHaveBeenCalledWith(
@@ -238,10 +252,12 @@ describe("writeTestResult", () => {
           home: {
             snapshot: Buffer.from(JSON.stringify(snapshotJson)),
             viewport: { height: 800, width: 800 },
+            colorScheme: "dark",
+            pseudoClassIds: {},
           },
         },
         { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
-        {},
+        {} as any,
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
@@ -266,10 +282,12 @@ describe("writeTestResult", () => {
           home: {
             snapshot: Buffer.from(JSON.stringify(snapshotJson)),
             viewport: { height: 800, width: 800 },
+            colorScheme: "dark",
+            pseudoClassIds: {},
           },
         },
         { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
-        {},
+        {} as any,
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
@@ -290,10 +308,12 @@ describe("writeTestResult", () => {
           home: {
             snapshot: Buffer.from(JSON.stringify(snapshotJson)),
             viewport: { height: 800, width: 800 },
+            colorScheme: "dark",
+            pseudoClassIds: {},
           },
         },
         { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
-        {},
+        {} as any,
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
@@ -314,10 +334,12 @@ describe("writeTestResult", () => {
           home: {
             snapshot: Buffer.from(JSON.stringify(snapshotJson)),
             viewport: { height: 800, width: 800 },
+            colorScheme: "dark",
+            pseudoClassIds: {},
           },
         },
         { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
-        {},
+        {} as any,
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),
@@ -338,10 +360,12 @@ describe("writeTestResult", () => {
           home: {
             snapshot: Buffer.from(JSON.stringify(snapshotJson)),
             viewport: { height: 800, width: 800 },
+            colorScheme: "dark",
+            pseudoClassIds: {},
           },
         },
         { "http://localhost:3000/home": { statusCode: 200, body: Buffer.from("Chromatic") } },
-        {},
+        {} as any,
       );
       expect(filePaths.outputJSONFile).toHaveBeenCalledWith(
         expect.anything(),

@@ -432,13 +432,13 @@ describe("DOMSnapshot", () => {
     it("maps pseudoClassIds", async () => {
       const domSnapshot = new DOMSnapshot({
         snapshot,
-        pseudoClassIds: { hover: [2, 3, 4], focus: [5, 6, 7], active: [8, 9, 10] },
+        pseudoClassIds: { ":hover": [2, 3, 4], ":focus": [5, 6, 7], ":active": [8, 9, 10] },
       });
 
       const mappedSnapshot = await domSnapshot.mapAssetPaths(sourceMap);
 
       expect(mappedSnapshot).toEqual(
-        `{"snapshot":${expectedMappedSnapshot},"pseudoClassIds":{"hover":[2,3,4],"focus":[5,6,7],"active":[8,9,10]}}`,
+        `{"snapshot":${expectedMappedSnapshot},"pseudoClassIds":{":hover":[2,3,4],":focus":[5,6,7],":active":[8,9,10]}}`,
       );
     });
   });

@@ -1,7 +1,7 @@
 import { expect } from "vitest";
 import { page } from "vitest/browser";
 
-import { configure, takeSnapshot } from "../dist";
+import { configure, takeSnapshot } from "../dist/index.mjs";
 import { test } from "./utils/browser";
 
 test.override({ url: "/manual-snapshots" });

@@ -105,9 +105,9 @@ describe("Windows paths", () => {
 
     vi.spyOn(process, "cwd").mockReturnValue(WINDOWS_MOCK_CWD);
     vi.doMock("node:os", () => ({ homedir: () => WINDOWS_MOCK_HOMEDIR }));
-    vi.doMock("node:path", async (importOriginal) => ({
-      ...(await importOriginal<typeof import("node:path")>()),
-      sep: "\\",
+    vi.doMock(import("node:path"), async (importOriginal) => ({
+      ...(await importOriginal()),
+      sep: "\\" as const,
     }));
 
     return function afterEach() {

@@ -46,7 +46,6 @@ jobs:
           pnpm publint
 
       - name: Run Typecheck
-        continue-on-error: true # TODO: Remove
         run: pnpm typecheck
 
       - uses: ./.github/actions/setup-playwright

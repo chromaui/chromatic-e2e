@@ -1,9 +1,9 @@
 import {
   ResourceArchiver,
-  ResourceArchive,
+  type ResourceArchive,
   DEFAULT_GLOBAL_RESOURCE_ARCHIVE_TIMEOUT_MS,
   logger,
-  HttpCredentials,
+  type HttpCredentials,
 } from "@chromatic-com/shared-e2e";
 import type { Page } from "@playwright/test";
 

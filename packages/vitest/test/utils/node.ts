@@ -14,7 +14,7 @@ import {
   createVitest,
   type InlineConfig,
   startVitest,
-  TestSequencer,
+  type TestSequencer,
   version as vitestVersion,
   type TestSpecification,
 } from "vitest/node";

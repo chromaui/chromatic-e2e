@@ -1,4 +1,4 @@
-import { serializedNodeWithId } from "@rrweb/types";
+import { type serializedNodeWithId } from "@rrweb/types";
 import { describe, expect, it } from "vitest";
 
 import { DOMSnapshot } from "./dom-snapshot";

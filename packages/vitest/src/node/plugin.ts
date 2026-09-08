@@ -18,8 +18,8 @@ import {
   trackEvent as _trackEvent,
   type EventType,
   type TelemetryEvent,
+  TelemetryReporter,
 } from "./telemetry";
-import { TelemetryReporter } from "./telemetry";
 import { mergePreviewStats, WebpackStatsReporter } from "./webpack-stats-reporter";
 
 const DEFAULT_TAG_DESCRIPTION = "Visual Regression Tests for `@chromatic-com/vitest`";

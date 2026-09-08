@@ -1,5 +1,5 @@
 import { takeSnapshot as takeChromaticSnapshot } from "./takeSnapshot";
-import { CypressSnapshot } from "./types";
+import { type CypressSnapshot } from "./types";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

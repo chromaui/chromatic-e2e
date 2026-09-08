@@ -1,6 +1,6 @@
 import { type DOMSnapshots } from "@chromatic-com/shared-e2e";
 import { snapshot as rrwebSnapshot, createMirror } from "@chromaui/rrweb-snapshot";
-import { serializedNodeWithId } from "@rrweb/types";
+import { type serializedNodeWithId } from "@rrweb/types";
 import { assert } from "vitest";
 import { commands } from "vitest/browser";
 

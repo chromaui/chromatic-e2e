@@ -1,6 +1,6 @@
 import { describe, beforeEach } from "vitest";
 
-import { configure, takeSnapshot } from "../dist";
+import { configure, takeSnapshot } from "../dist/index.mjs";
 import { test } from "./utils/browser";
 
 configure({ disableAutoSnapshot: true });

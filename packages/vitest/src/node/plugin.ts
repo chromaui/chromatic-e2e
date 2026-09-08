@@ -18,8 +18,8 @@ import {
   trackEvent as _trackEvent,
   type EventType,
   type TelemetryEvent,
+  TelemetryReporter,
 } from "./telemetry";
-import { TelemetryReporter } from "./telemetry";
 import { mergePreviewStats, WebpackStatsReporter } from "./webpack-stats-reporter";
 
 const DEFAULT_TAG_DESCRIPTION = "Visual Regression Tests for `@chromatic-com/vitest`";
@@ -239,7 +239,7 @@ function withErrorTracking(
 ): Vite.Plugin["configureVitest"] {
   return async (context) => {
     try {
-      // oxlint-disable-next-line typescript/await-thenable -- this is really promise
+      // eslint-disable-next-line typescript/await-thenable -- this is really promise
       return await configureVitest(context);
     } catch (error) {
       _trackEvent(

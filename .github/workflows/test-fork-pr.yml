@@ -1,0 +1,69 @@
+name: Test Fork PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number to test. Review the diff before running.
+        required: true
+        type: string
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      sha: ${{ steps.head.outputs.sha }}
+      branch: ${{ steps.head.outputs.branch }}
+    steps:
+      - name: Resolve PR head
+        id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ inputs.pr }}
+        run: |
+          pr_info=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --json headRefOid,headRefName,headRepositoryOwner,isCrossRepository)
+          sha=$(jq -r .headRefOid <<< "$pr_info")
+          branch=$(jq -r .headRefName <<< "$pr_info")
+          if [ "$(jq -r .isCrossRepository <<< "$pr_info")" = "true" ]; then
+            branch="$(jq -r .headRepositoryOwner.login <<< "$pr_info"):$branch"
+          fi
+
+          echo "Resolved PR #$PR_NUMBER to $sha (branch: $branch)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+  test_cypress:
+    needs: resolve
+    uses: ./.github/workflows/test-cypress.yml
+    with:
+      ref: ${{ needs.resolve.outputs.sha }}
+      chromaticSha: ${{ needs.resolve.outputs.sha }}
+      chromaticBranch: ${{ needs.resolve.outputs.branch }}
+      chromaticSlug: ${{ github.repository }}
+    secrets:
+      chromaticProjectToken: ${{ secrets.CHROMATIC_CYPRESS_PROJECT_TOKEN }}
+
+  test_playwright:
+    needs: resolve
+    uses: ./.github/workflows/test-playwright.yml
+    with:
+      ref: ${{ needs.resolve.outputs.sha }}
+      chromaticSha: ${{ needs.resolve.outputs.sha }}
+      chromaticBranch: ${{ needs.resolve.outputs.branch }}
+      chromaticSlug: ${{ github.repository }}
+    secrets:
+      chromaticProjectToken: ${{ secrets.CHROMATIC_PLAYWRIGHT_PROJECT_TOKEN }}
+
+  test_vitest:
+    needs: resolve
+    uses: ./.github/workflows/test-vitest.yml
+    with:
+      ref: ${{ needs.resolve.outputs.sha }}
+      chromaticSha: ${{ needs.resolve.outputs.sha }}
+      chromaticBranch: ${{ needs.resolve.outputs.branch }}
+      chromaticSlug: ${{ github.repository }}
+    secrets:
+      chromaticProjectToken: ${{ secrets.CHROMATIC_VITEST_PROJECT_TOKEN }}

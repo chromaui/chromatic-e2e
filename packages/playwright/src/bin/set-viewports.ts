@@ -38,7 +38,6 @@ export async function addViewportsToStoriesFiles() {
       const storiesWithViewports = addViewportsToStories(storiesFileJson, viewportsLookup);
 
       await writeFile(storiesFilePath, JSON.stringify(storiesWithViewports, null, 2), {
-        mode: 0o777,
         encoding: "utf-8",
       });
     }),

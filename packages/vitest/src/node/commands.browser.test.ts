@@ -1,7 +1,7 @@
 import { test, expect } from "vitest";
 import { commands } from "vitest/browser";
 
-import { InternalTestContext } from "../types";
+import { type InternalTestContext } from "../types";
 
 test<InternalTestContext>("setupFile is registered", async (context) => {
   expect(context.task.meta.__chromatic_isRegistered).toBe(true);

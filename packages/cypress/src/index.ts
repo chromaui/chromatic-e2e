@@ -1,13 +1,13 @@
 import {
   ResourceArchiver,
   writeTestResult,
-  ChromaticStorybookParameters,
-  ResourceArchive,
-  Viewport,
+  type ChromaticStorybookParameters,
+  type ResourceArchive,
+  type Viewport,
 } from "@chromatic-com/shared-e2e";
 import CDP, { Version } from "chrome-remote-interface";
 
-import { CypressSnapshot } from "./types";
+import { type CypressSnapshot } from "./types";
 
 interface WriteParams {
   testTitlePath: string[];

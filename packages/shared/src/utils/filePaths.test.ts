@@ -3,8 +3,14 @@ import fsPromises from "node:fs/promises";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { archivesDir, ensureDir, outputFile, outputJSONFile, truncateFileName } from "./filePaths";
-import { removeLocalhostFromBaseUrl } from "./filePaths";
+import {
+  archivesDir,
+  ensureDir,
+  outputFile,
+  outputJSONFile,
+  truncateFileName,
+  removeLocalhostFromBaseUrl,
+} from "./filePaths";
 
 vi.mock("fs");
 vi.mock("fs/promises");

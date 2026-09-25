@@ -1,6 +1,6 @@
-import { NodeType, serializedElementNodeWithId } from "@rrweb/types";
-import { Page } from "playwright";
-import { TestInfo } from "playwright/test";
+import { NodeType, type serializedElementNodeWithId } from "@rrweb/types";
+import { type Page } from "playwright";
+import { type TestInfo } from "playwright/test";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { chromaticSnapshots, takeSnapshot } from "./takeSnapshot";

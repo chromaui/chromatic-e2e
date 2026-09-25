@@ -1,8 +1,8 @@
-import { Server } from "node:http";
+import { type Server } from "node:http";
 
 import { logger } from "@chromatic-com/shared-e2e";
 import express, { type Request } from "express";
-import { Browser, chromium, Page } from "playwright";
+import { type Browser, chromium, type Page } from "playwright";
 import { dedent } from "ts-dedent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 

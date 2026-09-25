@@ -2,7 +2,7 @@ import { storyNameFromExport, toId } from "storybook/internal/csf";
 
 import type { ChromaticStorybookParameters, DOMSnapshots } from "../types";
 import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from "../utils/filePaths";
-import { Viewport, viewportToString } from "../utils/viewport";
+import { type Viewport, viewportToString } from "../utils/viewport";
 import { snapshotId } from "./snapshot-files";
 import { collapseNewlines, sanitize } from "./storybook-sanitize";
 

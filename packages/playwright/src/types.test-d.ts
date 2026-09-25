@@ -1,4 +1,4 @@
-import { Page, TestInfo } from "@playwright/test";
+import { type Page, type TestInfo } from "@playwright/test";
 import { expectTypeOf, test } from "vitest";
 
 import * as publicAPI from "../dist/index.mjs";

@@ -1,4 +1,4 @@
-import { configure, takeSnapshot } from "../dist";
+import { configure, takeSnapshot } from "../dist/index.mjs";
 import { test } from "./utils/browser";
 
 test.each(["one", "two"])("duplicate test name", async (label) => {

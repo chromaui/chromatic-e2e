@@ -21,8 +21,7 @@ import {
 } from "../types";
 import { NetworkIdleTracker } from "./NetworkIdleTracker";
 import { ChromaticReporter } from "./reporter";
-import { trackEvent } from "./telemetry";
-import { TelemetryReporter } from "./telemetry";
+import { trackEvent, TelemetryReporter } from "./telemetry";
 import { WebpackStatsReporter } from "./webpack-stats-reporter";
 
 type TestID = TestCase["id"];

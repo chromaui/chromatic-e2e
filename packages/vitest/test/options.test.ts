@@ -1,4 +1,4 @@
-import { configure } from "../dist";
+import { configure } from "../dist/index.mjs";
 import { test } from "./utils/browser";
 
 test("delay", async ({ goTo }) => {

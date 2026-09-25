@@ -1,4 +1,4 @@
-import { NodeType, serializedNodeWithId } from "@rrweb/types";
+import { NodeType, type serializedNodeWithId } from "@rrweb/types";
 
 import type { SerializedIframeNode } from "../types";
 

@@ -1,8 +1,7 @@
 import { relative, resolve } from "node:path";
 
 import colors from "tinyrainbow";
-import { TestCase, TestModule, Vitest } from "vitest/node";
-import { Reporter } from "vitest/reporters";
+import type { Reporter, TestCase, TestModule, Vitest } from "vitest/node";
 
 import { DEFAULT_OUTPUT_DIR } from "../constants";
 import { type ResolvedOptions } from "../types";

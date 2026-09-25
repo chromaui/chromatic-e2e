@@ -1,5 +1,5 @@
 import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from "../utils/filePaths";
-import { Viewport, viewportToString } from "../utils/viewport";
+import { type Viewport, viewportToString } from "../utils/viewport";
 import { sanitize } from "./storybook-sanitize";
 
 const SNAPSHOT_FILE_EXT = "snapshot.json";

@@ -1,7 +1,7 @@
 import { assert, expect } from "vitest";
 import { commands, page, userEvent } from "vitest/browser";
 
-import { configure, takeSnapshot } from "../dist";
+import { configure, takeSnapshot } from "../dist/index.mjs";
 import { test } from "./utils/browser";
 
 configure({ disableAutoSnapshot: true });

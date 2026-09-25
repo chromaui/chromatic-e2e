@@ -1,6 +1,6 @@
 import "./commands";
 import { takeSnapshot } from "./takeSnapshot";
-import { CypressSnapshot } from "./types";
+import { type CypressSnapshot } from "./types";
 
 const buildChromaticParams = (expose: Cypress.Cypress["expose"]) => ({
   ...(expose("diffThreshold") && {

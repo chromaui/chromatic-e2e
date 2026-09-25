@@ -16,7 +16,8 @@
     "./test-utils": "./src/test-utils"
   },
   "scripts": {
-    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Shared"
+    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Shared",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
@@ -32,7 +33,7 @@
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
     "@types/node-fetch": "^2.6.6",
-    "mime": "^3.0.0",
+    "mime": "^4.0.0",
     "node-fetch": "2",
     "playwright": "^1.46.1",
     "playwright-core": "^1.46.1",

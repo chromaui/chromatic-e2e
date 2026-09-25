@@ -1,5 +1,11 @@
 # chromatic-cypress
 
+## 1.0.0
+
+### Major Changes
+
+- 7043438: Feat: Stable v1 release
+
 ## 0.14.0
 
 ### Minor Changes

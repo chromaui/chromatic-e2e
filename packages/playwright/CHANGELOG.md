@@ -1,5 +1,15 @@
 # chromatic-playwright
 
+## 1.0.0
+
+### Major Changes
+
+- 7043438: Feat: Stable v1 release
+
+### Patch Changes
+
+- 84b67ad: Fix: Restore support for `projects[].use.viewport`
+
 ## 0.15.0
 
 ### Minor Changes

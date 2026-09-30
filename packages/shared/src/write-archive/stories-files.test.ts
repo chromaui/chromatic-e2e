@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ChromaticStorybookParameters } from "../types";
+import type { ChromaticStorybookParameters, DOMSnapshots } from "../types";
 import * as storiesFiles from "./stories-files";
 
 vi.mock("fs/promises");
@@ -42,10 +42,21 @@ describe("storiesFileName", () => {
 describe("createStories", () => {
   it("creates stories file JSON from DOM snapshots", () => {
     const title = "some test title";
-    const domSnapshots = {
-      "snapshot 1": { snapshot: Buffer.from("n/a"), viewport: { width: 100, height: 200 } },
-      "another snapshot": { snapshot: Buffer.from("n/a"), viewport: { width: 300, height: 400 } },
+    const domSnapshots: DOMSnapshots = {
+      "snapshot 1": {
+        snapshot: Buffer.from("n/a"),
+        viewport: { width: 100, height: 200 },
+        colorScheme: "dark",
+        pseudoClassIds: {},
+      },
+      "another snapshot": {
+        snapshot: Buffer.from("n/a"),
+        viewport: { width: 300, height: 400 },
+        colorScheme: "dark",
+        pseudoClassIds: {},
+      },
     };
+
     const chromaticParams: ChromaticStorybookParameters = {
       delay: 200,
       pauseAnimationAtEnd: true,
@@ -63,6 +74,7 @@ describe("createStories", () => {
             __id: "some-test-title--snapshot-1",
             server: { id: "some-test-title-snapshot-1" },
             chromatic: {
+              colorScheme: "dark",
               delay: 200,
               pauseAnimationAtEnd: true,
               modes: {
@@ -93,6 +105,7 @@ describe("createStories", () => {
             __id: "some-test-title--another-snapshot",
             server: { id: "some-test-title-another-snapshot" },
             chromatic: {
+              colorScheme: "dark",
               delay: 200,
               pauseAnimationAtEnd: true,
               modes: {
@@ -137,6 +150,8 @@ describe("createStories", () => {
         "\n\n\r\rSnapshot\nName\rWith\r\nNewlines\n\r\r\n": {
           snapshot: Buffer.from("n/a"),
           viewport: { width: 100, height: 200 },
+          colorScheme: "dark",
+          pseudoClassIds: {},
         },
       },
       {},

@@ -45,6 +45,9 @@ jobs:
           pnpm lint
           pnpm publint
 
+      - name: Run Typecheck
+        run: pnpm typecheck
+
       - uses: ./.github/actions/setup-playwright
 
       # Needed for additional browsers that Vitest unit tests use.

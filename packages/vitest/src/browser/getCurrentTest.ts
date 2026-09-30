@@ -1,6 +1,6 @@
 import * as vitest from "vitest";
 
-import { InternalTestContext } from "../types";
+import type { InternalTestContext } from "../types";
 
 export type Test = ReturnType<typeof vitest.TestRunner.getCurrentTest> &
   InternalTestContext["task"];
@@ -22,5 +22,9 @@ async function resolveHooks() {
   }
 
   // Fallback to older API. Using this with 4.1.0 logs deprecation warning.
-  return await import("vitest/suite");
+  // @ts-expect-error -- does not exist in vitest@5
+  return (await import("vitest/suite")) as Pick<
+    typeof vitest.TestRunner,
+    "getCurrentTest" | "getCurrentSuite"
+  >;
 }

@@ -2,8 +2,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, relative, resolve, sep } from "node:path";
 
-import { isCSSRequest, type TestCase, type TestModule, type Vite, type Vitest } from "vitest/node";
-import type { Reporter } from "vitest/reporters";
+import {
+  type Reporter,
+  isCSSRequest,
+  type TestCase,
+  type TestModule,
+  type Vite,
+  type Vitest,
+} from "vitest/node";
 
 import type { ResolvedOptions } from "../types";
 import { trackEvent } from "./telemetry";

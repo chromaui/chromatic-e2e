@@ -1,7 +1,7 @@
 /** These types are consumed by both browser and node sides */
 
 import type { ChromaticNamespace, ConfigureOptions } from "../../types";
-import { EVENT_TYPE_PREFIX } from "./constants";
+import { type EVENT_TYPE_PREFIX } from "./constants";
 
 export type EventType = keyof TelemetryPayloads;
 

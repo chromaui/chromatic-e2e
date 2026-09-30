@@ -1,7 +1,7 @@
 import { createMirror, snapshot } from "@chromaui/rrweb-snapshot";
 import type { serializedNodeWithId } from "@rrweb/types";
 
-import { CypressSnapshot } from "./types";
+import { type CypressSnapshot } from "./types";
 
 export const takeSnapshot = (
   doc: Document,

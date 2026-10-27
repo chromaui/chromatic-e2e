@@ -41,15 +41,15 @@
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
-    "storybook": "10.2.13"
+    "storybook": "10.6.4"
   },
   "devDependencies": {
     "@chromatic-com/shared-e2e": "workspace:*",
     "@playwright/test": "^1.46.1",
     "@rrweb/types": "^2.0.0-alpha.18",
-    "@storybook/builder-webpack5": "10.2.13",
-    "@storybook/server": "10.2.13",
-    "@storybook/server-webpack5": "10.2.13",
+    "@storybook/builder-webpack5": "10.6.4",
+    "@storybook/server": "10.6.4",
+    "@storybook/server-webpack5": "10.6.4",
     "express": "^4.18.2",
     "playwright": "^1.46.1",
     "playwright-core": "^1.46.1",

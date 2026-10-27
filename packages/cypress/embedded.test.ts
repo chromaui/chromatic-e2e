@@ -9,7 +9,7 @@ it("/embedded/node_modules has not changed", () => {
 
   expect(fileCount).toMatchInlineSnapshot(`8198`);
   expect(hash).toMatchInlineSnapshot(
-    `"fb7a3c92fbe7930617d966322c4b20b3918a3e197422c2850b6f8838a9d8ad8c"`,
+    `"88dcf508bdde91209a63af7b0d33224f000c850f4df357e3d1c8a8446a82a9ee"`,
   );
 });
 
@@ -21,14 +21,14 @@ it("/embedded/node_modules tree snapshot", () => {
       "@jridgewell/gen-mapping@0.3.13",
       "@jridgewell/resolve-uri@3.1.2",
       "@jridgewell/source-map@0.3.11",
-      "@jridgewell/sourcemap-codec@1.5.5",
+      "@jridgewell/sourcemap-codec@1.6.0",
       "@jridgewell/trace-mapping@0.3.31",
-      "@storybook/builder-webpack5@10.2.13",
-      "@storybook/core-webpack@10.2.13",
+      "@storybook/builder-webpack5@10.6.4",
+      "@storybook/core-webpack@10.6.4",
       "@storybook/global@5.0.0",
-      "@storybook/preset-server-webpack@10.2.13",
-      "@storybook/server@10.2.13",
-      "@storybook/server-webpack5@10.2.13",
+      "@storybook/preset-server-webpack@10.6.4",
+      "@storybook/server@10.6.4",
+      "@storybook/server-webpack5@10.6.4",
       "@types/estree@1.0.9",
       "@types/html-minifier-terser@6.1.0",
       "@types/json-schema@7.0.15",
@@ -137,7 +137,7 @@ it("/embedded/node_modules tree snapshot", () => {
       "loader-utils@2.0.4",
       "lodash@4.18.1",
       "lower-case@2.0.2",
-      "magic-string@0.30.21",
+      "magic-string@1.4.5",
       "memfs@3.5.3",
       "merge-stream@2.0.0",
       "mime-db@1.54.0",

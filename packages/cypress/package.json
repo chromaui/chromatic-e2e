@@ -46,14 +46,14 @@
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
     "chrome-remote-interface": "^0.33.0",
-    "storybook": "10.2.13"
+    "storybook": "10.6.4"
   },
   "devDependencies": {
     "@chromatic-com/shared-e2e": "workspace:*",
     "@rrweb/types": "^2.0.0-alpha.18",
-    "@storybook/builder-webpack5": "10.2.13",
-    "@storybook/server": "10.2.13",
-    "@storybook/server-webpack5": "10.2.13",
+    "@storybook/builder-webpack5": "10.6.4",
+    "@storybook/server": "10.6.4",
+    "@storybook/server-webpack5": "10.6.4",
     "cypress": "15.18.0",
     "start-server-and-test": "^2.0.3",
     "tsdown": "^0.22.14"

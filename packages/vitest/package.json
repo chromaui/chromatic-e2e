@@ -44,16 +44,16 @@
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
     "std-env": "^4.2.0",
-    "storybook": "10.2.13",
+    "storybook": "10.6.4",
     "tinyexec": "^1.2.4",
     "tinyrainbow": "^3.1.0"
   },
   "devDependencies": {
     "@chromatic-com/shared-e2e": "workspace:*",
     "@rrweb/types": "^2.0.0-alpha.18",
-    "@storybook/builder-webpack5": "10.2.13",
-    "@storybook/server": "10.2.13",
-    "@storybook/server-webpack5": "10.2.13",
+    "@storybook/builder-webpack5": "10.6.4",
+    "@storybook/server": "10.6.4",
+    "@storybook/server-webpack5": "10.6.4",
     "@vitest/browser-playwright": "^5.0.0",
     "extend-to-be-announced": "2.0.0",
     "msw": "^2.12.10",

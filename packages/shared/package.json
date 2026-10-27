@@ -20,10 +20,10 @@
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
-    "@storybook/builder-webpack5": "10.2.13",
-    "@storybook/server": "10.2.13",
-    "@storybook/server-webpack5": "10.2.13",
-    "storybook": "10.2.13"
+    "@storybook/builder-webpack5": "10.6.4",
+    "@storybook/server": "10.6.4",
+    "@storybook/server-webpack5": "10.6.4",
+    "storybook": "10.6.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.46.1",

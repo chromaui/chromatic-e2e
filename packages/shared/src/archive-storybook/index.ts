@@ -29,7 +29,45 @@ export function buildArchiveStorybook(
 
 function binPath() {
   // eslint-disable-next-line global-require
-  const packageJson = require('storybook/package.json');
-  // reference the entry file based on the package.json `bin` value, since it changed between SB 8.1 and 8.2
-  return resolve(dirname(require.resolve('storybook/package.json')), packageJson.bin.storybook);
+  const packageJsonPath = require.resolve('storybook/package.json');
+  // eslint-disable-next-line global-require
+  const packageJson = require(packageJsonPath);
+  const storybookRootDir = dirname(packageJsonPath);
+
+  // Storybook's "bin" can be either:
+  // - a string (SB 10), or
+  // - an object with keys like "storybook" (SB 8/9), or possibly "sb"
+  const binField = packageJson.bin;
+
+  let relativeBinPath: string | undefined;
+  if (typeof binField === 'string') {
+    relativeBinPath = binField;
+  } else if (binField && typeof binField === 'object') {
+    relativeBinPath = binField.storybook || binField.sb || Object.values(binField)[0];
+  }
+
+  if (relativeBinPath) {
+    return resolve(storybookRootDir, relativeBinPath);
+  }
+
+  // Fallbacks for unexpected shapes/versions
+  try {
+    // Common location in some versions
+    // eslint-disable-next-line global-require
+    return require.resolve('storybook/bin/index.js');
+  } catch {
+    // ignore
+  }
+
+  try {
+    // Another common location
+    // eslint-disable-next-line global-require
+    return require.resolve('storybook/dist/bin/index.js');
+  } catch {
+    // ignore
+  }
+
+  throw new Error(
+    'Unable to resolve Storybook CLI binary. Could not determine "bin" from storybook/package.json.'
+  );
 }

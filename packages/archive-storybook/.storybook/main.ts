@@ -1,6 +1,10 @@
-import type { StorybookConfig } from "storybook/internal/types";
+import path from "node:path";
 
-const config: StorybookConfig = {
+import type { StorybookConfigVite } from "@storybook/builder-vite";
+import type { StorybookConfig } from "storybook/internal/types";
+import { mergeConfig } from "vite";
+
+const config: StorybookConfig & StorybookConfigVite = {
   // Storybook requires a value here, even if it didn't match any stories
   stories: ["do-not-match-anything"],
 
@@ -12,6 +16,17 @@ const config: StorybookConfig = {
   features: {
     sidebarOnboardingChecklist: false,
   },
+  viteFinal: (config) =>
+    mergeConfig(config, {
+      resolve: {
+        alias: [
+          {
+            find: /^@chromatic-com\/shared-e2e/,
+            replacement: path.resolve(import.meta.dirname, "../../shared/src"),
+          },
+        ],
+      },
+    }),
 };
 
 export default config;

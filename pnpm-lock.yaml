@@ -80,6 +80,9 @@ importers:
       '@storybook/server':
         specifier: 10.6.5
         version: 10.6.5(storybook@10.6.5(@types/react@17.0.93)(prettier@3.9.5)(react@19.2.7))
+      playwright:
+        specifier: ^1.46.1
+        version: 1.61.1
       storybook:
         specifier: 10.6.5
         version: 10.6.5(@types/react@17.0.93)(prettier@3.9.5)(react@19.2.7)

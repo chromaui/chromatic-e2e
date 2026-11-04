@@ -1,0 +1,158 @@
+{
+  "snapshot": {
+    "type": 0,
+    "childNodes": [
+      { "type": 1, "name": "html", "publicId": "", "systemId": "", "id": 2 },
+      {
+        "type": 2,
+        "tagName": "html",
+        "attributes": {},
+        "childNodes": [
+          {
+            "type": 2,
+            "tagName": "head",
+            "attributes": {},
+            "childNodes": [
+              { "type": 3, "textContent": "\n    ", "id": 5 },
+              {
+                "type": 2,
+                "tagName": "title",
+                "attributes": {},
+                "childNodes": [{ "type": 3, "textContent": "Viewports", "id": 7 }],
+                "id": 6
+              },
+              { "type": 3, "textContent": "\n    ", "id": 8 },
+              {
+                "type": 2,
+                "tagName": "meta",
+                "attributes": {
+                  "name": "viewport",
+                  "content": "width=device-width, initial-scale=1"
+                },
+                "childNodes": [],
+                "id": 9
+              },
+              { "type": 3, "textContent": "\n    ", "id": 10 },
+              {
+                "type": 2,
+                "tagName": "style",
+                "attributes": {
+                  "_cssText": "#large, #medium, #small { display: none; }@media (min-width: 1000px) and (max-width: 1100px) {\n  #large { display: block; }\n}@media (min-width: 800px) and (max-width: 900px) {\n  #medium { display: block; }\n}@media (max-width: 500px) {\n  #small { display: block; }\n}"
+                },
+                "childNodes": [{ "type": 3, "textContent": "", "id": 12 }],
+                "id": 11
+              },
+              { "type": 3, "textContent": "\n  ", "id": 13 }
+            ],
+            "id": 4
+          },
+          { "type": 3, "textContent": "\n  ", "id": 14 },
+          {
+            "type": 2,
+            "tagName": "body",
+            "attributes": {},
+            "childNodes": [
+              { "type": 3, "textContent": "\n    ", "id": 16 },
+              {
+                "type": 2,
+                "tagName": "p",
+                "attributes": { "id": "large" },
+                "childNodes": [
+                  {
+                    "type": 3,
+                    "textContent": "I'm rendered when the page width is between 1100-1000",
+                    "id": 18
+                  }
+                ],
+                "id": 17
+              },
+              { "type": 3, "textContent": "\n    ", "id": 19 },
+              {
+                "type": 2,
+                "tagName": "p",
+                "attributes": { "id": "medium" },
+                "childNodes": [
+                  {
+                    "type": 3,
+                    "textContent": "I'm rendered when the page width is between 900-800",
+                    "id": 21
+                  }
+                ],
+                "id": 20
+              },
+              { "type": 3, "textContent": "\n    ", "id": 22 },
+              {
+                "type": 2,
+                "tagName": "p",
+                "attributes": { "id": "small" },
+                "childNodes": [
+                  {
+                    "type": 3,
+                    "textContent": "I'm rendered when the page width is between 500-0",
+                    "id": 24
+                  }
+                ],
+                "id": 23
+              },
+              { "type": 3, "textContent": "\n    ", "id": 25 },
+              {
+                "type": 2,
+                "tagName": "p",
+                "attributes": {},
+                "childNodes": [{ "type": 3, "textContent": "I'm always rendered", "id": 27 }],
+                "id": 26
+              },
+              { "type": 3, "textContent": "\n    ", "id": 28 },
+              {
+                "type": 2,
+                "tagName": "p",
+                "attributes": {},
+                "childNodes": [
+                  { "type": 3, "textContent": "Window width: ", "id": 30 },
+                  {
+                    "type": 2,
+                    "tagName": "span",
+                    "attributes": { "id": "width" },
+                    "childNodes": [{ "type": 3, "textContent": "800", "id": 32 }],
+                    "id": 31
+                  }
+                ],
+                "id": 29
+              },
+              { "type": 3, "textContent": "\n    ", "id": 33 },
+              {
+                "type": 2,
+                "tagName": "p",
+                "attributes": {},
+                "childNodes": [
+                  { "type": 3, "textContent": "Window height: ", "id": 35 },
+                  {
+                    "type": 2,
+                    "tagName": "span",
+                    "attributes": { "id": "height" },
+                    "childNodes": [{ "type": 3, "textContent": "720", "id": 37 }],
+                    "id": 36
+                  }
+                ],
+                "id": 34
+              },
+              { "type": 3, "textContent": "\n  \n\n  ", "id": 38 },
+              {
+                "type": 2,
+                "tagName": "script",
+                "attributes": { "lang": "javascript" },
+                "childNodes": [{ "type": 3, "textContent": "SCRIPT_PLACEHOLDER", "id": 40 }],
+                "id": 39
+              },
+              { "type": 3, "textContent": "\n\n", "id": 41 }
+            ],
+            "id": 15
+          }
+        ],
+        "id": 3
+      }
+    ],
+    "id": 1
+  },
+  "pseudoClassIds": { ":hover": [], ":focus": [], ":focus-visible": [], ":active": [] }
+}

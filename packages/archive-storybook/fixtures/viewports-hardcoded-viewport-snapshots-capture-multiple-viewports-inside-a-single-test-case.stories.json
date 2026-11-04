@@ -1,0 +1,125 @@
+{
+  "title": "viewports/hardcoded viewport/snapshots capture multiple viewports inside a single test case",
+  "stories": [
+    {
+      "name": "default",
+      "globals": { "viewport": "w800h720" },
+      "parameters": {
+        "__id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--default",
+        "server": {
+          "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case-default"
+        },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": { "w800h720": { "viewport": "w800h720" } }
+        },
+        "viewport": {
+          "options": {
+            "w800h720": {
+              "name": "w800h720",
+              "type": "tablet",
+              "styles": { "width": "800px", "height": "720px" }
+            }
+          },
+          "defaultViewport": "w800h720"
+        }
+      }
+    },
+    {
+      "name": "480 x 320",
+      "globals": { "viewport": "w480h320" },
+      "parameters": {
+        "__id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--480-x-320",
+        "server": {
+          "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case-480-x-320"
+        },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": { "w480h320": { "viewport": "w480h320" } }
+        },
+        "viewport": {
+          "options": {
+            "w480h320": {
+              "name": "w480h320",
+              "type": "mobile",
+              "styles": { "width": "480px", "height": "320px" }
+            }
+          },
+          "defaultViewport": "w480h320"
+        }
+      }
+    },
+    {
+      "name": "850 x 500",
+      "globals": { "viewport": "w850h500" },
+      "parameters": {
+        "__id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--850-x-500",
+        "server": {
+          "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case-850-x-500"
+        },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": { "w850h500": { "viewport": "w850h500" } }
+        },
+        "viewport": {
+          "options": {
+            "w850h500": {
+              "name": "w850h500",
+              "type": "tablet",
+              "styles": { "width": "850px", "height": "500px" }
+            }
+          },
+          "defaultViewport": "w850h500"
+        }
+      }
+    },
+    {
+      "name": "1050 x 1080",
+      "globals": { "viewport": "w1050h1080" },
+      "parameters": {
+        "__id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--1050-x-1080",
+        "server": {
+          "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case-1050-x-1080"
+        },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": { "w1050h1080": { "viewport": "w1050h1080" } }
+        },
+        "viewport": {
+          "options": {
+            "w1050h1080": {
+              "name": "w1050h1080",
+              "type": "desktop",
+              "styles": { "width": "1050px", "height": "1080px" }
+            }
+          },
+          "defaultViewport": "w1050h1080"
+        }
+      }
+    },
+    {
+      "name": "Snapshot #5",
+      "globals": { "viewport": "w1050h1080" },
+      "parameters": {
+        "__id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--snapshot-5",
+        "server": {
+          "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case-snapshot-5"
+        },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": { "w1050h1080": { "viewport": "w1050h1080" } }
+        },
+        "viewport": {
+          "options": {
+            "w1050h1080": {
+              "name": "w1050h1080",
+              "type": "desktop",
+              "styles": { "width": "1050px", "height": "1080px" }
+            }
+          },
+          "defaultViewport": "w1050h1080"
+        }
+      }
+    }
+  ]
+}

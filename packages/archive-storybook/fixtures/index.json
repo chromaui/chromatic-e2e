@@ -1,0 +1,95 @@
+{
+  "v": 5,
+  "entries": {
+    "archiving-assets-asset-is-found-at-relative-path--snapshot-1": {
+      "type": "story",
+      "subtype": "story",
+      "id": "archiving-assets-asset-is-found-at-relative-path--snapshot-1",
+      "name": "Snapshot #1",
+      "title": "archiving-assets/asset is found at relative path",
+      "importPath": "./test-results/chromatic-archives/archiving-assets-asset-is-found-at-relative-path.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "Snapshot #1"
+    },
+    "css-pseudo-states-captures-hover-state--hover": {
+      "type": "story",
+      "subtype": "story",
+      "id": "css-pseudo-states-captures-hover-state--hover",
+      "name": "hover",
+      "title": "css-pseudo-states/captures :hover state",
+      "importPath": "./test-results/chromatic-archives/css-pseudo-states-captures-hover-state.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "hover"
+    },
+    "embeds-same-origin-embed-page-loads--snapshot-1": {
+      "type": "story",
+      "subtype": "story",
+      "id": "embeds-same-origin-embed-page-loads--snapshot-1",
+      "name": "Snapshot #1",
+      "title": "embeds/same-origin embed page loads",
+      "importPath": "./test-results/chromatic-archives/embeds-same-origin-embed-page-loads.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "Snapshot #1"
+    },
+    "snapshot-names-in-test-case-name-あ--snapshot-1": {
+      "type": "story",
+      "subtype": "story",
+      "id": "snapshot-names-in-test-case-name-あ--snapshot-1",
+      "name": "Snapshot #1",
+      "title": "snapshot-names/in test case name あ",
+      "importPath": "./test-results/chromatic-archives/snapshot-names-in-test-case-name-あ.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "Snapshot #1"
+    },
+    "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--default": {
+      "type": "story",
+      "subtype": "story",
+      "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--default",
+      "name": "default",
+      "title": "viewports/hardcoded viewport/snapshots capture multiple viewports inside a single test case",
+      "importPath": "./test-results/chromatic-archives/viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "default"
+    },
+    "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--480-x-320": {
+      "type": "story",
+      "subtype": "story",
+      "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--480-x-320",
+      "name": "480 x 320",
+      "title": "viewports/hardcoded viewport/snapshots capture multiple viewports inside a single test case",
+      "importPath": "./test-results/chromatic-archives/viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "480 x 320"
+    },
+    "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--850-x-500": {
+      "type": "story",
+      "subtype": "story",
+      "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--850-x-500",
+      "name": "850 x 500",
+      "title": "viewports/hardcoded viewport/snapshots capture multiple viewports inside a single test case",
+      "importPath": "./test-results/chromatic-archives/viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "850 x 500"
+    },
+    "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--1050-x-1080": {
+      "type": "story",
+      "subtype": "story",
+      "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--1050-x-1080",
+      "name": "1050 x 1080",
+      "title": "viewports/hardcoded viewport/snapshots capture multiple viewports inside a single test case",
+      "importPath": "./test-results/chromatic-archives/viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "1050 x 1080"
+    },
+    "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--snapshot-5": {
+      "type": "story",
+      "subtype": "story",
+      "id": "viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case--snapshot-5",
+      "name": "Snapshot #5",
+      "title": "viewports/hardcoded viewport/snapshots capture multiple viewports inside a single test case",
+      "importPath": "./test-results/chromatic-archives/viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "Snapshot #5"
+    }
+  }
+}

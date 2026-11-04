@@ -1,0 +1,28 @@
+{
+  "snapshot": {
+    "type": 0,
+    "childNodes": [
+      { "type": 1, "name": "html", "publicId": "", "systemId": "", "id": 2 },
+      {
+        "type": 2,
+        "tagName": "html",
+        "attributes": {},
+        "childNodes": [
+          { "type": 2, "tagName": "head", "attributes": {}, "childNodes": [], "id": 4 },
+          {
+            "type": 2,
+            "tagName": "body",
+            "attributes": {},
+            "childNodes": [
+              { "type": 3, "textContent": "Testing testing just a basic page", "id": 6 }
+            ],
+            "id": 5
+          }
+        ],
+        "id": 3
+      }
+    ],
+    "id": 1
+  },
+  "pseudoClassIds": { ":hover": [], ":focus": [], ":focus-visible": [], ":active": [] }
+}

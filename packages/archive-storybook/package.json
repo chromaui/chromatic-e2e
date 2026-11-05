@@ -1,0 +1,28 @@
+{
+  "name": "@chromatic-com/archive-storybook",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Builds the prebuilt Storybook that the published packages ship in dist/storybook-static",
+  "license": "MIT",
+  "author": "Chromatic <tom@chromatic.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chromaui/chromatic-e2e.git",
+    "directory": "packages/archive-storybook"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "storybook build --config-dir .storybook --output-dir dist/storybook-static --disable-telemetry",
+    "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project \"Archive Storybook\""
+  },
+  "devDependencies": {
+    "@storybook/builder-vite": "10.6.5",
+    "@storybook/server": "10.6.5",
+    "playwright": "^1.46.1",
+    "storybook": "10.6.5",
+    "vite": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

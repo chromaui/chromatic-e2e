@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    // Storybook warns about extensionless imports in main.ts
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": [".storybook/*", "src", "test", "vitest.config.ts"]
+}

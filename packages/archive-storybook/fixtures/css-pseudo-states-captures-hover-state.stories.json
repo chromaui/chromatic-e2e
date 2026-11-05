@@ -1,0 +1,27 @@
+{
+  "title": "css-pseudo-states/captures :hover state",
+  "stories": [
+    {
+      "name": "hover",
+      "globals": { "viewport": "w500h600" },
+      "parameters": {
+        "__id": "css-pseudo-states-captures-hover-state--hover",
+        "server": { "id": "css-pseudo-states-captures-hover-state-hover" },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": { "w500h600": { "viewport": "w500h600" } }
+        },
+        "viewport": {
+          "options": {
+            "w500h600": {
+              "name": "w500h600",
+              "type": "mobile",
+              "styles": { "width": "500px", "height": "600px" }
+            }
+          },
+          "defaultViewport": "w500h600"
+        }
+      }
+    }
+  ]
+}

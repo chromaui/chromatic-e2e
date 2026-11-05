@@ -1,0 +1,299 @@
+{
+  "snapshot": {
+    "type": 0,
+    "childNodes": [
+      { "type": 1, "name": "html", "publicId": "", "systemId": "", "id": 2 },
+      {
+        "type": 2,
+        "tagName": "html",
+        "attributes": { "lang": "en" },
+        "childNodes": [
+          {
+            "type": 2,
+            "tagName": "head",
+            "attributes": {},
+            "childNodes": [
+              { "type": 3, "textContent": "\n    ", "id": 5 },
+              {
+                "type": 2,
+                "tagName": "meta",
+                "attributes": { "charset": "utf-8" },
+                "childNodes": [],
+                "id": 6
+              },
+              { "type": 3, "textContent": "\n    ", "id": 7 },
+              {
+                "type": 2,
+                "tagName": "style",
+                "attributes": {
+                  "_cssText": "body { font-family: system-ui, sans-serif; margin: 1rem; }iframe { border: 1px solid rgb(204, 204, 204); width: 100%; max-width: 45rem; height: 25rem; }"
+                },
+                "childNodes": [{ "type": 3, "textContent": "", "id": 9 }],
+                "id": 8
+              },
+              { "type": 3, "textContent": "\n  ", "id": 10 }
+            ],
+            "id": 4
+          },
+          { "type": 3, "textContent": "\n  ", "id": 11 },
+          {
+            "type": 2,
+            "tagName": "body",
+            "attributes": {},
+            "childNodes": [
+              { "type": 3, "textContent": "\n    ", "id": 13 },
+              {
+                "type": 2,
+                "tagName": "h1",
+                "attributes": {},
+                "childNodes": [{ "type": 3, "textContent": "Embeds", "id": 15 }],
+                "id": 14
+              },
+              { "type": 3, "textContent": "\n    ", "id": 16 },
+              {
+                "type": 2,
+                "tagName": "p",
+                "attributes": {},
+                "childNodes": [
+                  {
+                    "type": 3,
+                    "textContent": "Parent page with embedded content for E2E tests (same-origin iframe).",
+                    "id": 18
+                  }
+                ],
+                "id": 17
+              },
+              { "type": 3, "textContent": "\n    ", "id": 19 },
+              {
+                "type": 2,
+                "tagName": "iframe",
+                "attributes": { "title": "Same-origin iframe" },
+                "childNodes": [],
+                "id": 20,
+                "contentDocument": {
+                  "type": 0,
+                  "childNodes": [
+                    { "type": 1, "name": "html", "publicId": "", "systemId": "", "id": 2 },
+                    {
+                      "type": 2,
+                      "tagName": "html",
+                      "attributes": { "lang": "en" },
+                      "childNodes": [
+                        {
+                          "type": 2,
+                          "tagName": "head",
+                          "attributes": {},
+                          "childNodes": [
+                            { "type": 3, "textContent": "\n    ", "id": 5 },
+                            {
+                              "type": 2,
+                              "tagName": "meta",
+                              "attributes": { "charset": "utf-8" },
+                              "childNodes": [],
+                              "id": 6
+                            },
+                            { "type": 3, "textContent": "\n    ", "id": 7 },
+                            {
+                              "type": 2,
+                              "tagName": "style",
+                              "attributes": {
+                                "_cssText": "body { font-family: system-ui, sans-serif; margin: 1rem; }iframe { border: 1px solid rgb(204, 204, 204); width: 100%; max-width: 45rem; height: 25rem; }.button-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0px; }.button-bar button { font: inherit; padding: 0.4rem 0.75rem; cursor: pointer; }body:has(#hover-target:hover) { background-color: green !important; }"
+                              },
+                              "childNodes": [{ "type": 3, "textContent": "", "id": 9 }],
+                              "id": 8
+                            },
+                            { "type": 3, "textContent": "\n  ", "id": 10 }
+                          ],
+                          "id": 4
+                        },
+                        { "type": 3, "textContent": "\n  ", "id": 11 },
+                        {
+                          "type": 2,
+                          "tagName": "body",
+                          "attributes": {},
+                          "childNodes": [
+                            { "type": 3, "textContent": "\n    ", "id": 13 },
+                            {
+                              "type": 2,
+                              "tagName": "h1",
+                              "attributes": {},
+                              "childNodes": [
+                                { "type": 3, "textContent": "Embedded page", "id": 15 }
+                              ],
+                              "id": 14
+                            },
+                            { "type": 3, "textContent": "\n    ", "id": 16 },
+                            {
+                              "type": 2,
+                              "tagName": "div",
+                              "attributes": {
+                                "class": "button-bar",
+                                "role": "toolbar",
+                                "aria-label": "Page background"
+                              },
+                              "childNodes": [
+                                { "type": 3, "textContent": "\n      ", "id": 18 },
+                                {
+                                  "type": 2,
+                                  "tagName": "button",
+                                  "attributes": {
+                                    "type": "button",
+                                    "onclick": "document.body.style.backgroundColor = 'red'"
+                                  },
+                                  "childNodes": [{ "type": 3, "textContent": "Red", "id": 20 }],
+                                  "id": 19
+                                },
+                                { "type": 3, "textContent": "\n      ", "id": 21 },
+                                {
+                                  "type": 2,
+                                  "tagName": "button",
+                                  "attributes": {
+                                    "type": "button",
+                                    "onclick": "document.body.style.backgroundColor = 'yellow'"
+                                  },
+                                  "childNodes": [{ "type": 3, "textContent": "Yellow", "id": 23 }],
+                                  "id": 22
+                                },
+                                { "type": 3, "textContent": "\n      ", "id": 24 },
+                                {
+                                  "type": 2,
+                                  "tagName": "button",
+                                  "attributes": {
+                                    "type": "button",
+                                    "onclick": "document.body.style.backgroundColor = 'blue'"
+                                  },
+                                  "childNodes": [{ "type": 3, "textContent": "Blue", "id": 26 }],
+                                  "id": 25
+                                },
+                                { "type": 3, "textContent": "\n      ", "id": 27 },
+                                {
+                                  "type": 2,
+                                  "tagName": "button",
+                                  "attributes": {
+                                    "type": "button",
+                                    "onclick": "document.body.style.removeProperty('background-color')"
+                                  },
+                                  "childNodes": [
+                                    {
+                                      "type": 3,
+                                      "textContent": "\n        Reset\n      ",
+                                      "id": 29
+                                    }
+                                  ],
+                                  "id": 28
+                                },
+                                { "type": 3, "textContent": "\n      ", "id": 30 },
+                                {
+                                  "type": 2,
+                                  "tagName": "button",
+                                  "attributes": { "type": "button", "id": "hover-target" },
+                                  "childNodes": [
+                                    { "type": 3, "textContent": "Green on Hover", "id": 32 }
+                                  ],
+                                  "id": 31
+                                },
+                                { "type": 3, "textContent": "\n    ", "id": 33 }
+                              ],
+                              "id": 17
+                            },
+                            { "type": 3, "textContent": "\n\n    ", "id": 34 },
+                            {
+                              "type": 2,
+                              "tagName": "div",
+                              "attributes": { "style": "display: flex; gap: 1rem" },
+                              "childNodes": [
+                                { "type": 3, "textContent": "\n      ", "id": 36 },
+                                {
+                                  "type": 2,
+                                  "tagName": "div",
+                                  "attributes": {},
+                                  "childNodes": [
+                                    {
+                                      "type": 2,
+                                      "tagName": "img",
+                                      "attributes": {
+                                        "src": "/img-e9f7f555c7740aec4f98ff752f668e56.png"
+                                      },
+                                      "childNodes": [],
+                                      "id": 38
+                                    }
+                                  ],
+                                  "id": 37
+                                },
+                                { "type": 3, "textContent": "\n      ", "id": 39 },
+                                {
+                                  "type": 2,
+                                  "tagName": "div",
+                                  "attributes": {},
+                                  "childNodes": [
+                                    {
+                                      "type": 2,
+                                      "tagName": "img",
+                                      "attributes": {
+                                        "src": "/img-35195d19c6b11431a1bc31fb8f2f24ad.png"
+                                      },
+                                      "childNodes": [],
+                                      "id": 41
+                                    }
+                                  ],
+                                  "id": 40
+                                },
+                                { "type": 3, "textContent": "\n      ", "id": 42 },
+                                {
+                                  "type": 2,
+                                  "tagName": "div",
+                                  "attributes": {},
+                                  "childNodes": [
+                                    {
+                                      "type": 2,
+                                      "tagName": "img",
+                                      "attributes": {
+                                        "src": "/img-68a840132a6e57ef79666ed08c01c419.png"
+                                      },
+                                      "childNodes": [],
+                                      "id": 44
+                                    }
+                                  ],
+                                  "id": 43
+                                },
+                                { "type": 3, "textContent": "\n    ", "id": 45 }
+                              ],
+                              "id": 35
+                            },
+                            { "type": 3, "textContent": "\n  \n\n", "id": 46 }
+                          ],
+                          "id": 12
+                        }
+                      ],
+                      "id": 3
+                    }
+                  ],
+                  "id": 1
+                },
+                "pseudoClassIds": {
+                  ":hover": [],
+                  ":focus": [],
+                  ":focus-visible": [],
+                  ":active": []
+                }
+              },
+              { "type": 3, "textContent": "\n    ", "id": 21 },
+              {
+                "type": 2,
+                "tagName": "script",
+                "attributes": {},
+                "childNodes": [{ "type": 3, "textContent": "SCRIPT_PLACEHOLDER", "id": 23 }],
+                "id": 22
+              },
+              { "type": 3, "textContent": "\n  \n\n", "id": 24 }
+            ],
+            "id": 12
+          }
+        ],
+        "id": 3
+      }
+    ],
+    "id": 1
+  },
+  "pseudoClassIds": { ":hover": [], ":focus": [], ":focus-visible": [], ":active": [] }
+}

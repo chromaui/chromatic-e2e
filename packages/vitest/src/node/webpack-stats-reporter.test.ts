@@ -34,11 +34,29 @@ test("TurboSnap enabled, source files", async () => {
   expect(modules).toMatchInlineSnapshot(`
     [
       {
+        "id": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "name": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/vite-app.js",
+          },
+        ],
+      },
+      {
         "id": "turbo-snap-1.test.ts",
         "name": "turbo-snap-1.test.ts",
         "reasons": [
           {
             "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
           },
         ],
       },
@@ -111,6 +129,15 @@ test("TurboSnap enabled, source files", async () => {
           },
         ],
       },
+      {
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+          },
+        ],
+      },
     ]
   `);
 });
@@ -129,7 +156,7 @@ test("TurboSnap enabled, dependency files", async () => {
     .toBeDefined();
 
   // Optimized dependencies must be remapped to their sources, never reported as cache files
-  expect(stats.modules.filter((mod) => mod.id.includes(".vite"))).toEqual([]);
+  expect(stats.modules.filter((mod) => mod.id.includes(".vite/"))).toEqual([]);
 
   // extend-to-be-announced has a single dependency aria-live-capture, which is 0 deps.
   // This should be stable enough for snapshot testing. Exclude all other deps as they might change frequently.
@@ -250,11 +277,29 @@ test("TurboSnap enabled, circular imports", async () => {
   expect(modules).toMatchInlineSnapshot(`
     [
       {
+        "id": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "name": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/vite-app.js",
+          },
+        ],
+      },
+      {
         "id": "turbo-snap-cycle.test.ts",
         "name": "turbo-snap-cycle.test.ts",
         "reasons": [
           {
             "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-cycle-1.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-cycle-1.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-cycle-1.stories.json",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
           },
         ],
       },
@@ -341,11 +386,29 @@ test("TurboSnap enabled, sharded run", async () => {
   expect(modules).toMatchInlineSnapshot(`
     [
       {
+        "id": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "name": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/vite-app.js",
+          },
+        ],
+      },
+      {
         "id": "turbo-snap-1.test.ts",
         "name": "turbo-snap-1.test.ts",
         "reasons": [
           {
             "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
           },
         ],
       },
@@ -394,6 +457,15 @@ test("TurboSnap enabled, sharded run", async () => {
         "reasons": [
           {
             "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
           },
         ],
       },
@@ -519,11 +591,29 @@ test("TurboSnap enabled with custom output directory", async () => {
   expect(modules).toMatchInlineSnapshot(`
     [
       {
+        "id": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "name": "/virtual:/@storybook/builder-vite/storybook-stories.js",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/vite-app.js",
+          },
+        ],
+      },
+      {
         "id": "turbo-snap-1.test.ts",
         "name": "turbo-snap-1.test.ts",
         "reasons": [
           {
             "moduleName": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-1-1.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "./.vitest/custom-output-directory/chromatic-archives/turbo-snap-1-1.stories.json",
+        "name": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-1-1.stories.json",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
           },
         ],
       },
@@ -572,6 +662,15 @@ test("TurboSnap enabled with custom output directory", async () => {
         "reasons": [
           {
             "moduleName": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-2-2.stories.json",
+          },
+        ],
+      },
+      {
+        "id": "./.vitest/custom-output-directory/chromatic-archives/turbo-snap-2-2.stories.json",
+        "name": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-2-2.stories.json",
+        "reasons": [
+          {
+            "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
           },
         ],
       },
@@ -627,7 +726,14 @@ test("TurboSnap enabled, paths are relative to working directory instead of Vite
     ],
   });
 
-  for (const mod of stats.modules.filter(excludeNodeModules)) {
+  // Story file ID must match `importPath` in `index.json`, which is relative to the working directory
+  expect(stats.modules).toContainEqual({
+    id: `./${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json`,
+    name: `${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json`,
+    reasons: [{ moduleName: "/virtual:/@storybook/builder-vite/storybook-stories.js" }],
+  });
+
+  for (const mod of stats.modules.filter(excludeNodeModules).filter(excludeVirtualModules)) {
     const exists = existsSync(resolve(process.cwd(), mod.id));
     expect.soft(exists, `Expected file ${mod.id} to exist`).toBe(true);
   }
@@ -655,8 +761,14 @@ test("TurboSnap disabled", async () => {
  */
 function readStats(root = process.cwd(), outputDir = DEFAULT_OUTPUT_DIR): { modules: Module[] } {
   const stats = readRawStats(root, outputDir);
-  const toRoot = (path: string) =>
-    relative(root, resolve(process.cwd(), path)).replaceAll(sep, "/");
+  const toRoot = (path: string) => {
+    // Virtual builder-vite modules aren't file paths
+    if (path.startsWith("/virtual:")) return path;
+
+    // Story file IDs keep their `./` prefix, like `importPath` in `index.json`
+    const prefix = path.startsWith("./") ? "./" : "";
+    return prefix + relative(root, resolve(process.cwd(), path)).replaceAll(sep, "/");
+  };
 
   return {
     modules: stats.modules.map((mod) => ({
@@ -695,6 +807,10 @@ function runFixture(
 
 function excludeNodeModules(mod: Module) {
   return !mod.id.includes("node_modules");
+}
+
+function excludeVirtualModules(mod: Module) {
+  return !mod.id.startsWith("/virtual:");
 }
 
 // Exclude plugin source files from the stats report, as they are not relevant to the test results.

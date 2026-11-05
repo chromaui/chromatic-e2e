@@ -2,14 +2,32 @@ import { existsSync, readFileSync } from "node:fs";
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, relative, resolve, sep } from "node:path";
 
-import { isCSSRequest, type TestCase, type TestModule, type Vite, type Vitest } from "vitest/node";
-import type { Reporter } from "vitest/reporters";
+import {
+  isCSSRequest,
+  type TestCase,
+  type TestModule,
+  type Vite,
+  type Vitest,
+  type Reporter,
+} from "vitest/node";
 
 import type { ResolvedOptions } from "../types";
 import { trackEvent } from "./telemetry";
 
 const REPORTER_NAME = "chromatic-webpack-stats-reporter";
 const VIRTUAL_MODULE_PREFIX = "\0";
+
+/**
+ * Virtual modules of `@storybook/builder-vite`, named the way its stats plugin writes them.
+ * The app entry imports the stories module, and the stories module imports every story file.
+ * Chromatic CLI recognizes story files by this chain.
+ *
+ * @see https://github.com/storybookjs/storybook/blob/next/code/builders/builder-vite/src/plugins/webpack-stats-plugin.ts
+ * @see https://github.com/chromaui/chromatic-cli/blob/main/node-src/lib/turbosnap/v1/getDependentStoryFiles.ts
+ * @see https://github.com/chromaui/chromatic-cli/blob/main/node-src/lib/turbosnap/v2/storyDetection.ts
+ */
+const VITE_APP_FILE = "/virtual:/@storybook/builder-vite/vite-app.js";
+const VITE_STORIES_FILE = "/virtual:/@storybook/builder-vite/storybook-stories.js";
 
 interface Options {
   /** Full resolved path to the `preview-stats.json` file */
@@ -117,6 +135,15 @@ export class WebpackStatsReporter implements Reporter {
   private async writePreviewStats(testModules: TestModule[]) {
     const statsMap = new Map<Module["id"], Module>();
 
+    // Add `vite-app.js` → `storybook-stories.js`
+    if (this.moduleIdsToStoryFiles.size > 0) {
+      statsMap.set(VITE_STORIES_FILE, {
+        id: VITE_STORIES_FILE,
+        name: VITE_STORIES_FILE,
+        reasons: [{ moduleName: VITE_APP_FILE }],
+      });
+    }
+
     for (const testModule of testModules) {
       const storyFiles = this.moduleIdsToStoryFiles.get(testModule.moduleId);
 
@@ -137,6 +164,19 @@ export class WebpackStatsReporter implements Reporter {
 
       // Test module is imported by all its story files
       statsMap.set(id, this.createStatsMapModule(id, [...storyFiles]));
+
+      // Add `storybook-stories.js` → story file. The `id` is reported to Chromatic and must match
+      // `importPath` in `index.json`. The `name` must match the test module's reasons.
+      for (const storyFile of storyFiles) {
+        const name = this.normalize(storyFile);
+        const storyFileId = `./${name}`;
+
+        statsMap.set(storyFileId, {
+          id: storyFileId,
+          name,
+          reasons: [{ moduleName: VITE_STORIES_FILE }],
+        });
+      }
 
       // Test module depends on Vitest config
       if (testModule.project.config.config) {

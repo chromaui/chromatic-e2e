@@ -107,3 +107,5 @@ export async function writeTestResult(
 
   return { storiesFile };
 }
+
+export { generateStoryIndex } from "./story-index";

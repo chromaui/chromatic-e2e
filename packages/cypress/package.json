@@ -49,6 +49,7 @@
     "storybook": "10.2.13"
   },
   "devDependencies": {
+    "@chromatic-com/archive-storybook": "workspace:*",
     "@chromatic-com/shared-e2e": "workspace:*",
     "@rrweb/types": "^2.0.0-alpha.18",
     "@storybook/builder-webpack5": "10.2.13",

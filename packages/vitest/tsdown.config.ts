@@ -18,6 +18,7 @@ export default defineConfig([
   {
     ...defaults,
     name: "Node",
+    copy: [{ from: "../archive-storybook/dist/storybook-static" }],
     entry: {
       plugin: "src/node/plugin.ts",
       "bin/archive-storybook": "src/bin/archive-storybook.ts",

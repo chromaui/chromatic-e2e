@@ -44,6 +44,7 @@
     "storybook": "10.2.13"
   },
   "devDependencies": {
+    "@chromatic-com/archive-storybook": "workspace:*",
     "@chromatic-com/shared-e2e": "workspace:*",
     "@playwright/test": "^1.46.1",
     "@rrweb/types": "^2.0.0-alpha.18",

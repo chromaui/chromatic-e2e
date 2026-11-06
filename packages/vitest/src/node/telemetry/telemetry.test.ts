@@ -1077,6 +1077,12 @@ function pickTypeAndPayload(events: WireTelemetryEvent[]) {
   return events.map(({ eventType, payload }) => ({ eventType, payload }));
 }
 
+const buildArchiveStorybook = vi.hoisted(() => vi.fn());
+vi.mock(import("@chromatic-com/shared-e2e/archive-storybook"), async (importOriginal) => ({
+  ...(await importOriginal()),
+  buildArchiveStorybook,
+}));
+
 const childProcessHandles = vi.hoisted(() => ({ onClose: vi.fn(), onError: vi.fn() }));
 vi.mock(import("node:child_process"), async (importOriginal) => {
   return {
@@ -1101,15 +1107,31 @@ async function runBinary(
   vi.stubEnv("CHROMATIC_ARCHIVE_LOCATION", options.archivesDirectory);
   vi.resetModules();
 
+  // Don't pass Vitest's CLI arguments to the binary
+  const argv = process.argv;
+  process.argv = argv.slice(0, 2);
+  onTestFinished(() => void (process.argv = argv));
+
+  // `build-archive-storybook` copies files instead of spawning Storybook. Skip the copying.
+  buildArchiveStorybook.mockImplementation(async (_, callbacks) => {
+    callbacks?.onArchivesCheck?.();
+
+    if (options.error) {
+      throw options.error;
+    }
+  });
+
   let isDone = false;
   const promise = import(`../../bin/${name}.ts`).finally(() => (isDone = true));
 
-  await vi.waitFor(() => isDone || expect(spawn).toHaveBeenCalled(), { timeout: 1_000 });
+  if (name === "archive-storybook") {
+    await vi.waitFor(() => isDone || expect(spawn).toHaveBeenCalled(), { timeout: 1_000 });
 
-  if (options.error) {
-    childProcessHandles.onError(options.error);
-  } else {
-    childProcessHandles.onClose(0, null);
+    if (options.error) {
+      childProcessHandles.onError(options.error);
+    } else {
+      childProcessHandles.onClose(0, null);
+    }
   }
 
   await expect(promise).resolves.toBeTruthy();

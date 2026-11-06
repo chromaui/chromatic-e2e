@@ -3,6 +3,7 @@
 import path from "node:path";
 
 import { buildArchiveStorybook } from "@chromatic-com/shared-e2e/archive-storybook";
+import { BUILD_COMMAND, runCommand } from "@chromatic-com/shared-e2e/archive-storybook/cli";
 import { archivesDir } from "@chromatic-com/shared-e2e/utils/filePaths";
 
 import { DEFAULT_OUTPUT_DIR } from "../constants";
@@ -13,43 +14,47 @@ import {
   trackCliEvent,
 } from "../node/telemetry";
 
-// Discard first two entries (exec path and file path)
-const args = process.argv.slice(2);
-const configDir = path.resolve(import.meta.dirname, "../storybook-config");
-
 // These environment variables are set by chromatic-cli:
 const isCalledFromCLI = process.env.STORYBOOK_INVOKED_BY === "chromatic";
 const chromaticProjectId = process.env.CHROMATIC_PROJECT_ID || "unknown";
 
 let queue = Promise.resolve();
 
-try {
+// Discard first two entries (exec path and file path)
+await runCommand(BUILD_COMMAND, process.argv.slice(2), async (options, logger) => {
   trackEvent({
     eventType: "storybook_build_started",
     level: "info",
     payload: { isCalledFromCLI, chromaticProjectId },
   });
 
-  await buildArchiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR, { onArchivesCheck });
+  try {
+    await buildArchiveStorybook(
+      {
+        storybookDir: path.resolve(import.meta.dirname, "../storybook-static"),
+        defaultOutputDir: DEFAULT_OUTPUT_DIR,
+        outputDir: options.outputDir,
+        statsDir: options.statsDir,
+        logger,
+      },
+      { onArchivesCheck },
+    );
+  } catch (error) {
+    trackEvent({
+      eventType: "storybook_build_completed",
+      level: "error",
+      payload: { success: false, error, chromaticProjectId },
+    });
+
+    throw error;
+  }
 
   trackEvent({
     eventType: "storybook_build_completed",
     level: "info",
     payload: { success: true, error: undefined, chromaticProjectId },
   });
-} catch (err) {
-  trackEvent({
-    eventType: "storybook_build_completed",
-    level: "error",
-    payload: { success: false, error: err, chromaticProjectId },
-  });
-
-  // Throwing the error results in a large output of minified code and a stacktrace that is
-  // likely not helpful to users, so this should hide the noise.
-
-  console.error(err.message);
-  process.exitCode = 1;
-}
+});
 
 await queue;
 await flushTelemetry().catch(() => {});

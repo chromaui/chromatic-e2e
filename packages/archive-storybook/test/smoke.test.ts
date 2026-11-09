@@ -31,12 +31,23 @@ const test = base
   })
   .extend("page", async ({ browser }, { onCleanup }) => {
     const errors: string[] = [];
+    const notFound: string[] = [];
     const page = await browser.newPage();
     page.on("pageerror", (error) => errors.push(error.message));
 
+    // Catches missing files, e.g. removed assets that a Storybook upgrade starts using.
+    // Also covers requests from the preview iframe.
+    page.on("response", (response) => {
+      if (response.status() === 404) notFound.push(response.url());
+    });
+
     onCleanup(async () => {
+      // Let lazily loaded assets like fonts finish loading
+      await page.waitForLoadState("networkidle");
       await page.close();
+
       expect(errors).toEqual([]);
+      expect(notFound).toEqual([]);
     });
 
     return page;
@@ -117,4 +128,13 @@ test("manager lists stories from index.json", async ({ server, page }) => {
   ]) {
     await sidebar.getByText(group, { exact: true }).waitFor();
   }
+});
+
+test("manager renders story in preview", async ({ server, page }) => {
+  await page.goto(
+    `${server.url}/index.html?path=/story/${encodeURIComponent("snapshot-names-in-test-case-name-あ--snapshot-1")}`,
+  );
+
+  const preview = page.frameLocator("#storybook-preview-iframe");
+  await preview.getByText("Testing testing just a basic page").waitFor();
 });

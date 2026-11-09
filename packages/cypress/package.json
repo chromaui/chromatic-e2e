@@ -15,7 +15,6 @@
   },
   "files": [
     "dist",
-    "embedded",
     "README.md"
   ],
   "type": "module",
@@ -52,9 +51,6 @@
     "@chromatic-com/archive-storybook": "workspace:*",
     "@chromatic-com/shared-e2e": "workspace:*",
     "@rrweb/types": "^2.0.0-alpha.18",
-    "@storybook/builder-webpack5": "10.2.13",
-    "@storybook/server": "10.2.13",
-    "@storybook/server-webpack5": "10.2.13",
     "cypress": "15.18.0",
     "start-server-and-test": "^2.0.3",
     "tsdown": "^0.22.14"

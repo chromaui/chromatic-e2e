@@ -20,7 +20,6 @@ This repository is a pnpm monorepo containing the following packages:
 
 - It is recommended that you run `corepack enable` so that the version of pnpm set in `packageManager` in `package.json` is used for this project
 - Run `pnpm install`
-- Run `cd embedded && npm install`
 - Run `pnpm build`
 - Run `pnpm playwright install`
 

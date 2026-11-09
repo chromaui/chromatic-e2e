@@ -16,6 +16,9 @@
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project \"Archive Storybook\""
   },
   "devDependencies": {
+    "@chromatic-com/shared-e2e": "workspace:*",
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
+    "@rrweb/types": "^2.0.0-alpha.18",
     "@storybook/builder-vite": "10.6.5",
     "@storybook/server": "10.6.5",
     "playwright": "^1.46.1",

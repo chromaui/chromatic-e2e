@@ -18,8 +18,7 @@
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Shared"
   },
   "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
-    "storybook": "10.6.5"
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute"
   },
   "devDependencies": {
     "@playwright/test": "^1.46.1",
@@ -34,6 +33,7 @@
     "playwright-core": "^1.46.1",
     "prompts": "^2.4.2",
     "srcset": "^4.0.0",
+    "storybook": "10.6.5",
     "ts-dedent": "^2.2.0",
     "typescript": "^5.9.3"
   },

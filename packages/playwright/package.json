@@ -39,8 +39,7 @@
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project Playwright"
   },
   "dependencies": {
-    "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
-    "storybook": "10.6.5"
+    "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute"
   },
   "devDependencies": {
     "@chromatic-com/archive-storybook": "workspace:*",

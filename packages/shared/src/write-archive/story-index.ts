@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
 
-import { combineTags, storyNameFromExport, toId } from "storybook/internal/csf";
+import { combineTags, storyNameFromExport, toId } from "storybook/internal/csf/csf-utils";
 import type { StoryIndex, Tag } from "storybook/internal/types";
 
 import { STORIES_FILE_EXT } from "./stories-files";

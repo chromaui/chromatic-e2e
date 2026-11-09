@@ -27,7 +27,20 @@ export default defineConfig([
       // tsgolint rejects `baseUrl` in tsconfig files, but tsdown's dts type inference needs it:
       compilerOptions: { baseUrl: "../.." },
     },
-    deps: { onlyBundle: ["@rrweb/types", "mime", "srcset"] },
+    deps: {
+      // Story IDs and tags must match Storybook's. Bundle the utilities, so end users don't need `storybook` installed.
+      alwaysBundle: ["storybook/internal/csf/csf-utils"],
+      onlyBundle: ["@rrweb/types", "mime", "srcset", "storybook"],
+
+      // Fails the build if the output imports anything else, e.g. `storybook` after a Storybook upgrade
+      onlyImport: ["@playwright/test"],
+    },
+    outputOptions: {
+      ...defaults.outputOptions,
+
+      // Keep bundled Storybook code in its own chunk, so that its contents are easy to verify
+      codeSplitting: { groups: [{ name: "storybook", test: /node_modules[\\/]storybook[\\/]/ }] },
+    },
   },
   {
     ...defaults,

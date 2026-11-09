@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
-    "storybook": "10.2.13"
+    "storybook": "10.6.5"
   },
   "devDependencies": {
     "@chromatic-com/archive-storybook": "workspace:*",

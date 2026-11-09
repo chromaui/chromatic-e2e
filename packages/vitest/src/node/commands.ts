@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { ResourceArchiver, writeTestResult, type DOMSnapshots } from "@chromatic-com/shared-e2e";
 import { type serializedNodeWithId } from "@rrweb/types";
 import { type PlaywrightProviderOptions } from "@vitest/browser-playwright";
-import { storyNameFromExport, toId } from "storybook/internal/csf";
+import { storyNameFromExport, toId } from "storybook/internal/csf/csf-utils";
 import type {
   TestCase,
   TestModule,

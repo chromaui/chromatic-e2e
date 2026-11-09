@@ -31,12 +31,23 @@ const test = base
   })
   .extend("page", async ({ browser }, { onCleanup }) => {
     const errors: string[] = [];
+    const notFound: string[] = [];
     const page = await browser.newPage();
     page.on("pageerror", (error) => errors.push(error.message));
 
+    // Catches missing files, e.g. removed assets that a Storybook upgrade starts using.
+    // Also covers requests from the preview iframe.
+    page.on("response", (response) => {
+      if (response.status() === 404) notFound.push(response.url());
+    });
+
     onCleanup(async () => {
+      // Let lazily loaded assets like fonts finish loading
+      await page.waitForLoadState("networkidle");
       await page.close();
+
       expect(errors).toEqual([]);
+      expect(notFound).toEqual([]);
     });
 
     return page;

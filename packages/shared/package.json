@@ -23,7 +23,7 @@
     "@storybook/builder-webpack5": "10.2.13",
     "@storybook/server": "10.2.13",
     "@storybook/server-webpack5": "10.2.13",
-    "storybook": "10.2.13"
+    "storybook": "10.6.5"
   },
   "devDependencies": {
     "@playwright/test": "^1.46.1",

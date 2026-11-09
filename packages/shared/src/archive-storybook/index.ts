@@ -6,6 +6,7 @@ import { resolve, dirname } from "node:path";
 import { archivesDir, checkArchivesDirExists } from "../utils/filePaths";
 
 export { buildArchiveStorybook } from "./build";
+export { DEFAULT_PORT, startArchiveStorybook } from "./dev";
 
 interface Callbacks {
   onArchivesCheck: (error?: unknown) => void;

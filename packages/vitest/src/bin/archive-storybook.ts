@@ -2,31 +2,37 @@
 
 import path from "node:path";
 
-import { archiveStorybook } from "@chromatic-com/shared-e2e/archive-storybook";
+import { DEFAULT_PORT, startArchiveStorybook } from "@chromatic-com/shared-e2e/archive-storybook";
+import { DEV_COMMAND, runCommand } from "@chromatic-com/shared-e2e/archive-storybook/cli";
 import { archivesDir } from "@chromatic-com/shared-e2e/utils/filePaths";
 
 import { DEFAULT_OUTPUT_DIR } from "../constants";
 import { type EventType, type TelemetryEvent, trackCliEvent } from "../node/telemetry";
 
-// Discard first two entries (exec path and file path)
-const args = process.argv.slice(2);
-const configDir = path.resolve(import.meta.dirname, "../storybook-config");
-
 let queue = Promise.resolve();
 
-try {
+// Discard first two entries (exec path and file path)
+await runCommand(DEV_COMMAND, process.argv.slice(2), async (options, logger) => {
   trackEvent({ eventType: "storybook_dev_started", level: "info", payload: {} });
 
-  await archiveStorybook(args, configDir, DEFAULT_OUTPUT_DIR, { onArchivesCheck });
-} catch (err) {
-  trackEvent({ eventType: "storybook_dev_failed", level: "error", payload: { error: err } });
+  try {
+    await startArchiveStorybook(
+      {
+        storybookDir: path.resolve(import.meta.dirname, "../storybook-static"),
+        defaultOutputDir: DEFAULT_OUTPUT_DIR,
+        port: options.port ?? DEFAULT_PORT,
+        strictPort: options.port !== undefined,
+        host: options.host,
+        logger,
+      },
+      { onArchivesCheck },
+    );
+  } catch (error) {
+    trackEvent({ eventType: "storybook_dev_failed", level: "error", payload: { error } });
 
-  // Throwing the error results in a large output of minified code and a stacktrace that is
-  // likely not helpful to users, so this should hide the noise.
-
-  console.error(err.message);
-  process.exitCode = 1;
-}
+    throw error;
+  }
+});
 
 await queue;
 

@@ -1,9 +1,9 @@
-import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { rm } from "node:fs/promises";
 import { homedir } from "node:os";
 import { resolve } from "node:path";
 
+import { archivesDir, checkArchivesDirExists } from "@chromatic-com/shared-e2e/utils/filePaths";
 import { http, HttpResponse } from "msw";
 import { beforeEach, describe, expect, onTestFinished, test as base, vi } from "vitest";
 
@@ -1122,28 +1122,15 @@ function pickTypeAndPayload(events: WireTelemetryEvent[]) {
   return events.map(({ eventType, payload }) => ({ eventType, payload }));
 }
 
-const buildArchiveStorybook = vi.hoisted(() => vi.fn());
+const { buildArchiveStorybook, startArchiveStorybook } = vi.hoisted(() => ({
+  buildArchiveStorybook: vi.fn(),
+  startArchiveStorybook: vi.fn(),
+}));
 vi.mock(import("@chromatic-com/shared-e2e/archive-storybook"), async (importOriginal) => ({
   ...(await importOriginal()),
   buildArchiveStorybook,
+  startArchiveStorybook,
 }));
-
-const childProcessHandles = vi.hoisted(() => ({ onClose: vi.fn(), onError: vi.fn() }));
-vi.mock(import("node:child_process"), async (importOriginal) => {
-  return {
-    ...(await importOriginal()),
-    spawn: vi.fn().mockReturnValue({
-      on: (event: any, callback: any) => {
-        if (event === "close") {
-          childProcessHandles.onClose = callback;
-        }
-        if (event === "error") {
-          childProcessHandles.onError = callback;
-        }
-      },
-    }),
-  };
-});
 
 async function runBinary(
   name: "archive-storybook" | "build-archive-storybook",
@@ -1157,27 +1144,26 @@ async function runBinary(
   process.argv = argv.slice(0, 2);
   onTestFinished(() => void (process.argv = argv));
 
-  // `build-archive-storybook` copies files instead of spawning Storybook. Skip the copying.
-  buildArchiveStorybook.mockImplementation(async (_, callbacks) => {
-    callbacks?.onArchivesCheck?.();
+  // Check the archives like the real implementations do, but skip copying files and starting a server
+  const implementation = async (
+    { defaultOutputDir }: { defaultOutputDir: string },
+    callbacks?: { onArchivesCheck?: (error?: unknown) => void },
+  ) => {
+    try {
+      checkArchivesDirExists(archivesDir(defaultOutputDir));
+      callbacks?.onArchivesCheck?.();
+    } catch (error) {
+      callbacks?.onArchivesCheck?.(error);
+      throw error;
+    }
 
     if (options.error) {
       throw options.error;
     }
-  });
+  };
 
-  let isDone = false;
-  const promise = import(`../../bin/${name}.ts`).finally(() => (isDone = true));
+  buildArchiveStorybook.mockImplementation(implementation);
+  startArchiveStorybook.mockImplementation(implementation);
 
-  if (name === "archive-storybook") {
-    await vi.waitFor(() => isDone || expect(spawn).toHaveBeenCalled(), { timeout: 1_000 });
-
-    if (options.error) {
-      childProcessHandles.onError(options.error);
-    } else {
-      childProcessHandles.onClose(0, null);
-    }
-  }
-
-  await expect(promise).resolves.toBeTruthy();
+  await expect(import(`../../bin/${name}.ts`)).resolves.toBeTruthy();
 }

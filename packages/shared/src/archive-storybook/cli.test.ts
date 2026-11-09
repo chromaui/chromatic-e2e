@@ -110,8 +110,8 @@ describe("build-archive-storybook", () => {
 describe("archive-storybook", () => {
   test("defaults", () => {
     expect(parseArgs(DEV_COMMAND, [])).toEqual({
-      port: 6006,
-      host: undefined,
+      port: undefined,
+      host: "localhost",
       logLevel: "info",
       help: false,
     });
@@ -148,8 +148,8 @@ describe("archive-storybook", () => {
       Start a Storybook server for the test archives
 
       Options:
-        -p, --port <number>     Port to run Storybook (default: 6006)
-        -h, --host <host>       Host to run Storybook
+        -p, --port <number>     Port to run Storybook (default: first free port from 6006)
+        -h, --host <host>       Host to run Storybook (default: localhost)
             --quiet             Only log warnings and errors
             --loglevel <level>  Define log level (choices: trace, debug, info, warn, error, silent, default: info)
             --debug             Log debug output and error stack traces

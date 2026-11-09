@@ -39,7 +39,7 @@ Build Storybook once, in this monorepo, and ship the static output in each packa
 
 - No Storybook code is installed into or runs in users' projects. Storybook version conflicts are gone.
 - `build-archive-storybook` copies files instead of compiling: about 1 second instead of a webpack build.
-- Each package ships its own copy of the prebuilt Storybook, about 8 MB unpacked. Packages are about 1.8 MB packed and 6.6 MB unpacked.
+- Each package ships its own copy of the prebuilt Storybook, about 4 MB unpacked. Storybook's manager runtime is minified after the build, since Storybook copies it without minifying. Packages are about 1.5 MB packed and 4.3 MB unpacked.
 - **Storybook upgrades happen in this repo.** `storybook`, `@storybook/builder-vite` and `@storybook/server` in `packages/archive-storybook`, and `storybook` in `packages/shared` and `packages/vitest`, should use the same version. Breakage shows up in this repo's CI (the smoke test and the Chromatic pipeline), never in user installs.
 - Each package's tsdown config lists the packages its Node output may import (`deps.onlyImport`). The build fails if a Storybook upgrade, or any other change, makes the output import something else.
 

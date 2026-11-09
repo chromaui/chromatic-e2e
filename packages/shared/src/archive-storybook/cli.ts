@@ -44,8 +44,9 @@ export interface BuildOptions extends CommonOptions {
 }
 
 export interface DevOptions extends CommonOptions {
-  port: number;
-  host?: string;
+  /** Port passed with `--port`. When not passed, the server picks the first free port from 6006 */
+  port?: number;
+  host: string;
 }
 
 export interface Logger {
@@ -129,26 +130,26 @@ export const DEV_COMMAND: Command<DevOptions> = {
       short: "p",
       type: "string",
       value: "<number>",
-      description: "Port to run Storybook (default: 6006)",
+      description: "Port to run Storybook (default: first free port from 6006)",
     },
     {
       name: "host",
       short: "h",
       type: "string",
       value: "<host>",
-      description: "Host to run Storybook",
+      description: "Host to run Storybook (default: localhost)",
     },
     ...LOGGING_FLAGS,
     { name: "help", type: "boolean", description: "Display help" },
   ],
   toOptions(values) {
-    const port = Number(stringValue(values.port) ?? 6006);
+    const port = stringValue(values.port) === undefined ? undefined : Number(values.port);
 
-    if (!Number.isInteger(port) || port < 0 || port > 65535) {
+    if (port !== undefined && (!Number.isInteger(port) || port < 0 || port > 65535)) {
       throw new Error(`Invalid port '${values.port}', expected a number between 0 and 65535`);
     }
 
-    return { ...toCommonOptions(values), port, host: stringValue(values.host) };
+    return { ...toCommonOptions(values), port, host: stringValue(values.host) ?? "localhost" };
   },
 };
 

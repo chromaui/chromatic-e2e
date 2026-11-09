@@ -13,7 +13,7 @@ export default defineProject({
     name: { label: "Vitest Unit", color: "yellow" },
     include: ["src/**/*.test.ts", "embedded.test.ts"],
     exclude: ["**/*.browser.test.ts"],
-    setupFiles: ["test/utils/setup.ts"],
+    setupFiles: ["test/utils/setup.ts", "test/utils/setup.node.ts"],
     clearMocks: true,
 
     // Isolate project into it's own group as we are spawning browser runners during tests

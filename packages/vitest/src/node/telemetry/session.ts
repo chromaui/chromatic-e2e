@@ -6,6 +6,7 @@ import type { Vitest } from "vitest/node";
 
 import { TELEMETRY_LOG_FILE, TELEMETRY_METADATA_FILE } from "./constants";
 import type { TelemetryMetadata } from "./metadata";
+import type { TelemetryTransport } from "./transport";
 
 /** @internal */
 export const session = {
@@ -22,6 +23,9 @@ export const session = {
 
   /** Promises to wait before Vitest exists */
   cleanups: new Set<Promise<void>>(),
+
+  /** Background process sending the events. Created lazily on first event. */
+  transport: undefined as TelemetryTransport | undefined,
 
   /** Whether cleanup hooks were already registered for this session */
   cleanupRegistered: false,
@@ -47,6 +51,18 @@ export function cleanTelemetryLogFiles(outputDirectory: string): void {
 }
 
 /**
+ * Wait until all pending events are handed over to the background process, then disconnect from it.
+ * Doesn't wait for the events to be sent.
+ */
+export async function flushTelemetry(): Promise<void> {
+  await Promise.all(Array.from(session.cleanups.values()));
+  session.cleanups.clear();
+
+  await session.transport?.close();
+  session.transport = undefined;
+}
+
+/**
  * Register a cleanup handler to run all pending telemetry cleanups on Vitest exit.
  */
 export function setupTelemetryCleanup(vitest: Vitest) {
@@ -57,8 +73,7 @@ export function setupTelemetryCleanup(vitest: Vitest) {
   session.cleanupRegistered = true;
 
   vitest.onClose(async () => {
-    await Promise.all(Array.from(session.cleanups.values()));
-    session.cleanups.clear();
+    await flushTelemetry();
 
     session.isMetadataWritten = false;
     session.cleanedLogFileDirectories.clear();

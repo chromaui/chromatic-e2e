@@ -116,51 +116,6 @@ describe("configuration", () => {
       chromaticVersion: expect.any(String),
     });
   });
-
-  test("hanging telemetry endpoint does not block Vitest shutdown", async ({ server }) => {
-    // Patch AbortSignal as Sinon does not support mocking it: https://github.com/sinonjs/fake-timers/issues/521
-    {
-      const timeout = AbortSignal.timeout;
-      onTestFinished(() => void (AbortSignal.timeout = timeout));
-
-      AbortSignal.timeout = function mockedTimeout(n: number) {
-        const controller = new AbortController();
-        setTimeout(() => controller.abort(), n);
-        return controller.signal;
-      };
-    }
-
-    const url = "https://unresponsive-endpoint.chromatic.com/telemetry";
-    vi.stubEnv("CHROMATIC_TELEMETRY_URL", url);
-
-    const isFetching = new Promise<void>((fetchStarted) => {
-      server.use(
-        http.post(`${url}/telemetry/v1/vitest/events`, async () => {
-          fetchStarted();
-          await new Promise((_resolve) => {});
-        }),
-      );
-    });
-
-    vi.useFakeTimers({ toFake: ["setTimeout"] });
-    onTestFinished(() => void vi.useRealTimers());
-
-    let done = false;
-    const promise = runVitest().then(() => (done = true));
-
-    await isFetching;
-
-    vi.advanceTimersByTime(3_000);
-    expect(done).toBe(false);
-
-    vi.advanceTimersByTime(1_999);
-    expect(done).toBe(false);
-
-    vi.advanceTimersByTime(1);
-
-    // Vitest should exit without hanging forever
-    await expect(promise).resolves.toBeTruthy();
-  });
 });
 
 describe("automatic fields", () => {
@@ -1086,7 +1041,7 @@ const test = base
     return { events, cleanup, server, onRequest, archivesDirectory };
   })
   .extend("server", ({ telemetry }) => telemetry.server)
-  .extend("onRequest", ({ telemetry }) => telemetry.onRequest)
+  .extend("onRequest", { auto: true }, ({ telemetry }) => telemetry.onRequest)
   .extend("archivesDirectory", ({ telemetry }) => telemetry.archivesDirectory)
   .extend("getEvents", ({ telemetry }) => {
     return function getEvents(type?: WireTelemetryEvent["eventType"]) {

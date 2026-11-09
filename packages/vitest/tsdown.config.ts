@@ -23,6 +23,7 @@ export default defineConfig([
       "bin/archive-storybook": "src/bin/archive-storybook.ts",
       "bin/build-archive-storybook": "src/bin/build-archive-storybook.ts",
       "storybook-config/main": "src/storybook-config/main.ts",
+      "telemetry-sender": "src/node/telemetry/sender.ts",
     },
     dts: { ...defaults.dts, entry: ["src/node/plugin.ts"] },
     deps: { onlyBundle: ["@rrweb/types", "mime", "srcset"] },

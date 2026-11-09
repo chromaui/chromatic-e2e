@@ -118,3 +118,12 @@ test("manager lists stories from index.json", async ({ server, page }) => {
     await sidebar.getByText(group, { exact: true }).waitFor();
   }
 });
+
+test("manager renders story in preview", async ({ server, page }) => {
+  await page.goto(
+    `${server.url}/index.html?path=/story/${encodeURIComponent("snapshot-names-in-test-case-name-あ--snapshot-1")}`,
+  );
+
+  const preview = page.frameLocator("#storybook-preview-iframe");
+  await preview.getByText("Testing testing just a basic page").waitFor();
+});

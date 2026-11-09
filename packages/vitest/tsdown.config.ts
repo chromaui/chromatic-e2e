@@ -23,10 +23,22 @@ export default defineConfig([
       plugin: "src/node/plugin.ts",
       "bin/archive-storybook": "src/bin/archive-storybook.ts",
       "bin/build-archive-storybook": "src/bin/build-archive-storybook.ts",
-      "storybook-config/main": "src/storybook-config/main.ts",
     },
     dts: { ...defaults.dts, entry: ["src/node/plugin.ts"] },
-    deps: { onlyBundle: ["@rrweb/types", "mime", "srcset"] },
+    deps: {
+      // Story IDs and tags must match Storybook's. Bundle the utilities, so end users don't need `storybook` installed.
+      alwaysBundle: ["storybook/internal/csf/csf-utils"],
+      onlyBundle: ["@rrweb/types", "mime", "srcset", "storybook"],
+
+      // Fails the build if the output imports anything else, e.g. `storybook` after a Storybook upgrade
+      onlyImport: ["std-env", "tinyexec", "tinyrainbow", "vitest"],
+    },
+    outputOptions: {
+      ...defaults.outputOptions,
+
+      // Keep bundled Storybook code in its own chunk, so that its contents are easy to verify
+      codeSplitting: { groups: [{ name: "storybook", test: /node_modules[\\/]storybook[\\/]/ }] },
+    },
   },
   {
     ...defaults,
@@ -34,8 +46,6 @@ export default defineConfig([
     entry: {
       index: "src/index.ts",
       setupFile: "src/browser/setupFile.ts",
-      "storybook-config/manager": "src/storybook-config/shared/manager.ts",
-      "storybook-config/preview": "src/storybook-config/shared/preview.ts",
     },
     platform: "browser",
     dts: { ...defaults.dts, entry: ["src/index.ts"] },

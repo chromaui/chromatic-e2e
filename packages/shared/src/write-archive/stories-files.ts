@@ -1,4 +1,4 @@
-import { storyNameFromExport, toId } from "storybook/internal/csf";
+import { storyNameFromExport, toId } from "storybook/internal/csf/csf-utils";
 
 import type { ChromaticStorybookParameters, DOMSnapshots } from "../types";
 import { MAX_FILE_NAME_BYTE_LENGTH, truncateFileName } from "../utils/filePaths";

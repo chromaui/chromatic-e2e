@@ -11,7 +11,7 @@ export default defineProject({
 
   test: {
     name: { label: "Vitest Unit", color: "yellow" },
-    include: ["src/**/*.test.ts", "embedded.test.ts"],
+    include: ["src/**/*.test.ts"],
     exclude: ["**/*.browser.test.ts"],
     setupFiles: ["test/utils/setup.ts"],
     clearMocks: true,

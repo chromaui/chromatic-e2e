@@ -23,7 +23,6 @@ export default defineConfig([
       plugin: "src/node/plugin.ts",
       "bin/archive-storybook": "src/bin/archive-storybook.ts",
       "bin/build-archive-storybook": "src/bin/build-archive-storybook.ts",
-      "storybook-config/main": "src/storybook-config/main.ts",
     },
     dts: { ...defaults.dts, entry: ["src/node/plugin.ts"] },
     deps: {
@@ -47,8 +46,6 @@ export default defineConfig([
     entry: {
       index: "src/index.ts",
       setupFile: "src/browser/setupFile.ts",
-      "storybook-config/manager": "src/storybook-config/shared/manager.ts",
-      "storybook-config/preview": "src/storybook-config/shared/preview.ts",
     },
     platform: "browser",
     dts: { ...defaults.dts, entry: ["src/index.ts"] },

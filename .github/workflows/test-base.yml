@@ -27,10 +27,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Install Embedded Dependencies
-        run: npm install
-        working-directory: ./embedded
-
       - name: Build
         run: pnpm build
 
@@ -76,10 +72,6 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
-
-      - name: Install Embedded Dependencies
-        run: npm install
-        working-directory: ./embedded
 
       - name: Build
         run: |

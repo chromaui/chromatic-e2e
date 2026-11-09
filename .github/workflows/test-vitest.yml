@@ -30,10 +30,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Install Embedded Dependencies
-        run: npm install
-        working-directory: ./embedded
-
       - uses: ./.github/actions/setup-playwright
 
       - name: Build

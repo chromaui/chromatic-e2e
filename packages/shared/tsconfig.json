@@ -1,4 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "scripts", "storybook-config", "vitest.config.ts"]
+  "include": ["src", "scripts", "vitest.config.ts"]
 }

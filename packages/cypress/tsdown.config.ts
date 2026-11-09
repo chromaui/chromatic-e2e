@@ -21,7 +21,6 @@ export default defineConfig([
       support: "src/support.ts",
       "bin/archive-storybook": "src/bin/archive-storybook.ts",
       "bin/build-archive-storybook": "src/bin/build-archive-storybook.ts",
-      "storybook-config/main": "src/storybook-config/main.ts",
     },
     dts: {
       entry: ["src/index.ts", "src/support.ts"],
@@ -42,15 +41,5 @@ export default defineConfig([
       // Keep bundled Storybook code in its own chunk, so that its contents are easy to verify
       codeSplitting: { groups: [{ name: "storybook", test: /node_modules[\\/]storybook[\\/]/ }] },
     },
-  },
-  {
-    ...defaults,
-    name: "Browser",
-    entry: {
-      "storybook-config/manager": "src/storybook-config/shared/manager.ts",
-      "storybook-config/preview": "src/storybook-config/shared/preview.ts",
-    },
-    platform: "browser",
-    deps: { onlyBundle: ["@rrweb/types"] },
   },
 ]);

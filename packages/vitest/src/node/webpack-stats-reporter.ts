@@ -255,7 +255,9 @@ export class WebpackStatsReporter implements Reporter {
 
   private normalize(filePath: string) {
     return (
-      relative(this.ctx.config.root, filePath)
+      // Relative to where Chromatic CLI runs, not the Vitest `root`. Chromatic CLI resolves the
+      // paths from its working directory, and the generated Storybook uses the same base.
+      relative(process.cwd(), filePath)
         // Windows \\ to /
         .replaceAll(sep, "/")
         // Remove query parameters to make filenames comparable against git

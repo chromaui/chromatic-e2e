@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { copyFile, mkdir, readdir, rm, rename } from "node:fs/promises";
-import { basename, dirname, resolve } from "node:path";
+import { basename, dirname, relative, resolve, sep } from "node:path";
 
 import { uniqueId } from "@chromatic-com/shared-e2e/write-archive/stories-files";
 import { afterEach, assert, expect, onTestFinished, test } from "vitest";
@@ -607,6 +607,32 @@ test("TurboSnap enabled with Vitest configuration file", async () => {
   `);
 });
 
+test("TurboSnap enabled, paths are relative to working directory instead of Vitest root", async () => {
+  // Vitest root is a subdirectory of the working directory, like `root: "./src"` in a project's config
+  const root = resolve(import.meta.dirname, "../../test/fixtures");
+  expect(root).not.toBe(process.cwd());
+
+  await runFixture({ root }, { turboSnap: true });
+
+  const stats = readRawStats(root);
+  const rootPrefix = relative(process.cwd(), root).replaceAll(sep, "/");
+
+  expect(stats.modules).toContainEqual({
+    id: `${rootPrefix}/turbo-snap-1.test.ts`,
+    name: `${rootPrefix}/turbo-snap-1.test.ts`,
+    reasons: [
+      {
+        moduleName: `${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json`,
+      },
+    ],
+  });
+
+  for (const mod of stats.modules.filter(excludeNodeModules)) {
+    const exists = existsSync(resolve(process.cwd(), mod.id));
+    expect.soft(exists, `Expected file ${mod.id} to exist`).toBe(true);
+  }
+});
+
 test("TurboSnap disabled", async () => {
   const root = resolve(import.meta.dirname, "../../test/fixtures");
   await runFixture({ root }, { turboSnap: false });
@@ -623,7 +649,25 @@ test("TurboSnap disabled", async () => {
   expect(error).toContain(".vitest/chromatic/preview-stats.json");
 });
 
+/**
+ * Read stats with paths relative to the fixture `root`, so snapshots don't depend on where tests run from.
+ * The stats file has paths relative to the working directory.
+ */
 function readStats(root = process.cwd(), outputDir = DEFAULT_OUTPUT_DIR): { modules: Module[] } {
+  const stats = readRawStats(root, outputDir);
+  const toRoot = (path: string) =>
+    relative(root, resolve(process.cwd(), path)).replaceAll(sep, "/");
+
+  return {
+    modules: stats.modules.map((mod) => ({
+      id: toRoot(mod.id),
+      name: toRoot(mod.name),
+      reasons: mod.reasons.map((reason) => ({ moduleName: toRoot(reason.moduleName) })),
+    })),
+  };
+}
+
+function readRawStats(root = process.cwd(), outputDir = DEFAULT_OUTPUT_DIR): { modules: Module[] } {
   const statsPath = resolve(root, outputDir, "preview-stats.json");
 
   return JSON.parse(readFileSync(statsPath, "utf-8"));

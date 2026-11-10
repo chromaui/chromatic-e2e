@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 1.0.2
+
+### Patch Changes
+
+- d06a3f7: Perf: Send telemetry from separate process
+
 ## 1.0.1
 
 ### Patch Changes

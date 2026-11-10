@@ -80,6 +80,11 @@ export function chromaticPlugin(userOptions: Options = {}): Vite.Plugin {
       // Enabled when "vitest --merge-reports" is run. It's used after sharded runs ("vitest --shard=1/2", "vitest --shard=2/2").
       const isMergeReports = project.globalConfig.mergeReports;
 
+      // Before any events are tracked, as tracking writes into these files. Merged reports keep them, like other outputs.
+      if (!isMergeReports) {
+        cleanTelemetryLogFiles(resolve(project.vitest.config.root, options.outputDirectory));
+      }
+
       if (options.telemetry.enabled) {
         setupTelemetryCleanup(context.vitest);
 

@@ -6,7 +6,12 @@ import { buildArchiveStorybook } from "@chromatic-com/shared-e2e/archive-storybo
 import { archivesDir } from "@chromatic-com/shared-e2e/utils/filePaths";
 
 import { DEFAULT_OUTPUT_DIR } from "../constants";
-import { type EventType, type TelemetryEvent, trackCliEvent } from "../node/telemetry";
+import {
+  type EventType,
+  flushTelemetry,
+  type TelemetryEvent,
+  trackCliEvent,
+} from "../node/telemetry";
 
 // Discard first two entries (exec path and file path)
 const args = process.argv.slice(2);
@@ -47,6 +52,7 @@ try {
 }
 
 await queue;
+await flushTelemetry().catch(() => {});
 
 function trackEvent<T extends EventType = EventType>(event: TelemetryEvent<T>) {
   queue = queue.then(() =>

@@ -1,0 +1,171 @@
+{
+  "snapshot": {
+    "type": 0,
+    "childNodes": [
+      { "type": 1, "name": "html", "publicId": "", "systemId": "", "id": 2 },
+      {
+        "type": 2,
+        "tagName": "html",
+        "attributes": {},
+        "childNodes": [
+          {
+            "type": 2,
+            "tagName": "head",
+            "attributes": {},
+            "childNodes": [
+              { "type": 3, "textContent": "\n    ", "id": 5 },
+              {
+                "type": 2,
+                "tagName": "style",
+                "attributes": {
+                  "_cssText": "body { font-family: sans-serif; padding: 20px; }button { display: inline-block; padding: 10px 20px; margin: 10px; font-size: 18px; font-weight: bold; background: black; color: white; border: 2px solid rgb(51, 51, 51); text-decoration: none; }.label { padding: 5px 10px; margin: 2px; display: inline-block; color: white; }#tab-cycle { font-size: 10px; padding: 0px; margin: 0px; }#target { display: block; }#target:hover { background: blue; }#target:focus { background: red; }#target:focus-visible { background: orange; }#target:active { background: green; }"
+                },
+                "childNodes": [{ "type": 3, "textContent": "", "id": 7 }],
+                "id": 6
+              },
+              { "type": 3, "textContent": "\n  ", "id": 8 }
+            ],
+            "id": 4
+          },
+          { "type": 3, "textContent": "\n  ", "id": 9 },
+          {
+            "type": 2,
+            "tagName": "body",
+            "attributes": {},
+            "childNodes": [
+              { "type": 3, "textContent": "\n    ", "id": 11 },
+              {
+                "type": 2,
+                "tagName": "ul",
+                "attributes": {},
+                "childNodes": [
+                  { "type": 3, "textContent": "\n      ", "id": 13 },
+                  {
+                    "type": 2,
+                    "tagName": "li",
+                    "attributes": {},
+                    "childNodes": [
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": {},
+                        "childNodes": [{ "type": 3, "textContent": "Hover:", "id": 16 }],
+                        "id": 15
+                      },
+                      { "type": 3, "textContent": " ", "id": 17 },
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": { "class": "label", "style": "background-color: blue" },
+                        "childNodes": [{ "type": 3, "textContent": "Blue", "id": 19 }],
+                        "id": 18
+                      }
+                    ],
+                    "id": 14
+                  },
+                  { "type": 3, "textContent": "\n      ", "id": 20 },
+                  {
+                    "type": 2,
+                    "tagName": "li",
+                    "attributes": {},
+                    "childNodes": [
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": {},
+                        "childNodes": [{ "type": 3, "textContent": "Active:", "id": 23 }],
+                        "id": 22
+                      },
+                      { "type": 3, "textContent": " ", "id": 24 },
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": { "class": "label", "style": "background-color: green" },
+                        "childNodes": [{ "type": 3, "textContent": "Green", "id": 26 }],
+                        "id": 25
+                      }
+                    ],
+                    "id": 21
+                  },
+                  { "type": 3, "textContent": "\n      ", "id": 27 },
+                  {
+                    "type": 2,
+                    "tagName": "li",
+                    "attributes": {},
+                    "childNodes": [
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": {},
+                        "childNodes": [{ "type": 3, "textContent": "Focus:", "id": 30 }],
+                        "id": 29
+                      },
+                      { "type": 3, "textContent": " ", "id": 31 },
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": { "class": "label", "style": "background-color: red" },
+                        "childNodes": [{ "type": 3, "textContent": "Red", "id": 33 }],
+                        "id": 32
+                      }
+                    ],
+                    "id": 28
+                  },
+                  { "type": 3, "textContent": "\n      ", "id": 34 },
+                  {
+                    "type": 2,
+                    "tagName": "li",
+                    "attributes": {},
+                    "childNodes": [
+                      { "type": 3, "textContent": "\n        ", "id": 36 },
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": {},
+                        "childNodes": [{ "type": 3, "textContent": "Focus Visible:", "id": 38 }],
+                        "id": 37
+                      },
+                      { "type": 3, "textContent": "\n        ", "id": 39 },
+                      {
+                        "type": 2,
+                        "tagName": "span",
+                        "attributes": { "class": "label", "style": "background-color: orange" },
+                        "childNodes": [{ "type": 3, "textContent": "Orange", "id": 41 }],
+                        "id": 40
+                      },
+                      { "type": 3, "textContent": "\n      ", "id": 42 }
+                    ],
+                    "id": 35
+                  },
+                  { "type": 3, "textContent": "\n    ", "id": 43 }
+                ],
+                "id": 12
+              },
+              { "type": 3, "textContent": "\n    ", "id": 44 },
+              {
+                "type": 2,
+                "tagName": "button",
+                "attributes": { "id": "tab-cycle" },
+                "childNodes": [{ "type": 3, "textContent": "Focus this before tab", "id": 46 }],
+                "id": 45
+              },
+              { "type": 3, "textContent": "\n\n    ", "id": 47 },
+              {
+                "type": 2,
+                "tagName": "button",
+                "attributes": { "id": "target" },
+                "childNodes": [{ "type": 3, "textContent": "target", "id": 49 }],
+                "id": 48
+              },
+              { "type": 3, "textContent": "\n  \n\n", "id": 50 }
+            ],
+            "id": 10
+          }
+        ],
+        "id": 3
+      }
+    ],
+    "id": 1
+  },
+  "pseudoClassIds": { ":hover": [3, 10, 48], ":focus": [], ":focus-visible": [], ":active": [] }
+}

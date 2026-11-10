@@ -1,0 +1,27 @@
+{
+  "title": "embeds/same-origin embed page loads",
+  "stories": [
+    {
+      "name": "Snapshot #1",
+      "globals": { "viewport": "w500h600" },
+      "parameters": {
+        "__id": "embeds-same-origin-embed-page-loads--snapshot-1",
+        "server": { "id": "embeds-same-origin-embed-page-loads-snapshot-1" },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": { "w500h600": { "viewport": "w500h600" } }
+        },
+        "viewport": {
+          "options": {
+            "w500h600": {
+              "name": "w500h600",
+              "type": "mobile",
+              "styles": { "width": "500px", "height": "600px" }
+            }
+          },
+          "defaultViewport": "w500h600"
+        }
+      }
+    }
+  ]
+}

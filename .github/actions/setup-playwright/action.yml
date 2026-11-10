@@ -1,6 +1,11 @@
 name: Setup Playwright
 description: Setup and cache Playwright browser binaries
 
+inputs:
+  install-deps:
+    description: Install system dependencies of all Playwright browsers. Downloaded apt packages are cached.
+    default: "false"
+
 runs:
   using: composite
   steps:
@@ -16,7 +21,8 @@ runs:
             const playwrightVersion = lockfile.match(pattern('playwright'))[1];
             console.log('PLAYWRIGHT_VERSION=' + playwrightVersion);
           "
-        )" >> $GITHUB_OUTPUT
+        )" >> $GITHUB_OUTPUT &&
+        echo "IMAGE_OS=$ImageOS" >> $GITHUB_OUTPUT
 
     - name: Check resolved package versions
       shell: bash
@@ -37,3 +43,30 @@ runs:
       shell: bash
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: pnpm exec playwright install
+
+    # System dependencies cannot be cached, but the downloaded .deb archives can.
+    # This avoids depending on the speed of the Ubuntu package mirror.
+    - name: Cache apt archives for Playwright system dependencies
+      if: inputs.install-deps == 'true'
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      with:
+        path: ~/.cache/apt-archives
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ steps.resolve-package-versions.outputs.IMAGE_OS }}-playwright-apt-${{ steps.resolve-package-versions.outputs.PLAYWRIGHT_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-${{ runner.arch }}-${{ steps.resolve-package-versions.outputs.IMAGE_OS }}-playwright-apt-
+
+    - name: Install Playwright System Dependencies
+      if: inputs.install-deps == 'true'
+      shell: bash
+      run: |
+        ARCHIVES="$HOME/.cache/apt-archives"
+        mkdir -p "$ARCHIVES/partial"
+        printf '%s\n' \
+          "Dir::Cache::Archives \"$ARCHIVES\";" \
+          'APT::Keep-Downloaded-Packages "true";' \
+          'APT::Sandbox::User "root";' \
+          | sudo tee /etc/apt/apt.conf.d/99-playwright-apt-cache
+        pnpm exec playwright install-deps
+        # Drop packages that are no longer downloadable, and make archives readable for cache save
+        sudo apt-get autoclean
+        sudo chown -R "$(id -u):$(id -g)" "$ARCHIVES"

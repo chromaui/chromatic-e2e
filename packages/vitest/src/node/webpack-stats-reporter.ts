@@ -19,7 +19,7 @@ interface Options {
   pluginOptions: ResolvedOptions;
 }
 
-/** Path to a Story file, for example `.vitest/chromatic/chromatic-archives/test-button-2.stories.json` */
+/** Path to a Story file, for example `.vitest/chromatic/chromatic-archives/test-button-0.stories.json` */
 type StoryFilePath = string;
 
 /** See https://github.com/chromaui/chromatic-cli/blob/145a5e295dde21042e96396c7e004f250d842182/bin-src/types.ts#L265-L276 */

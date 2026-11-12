@@ -2,8 +2,7 @@ import { existsSync, readFileSync, rmSync } from "node:fs";
 import { copyFile, mkdir, readdir, rm, rename } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 
-import { uniqueId } from "@chromatic-com/shared-e2e/write-archive/stories-files";
-import { afterEach, assert, expect, onTestFinished, test } from "vitest";
+import { assert, expect, onTestFinished, test } from "vitest";
 
 import {
   runFixture as baseRunFixture,
@@ -12,10 +11,6 @@ import {
 } from "../../test/utils/node";
 import { DEFAULT_OUTPUT_DIR } from "../constants";
 import type { Module } from "./webpack-stats-reporter";
-
-afterEach(() => {
-  uniqueId.value = 1;
-});
 
 test("TurboSnap enabled, source files", async () => {
   const root = resolve(import.meta.dirname, "../../test/fixtures");
@@ -38,7 +33,7 @@ test("TurboSnap enabled, source files", async () => {
         "name": "turbo-snap-1.test.ts",
         "reasons": [
           {
-            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json",
           },
         ],
       },
@@ -107,7 +102,7 @@ test("TurboSnap enabled, source files", async () => {
         "name": "turbo-snap-2.test.ts",
         "reasons": [
           {
-            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-2-0.stories.json",
           },
         ],
       },
@@ -254,7 +249,7 @@ test("TurboSnap enabled, circular imports", async () => {
         "name": "turbo-snap-cycle.test.ts",
         "reasons": [
           {
-            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-cycle-1.stories.json",
+            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-cycle-0.stories.json",
           },
         ],
       },
@@ -345,7 +340,7 @@ test("TurboSnap enabled, sharded run", async () => {
         "name": "turbo-snap-1.test.ts",
         "reasons": [
           {
-            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json",
           },
         ],
       },
@@ -393,7 +388,7 @@ test("TurboSnap enabled, sharded run", async () => {
         "name": "turbo-snap-2.test.ts",
         "reasons": [
           {
-            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+            "moduleName": ".vitest/chromatic/chromatic-archives/turbo-snap-2-0.stories.json",
           },
         ],
       },
@@ -523,7 +518,7 @@ test("TurboSnap enabled with custom output directory", async () => {
         "name": "turbo-snap-1.test.ts",
         "reasons": [
           {
-            "moduleName": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-1-1.stories.json",
+            "moduleName": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-1-0.stories.json",
           },
         ],
       },
@@ -571,7 +566,7 @@ test("TurboSnap enabled with custom output directory", async () => {
         "name": "turbo-snap-2.test.ts",
         "reasons": [
           {
-            "moduleName": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-2-2.stories.json",
+            "moduleName": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-2-0.stories.json",
           },
         ],
       },

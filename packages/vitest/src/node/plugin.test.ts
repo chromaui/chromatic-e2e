@@ -1,8 +1,7 @@
 import { mkdir, readdir, rm } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { uniqueId } from "@chromatic-com/shared-e2e/write-archive/stories-files";
-import { beforeEach, expect, onTestFinished, test } from "vitest";
+import { expect, onTestFinished, test } from "vitest";
 import { createVitest, type TestModule } from "vitest/node";
 
 import {
@@ -13,10 +12,6 @@ import {
   setupTelemetryServer,
 } from "../../test/utils/node";
 import { chromaticPlugin } from "./plugin";
-
-beforeEach(() => {
-  uniqueId.value = 1;
-});
 
 test.each([
   { name: "string", setupFiles: "some-user-defined-setup.ts" },
@@ -205,8 +200,8 @@ test("writes results to root when in Vitest projects setup", async () => {
   expect(results).toMatchInlineSnapshot(`
     [
       "archive",
-      "first-browser-dom-1.stories.json",
-      "second-browser-dom-2.stories.json",
+      "first-browser-dom-0.stories.json",
+      "second-browser-dom-0.stories.json",
     ]
   `);
 });
@@ -246,7 +241,7 @@ test('does not clean existing output directory when "vitest --merge-reports" is 
   await expect(readdir(archives)).resolves.toMatchInlineSnapshot(`
     [
       "archive",
-      "dom-1.stories.json",
+      "dom-0.stories.json",
     ]
   `);
 });

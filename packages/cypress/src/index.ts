@@ -47,7 +47,6 @@ const writeArchives = async ({
     allSnapshots,
     resourceArchive,
     chromaticStorybookParams,
-    "cypress",
   );
 };
 

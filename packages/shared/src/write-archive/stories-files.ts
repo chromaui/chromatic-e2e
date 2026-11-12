@@ -8,16 +8,11 @@ import { collapseNewlines, sanitize } from "./storybook-sanitize";
 
 const STORIES_FILE_EXT = "stories.json";
 
-export const uniqueId = { value: 1 };
-
-// Generates a file-system-safe file name from a story title
-export function storiesFileName(testTitle: string, overwriteDuplicateNames = true) {
-  let title = sanitize(testTitle);
-
-  // If multiple test runner project generate the same name, it's random which one ends up on file system
-  if (!overwriteDuplicateNames) {
-    title += "-" + uniqueId.value++;
-  }
+// Generates a file-system-safe file name from a story title.
+// Optional `uniqueId` is appended to the name to prevent multiple tests with same title overwriting each other.
+// It must be stable between test runs, as TurboSnap relies on file names. See https://github.com/chromaui/chromatic-e2e/issues/472
+export function storiesFileName(testTitle: string, uniqueId?: string) {
+  const title = sanitize([testTitle, uniqueId].filter(Boolean).join("-"));
 
   const fileName = [title, STORIES_FILE_EXT].join(".");
 

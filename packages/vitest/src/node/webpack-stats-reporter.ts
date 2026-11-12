@@ -139,8 +139,10 @@ export class WebpackStatsReporter implements Reporter {
       statsMap.set(id, this.createStatsMapModule(id, [...storyFiles]));
 
       // Test module depends on Vitest config
-      if (testModule.project.config.config) {
-        additionalModules.push({ id: testModule.project.config.config, isInModuleGraph: false });
+      const configFile = testModule.project.vite.config.configFile;
+
+      if (configFile) {
+        additionalModules.push({ id: configFile, isInModuleGraph: false });
       }
 
       // Test module depends on setup files

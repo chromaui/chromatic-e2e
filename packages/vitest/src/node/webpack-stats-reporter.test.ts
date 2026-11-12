@@ -607,6 +607,37 @@ test("TurboSnap enabled with Vitest configuration file", async () => {
   `);
 });
 
+test("TurboSnap enabled with Vitest configuration file found by Vitest", async () => {
+  /** {@link file://./../../test/fixtures/config-discovery/vitest.config.ts} */
+  const root = resolve(import.meta.dirname, "../../test/fixtures/config-discovery");
+
+  onTestFinished(() => rmSync(resolve(root, ".vitest"), { recursive: true, force: true }));
+
+  await runFixture(
+    {
+      root,
+      config: "auto-discover",
+      /** {@link file://./../../test/fixtures/config-discovery/config-discovery.test.ts} */
+      include: [resolve(root, "config-discovery.test.ts")],
+    },
+    { turboSnap: true },
+  );
+
+  const stats = readStats(root);
+
+  expect(stats.modules.find((m) => m.id === "vitest.config.ts")).toMatchInlineSnapshot(`
+    {
+      "id": "vitest.config.ts",
+      "name": "vitest.config.ts",
+      "reasons": [
+        {
+          "moduleName": "config-discovery.test.ts",
+        },
+      ],
+    }
+  `);
+});
+
 test("TurboSnap disabled", async () => {
   const root = resolve(import.meta.dirname, "../../test/fixtures");
   await runFixture({ root }, { turboSnap: false });

@@ -45,7 +45,10 @@ export async function runFixture(
   const vitest = await startVitest(
     "test",
     [],
-    { config: options.config ?? false },
+    // Use `config: 'auto-discover'` to make Vitest look for config file from root
+    options.config === "auto-discover"
+      ? { config: undefined, root: options.root }
+      : { config: options.config ?? false },
     {
       publicDir: resolve(import.meta.dirname, "../fixtures/public-dir"),
       plugins: [

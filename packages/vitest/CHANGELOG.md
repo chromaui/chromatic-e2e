@@ -1,5 +1,13 @@
 # @chromatic-com/vitest
 
+## 1.0.3
+
+### Patch Changes
+
+- 942a295: Fix: resolve config file correctly in Vitest 5 too
+- cd2aef7: Fix: Produce stable `*.stories.json` filenames for TurboSnap
+- 5883595: Fix: TurboSnap stats paths relative to `cwd` instead of Vitest `root`
+
 ## 1.0.2
 
 ### Patch Changes

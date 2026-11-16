@@ -617,7 +617,7 @@ test("TurboSnap enabled, paths are relative to working directory instead of Vite
     name: `${rootPrefix}/turbo-snap-1.test.ts`,
     reasons: [
       {
-        moduleName: `${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json`,
+        moduleName: `${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json`,
       },
     ],
   });

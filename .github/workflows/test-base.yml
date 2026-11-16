@@ -45,12 +45,10 @@ jobs:
           pnpm lint
           pnpm publint
 
+      # System dependencies are needed for additional browsers that Vitest unit tests use.
       - uses: ./.github/actions/setup-playwright
-
-      # Needed for additional browsers that Vitest unit tests use.
-      # System dependencies cannot be cachced.
-      - name: Playwright deps
-        run: pnpm exec playwright install-deps
+        with:
+          install-deps: true
 
       - name: Run tests
         run: pnpm test:unit
@@ -85,12 +83,10 @@ jobs:
         run: |
           pnpm build:vitest
 
+      # System dependencies are needed for additional browsers that Vitest unit tests use.
       - uses: ./.github/actions/setup-playwright
-
-      # Needed for additional browsers that Vitest unit tests use.
-      # System dependencies cannot be cachced.
-      - name: Playwright deps
-        run: pnpm exec playwright install-deps
+        with:
+          install-deps: true
 
       - name: Run tests
         run: |

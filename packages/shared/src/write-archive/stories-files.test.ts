@@ -31,6 +31,37 @@ describe("storiesFileName", () => {
     expect(fileName).toMatch(new RegExp("^this-title-has-.*blah-bl[a-z0-9]{4}.stories.json$"));
   });
 
+  it("appends unique ID to the file name", () => {
+    expect(storiesFiles.storiesFileName("some title", "1_2")).toEqual(
+      "some-title-1-2.stories.json",
+    );
+  });
+
+  it("produces the same file name on repeated calls", () => {
+    const first = [
+      storiesFiles.storiesFileName("title"),
+      storiesFiles.storiesFileName("title", "0"),
+    ];
+    const second = [
+      storiesFiles.storiesFileName("title"),
+      storiesFiles.storiesFileName("title", "0"),
+    ];
+
+    expect(first).toStrictEqual(["title.stories.json", "title-0.stories.json"]);
+    expect(second).toStrictEqual(first);
+  });
+
+  it("keeps unique ID in truncated file names unique", () => {
+    const title = "a".repeat(300);
+
+    const first = storiesFiles.storiesFileName(title, "0");
+    const second = storiesFiles.storiesFileName(title, "1");
+
+    expect(first.length).toEqual(230);
+    expect(second.length).toEqual(230);
+    expect(first).not.toEqual(second);
+  });
+
   it("replaces newlines with -", () => {
     const title = "\n\n\r\rThere\nShould\rBe\r\nNo\n\rNewlines\r\r\n\n";
 

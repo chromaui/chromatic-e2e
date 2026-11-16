@@ -5,7 +5,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { writeTestResult } from ".";
 import * as filePaths from "../utils/filePaths";
-import { uniqueId } from "./stories-files";
 
 vi.mock(import("../utils/filePaths"), async (importOriginal) => ({
   ...(await importOriginal()),
@@ -33,7 +32,6 @@ const snapshotJson = {
 
 afterEach(() => {
   vi.resetAllMocks();
-  uniqueId.value = 1;
 });
 
 describe("writeTestResult", () => {
@@ -173,6 +171,34 @@ describe("writeTestResult", () => {
       resolve("./some-custom-directory/directory/chromatic-archives/file-test-story.stories.json"),
       expect.anything(),
     );
+  });
+
+  it("appends storiesFileId to stories file name", async () => {
+    const write = () =>
+      writeTestResult(
+        {
+          titlePath: ["file.test.ts"],
+          outputDir: resolve("test-results"),
+          pageUrl: "http://localhost:3000/",
+          storiesFileId: "1_2",
+        },
+        {
+          home: {
+            snapshot: Buffer.from(JSON.stringify(snapshotJson)),
+            viewport: { height: 800, width: 800 },
+          },
+        },
+        {},
+        {},
+      );
+
+    const first = await write();
+    const second = await write();
+
+    expect(first.storiesFile).toBe(
+      resolve("./test-results/chromatic-archives/file-1-2.stories.json"),
+    );
+    expect(second.storiesFile).toBe(first.storiesFile);
   });
 
   it("sanitizes story titles", async () => {

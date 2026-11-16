@@ -88,6 +88,63 @@ test("writes test title without extensions", async () => {
   `);
 });
 
+test("writes stable stories file IDs based on test's position in test module", async () => {
+  /** See {@link file://./../../test/fixtures/test-names.test.ts} */
+  await runFixture({ include: ["test-names.test.ts"] });
+  const firstRun = vi
+    .mocked(shared.writeTestResult)
+    .mock.calls.map((call) => call[0].storiesFileId);
+
+  vi.mocked(shared.writeTestResult).mockClear();
+
+  await runFixture({ include: ["test-names.test.ts"] });
+  const secondRun = vi
+    .mocked(shared.writeTestResult)
+    .mock.calls.map((call) => call[0].storiesFileId);
+
+  expect(firstRun).toStrictEqual(secondRun);
+  expect(firstRun).toMatchInlineSnapshot(`
+    [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+    ]
+  `);
+});
+
+test("writes stories file IDs with test file name when custom title is used", async () => {
+  /** See {@link file://./../../test/fixtures/configure-calls.test.ts} */
+  await runFixture({ include: ["configure-calls.test.ts"] });
+
+  const calls = vi
+    .mocked(shared.writeTestResult)
+    .mock.calls.map((call) => [call[0].titlePath, call[0].storiesFileId]);
+
+  expect(calls).toMatchInlineSnapshot(`
+    [
+      [
+        [
+          "Configure calls on different scopes",
+        ],
+        "configure-calls-0",
+      ],
+      [
+        [
+          "Configure calls on different scopes",
+        ],
+        "configure-calls-1",
+      ],
+    ]
+  `);
+});
+
 test("writes test results with DOM snapshot", async () => {
   /** See {@link file://./../../test/fixtures/dom.test.ts} */
   await runFixture({ include: ["dom.test.ts"] });

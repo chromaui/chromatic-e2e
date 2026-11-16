@@ -191,6 +191,7 @@ export function createCommands(options: ResolvedOptions) {
           outputDir: resolve(context.project.vitest.config.root, options.outputDirectory),
           pageUrl: context.page.url(),
           titlePath,
+          storiesFileId: getStoriesFileId(entity, testOptions),
         },
         snapshotBuffers,
         archive,
@@ -205,7 +206,6 @@ export function createCommands(options: ResolvedOptions) {
           cropToViewport: testOptions.cropToViewport ?? options.cropToViewport,
           ignoreSelectors: testOptions.ignoreSelectors ?? options.ignoreSelectors,
         },
-        "vitest",
       );
 
       if (options.turboSnap) {
@@ -362,6 +362,40 @@ function getTitle(test: TestCase): string[] {
   }
 
   return names;
+}
+
+/**
+ * Each test writes its own `*.stories.json` file, so tests of the same file need unique file names.
+ * The ID must be stable between test runs as TurboSnap tracks the files by their names.
+ * See https://github.com/chromaui/chromatic-e2e/issues/472
+ */
+function getStoriesFileId(test: TestCase, testOptions: ConfigureOptions): string {
+  const position = getTestPosition(test);
+
+  // Default title is unique per test module and project. Custom titles can be shared by multiple test modules.
+  if (testOptions.title) {
+    return [...getTitle(test), position].join("-");
+  }
+
+  return position;
+}
+
+/**
+ * Test's position among all tests of its test module, including nested suites.
+ * Collection order follows the source code, and filtered or skipped tests are still included.
+ */
+function getTestPosition(test: TestCase): string {
+  let index = 0;
+
+  for (const entry of test.module.children.allTests()) {
+    if (entry.id === test.id) {
+      return String(index);
+    }
+
+    index++;
+  }
+
+  throw new Error(`Test "${test.fullName}" not found from its test module ${test.module.moduleId}`);
 }
 
 function getSnapshotPrefix(test: TestCase): string[] {

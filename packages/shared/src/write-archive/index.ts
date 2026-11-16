@@ -19,6 +19,12 @@ interface E2ETestInfo {
   titlePath: string[];
   outputDir: string;
   pageUrl: string;
+
+  /**
+   * Stable identifier for the test, appended to the `*.stories.json` file name.
+   * Use when multiple tests can produce the same `titlePath`.
+   */
+  storiesFileId?: string;
 }
 
 // Converts { name?: string } to { name: string | undefined }, so that passing "name" is required
@@ -31,9 +37,8 @@ export async function writeTestResult(
   domSnapshots: DOMSnapshots,
   archive: ResourceArchive,
   chromaticStorybookParams: RequiredButOptional<ChromaticStorybookParameters>,
-  testRunner?: "cypress" | "playwright" | "vitest",
 ) {
-  const { titlePath, outputDir, pageUrl } = e2eTestInfo;
+  const { titlePath, outputDir, pageUrl, storiesFileId } = e2eTestInfo;
   // remove the test file extensions (.spec.ts|ts, .cy.ts|js), preserving other periods in directory, file name, or test titles
   const titlePathWithoutFileExtensions = titlePath.map((pathPart) =>
     // make sure we remove file extensions, even if the file name doesn't have .spec or .test or.cy
@@ -93,7 +98,7 @@ export async function writeTestResult(
     }),
   );
 
-  const storiesFile = join(finalOutputDir, storiesFileName(title, testRunner !== "vitest"));
+  const storiesFile = join(finalOutputDir, storiesFileName(title, storiesFileId));
   const storiesJson = createStories(title, domSnapshots, chromaticStorybookParams);
   await outputJSONFile(storiesFile, storiesJson);
 

@@ -82,7 +82,6 @@ export const performChromaticSnapshot = async (
         cropToViewport,
         ignoreSelectors,
       },
-      "playwright",
     );
   } finally {
     // make sure we clear the value associated with this test ID, so the shared chromaticSnapshots object stays small

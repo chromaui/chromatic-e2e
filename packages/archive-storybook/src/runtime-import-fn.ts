@@ -14,6 +14,10 @@ interface StoriesFile {
 const RESERVED_EXPORTS = new Set(["default", "__namedExportsOrder"]);
 const modules = new Map<string, Promise<ModuleExports>>();
 
+// Story files are next to `iframe.html`. Capture its URL before rendering, as rendered snapshots
+// replace the document, including any `<base href>`.
+const STORIES_BASE_URL = document.baseURI;
+
 /**
  * Replaces the build-time `importFn` of `@storybook/builder-vite`. Story files are not bundled:
  * they are fetched at runtime, relative to `iframe.html`, using the `importPath` of `index.json`.
@@ -38,7 +42,7 @@ export const importFn: ModuleImportFn = (path) => {
 
 async function loadStoriesFile(path: string): Promise<ModuleExports> {
   const filename = path.slice(path.lastIndexOf("/") + 1);
-  const url = new URL(`./${filename}`, document.baseURI);
+  const url = new URL(`./${filename}`, STORIES_BASE_URL);
   const response = await fetch(url);
 
   if (!response.ok) {

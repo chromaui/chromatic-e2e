@@ -47,8 +47,8 @@ test("TurboSnap enabled, source files", async () => {
         ],
       },
       {
-        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
-        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json",
         "reasons": [
           {
             "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
@@ -125,8 +125,8 @@ test("TurboSnap enabled, source files", async () => {
         ],
       },
       {
-        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
-        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-2-0.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-2-0.stories.json",
         "reasons": [
           {
             "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
@@ -290,8 +290,8 @@ test("TurboSnap enabled, circular imports", async () => {
         ],
       },
       {
-        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-cycle-1.stories.json",
-        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-cycle-1.stories.json",
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-cycle-0.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-cycle-0.stories.json",
         "reasons": [
           {
             "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
@@ -399,8 +399,8 @@ test("TurboSnap enabled, sharded run", async () => {
         ],
       },
       {
-        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
-        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json",
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json",
         "reasons": [
           {
             "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
@@ -456,8 +456,8 @@ test("TurboSnap enabled, sharded run", async () => {
         ],
       },
       {
-        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
-        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-2-2.stories.json",
+        "id": "./.vitest/chromatic/chromatic-archives/turbo-snap-2-0.stories.json",
+        "name": ".vitest/chromatic/chromatic-archives/turbo-snap-2-0.stories.json",
         "reasons": [
           {
             "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
@@ -604,8 +604,8 @@ test("TurboSnap enabled with custom output directory", async () => {
         ],
       },
       {
-        "id": "./.vitest/custom-output-directory/chromatic-archives/turbo-snap-1-1.stories.json",
-        "name": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-1-1.stories.json",
+        "id": "./.vitest/custom-output-directory/chromatic-archives/turbo-snap-1-0.stories.json",
+        "name": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-1-0.stories.json",
         "reasons": [
           {
             "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
@@ -661,8 +661,8 @@ test("TurboSnap enabled with custom output directory", async () => {
         ],
       },
       {
-        "id": "./.vitest/custom-output-directory/chromatic-archives/turbo-snap-2-2.stories.json",
-        "name": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-2-2.stories.json",
+        "id": "./.vitest/custom-output-directory/chromatic-archives/turbo-snap-2-0.stories.json",
+        "name": ".vitest/custom-output-directory/chromatic-archives/turbo-snap-2-0.stories.json",
         "reasons": [
           {
             "moduleName": "/virtual:/@storybook/builder-vite/storybook-stories.js",
@@ -723,8 +723,8 @@ test("TurboSnap enabled, paths are relative to working directory instead of Vite
 
   // Story file ID must match `importPath` in `index.json`, which is relative to the working directory
   expect(stats.modules).toContainEqual({
-    id: `./${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json`,
-    name: `${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-1.stories.json`,
+    id: `./${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json`,
+    name: `${rootPrefix}/.vitest/chromatic/chromatic-archives/turbo-snap-1-0.stories.json`,
     reasons: [{ moduleName: "/virtual:/@storybook/builder-vite/storybook-stories.js" }],
   });
 

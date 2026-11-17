@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 1.0.4
+
+### Patch Changes
+
+- 017155d: Fix: Write metadata json even when `.vitest/chromatic/` is missing
+
 ## 1.0.3
 
 ### Patch Changes

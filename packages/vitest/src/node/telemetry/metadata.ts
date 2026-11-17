@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { writeFile, readFile } from "node:fs/promises";
+import { writeFile, readFile, mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
 
@@ -76,6 +76,7 @@ export function getChromaticVersion(root: string) {
  * It allows us to share telemetry metadata between Vitest and Chromatic CLI processes.
  */
 export async function writeTelemetryMetadata(outputDirectory: string, data: TelemetryMetadata) {
+  await mkdir(outputDirectory, { recursive: true });
   await writeFile(
     resolve(outputDirectory, TELEMETRY_METADATA_FILE),
     JSON.stringify(data, null, 2),

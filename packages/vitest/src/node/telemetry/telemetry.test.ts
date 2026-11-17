@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { rm } from "node:fs/promises";
 import { homedir } from "node:os";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 
 import { http, HttpResponse } from "msw";
 import { beforeEach, describe, expect, onTestFinished, test as base, vi } from "vitest";
@@ -96,9 +96,14 @@ describe("configuration", () => {
   });
 
   test("metadata file is written", async () => {
-    const { root } = await runVitest();
-
+    const root = process.cwd();
     const filename = resolve(root, `.vitest/chromatic/${TELEMETRY_METADATA_FILE}`);
+
+    // Remove .vitest/chromatic before test run to simulate clean CI run
+    await rm(dirname(filename), { recursive: true, force: true });
+
+    await runVitest({ root });
+
     expect(existsSync(filename), `Expected metadata file to exist at ${filename}`).toBe(true);
 
     const json = JSON.parse(readFileSync(filename, "utf8"));

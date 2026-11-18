@@ -11,6 +11,16 @@
       "tags": ["dev", "test", "manifest"],
       "exportName": "Snapshot #1"
     },
+    "base-tag-nested-base-href--snapshot-1": {
+      "type": "story",
+      "subtype": "story",
+      "id": "base-tag-nested-base-href--snapshot-1",
+      "name": "Snapshot #1",
+      "title": "base-tag/nested base href",
+      "importPath": "./test-results/chromatic-archives/base-tag-nested-base-href.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "Snapshot #1"
+    },
     "css-pseudo-states-captures-hover-state--hover": {
       "type": "story",
       "subtype": "story",

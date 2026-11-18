@@ -1,6 +1,15 @@
-import { beforeAll, expect, test, vi } from "vitest";
+import { afterAll, expect, test, vi } from "vitest";
 
 import { importFn, toCsfModule } from "./runtime-import-fn";
+
+// The module captures `document.baseURI` when it's loaded, so stub it before the import above
+vi.hoisted(() => {
+  vi.stubGlobal("document", { baseURI: "http://localhost:6006/iframe.html?id=some-story" });
+});
+
+afterAll(() => {
+  vi.unstubAllGlobals();
+});
 
 const storiesFile = {
   title: "home page",
@@ -25,14 +34,6 @@ const storiesFile = {
     },
   ],
 };
-
-beforeAll(() => {
-  vi.stubGlobal("document", { baseURI: "http://localhost:6006/iframe.html?id=some-story" });
-
-  return function afterAll() {
-    vi.unstubAllGlobals();
-  };
-});
 
 test("converts stories file into CSF module exports keyed by story name", () => {
   expect(toCsfModule(storiesFile)).toEqual({

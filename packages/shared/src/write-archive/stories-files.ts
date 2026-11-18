@@ -6,7 +6,7 @@ import { Viewport, viewportToString } from "../utils/viewport";
 import { snapshotId } from "./snapshot-files";
 import { collapseNewlines, sanitize } from "./storybook-sanitize";
 
-const STORIES_FILE_EXT = "stories.json";
+export const STORIES_FILE_EXT = ".stories.json";
 
 // Generates a file-system-safe file name from a story title.
 // Optional `uniqueId` is appended to the name to prevent multiple tests with same title overwriting each other.
@@ -14,7 +14,7 @@ const STORIES_FILE_EXT = "stories.json";
 export function storiesFileName(testTitle: string, uniqueId?: string) {
   const title = sanitize([testTitle, uniqueId].filter(Boolean).join("-"));
 
-  const fileName = [title, STORIES_FILE_EXT].join(".");
+  const fileName = title + STORIES_FILE_EXT;
 
   // Leave room for built storybook extensions that may be added (like `-stories.iframe.bundle.js`)
   const maxByteLength = MAX_FILE_NAME_BYTE_LENGTH - 25;

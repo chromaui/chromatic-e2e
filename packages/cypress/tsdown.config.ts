@@ -15,6 +15,7 @@ export default defineConfig([
   {
     ...defaults,
     name: "Node",
+    copy: [{ from: "../archive-storybook/dist/storybook-static" }],
     entry: {
       index: "src/index.ts",
       support: "src/support.ts",

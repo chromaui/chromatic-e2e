@@ -3,7 +3,9 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { resolve, dirname } from "node:path";
 
-import { checkArchivesDirExists } from "../utils/filePaths";
+import { archivesDir, checkArchivesDirExists } from "../utils/filePaths";
+
+export { buildArchiveStorybook } from "./build";
 
 interface Callbacks {
   onArchivesCheck: (error?: unknown) => void;
@@ -22,20 +24,9 @@ export async function archiveStorybook(
   await runBin([binPath(), "dev", ...processArgs, "-c", configDir]);
 }
 
-export async function buildArchiveStorybook(
-  processArgs: string[],
-  configDir: string,
-  defaultOutputDir: string,
-  callbacks?: Callbacks,
-) {
-  assertOutputDirectory(defaultOutputDir, callbacks);
-
-  await runBin([binPath(), "build", ...processArgs, "-c", configDir]);
-}
-
 function assertOutputDirectory(outputDirectory: string, callbacks?: Callbacks) {
   try {
-    checkArchivesDirExists(outputDirectory);
+    checkArchivesDirExists(archivesDir(outputDirectory));
   } catch (error) {
     callbacks?.onArchivesCheck(error);
     throw error;

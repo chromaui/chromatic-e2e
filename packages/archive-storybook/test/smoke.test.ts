@@ -102,6 +102,24 @@ test("renders iframe contents", async ({ openStory, page }) => {
     .toBe(true);
 });
 
+test("renders next story after snapshot with nested base href", async ({ openStory, page }) => {
+  await openStory("base-tag-nested-base-href--snapshot-1");
+  await page.getByText("Page with nested base href").waitFor();
+
+  // Rendered snapshot replaces the document, including its `<base href="/nested/">`
+  expect(await page.evaluate(() => new URL(document.baseURI).pathname)).toBe("/nested/");
+
+  // Switch story without reloading the preview, like the manager does
+  await page.evaluate(() =>
+    (window as any).__STORYBOOK_ADDONS_CHANNEL__.emit("setCurrentStory", {
+      storyId: "snapshot-names-in-test-case-name-あ--snapshot-1",
+      viewMode: "story",
+    }),
+  );
+
+  await page.getByText("Testing testing just a basic page").waitFor();
+});
+
 test("manager lists stories from index.json", async ({ server, page }) => {
   await page.goto(`${server.url}/index.html`);
 

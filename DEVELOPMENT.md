@@ -10,6 +10,8 @@ This repository is a pnpm monorepo containing the following packages:
   - Chromatic Visual Test integration for Vitest
 - [shared](https://github.com/chromaui/chromatic-e2e/tree/main/packages/shared)
   - Internal workspace package shared by the integrations above (does not get published individually)
+- [archive-storybook](https://github.com/chromaui/chromatic-e2e/tree/main/packages/archive-storybook)
+  - Internal workspace package that builds the prebuilt archive Storybook shipped in each integration (does not get published)
 
 ### Requirements
 
@@ -20,7 +22,6 @@ This repository is a pnpm monorepo containing the following packages:
 
 - It is recommended that you run `corepack enable` so that the version of pnpm set in `packageManager` in `package.json` is used for this project
 - Run `pnpm install`
-- Run `cd embedded && npm install`
 - Run `pnpm build`
 - Run `pnpm playwright install`
 
@@ -45,7 +46,31 @@ Then, the test commands are as follows:
 - Cypress: `pnpm test:cypress`, then `pnpm archive-storybook:cypress` to see the archived UI
 - Vitest: `pnpm test:vitest`, then `pnpm archive-storybook:vitest` to see the archived UI
 
+To build the archive Storybook that Chromatic would upload, run `pnpm build-archive-storybook:playwright` (or `:cypress`, `:vitest`). It writes to `storybook-static` in the package directory.
+
 If you wish to run the site-under-tests's server separately (e.g. to debug a specific test or to use Cypress interactive mode), run `pnpm dev:server` and visit `http://localhost:3000`.
+
+### Archive Storybook
+
+The integrations don't run Storybook in the user's project. Storybook is built once in `packages/archive-storybook`, and each integration ships the result in its `dist/storybook-static`. See [ADR 0002](docs/decisions/0002-prebuilt-archive-storybook.md) for the background.
+
+- `pnpm build` builds the packages in dependency order: `archive-storybook` first, then the integrations, which copy its `dist/storybook-static`. `pnpm build:playwright` (and the other `build:*` scripts) also builds the packages it depends on.
+- The preview and manager configs live in `packages/archive-storybook/.storybook`. Stories are loaded at runtime from the `*.stories.json` files by `packages/archive-storybook/src/runtime-import-fn.ts`.
+- `packages/archive-storybook/test/smoke.test.ts` renders the stories in `packages/archive-storybook/fixtures` with the prebuilt Storybook in a real browser. It runs as part of `pnpm test:unit`, after `pnpm build`.
+- The bins live in `packages/shared/src/archive-storybook`. `build-archive-storybook` copies the prebuilt Storybook and the archives, and generates `index.json`. `archive-storybook` serves the same files from a `node:http` server.
+
+#### Upgrading Storybook
+
+Keep the Storybook versions in sync:
+
+- `storybook`, `@storybook/builder-vite` and `@storybook/server` in `packages/archive-storybook`
+- `storybook` in `packages/shared` and `packages/vitest`, whose story ID utilities from `storybook/internal/csf/csf-utils` get bundled into the integrations
+
+After upgrading, run `pnpm build` and `pnpm test:unit`, then check the archive Storybook of each integration in the browser, e.g. with `pnpm archive-storybook:playwright`.
+
+#### Runtime dependencies
+
+The integrations must not import Storybook, or anything else that isn't in their `dependencies`, at runtime. Each integration's `tsdown.config.ts` lists the packages its Node output may import in `deps.onlyImport`, and the build fails if the output imports anything else. When adding a runtime dependency, add it to both `dependencies` and `deps.onlyImport`.
 
 ### Linting & formatting
 

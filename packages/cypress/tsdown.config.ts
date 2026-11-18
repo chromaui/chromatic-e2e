@@ -1,6 +1,6 @@
 import { defineConfig, type UserConfig } from "tsdown";
 
-const defaults: UserConfig = {
+const defaults = {
   format: ["esm"],
   platform: "node",
   target: "esnext",
@@ -9,7 +9,7 @@ const defaults: UserConfig = {
   minify: false,
   clean: true,
   fixedExtension: true,
-};
+} satisfies UserConfig;
 
 export default defineConfig([
   {
@@ -21,23 +21,25 @@ export default defineConfig([
       support: "src/support.ts",
       "bin/archive-storybook": "src/bin/archive-storybook.ts",
       "bin/build-archive-storybook": "src/bin/build-archive-storybook.ts",
-      "storybook-config/main": "src/storybook-config/main.ts",
     },
     dts: {
       entry: ["src/index.ts", "src/support.ts"],
       // tsgolint rejects `baseUrl` in tsconfig files, but tsdown's dts type inference needs it:
       compilerOptions: { baseUrl: "../.." },
     },
-    deps: { onlyBundle: ["@rrweb/types", "mime", "srcset"] },
-  },
-  {
-    ...defaults,
-    name: "Browser",
-    entry: {
-      "storybook-config/manager": "src/storybook-config/shared/manager.ts",
-      "storybook-config/preview": "src/storybook-config/shared/preview.ts",
+    deps: {
+      // Story IDs and tags must match Storybook's. Bundle the utilities, so end users don't need `storybook` installed.
+      alwaysBundle: ["storybook/internal/csf/csf-utils"],
+      onlyBundle: ["@rrweb/types", "mime", "srcset", "storybook"],
+
+      // Fails the build if the output imports anything else, e.g. `storybook` after a Storybook upgrade
+      onlyImport: ["@chromaui/rrweb-snapshot", "chrome-remote-interface"],
     },
-    platform: "browser",
-    deps: { onlyBundle: ["@rrweb/types"] },
+    outputOptions: {
+      ...defaults.outputOptions,
+
+      // Keep bundled Storybook code in its own chunk, so that its contents are easy to verify
+      codeSplitting: { groups: [{ name: "storybook", test: /node_modules[\\/]storybook[\\/]/ }] },
+    },
   },
 ]);

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted.
+Superseded by [ADR 0002](./0002-prebuilt-archive-storybook.md). The packages no longer build Storybook in the user's project, so `embedded/` and the Storybook dependencies were removed.
 
 ## Context
 

@@ -1,5 +1,11 @@
 # @chromatic-com/vitest
 
+## 1.1.0
+
+### Minor Changes
+
+- 6e57555: Feat: Pre-built Storybook instead of depending on storybook npm package
+
 ## 1.0.4
 
 ### Patch Changes

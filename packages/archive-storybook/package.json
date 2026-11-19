@@ -12,7 +12,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "storybook build --config-dir .storybook --output-dir dist/storybook-static --disable-telemetry",
+    "build": "storybook build --config-dir .storybook --output-dir dist/storybook-static --disable-telemetry && node scripts/minify-manager.ts && node scripts/remove-unused-assets.ts",
     "test:unit": "pnpm --filter @chromaui/chromatic-e2e run test:unit --project \"Archive Storybook\""
   },
   "devDependencies": {

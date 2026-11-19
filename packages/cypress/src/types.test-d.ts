@@ -1,6 +1,5 @@
 import { expectTypeOf, test } from "vitest";
-
-import "../dist/support.mjs";
+import "@chromatic-com/cypress/support";
 
 test("takeSnapshot", () => {
   expectTypeOf(cy.takeSnapshot).toBeFunction();

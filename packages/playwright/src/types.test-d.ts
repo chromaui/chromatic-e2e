@@ -1,7 +1,6 @@
+import * as publicAPI from "@chromatic-com/playwright";
 import { Page, TestInfo } from "@playwright/test";
 import { expectTypeOf, test } from "vitest";
-
-import * as publicAPI from "../dist/index.mjs";
 
 test("test.use() chromatic options", () => {
   expectTypeOf(publicAPI.test.use).parameter(0).not.toHaveProperty("somethingThatDoesNotExist");

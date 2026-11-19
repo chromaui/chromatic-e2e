@@ -1,6 +1,6 @@
 {
   "name": "@chromatic-com/playwright",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Chromatic Visual Regression Testing for Playwright",
   "license": "MIT",
   "author": "Chromatic <tom@chromatic.com>",

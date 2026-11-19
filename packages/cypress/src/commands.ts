@@ -1,18 +1,26 @@
 import { takeSnapshot as takeChromaticSnapshot } from "./takeSnapshot";
 import { CypressSnapshot } from "./types";
 
+/**
+ * Custom commands added to `cy` by `@chromatic-com/cypress/support`.
+ *
+ * Exported so that the emitted `support.d.mts` is a module: `declare global` is only allowed in modules.
+ */
+export interface ChromaticCommands {
+  /**
+   * Method for taking a manual snapshot with Chromatic
+   *
+   *
+   * @param {string} name - Use to apply a custom name to the snapshot  (optional)
+   */
+  takeSnapshot(name?: string): Cypress.Chainable<any>;
+}
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
-    interface Chainable {
-      /**
-       * Method for taking a manual snapshot with Chromatic
-       *
-       *
-       * @param {string} name - Use to apply a custom name to the snapshot  (optional)
-       */
-      takeSnapshot(name?: string): Chainable<any>;
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface Chainable extends ChromaticCommands {}
   }
 }
 

@@ -1,4 +1,6 @@
 import "./commands";
+
+export type { ChromaticCommands } from "./commands";
 import { takeSnapshot } from "./takeSnapshot";
 import { CypressSnapshot } from "./types";
 

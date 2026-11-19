@@ -8,6 +8,7 @@ export default defineProject({
     typecheck: {
       enabled: true,
       include: ["src/*.test-d.ts"],
+      tsconfig: "./tsconfig.test-d.json",
       ignoreSourceErrors: true,
     },
   },

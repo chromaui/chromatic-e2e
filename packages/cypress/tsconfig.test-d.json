@@ -1,0 +1,10 @@
+{
+  // Type tests see only the published types, the way consumers do. Including `src` would let the source's
+  // `declare global` leak into the program and hide broken `dist/*.d.mts` files.
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "cypress"],
+    "noEmit": true
+  },
+  "include": ["src/*.test-d.ts"]
+}

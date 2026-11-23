@@ -1,0 +1,35 @@
+{
+  "title": "viewports/same test in multiple projects",
+  "stories": [
+    {
+      "name": "Snapshot #1",
+      "globals": { "viewport": "w500h600" },
+      "parameters": {
+        "__id": "viewports-same-test-in-multiple-projects--snapshot-1",
+        "server": { "id": "viewports-same-test-in-multiple-projects-snapshot-1" },
+        "chromatic": {
+          "colorScheme": "light",
+          "modes": {
+            "w1280h720": { "viewport": "w1280h720" },
+            "w500h600": { "viewport": "w500h600" }
+          }
+        },
+        "viewport": {
+          "options": {
+            "w1280h720": {
+              "name": "w1280h720",
+              "type": "desktop",
+              "styles": { "width": "1280px", "height": "720px" }
+            },
+            "w500h600": {
+              "name": "w500h600",
+              "type": "mobile",
+              "styles": { "width": "500px", "height": "600px" }
+            }
+          },
+          "defaultViewport": "w1280h720"
+        }
+      }
+    }
+  ]
+}

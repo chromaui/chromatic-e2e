@@ -59,26 +59,51 @@ function snapshotFileName(snapshotId: string, viewport: string) {
 
 async function fetchSnapshot(context: RenderContext<RRWebFramework>): Promise<SavedSnapshot> {
   const { url, id } = context.storyContext.parameters.server;
-  const { viewport } = context.storyContext.globals;
+  const { defaultViewport } = context.storyContext.parameters.viewport;
+  const { globals, userGlobals } = context.storyContext as typeof context.storyContext & {
+    userGlobals?: Record<string, unknown>;
+  };
 
-  // Viewport seems to be a string or an object
-  let viewportName;
-  if (typeof viewport === "string") {
-    viewportName = viewport;
-  } else {
-    // NOTE: This is duplicated in the shared package due to bundling issues
-    viewportName = `w${viewport.width}h${viewport.height}`;
+  // Selected viewport has priority over stories[].globals.viewport
+  const viewport =
+    viewportGlobalValue(userGlobals?.viewport) ?? viewportGlobalValue(globals.viewport);
+
+  if (viewport && viewport !== defaultViewport) {
+    const response = await fetch(`${url}/${snapshotFileName(id, viewport)}`);
+
+    if (response.ok) {
+      return response.json();
+    }
   }
 
-  let response = await fetch(`${url}/${snapshotFileName(id, viewportName)}`);
-  if (!response.ok) {
-    // Possibly a viewport was specified that we haven't captured, or it's the addon's
-    // default of `reset`, so we'll load the default viewport snapshot instead.
-    const { defaultViewport } = context.storyContext.parameters.viewport;
-    response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
-  }
-
+  // No viewport selected, or one that we haven't captured, so load the default viewport snapshot instead.
+  const response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
   return response.json();
+}
+
+// Viewport global is
+// - `{ width, height }` when set by Chromatic modes
+// - `"w1280h720"` when set by URL (`globals=viewport:w1280h720`) or story globals
+// - `{ value, isRotated }` when set by the viewport addon. Its initial value is `{ value: undefined }`.
+function viewportGlobalValue(viewport: unknown): string | undefined {
+  if (typeof viewport === "string") {
+    return viewport;
+  }
+
+  if (!viewport || typeof viewport !== "object") {
+    return undefined;
+  }
+
+  if ("width" in viewport && "height" in viewport) {
+    // NOTE: This is duplicated in the shared package due to bundling issues
+    return `w${viewport.width as number}h${viewport.height as number}`;
+  }
+
+  if ("value" in viewport && typeof viewport.value === "string") {
+    return viewport.value;
+  }
+
+  return undefined;
 }
 
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {

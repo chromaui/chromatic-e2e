@@ -53,8 +53,11 @@ const test = base
     return page;
   })
   .extend("openStory", async ({ page, server }) => {
-    return async function openStory(id: string) {
-      await page.goto(`${server.url}/iframe.html?id=${encodeURIComponent(id)}&viewMode=story`);
+    return async function openStory(id: string, options: { globals?: string } = {}) {
+      const globals = options.globals ? `&globals=${encodeURIComponent(options.globals)}` : "";
+      await page.goto(
+        `${server.url}/iframe.html?id=${encodeURIComponent(id)}&viewMode=story${globals}`,
+      );
     };
   });
 
@@ -90,6 +93,46 @@ test.for([
     expect(await page.locator("#height").textContent()).toBe(height);
   },
 );
+
+// Same test captured by multiple Playwright projects, see https://github.com/chromaui/chromatic-e2e/issues/456
+test.for([
+  ["w1280h720", "Captured at 1280x720"],
+  ["w500h600", "Captured at 500x600"],
+])("renders snapshot of mode's viewport %s", async ([viewport, text], { openStory, page }) => {
+  await openStory("viewports-same-test-in-multiple-projects--snapshot-1", {
+    globals: `viewport:${viewport}`,
+  });
+
+  await page.getByText(text).waitFor();
+});
+
+test.for([
+  [{ width: 1280, height: 720 }, "Captured at 1280x720"],
+  [{ width: 500, height: 600 }, "Captured at 500x600"],
+] as const)(
+  "renders snapshot of Chromatic mode's viewport %o",
+  async ([viewport, text], { openStory, page }) => {
+    await openStory("viewports-same-test-in-multiple-projects--snapshot-1");
+    await page.getByText("Captured at").waitFor();
+
+    // Chromatic sets modes via `updateGlobals` event
+    await page.evaluate(
+      (viewport) =>
+        (window as any).__STORYBOOK_ADDONS_CHANNEL__.emit("updateGlobals", {
+          globals: { viewport },
+        }),
+      viewport,
+    );
+
+    await page.getByText(text).waitFor();
+  },
+);
+
+test("renders snapshot of story's viewport when no mode is set", async ({ openStory, page }) => {
+  await openStory("viewports-same-test-in-multiple-projects--snapshot-1");
+
+  await page.getByText("Captured at 500x600").waitFor();
+});
 
 test("applies pseudo-state classes", async ({ openStory, page }) => {
   await openStory("css-pseudo-states-captures-hover-state--hover");

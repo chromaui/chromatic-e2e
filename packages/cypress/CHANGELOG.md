@@ -1,5 +1,15 @@
 # chromatic-cypress
 
+## 1.1.0
+
+### Minor Changes
+
+- 6e57555: Feat: Pre-built Storybook instead of depending on storybook npm package
+
+### Patch Changes
+
+- e912aad: Fix: `cy.takeSnapshot` missing from types when importing `@chromatic-com/cypress/support`
+
 ## 1.0.0
 
 ### Major Changes

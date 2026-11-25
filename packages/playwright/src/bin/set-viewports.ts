@@ -54,6 +54,7 @@ function addViewportsToStories(
     const viewports = viewportsStoriesLookup[storyId];
     return {
       ...story,
+      globals: viewports.length > 1 ? omitViewportGlobal(story.globals) : story.globals,
       parameters: {
         ...story.parameters,
         chromatic: {
@@ -72,6 +73,18 @@ function addViewportsToStories(
     ...storiesFileJson,
     stories: storiesWithViewports,
   };
+}
+
+// Story-level globals take precedence over the globals of modes. When the same test is captured in multiple
+// viewports (e.g. multiple Playwright projects), the stories file only has the viewport of whichever wrote it last.
+// Unlock the viewport so that each mode renders its own snapshot. See https://github.com/chromaui/chromatic-e2e/issues/456
+function omitViewportGlobal(globals: Record<string, unknown> | undefined) {
+  if (!globals) {
+    return undefined;
+  }
+
+  const { viewport: _, ...rest } = globals;
+  return Object.keys(rest).length ? rest : undefined;
 }
 
 function buildSnapshotViewportsLookup(snapshotFileNames: string[]) {

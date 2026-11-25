@@ -19,9 +19,10 @@ test("sets viewports to each story", async () => {
 
   await addViewportsToStoriesFiles();
 
-  expect(writeFile).toHaveBeenCalledTimes(2);
+  expect(writeFile).toHaveBeenCalledTimes(3);
 
   const calls = writeFile.mock.calls
+    .filter((call) => !(call[0] as string).endsWith("example-3.stories.json"))
     .sort((a, b) => (a[0] as string).localeCompare(b[0] as string))
     .map((call) => {
       const json = JSON.parse(call[1] as string);
@@ -115,4 +116,33 @@ test("sets viewports to each story", async () => {
       },
     ]
   `);
+});
+
+// Same test captured by multiple Playwright projects, see https://github.com/chromaui/chromatic-e2e/issues/456
+test("removes story-level viewport global from stories with multiple viewports", async () => {
+  writeFile.mockClear();
+
+  /** See {@link file://./../../tests/fixtures/set-viewports} */
+  const directory = resolve(import.meta.dirname, "../../tests/fixtures/set-viewports");
+  vi.stubEnv("CHROMATIC_ARCHIVE_LOCATION", directory);
+
+  await addViewportsToStoriesFiles();
+
+  const globals = Object.fromEntries(
+    writeFile.mock.calls.map((call) => {
+      const json = JSON.parse(call[1] as string);
+      const filename = (call[0] as string).replace(`${directory}/chromatic-archives/`, "");
+
+      return [filename, json.stories[0].globals];
+    }),
+  );
+
+  expect(globals).toEqual({
+    // Story-level globals take precedence over modes, so pinned viewport would render the same snapshot in every mode
+    "example-1.stories.json": undefined,
+    "example-2.stories.json": undefined,
+
+    // Single viewport is still locked, so that `archive-storybook` dev mode shows it at the captured size
+    "example-3.stories.json": { viewport: "w123h456" },
+  });
 });

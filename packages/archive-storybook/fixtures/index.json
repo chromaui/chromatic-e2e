@@ -100,6 +100,16 @@
       "importPath": "./test-results/chromatic-archives/viewports-hardcoded-viewport-snapshots-capture-multiple-viewports-inside-a-single-test-case.stories.json",
       "tags": ["dev", "test", "manifest"],
       "exportName": "Snapshot #5"
+    },
+    "viewports-same-test-in-multiple-projects--snapshot-1": {
+      "type": "story",
+      "subtype": "story",
+      "id": "viewports-same-test-in-multiple-projects--snapshot-1",
+      "name": "Snapshot #1",
+      "title": "viewports/same test in multiple projects",
+      "importPath": "./test-results/chromatic-archives/viewports-same-test-in-multiple-projects.stories.json",
+      "tags": ["dev", "test", "manifest"],
+      "exportName": "Snapshot #1"
     }
   }
 }

@@ -65,15 +65,21 @@ async function fetchSnapshot(context: RenderContext<RRWebFramework>): Promise<Sa
   let viewportName;
   if (typeof viewport === "string") {
     viewportName = viewport;
-  } else {
+  } else if (viewport?.value !== undefined) {
+    // Viewport addon's toolbar selection `{ value, isRotated }`
+    viewportName = viewport.value;
+  } else if (viewport?.width !== undefined) {
     // NOTE: This is duplicated in the shared package due to bundling issues
     viewportName = `w${viewport.width}h${viewport.height}`;
   }
 
-  let response = await fetch(`${url}/${snapshotFileName(id, viewportName)}`);
-  if (!response.ok) {
-    // Possibly a viewport was specified that we haven't captured, or it's the addon's
-    // default of `reset`, so we'll load the default viewport snapshot instead.
+  let response = viewportName
+    ? await fetch(`${url}/${snapshotFileName(id, viewportName)}`)
+    : undefined;
+
+  if (!response?.ok) {
+    // Possibly a viewport was specified that we haven't captured, or none is selected,
+    // so we'll load the default viewport snapshot instead.
     const { defaultViewport } = context.storyContext.parameters.viewport;
     response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
   }

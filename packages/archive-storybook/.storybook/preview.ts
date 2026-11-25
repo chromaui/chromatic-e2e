@@ -59,51 +59,32 @@ function snapshotFileName(snapshotId: string, viewport: string) {
 
 async function fetchSnapshot(context: RenderContext<RRWebFramework>): Promise<SavedSnapshot> {
   const { url, id } = context.storyContext.parameters.server;
-  const { defaultViewport } = context.storyContext.parameters.viewport;
-  const { globals, userGlobals } = context.storyContext as typeof context.storyContext & {
-    userGlobals?: Record<string, unknown>;
-  };
+  const { viewport } = context.storyContext.globals;
 
-  // Selected viewport has priority over stories[].globals.viewport
-  const viewport =
-    viewportGlobalValue(userGlobals?.viewport) ?? viewportGlobalValue(globals.viewport);
-
-  if (viewport && viewport !== defaultViewport) {
-    const response = await fetch(`${url}/${snapshotFileName(id, viewport)}`);
-
-    if (response.ok) {
-      return response.json();
-    }
-  }
-
-  // No viewport selected, or one that we haven't captured, so load the default viewport snapshot instead.
-  const response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
-  return response.json();
-}
-
-// Viewport global is
-// - `{ width, height }` when set by Chromatic modes
-// - `"w1280h720"` when set by URL (`globals=viewport:w1280h720`) or story globals
-// - `{ value, isRotated }` when set by the viewport addon. Its initial value is `{ value: undefined }`.
-function viewportGlobalValue(viewport: unknown): string | undefined {
+  // Viewport seems to be a string or an object
+  let viewportName;
   if (typeof viewport === "string") {
-    return viewport;
-  }
-
-  if (!viewport || typeof viewport !== "object") {
-    return undefined;
-  }
-
-  if ("width" in viewport && "height" in viewport) {
+    viewportName = viewport;
+  } else if (viewport?.value !== undefined) {
+    // Viewport addon's toolbar selection `{ value, isRotated }`
+    viewportName = viewport.value;
+  } else if (viewport?.width !== undefined) {
     // NOTE: This is duplicated in the shared package due to bundling issues
-    return `w${viewport.width as number}h${viewport.height as number}`;
+    viewportName = `w${viewport.width}h${viewport.height}`;
   }
 
-  if ("value" in viewport && typeof viewport.value === "string") {
-    return viewport.value;
+  let response = viewportName
+    ? await fetch(`${url}/${snapshotFileName(id, viewportName)}`)
+    : undefined;
+
+  if (!response?.ok) {
+    // Possibly a viewport was specified that we haven't captured, or none is selected,
+    // so we'll load the default viewport snapshot instead.
+    const { defaultViewport } = context.storyContext.parameters.viewport;
+    response = await fetch(`${url}/${snapshotFileName(id, defaultViewport)}`);
   }
 
-  return undefined;
+  return response.json();
 }
 
 const renderToCanvas: RenderToCanvas<RRWebFramework> = async (context) => {

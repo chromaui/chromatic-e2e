@@ -3,7 +3,6 @@
   "stories": [
     {
       "name": "Snapshot #1",
-      "globals": { "viewport": "w500h600" },
       "parameters": {
         "__id": "viewports-same-test-in-multiple-projects--snapshot-1",
         "server": { "id": "viewports-same-test-in-multiple-projects-snapshot-1" },

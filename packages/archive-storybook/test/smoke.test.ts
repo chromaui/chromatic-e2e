@@ -128,10 +128,10 @@ test.for([
   },
 );
 
-test("renders snapshot of story's viewport when no mode is set", async ({ openStory, page }) => {
+test("renders snapshot of default viewport when no mode is set", async ({ openStory, page }) => {
   await openStory("viewports-same-test-in-multiple-projects--snapshot-1");
 
-  await page.getByText("Captured at 500x600").waitFor();
+  await page.getByText("Captured at 1280x720").waitFor();
 });
 
 test("applies pseudo-state classes", async ({ openStory, page }) => {

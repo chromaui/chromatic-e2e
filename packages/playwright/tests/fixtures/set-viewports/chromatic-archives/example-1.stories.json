@@ -3,6 +3,9 @@
   "stories": [
     {
       "name": "Snapshot #1",
+      "globals": {
+        "viewport": "w111h222"
+      },
       "parameters": {
         "__id": "example-1--snapshot-1",
         "server": {

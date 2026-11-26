@@ -19,10 +19,10 @@
     "@chromatic-com/shared-e2e": "workspace:*",
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
     "@rrweb/types": "^2.0.0-alpha.18",
-    "@storybook/builder-vite": "10.6.5",
-    "@storybook/server": "10.6.5",
+    "@storybook/builder-vite": "^11.0.0-rc.0",
+    "@storybook/server": "^11.0.0-rc.0",
     "playwright": "^1.46.1",
-    "storybook": "10.6.5",
+    "storybook": "^11.0.0-rc.0",
     "vite": "^8.0.0"
   },
   "engines": {

@@ -33,7 +33,7 @@
     "playwright-core": "^1.46.1",
     "prompts": "^2.4.2",
     "srcset": "^4.0.0",
-    "storybook": "^11.0.0-rc.0",
+    "storybook": "https://pkg.pr.new/storybookjs/storybook@b92dbef",
     "ts-dedent": "^2.2.0",
     "typescript": "^5.9.3"
   },

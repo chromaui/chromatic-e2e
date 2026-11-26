@@ -19,10 +19,10 @@
     "@chromatic-com/shared-e2e": "workspace:*",
     "@chromaui/rrweb-snapshot": "2.0.0-alpha.19-noAbsolute",
     "@rrweb/types": "^2.0.0-alpha.18",
-    "@storybook/builder-vite": "^11.0.0-rc.0",
-    "@storybook/server": "^11.0.0-rc.0",
+    "@storybook/builder-vite": "https://pkg.pr.new/storybookjs/storybook/@storybook/builder-vite@b92dbef",
+    "@storybook/server": "https://pkg.pr.new/storybookjs/storybook/@storybook/server@b92dbef",
     "playwright": "^1.46.1",
-    "storybook": "^11.0.0-rc.0",
+    "storybook": "https://pkg.pr.new/storybookjs/storybook@b92dbef",
     "vite": "^8.0.0"
   },
   "engines": {

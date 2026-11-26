@@ -3,7 +3,7 @@
  * See Builder-Vite's original `importFn` from https://github.com/storybookjs/storybook/blob/next/code/builders/builder-vite/src/codegen-importfn-script.ts
  */
 
-import type { ModuleExports, ModuleImportFn } from "storybook/internal/types";
+import type { ModuleExports, ImportModule } from "storybook/internal/types";
 
 interface StoriesFile {
   title: string;
@@ -19,22 +19,21 @@ const modules = new Map<string, Promise<ModuleExports>>();
 const STORIES_BASE_URL = document.baseURI;
 
 /**
- * Replaces the build-time `importFn` of `@storybook/builder-vite`. Story files are not bundled:
- * they are fetched at runtime, relative to `iframe.html`, using the `importPath` of `index.json`.
- *
- * The `importPath` is relative to the project root, e.g. `./test-results/chromatic-archives/x.stories.json`,
- * so that it matches the story file IDs that TurboSnap reports. Story files are copied next to
- * `iframe.html`, so only the filename is used for fetching.
+ * TODO rewrite
  */
-export const importFn: ModuleImportFn = (path) => {
-  let module = modules.get(path);
+export const importModule: ImportModule = (importPath, original) => {
+  if (!importPath.endsWith(".stories.json")) {
+    return original(importPath);
+  }
+
+  let module = modules.get(importPath);
 
   if (!module) {
-    module = loadStoriesFile(path);
-    modules.set(path, module);
+    module = loadStoriesFile(importPath);
+    modules.set(importPath, module);
 
     // Allow retrying failed requests
-    module.catch(() => modules.delete(path));
+    module.catch(() => modules.delete(importPath));
   }
 
   return module;
